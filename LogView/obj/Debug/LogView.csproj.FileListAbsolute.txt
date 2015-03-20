@@ -1,0 +1,1 @@
+c:\users\aotuo.zhang\documents\visual studio 2013\Projects\LogView\LogView\bin\Debug\LogView.exe.config
