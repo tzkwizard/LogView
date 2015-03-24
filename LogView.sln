@@ -5,6 +5,15 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogView", "LogView\LogView.csproj", "{86B379EE-0BB2-43A6-9463-F9915E3A5AD8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{087C0D2E-044E-42C1-BA5C-B3989D5E6474}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogSearch", "LogSearch\LogSearch.csproj", "{BE1AA225-5770-4A57-B9AC-5313E11B8193}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +24,10 @@ Global
 		{86B379EE-0BB2-43A6-9463-F9915E3A5AD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86B379EE-0BB2-43A6-9463-F9915E3A5AD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86B379EE-0BB2-43A6-9463-F9915E3A5AD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE1AA225-5770-4A57-B9AC-5313E11B8193}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE1AA225-5770-4A57-B9AC-5313E11B8193}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE1AA225-5770-4A57-B9AC-5313E11B8193}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE1AA225-5770-4A57-B9AC-5313E11B8193}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

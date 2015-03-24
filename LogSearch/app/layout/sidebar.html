@@ -1,0 +1,42 @@
+﻿<div data-cc-sidebar data-ng-controller="sidebar as vm" >
+    <div class="sidebar-filler"></div>
+    <div class="sidebar-dropdown"><a href="#">Menu</a></div>
+    <div class="sidebar-inner">
+        <div class="sidebar-widget">
+           <!-- <div class="row">
+                <div class="col-lg-12">
+                    <form class="form-inline">
+                        <div class="input-append row-fluid">
+                            <input type="text" class="form-control"
+                                   data-ng-model="vm.searchText"
+                                   data-ng-keyup="vm.search($event)"
+                                   placeholder="  Find sessions" />
+                            <button class="btn btn-info btn-notext" type="button" data-ng-click="vm.search($event)">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>-->
+        </div>
+        <ul class="navi">
+            <li class="nlightblue fade-selection-animation" data-ng-class="vm.isCurrent(r)"
+                data-ng-repeat="r in vm.navRoutes">
+                <a href="#{{r.url}}" data-ng-bind-html="r.config.settings.content"></a>
+            </li>
+        </ul>
+        <div class="navi">
+
+            <button class="btn btn-default" ng-click="vm.getFieldName()" style="background-color: transparent;color:white">Show Field</button>
+            <hr>
+            <ul collapse="vm.isCollapsed" class="nlightblue fade-selection-animation">
+               <!-- <li data-ng-repeat="content in vm.fieldsName" style="background-color: transparent; color: white">{{content}}</li>-->
+                  <li class="nlightblue fade-selection-animation" data-ng-click="vm.test(r)"
+              data-ng-repeat="r in vm.fieldsName">
+                      {{r}}
+             </li>
+            </ul>
+
+        </div>
+        </div>
+        </div>
