@@ -33,7 +33,7 @@
         routeMediator.setRoutingHandlers();
         
         $rootScope.index = dataconfig.filterIndex();
-
+         
         client.ping({
             requestTimeout: 1000,
             hello: "elasticsearch!"

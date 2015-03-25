@@ -10,7 +10,7 @@
         </div>
     </div>
 
-
+  
 
 
 <section class="matter">
@@ -151,7 +151,7 @@
                 <thead>
 
                     <tr>
-                        <th class="ip" data-ng-click="predicate = '_source.ip'; reverse=!reverse">Ip&nbsp;</th>
+                        <th class="ip" data-ng-click="predicate = '_source.clientip'; reverse=!reverse">Ip&nbsp;</th>
                         <th class="username" data-ng-click="predicate = '_source.username'; reverse=!reverse">UserName&nbsp;</th>
                         <th class="response" data-ng-click="predicate = '_source.response'; reverse=!reverse">Response&nbsp;</th>
                         <th class="message" data-ng-click="predicate = '_source.message'; reverse=!reverse">Message&nbsp;</th>
@@ -163,7 +163,7 @@
 
                 <tbody>
                     <tr class="fader-animation" data-ng-repeat="doc in vm.res| orderBy:predicate:reverse" data-ng-click="vm.open(doc)">
-                        <td>{{doc._source.ip}}</td>
+                        <td>{{doc._source.clientip}}</td>
                         <td>{{doc._source.username}}</td>
                         <td>{{doc._source.response}}</td>
                         <td>{{doc._source.message}}</td>
@@ -183,7 +183,7 @@
                 <div class="modal-body">
                     <ul>
 
-                        <li ng-click="selected.item = items._source.ip">{{items._source.ip}}</li>
+                        <li ng-click="selected.item = items._source.clientip">{{items._source.clientip}}</li>
                         <li ng-click="selected.item = items._source.username">{{items._source.username}}</li>
                         <li ng-click="selected.item = items._source.response">{{items._source.response}}</li>
                         <li ng-click="selected.item = items._source.message">{{items._source.message}}</li>

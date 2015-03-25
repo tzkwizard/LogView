@@ -16,7 +16,7 @@
             getTypeName: getTypeName,
             getFieldName: getFieldName,
             createContainer: createContainer,
-            filterIndex: filterIndex,
+            filterIndex: filterIndex,         
             prime:prime
     }
         return service;
@@ -26,7 +26,7 @@
             log('Load Index');
             
         }
-
+       
         function createContainer(aggName) {
             var main = document.getElementById('div2');
             var contain = document.createElement('div');

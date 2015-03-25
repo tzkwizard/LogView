@@ -24,19 +24,62 @@
                 data-ng-repeat="r in vm.navRoutes">
                 <a href="#{{r.url}}" data-ng-bind-html="r.config.settings.content"></a>
             </li>
-        </ul>
-        <div class="navi">
 
-            <button class="btn btn-default" ng-click="vm.getFieldName()" style="background-color: transparent;color:white">Show Field</button>
-            <hr>
+            <li class="nlightblue fade-selection-animation" ng-click="vm.showLocation()"> <a><i class="fa fa-map-marker"></i> Location</a></li>
+
             <ul collapse="vm.isCollapsed" class="nlightblue fade-selection-animation">
-               <!-- <li data-ng-repeat="content in vm.fieldsName" style="background-color: transparent; color: white">{{content}}</li>-->
-                  <li class="nlightblue fade-selection-animation" data-ng-click="vm.test(r)"
-              data-ng-repeat="r in vm.fieldsName">
-                      {{r}}
-             </li>
+                <li class="nlightblue fade-selection-animation" data-ng-click="vm.test(r,'logs.clientip.raw')"
+                    data-ng-repeat="r in vm.location">
+                    <a style="color:whitesmoke">  {{r.key.toString()}} ({{r.doc_count}})    </a>
+                </li>
+            </ul>
+            <li class="nlightblue fade-selection-animation" ng-click="vm.showUser()"> <a><i class="fa fa-users"></i> Users</a></li>
+
+            <ul collapse="vm.isCollapsed2" class="nlightblue fade-selection-animation">
+                <li class="nlightblue fade-selection-animation" data-ng-click="vm.test(r,'logs.verb.raw')"
+                    data-ng-repeat="r in vm.host">
+                    <a style="color:whitesmoke">  {{r.key.toString()}} ({{r.doc_count}})    </a>
+                </li>
             </ul>
 
+
+
+
+
+            <accordion close-others="oneAtATime">
+                <accordion-group is-open="status.open" style="background-color: transparent; color: white">
+                    <accordion-heading>
+                        <li class="nlightblue fade-selection-animation">
+                            <a style="color: white">
+                                <i class=" fa fa-map-marker">
+                                </i> Location
+                            </a>
+                            <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                        </li>
+                    </accordion-heading>                  
+                    <li ng-repeat="item in vm.content">{{item}}</li>
+
+                </accordion-group>
+
+            </accordion>
+
+        </ul>
+
+
+        
+
+            
+           <!-- <button class="btn btn-default" ng-click="vm.getFieldName()" style="background-color: transparent; color: white">Show Field</button>-->
+            <hr>
+            <ul collapse="vm.isCollapsed" class="nlightblue fade-selection-animation">
+                <!-- <li data-ng-repeat="content in vm.fieldsName" style="background-color: transparent; color: white">{{content}}</li>-->
+                <li class="nlightblue fade-selection-animation" data-ng-click="vm.test(r)"
+                    data-ng-repeat="r in vm.fieldsName">
+                    {{r}}
+                </li>
+            </ul>
+
+           
         </div>
-        </div>
-        </div>
+        
+  </div>

@@ -24,7 +24,7 @@
             vm.index = $routeParams.index || '';
             vm.type = '';
             vm.filterAggName = "";
-            vm.pagecount = 100;         
+            vm.pagecount = 1000;         
             vm.total = "";
             vm.fieldsName = [];
             vm.typesName = [];
@@ -401,22 +401,47 @@
             function activate() {
                 common.activateController([getIndexName()], controllerId)
                     .then(function () {
-                    $location.search();                
+                        $location.search();
+                       log($location.search().field);
+                    if ($location.search().field === "" || $location.search().field === undefined) {
+                        client.search({
+                                index: $routeParams.index,
+                                // type: $location.search().log,
+                                size: 1000,
+                                body: ejs.Request()
+                                    // .query(ejs.TermQuery($location.search().field, vm.searchText))
+                                    .query(ejs.QueryStringQuery(vm.searchText))
+                            }).
+                            then(function(resp) {
+                                vm.hitSearch = resp.hits.hits;
+                                vm.total = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
+                                vm.getCurrentPageData(vm.hitSearch);
+                                vm.type = "";
+                            });
 
-                    client.search({
-                        index: $location.search().logs,
-                        type: $location.search().log,
-                        size: vm.pagecount,
-                        body: ejs.Request()
-                        .query(ejs.TermQuery($location.search().field, vm.searchText))
-                    }).
-                    then(function (resp) {
-                        vm.hitSearch = resp.hits.hits;
-                        vm.total = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
-                        vm.getCurrentPageData(vm.hitSearch);
-                        vm.type = "";
-                        log('go');
-                    });
+                    } else {
+                        client.search({
+                            index: $routeParams.index,
+                            //type: 'logs',
+                            size: 1000,
+                            body: ejs.Request()
+                            .query(ejs.TermQuery($location.search().field, vm.searchText))
+                            //.query(ejs.TermQuery("logs.clientip.raw", "63.158.0.150"))
+                        }).
+                           then(function (resp) {
+                               vm.hitSearch = resp.hits.hits;
+                               vm.total = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
+                               vm.getCurrentPageData(vm.hitSearch);
+                               vm.type = "";
+                           });
+                    }
+
+
+
+
+
+                 //   $location.search().field = "";
+
                         //init();
                         vm.showSplash = false;
                         log('Activated ELS search View');

@@ -3,29 +3,48 @@
     
     var controllerId = 'sidebar';
     angular.module('app').controller(controllerId,
-        ['$location','$route', 'config', 'routes','dataconfig', sidebar]);
+        ['$rootScope','$location','$route', 'config', 'routes','dataconfig','client','common', sidebar]);
 
-    function sidebar($location, $route, config, routes, dataconfig) {
+    function sidebar($rootScope, $location, $route, config, routes, dataconfig, client, common) {
         var vm = this;
+        var getLogFn = common.logger.getLogFn;
+        var log = getLogFn(controllerId);
 
         vm.isCurrent = isCurrent;
         vm.search = search;
         vm.searchText = '';
         var keyCodes = config.keyCodes;
         vm.isCollapsed = false;
+        vm.isCollapsed2 = false;
         activate();
         vm.fieldsName = [];
+        vm.location = "";
+        vm.host = "";
+
         vm.content = [];
         vm.content[0] = 4;
         vm.content[1] = 5;
         vm.getFieldName = getFieldName;
+
+
         vm.test = test;
+
         function activate() {
-            getNavRoutes();
-            
+           getNavRoutes();           
+           /* common.activateController([], controllerId)
+                .then(function() {
+                    log('Load Sidebar');
+
+                });
+*/
         }
-        function test(r) {
-            toastr.info(r);
+
+        function test(r,f) {
+            toastr.info(r.key.toString());
+            //$location.search();
+            $location.search.field = "";
+            $location.search('field', f);           
+            $location.path('/els/' + r.key.toString());
         }
 
 
@@ -37,7 +56,54 @@
             vm.isCollapsed = !vm.isCollapsed;
         }
 
-        
+    
+
+        vm.showLocation = function() {
+            if (vm.location === "" || vm.location === undefined || $location.search.refresh)
+               { client.search({
+                    index: $rootScope.index,
+                    type: 'logs',
+
+                    body: ejs.Request()
+                        .aggregation(ejs.TermsAggregation("agg").field("clientip.raw").size(10))
+
+                }).then(function(resp) {
+                    vm.location = resp.aggregations.agg.buckets;
+                    $location.search.refresh = false;
+                       log("re");
+                   }, function(err) {
+                    log(err.message);
+                });
+        }else{
+                vm.isCollapsed = !vm.isCollapsed;
+            }
+        }
+
+
+    
+
+        vm.showUser = function () {
+            if (vm.host === "" || vm.host === undefined || $location.search.refresh)
+            {client.search({
+                index: $rootScope.index,
+                type: 'logs',
+
+                body: ejs.Request()
+                    .aggregation(ejs.TermsAggregation("agg").field("verb.raw").size(5))
+
+            }).then(function (resp) {
+                vm.host = resp.aggregations.agg.buckets;
+                $location.search.refresh = false;
+                log("re");
+            }, function (err) {
+                log(err.message);
+            });
+            }
+            else
+            {vm.isCollapsed2 = !vm.isCollapsed2;}
+        }
+
+
         function getNavRoutes() {
             vm.navRoutes = routes.filter(function(r) {
                 return r.config.settings && r.config.settings.nav;

@@ -1,11 +1,25 @@
 ﻿/*#region Override background color theme */
 
+
+
+
 /*For Bootstrap 3*/
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
 
+
 body {
     background-color: #FFF;
+}
+
+
+.custom >.panel-heading{
+        background-color: red !important;
+     
+}
+.panel-default > .panel-heading {
+    color: white;
+   background-color: transparent;
 }
 
 .carousel-caption {

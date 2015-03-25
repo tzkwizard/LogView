@@ -33,7 +33,7 @@
                         piechart();
                             init();
                         log('Activated Dashboard View');                       
-                        google.setOnLoadCallback(drawMap);
+                       //google.setOnLoadCallback(drawMap);
                         google.setOnLoadCallback(drawhist);
                         google.setOnLoadCallback(drawpie);
                         
@@ -44,7 +44,7 @@
             function init() {
                 
             client.search({
-                index: 'logstash-2015.03.23',
+                index: ["logstash-2015.03.23", "logstash-2015.03.24"],
                 type: 'logs',
                 size: 100,
                 body:
@@ -171,19 +171,7 @@
                     geoData.addRow([n._source.geoip.city_name, n._source.clientip, n._source.geoip.latitude, n._source.geoip.longitude, 1]);
                 }
 
-                /*  vm.i = 1;
-                if (vm.location.indexOf(m._source.clientip) === -1) {
-                    vm.location.push(m._source.clientip);
-                    geoData.addRow([m._source.clientip, vm.i, m._source.geoip.latitude, m._source.geoip.longitude]);
-                    vm.j++;
-                }
-               */
-               /* angular.forEach(r, function (m) {
-                    if (vm.location.indexOf(n._source.clientip) === 0){                         
-                        geoData.setValue(vm.j, 1, vm.i)
-                        vm.i++;
-                    }
-                });*/
+                
                 
             });
 
