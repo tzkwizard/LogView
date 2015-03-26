@@ -12,14 +12,14 @@
         vm.busyMessage = 'Please wait ...'; 
         vm.isBusy = true;
         vm.spinnerOptions = {
-            radius: 40,
-            lines: 7,
+            radius: 120,
+            lines: 24,
             length: 0,
             width: 30,
             speed: 1.7,
             corners: 1.0,
             trail: 100,
-            color: '#F58A00'
+            color: 'Blue'
         };
         vm.showSplash = true;
         activate();
@@ -44,13 +44,14 @@
             });
         }
 
-        function toggleSpinner(on) { vm.isBusy = on; }
+        function toggleSpinner(on)
+        { vm.isBusy = on; }
 
-       /// $rootScope.$on('$routeChangeStart',
-       //     function (event, next, current) { toggleSpinner(true); }
-       //);
+        $rootScope.$on('$routeChangeStart',
+            function (event, next, current) { toggleSpinner(true); }
+       );
         
-        $rootScope.$on(events.controllerActivateSuccess,
+       $rootScope.$on(events.controllerActivateSuccess,
             function (data) { toggleSpinner(false); }
         );
 

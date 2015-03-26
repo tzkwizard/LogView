@@ -3,15 +3,15 @@
 
     var controllerId = 'topnav';
     angular.module('app').controller(controllerId,
-        ['$location', '$route', 'config', 'routes', topnav]);
+        ['$location', 'config', topnav]);
 
-    function topnav($location, $route, config, routes) {
+    function topnav($location, config) {
         var vm = this;
 
         vm.search = search;
         vm.refresh = refresh;
-        vm.searchText = '44';
-        var keyCodes = config.keyCodes;
+        vm.searchText = '';
+       // var keyCodes = config.keyCodes;
         activate();
         vm.path = path;
         function path(n) {

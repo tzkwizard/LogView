@@ -30,7 +30,7 @@
             vm.typesName = [];
             vm.indicesName =  [];
             vm.t = [];
-            
+            vm.dadjust = 30;
 
 
 
@@ -77,8 +77,6 @@
 
 
             function test() {
-
-
 
 
                 if (vm.ft === "" || vm.ft === undefined) {
@@ -153,7 +151,7 @@
                // addFilter();         
                 
                 //  toastr.info(t1.value+t2.value+t3.value);
-                log("1");
+               
             }
 
             function addFilter(i) {
@@ -312,18 +310,37 @@
 
             //date
 
+            vm.filterst = filterst;
+            
+            function filterst() {              
+                if (vm.dadjust===30) {
+                    vm.st = moment(new Date()).subtract(1, 'month');
+                }
+                    else
+                {
+                    vm.st = moment(new Date()).subtract(vm.dadjust, 'days');
+                }
+                log(vm.dadjust);
+
+            }
+
             vm.ft = "";
             vm.st = "";
+            
+             today();
             function today() {
-                vm.tempd = new Date();
-                vm.dt=$filter('date')(vm.tempd, "yyyy.MM.dd");
+                vm.maxDate = new Date();
+                // vm.dt=$filter('date')(vm.tempd, "yyyy.MM.dd");
+                vm.st = moment(new Date()).subtract(1, 'month');
+                vm.ft = new Date();
+                toggleMin();
             }
 
             /*vm.today = function () {
                 vm.dt = new Date();
             
             };*/
-           vm.today();
+           
 
             vm.clear = function () {
                 vm.st = null;
@@ -333,11 +350,15 @@
             vm.disabled = function (date, mode) {
                 //return (mode === 'day' && (date.getDay() === 0 || date.getDay() === 6));
             };
-            vm.minDate = true;
-            vm.toggleMin = function () {
-                vm.minDate = vm.minDate ? null : new Date();
+           // vm.minDate = true;
+        vm.toggleMin = toggleMin;
+        function toggleMin()
+            {
+                vm.tmind = new Date();
+                vm.tmind.setMonth(vm.tmind.getMonth() - 1);
+                vm.minDate = vm.minDate ? null : vm.tmind;
             };
-            vm.toggleMin();
+          
 
             vm.timeopen = function ($event) {
                 $event.preventDefault();
@@ -411,6 +432,7 @@
                                 body: ejs.Request()
                                     // .query(ejs.TermQuery($location.search().field, vm.searchText))
                                     .query(ejs.QueryStringQuery(vm.searchText))
+                                    .filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st))
                             }).
                             then(function(resp) {
                                 vm.hitSearch = resp.hits.hits;
@@ -427,6 +449,7 @@
                             body: ejs.Request()
                             .query(ejs.TermQuery($location.search().field, vm.searchText))
                             //.query(ejs.TermQuery("logs.clientip.raw", "63.158.0.150"))
+                            .filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st))
                         }).
                            then(function (resp) {
                                vm.hitSearch = resp.hits.hits;
@@ -458,7 +481,7 @@
                 else {
                     vm.initdex = vm.index;
                 }
-                datasearch.getSampledata(vm.initdex,vm.type, vm.pagecount).then(function (resp) {
+                datasearch.getSampledata(vm.initdex,vm.type, vm.pagecount,vm.st,vm.ft).then(function (resp) {
                     vm.hitSearch = resp.hits.hits;
                     vm.total = resp.hits.total < vm.pagecount?resp.hits.total:vm.pagecount;  
                     vm.getCurrentPageData(vm.hitSearch);
@@ -471,17 +494,17 @@
         
 
 
-            function search(searchText) {
+            function search() {
                 
                 if (vm.type === "" || vm.type === undefined || vm.type === "all") {
-                    if (searchText == undefined || searchText === "") {
+                    if (vm.searchText == undefined || vm.searchText === "") {
                         log("input text");
                         init();
                         return;
                     }
                     else
                     {
-                        datasearch.stringSearch(vm, type, pagecount,searchText).then(function (resp) {
+                        datasearch.stringSearch(vm, type, pagecount,searchText,vm.st,vm.ft).then(function (resp) {
                             vm.hitSearch = resp.hits.hits;
                             vm.total = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
                             vm.getCurrentPageData(vm.hitSearch);
@@ -491,9 +514,9 @@
                     }
                 }
 
-
+           
             
-                datasearch.basicSearch(vm.index, vm.type, vm.pagecount, vm.field, searchText, vm.filterAggName, vm.fi, vm.condition)
+                datasearch.basicSearch(vm.index, vm.type, vm.pagecount, vm.field, vm.searchText, vm.filterAggName, vm.fi, vm.condition,vm.st,vm.ft)
             .then(function (resp) {
                  vm.hitSearch = resp.hits.hits;
                  vm.total = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;

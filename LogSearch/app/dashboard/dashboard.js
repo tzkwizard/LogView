@@ -15,45 +15,50 @@
         vm.findicies = [];
       //  vm.getFieldName = getFieldName;
         vm.getIndexName = getIndexName;
-     //   vm.getTypeName = getTypeName;
+        //   vm.getTypeName = getTypeName;
+        vm.geoMap = geoMap;
         vm.init = init;
-        vm.histgram = histgram;
+        vm.histGram = histGram;
         vm.filterindex = filterindex;
         activate();
         function getIndexName() {
 
             vm.indicesName = $rootScope.index;
-
+        }
+        function init() {
+            getIndexName();
+            histGram();
+            pieChart();
+            geoMap();
         }
 
             function activate() {
-                common.activateController([getIndexName()], controllerId)
+                common.activateController([init()], controllerId)
                     .then(function () {
-                        histgram();
-                        piechart();
-                            init();
+                       
                         log('Activated Dashboard View');                       
                        //google.setOnLoadCallback(drawMap);
-                        google.setOnLoadCallback(drawhist);
-                        google.setOnLoadCallback(drawpie);
+                       // google.setOnLoadCallback(drawhist);
+                        //google.setOnLoadCallback(drawpie);
                         
                     });
             } 
          
-        
-            function init() {
+         
+            function geoMap() {
                 
             client.search({
                 index: ["logstash-2015.03.23", "logstash-2015.03.24"],
                 type: 'logs',
-                size: 100,
+                size:100,
                 body:
                     ejs.Request()
                         .query(ejs.MatchAllQuery())
+                        .aggregation(ejs.TermsAggregation("agg").field("geoip.city_name.raw").size(100))
 
             }).then(function(resp) {
-                drawMap(resp.hits.hits);
-                
+                //drawMap(resp.hits.hits);
+                drawMap(resp.aggregations.agg.buckets);
             }, function(err) {
                 log(err.message);
             });
@@ -65,7 +70,7 @@
             histgram();
         }
 
-        function piechart() {
+        function pieChart() {
             client.search({
                 index: vm.indicesName,
                 type: 'logs',
@@ -136,7 +141,7 @@
             
         }
 
-        function histgram() {
+        function histGram() {
 
             client.search({
                 index: vm.indicesName,
@@ -155,40 +160,46 @@
         }
         vm.location = [];
         function drawMap(r) {
+
+            google.setOnLoadCallback(drawMap);
             var geoData = new google.visualization.DataTable();
             geoData.addColumn('string', 'Name');
-            geoData.addColumn('string', 'ip');
-            geoData.addColumn('number', 'Lat');
-            geoData.addColumn('number', 'Lon');           
+           // geoData.addColumn('string', 'ip');
+           // geoData.addColumn('number', 'Lat');
+          //  geoData.addColumn('number', 'Lon');           
             geoData.addColumn('number', 'Number');
             //geoData.addRow([n._source.geoip.city_name, 1, n._source.geoip.latitude, n._source.geoip.longitude]);
             vm.j = -1;
             angular.forEach(r, function (n) {
 
 
-                if (vm.location.indexOf(n._source.clientip) === -1 && n._source.geoip.city_name!==undefined) {
+               /* if (vm.location.indexOf(n._source.clientip) === -1 && n._source.geoip.city_name!==undefined) {
                     vm.location.push(n._source.clientip);                   
                     geoData.addRow([n._source.geoip.city_name, n._source.clientip, n._source.geoip.latitude, n._source.geoip.longitude, 1]);
                 }
-
+*/
+               
+                    geoData.addRow([n.key.toString(),n.doc_count]);
+         
                 
                 
             });
 
             var geoView = new google.visualization.DataView(geoData);
-            geoView.setColumns([2,3]);
+            geoView.setColumns([0,1]);
+          
 
             var table =
-                new google.visualization.Table(document.getElementById('table'));
+                new google.visualization.Table(document.getElementById('dtable_div'));
 
-
+            
            // google.visualization.data.group(table, keys, columns)
-           //    table.draw(geoData, { showRowNumber: true });
+               table.draw(geoData, { showRowNumber: true });
 
             var map =
-                new google.visualization.Map(document.getElementById('map_div'));
+                new google.visualization.Map(document.getElementById('dmap_div'));
             map.draw(geoView, { showTip: true });
-
+           // map.setSelection({ row: null, column: 1 });
             // Set a 'select' event listener for the table.
             // When the table is selected, we set the selection on the map.
              google.visualization.events.addListener(table, 'select',

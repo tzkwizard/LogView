@@ -30,10 +30,6 @@
                 </div>
             </div>
 
-            <div google-chart="PieChart" data-ng-model="data1" class="bigGraph"></div>
-            <div google-chart="BarChart" ng-model="data2" class="mediumGraph"></div>
-            <div google-chart="LineChart" ng-model="data3" class="smallGraph"></div>
-
 
             <div id="div2">
                 <div id="dashboard">
@@ -71,14 +67,12 @@
                 </div>
             </div>
             <div id="table2_div"></div>
-            <div data-ng-repeat="i in vm.fieldsName">
-
-            </div>
-            {{vm.aggName}}
+            <div id="treemap_div" style="width: 900px; height: 500px;"></div>
+            
 
             <!-- <div data-ng-repeat="doc in vm.hitSearch">
                 {{doc._source.ip}} <br>
-
+                {{vm.aggName}}
             </div>-->
 
         </div>
@@ -87,7 +81,12 @@
 </section>
 
 
-<!--<div data-ng-attr-id={{vm.dashboard}}>
+<!--
+            <div google-chart="PieChart" data-ng-model="data1" class="bigGraph"></div>
+            <div google-chart="BarChart" ng-model="data2" class="mediumGraph"></div>
+            <div google-chart="LineChart" ng-model="data3" class="smallGraph"></div>
+
+    <div data-ng-attr-id={{vm.dashboard}}>
     $1$Divs that will hold each control and chart#1#
     <table class="columns">
         <tr>

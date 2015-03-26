@@ -80,7 +80,7 @@
         }
 
 
-        function getSampledata(indices, type, pagecount) {
+        function getSampledata(indices, type, pagecount,start,end) {
             return client.search({
                 index: indices,
                 //type: type,
@@ -88,6 +88,7 @@
                 body:
                     ejs.Request()
                         .query(ejs.MatchAllQuery())
+                        .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
 
             });
         }
@@ -105,7 +106,7 @@
             });
         }
 
-        function stringSearch(indices, type, pagecount, searchText) {
+        function stringSearch(indices, type, pagecount, searchText,start,end) {
             
             return client.search({
                 index: indices,
@@ -113,21 +114,23 @@
                 size: pagecount,
                 body: ejs.Request()
                     .query(ejs.QueryStringQuery(searchText))
+                   .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
             });
         }
 
-        function searchWithoutFilter(indices, type, pagecount, field, searchText) {
+        function searchWithoutFilter(indices, type, pagecount, field, searchText,start,end) {
             return client.search({
                 index: indices,
                 type: type,
                 size: pagecount,
                 body: ejs.Request()
                     .query(ejs.MatchQuery(field, searchText))
+                   .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
             });
         }
 
 
-        function termqueryandfilter(indices, type, pagecount, field, searchText, filterField, filter, condition) {
+        function termqueryandfilter(indices, type, pagecount, field, searchText, filterField, filter, condition,start,end) {
             /*  if (field === "" || field === "all") {
                 // mSearch(searchText); 
                 return stringSearch(indices, type, pagecount, searchText);
@@ -170,43 +173,43 @@
                     //.filter(ejs.TermFilter(filterField, filter))
                     //.filter(ejs.BoolFilter().mustNot(mmm))
                     .filter(ejs.BoolFilter().must(fmust).mustNot(fnotmust).should(fshould))
-
+                    .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
             });
         }
 
 
-        function basicSearch(indices, type, pagecount, field, searchText, filterField, filter, condition) {
+        function basicSearch(indices, type, pagecount, field, searchText, filterField, filter, condition,start,end) {
          
             if (filter === "" || filter === undefined) {
                 if (searchText === "" || searchText === undefined) {
 
-                    return getSampledata(indices, type, pagecount);
+                    return getSampledata(indices, type, pagecount, start, end);
                 } else {
                     if (field === "" || field === "all" || field === undefined) {
                         return stringSearch(indices, type, pagecount, searchText);
                     } else {
-                        return searchWithoutFilter(indices, type, pagecount, field, searchText);
+                        return searchWithoutFilter(indices, type, pagecount, field, searchText, start, end);
                     }
                 }
             } else {
                 if (searchText === "" || searchText === undefined) {    
                     if (filterField === "" || filterField === "all" || filterField === undefined) {
-                        return stringSearch(indices, type, pagecount, searchText);
+                        return stringSearch(indices, type, pagecount, searchText, start, end);
                     } else {
-                        return termqueryandfilter(indices, type, pagecount, field, searchText, filterField, filter, condition, 1);
+                        return termqueryandfilter(indices, type, pagecount, field, searchText, filterField, filter, condition, 1, start, end);
                     }
                 } else {
                     if (field === "" || field === "all" || field === undefined) {
                         if (filterField === "" || filterField === "all" || filterField === undefined) {
-                            return stringquery(indices, type, pagecount, field, searchText, filterField, filter, condition, 1);
+                            return stringquery(indices, type, pagecount, field, searchText, filterField, filter, condition, 1, start, end);
                         } else {
-                            return stringquery(indices, type, pagecount, field, searchText, filterField, filter, condition, 2);
+                            return stringquery(indices, type, pagecount, field, searchText, filterField, filter, condition, 2, start, end);
                         }
                     } else {
                         if (filterField === "" || filterField === "all" || filterField === undefined) {
-                            return termqueryandfilter(indices, type, pagecount, field, searchText, filterField, filter, condition, 2);
+                            return termqueryandfilter(indices, type, pagecount, field, searchText, filterField, filter, condition, 2, start, end);
                         } else {
-                            return termqueryandfilter(indices, type, pagecount, field, searchText, filterField, filter, condition, 3);
+                            return termqueryandfilter(indices, type, pagecount, field, searchText, filterField, filter, condition, 3, start, end);
                         }
                     }
 

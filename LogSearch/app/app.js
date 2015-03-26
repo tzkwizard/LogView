@@ -5,7 +5,7 @@
     });*/
    
     'use strict';
-    google.load('visualization', '1', { packages: ['corechart', 'controls', 'table', 'map', 'annotatedtimeline'] });
+    google.load('visualization', '1', { packages: ['corechart', 'controls', 'table', 'map', 'annotatedtimeline','treemap'] });
     var app = angular.module('app', [
         // Angular modules 
         'ngAnimate',        // animations
