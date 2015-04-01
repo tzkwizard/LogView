@@ -20,7 +20,8 @@
         // 3rd Party Modules    
         'breeze.angular',
         'ui.bootstrap',   // ui-bootstrap (ex: carousel, pagination, dialog)    
-        'elasticsearch'
+        'elasticsearch',
+        'ngGrid'
       //  "google-chart"
         
     ]);
@@ -33,7 +34,8 @@
         routeMediator.setRoutingHandlers();
         
         $rootScope.index = dataconfig.filterIndex();
-         
+            $rootScope.logtype = "logs";
+
         client.ping({
             requestTimeout: 1000,
             hello: "elasticsearch!"

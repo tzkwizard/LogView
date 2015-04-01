@@ -24,21 +24,23 @@
             vm.total = 0;
             vm.mystyle = { 'color': 'blue' };
             vm.field = "";
-            vm.index = $routeParams.index || '';
-            vm.type = '';
+            vm.index = $routeParams.index || "";
+            vm.type = "";
             vm.filterAggName = "";
             vm.pagecount = 1000;         
-            vm.total = "";
             vm.fieldsName = [];
             vm.typesName = [];
             vm.indicesName =  [];
             vm.t = [];
-            vm.dadjust = 30;
-
+            vm.tt = 0;
            
             vm.showSplash = true;
-           
-            
+
+            vm.Syntax = {  title: 'Help',
+               Description: "Terms Fields Escaping Special Characters"
+
+
+        };
 
 
             //function
@@ -55,22 +57,26 @@
             vm.getIndexName = getIndexName;
             vm.getTypeName = getTypeName;
             vm.addaddFilter = addFilter;
-            
 
 
-
-
-
-
-           
-           
-
+        vm.tests = tests;
+        function tests(x) {
+            switch (x) {
+                case "Last Month": log(28); break;
+                case "Last four weeks": log(28); break;
+                case "Last three weeks": log(28); break;
+                case "Last two weeks": log(28); break;
+                case "Last week": log(28); break;
+                default: log(x);break;
+            }
+                
+            }
 
 
 
 
             function test() {
-                bsDialog.deleteDialog('Session');
+               /* bsDialog.deleteDialog('Session');
                 bsDialog.confirmationDialog('Session');
 
                 if (vm.ft === "" || vm.ft === undefined) {
@@ -88,7 +94,9 @@
                     vm.st = "";
                     return;
                 }
-
+*/
+                var x = ejs.RangeQuery("bytes").gte(17);
+                var y = ejs.TermQuery("verb.raw", "GET");
                  client.search({
                      index: vm.indicesName,
                     type: 'logs',
@@ -99,19 +107,18 @@
                     //  .query(ejs.BoostingQuery(ejs.MultiMatchQuery(["username", "response", "message", "ip"], searchText), ejs.MatchQuery("message", "java"), 0.2))
                     //   .query(ejs.CommonTermsQuery("message", searchText).cutoffFrequency(0.01).highFreqOperator("and").minimumShouldMatchLowFreq(2))
                     //  .query(ejs.RangeQuery("ip").gte("19.18.200.201").lte("19.18.200.204"))
-                      //.query(ejs.MatchAllQuery())
+                     // .query(ejs.MatchAllQuery())
                     //.filter(ejs.BoolFilter().must(ejs.TermFilter("message", "dev")).mustNot(ejs.TermFilter("message", "java")))
                      //.filter(ejs.TermFilter("username","dev"))
-                      .filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st))
-                    // .query(ejs.BoolQuery().mustNot(ejs.QueryStringQuery('dev')))
-/*                                 
-                    body: ejs.Request()
-                        .query(ejs.TermQuery("message",""))
-                        .aggregation(ejs.TermsAggregation("agg").field("ip"))
-                        */
+                    //  .filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st))
+                      //.query(ejs.BoolQuery().mustNot(ejs.QueryStringQuery('dev')))
+                      .query(y)
+                     .filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st))
+
                 }).then(function (resp) {
                     vm.hitSearch = resp.hits.hits;
-                    vm.total = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
+                    vm.total = resp.hits.total;
+                    vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
                     vm.getCurrentPageData(vm.hitSearch);
                 }, function (err) {
                     log(err.message);
@@ -153,15 +160,16 @@
 
             Object.defineProperty(vm.paging, 'pageCount', {
                 get: function () {
-                    return Math.floor(vm.total / vm.paging.pageSize) + 1;
+
+                    return Math.floor(vm.tt / vm.paging.pageSize) + 1;
                 }
             });
             function getCurrentPageData(res) {
                 vm.res = [];
                 vm.j = 0;
                 vm.pagenumber = vm.paging.pageSize * vm.paging.currentPage;
-                if (vm.pagenumber > vm.total)
-                    vm.pagenumber = vm.total;
+                if (vm.pagenumber > vm.tt)
+                    vm.pagenumber = vm.tt;
                 for (vm.i = (vm.paging.currentPage - 1) * vm.paging.pageSize; vm.i < vm.pagenumber; vm.i++) {
                     vm.res[vm.j] = res[vm.i];
                     vm.j++;
@@ -172,19 +180,36 @@
                 vm.getCurrentPageData(vm.hitSearch);
             }
 
+            
 
+            vm.refreshPage = refreshPage;
+            function refreshPage() {
+               // vm.tt = vm.total;
+                  
 
+                if (vm.tt > vm.pagecount) {
+                    vm.tt = vm.pagecount;
+                } else {
+                    vm.tt = Math.min(vm.total,vm.pagecount);
+                }
+                 
+               
+                vm.getCurrentPageData(vm.hitSearch);
+                random();
+             }
 
 
 //processorbar
            vm.showWarning ="";
            vm.dynamic = "";
            vm.ptype = "";
-           
-           vm.random = function () {
-               var value = Math.floor((Math.random() * 100) + 1);
-               var ptype;
 
+        vm.random = random;
+             function random () {
+               //var value = Math.floor((Math.random() * 100) + 1);
+               var value = vm.tt / vm.total*100;
+               var ptype;
+               log(value);
                if (value < 20) {
                    ptype = 'idle';
                } else if (value < 60) {
@@ -236,27 +261,32 @@
             };
 
 //   date pick
-
+            vm.it = ["Last three months","Last Month", "Last four weeks", "Last three weeks", "Last two weeks", "Last week"];
             vm.filterst = filterst;
             
-            function filterst() {              
-                if (vm.dadjust===30) {
-                    vm.st = moment(new Date()).subtract(1, 'month');
+            
+            function filterst(x) {
+                switch (x) {
+                    case "Last three months": vm.st = moment(new Date()).subtract(3, 'month'); break;
+                    case "Last Month": vm.st = moment(new Date()).subtract(1, 'month'); break;
+                    case "Last four weeks": vm.st = moment(new Date()).subtract(28, 'days'); break;
+                    case "Last three weeks": vm.st = moment(new Date()).subtract(21, 'days'); break;
+                    case "Last two weeks": vm.st = moment(new Date()).subtract(14, 'days'); break;
+                    case "Last week": vm.st = moment(new Date()).subtract(7, 'days'); break;
+                    default: log(x); break;
                 }
-                    else
-                {
-                    vm.st = moment(new Date()).subtract(vm.dadjust, 'days');
-                }
-                log(vm.dadjust);
-
+                search();
+                
             }
+
+
 
             vm.ft = "";
             vm.st = "";
             
              today();
             function today() {
-                vm.maxDate = new Date();
+                //vm.maxDate = new Date();
                 // vm.dt=$filter('date')(vm.tempd, "yyyy.MM.dd");
                 vm.st = moment(new Date()).subtract(1, 'month');
                 vm.ft = new Date();
@@ -315,10 +345,18 @@
            
 
 //  Page load         
+            
 
             function getIndexName() {
-               // vm.indicesName = dataconfig.getIndexName();
-                  vm.indicesName = $rootScope.index;
+                // vm.indicesName = dataconfig.getIndexName();
+                if ($rootScope.index === undefined || $rootScope.index === "")
+                {
+                    vm.indicesName = dataconfig.filterIndex();
+                }
+                else{
+                    vm.indicesName = $rootScope.index;
+                }
+                getFieldName();
             }
 
             function getTypeName() {
@@ -326,7 +364,11 @@
             }   
 
             function getFieldName() {
-                vm.fieldsName = dataconfig.getFieldName(vm.index, vm.type);
+                if (vm.indicesName[0] !== "" && vm.indicesName[0]!==undefined) {
+                    vm.index = vm.indicesName[0];
+                }
+                if (vm.index !== "" && vm.index !== undefined)
+                {vm.fieldsName = dataconfig.getFieldName(vm.index, $rootScope.logtype);}
 
             }
            
@@ -335,10 +377,10 @@
                 common.activateController([getIndexName()], controllerId)
                     .then(function () {
                         $location.search();
-                       log($location.search().field);
+                       //log($location.search().field);
                     if ($location.search().field === "" || $location.search().field === undefined) {
                         client.search({
-                                index: $routeParams.index,
+                                index: vm.indicesName,
                                 // type: $location.search().log,
                                 size: 1000,
                                 body: ejs.Request()
@@ -348,14 +390,15 @@
                             }).
                             then(function(resp) {
                                 vm.hitSearch = resp.hits.hits;
-                                vm.total = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
+                                vm.total = resp.hits.total;
+                                vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
                                 vm.getCurrentPageData(vm.hitSearch);
                                 vm.type = "";
                             });
 
                     } else {
                         client.search({
-                            index: $routeParams.index,
+                            index: vm.indicesName,
                             //type: 'logs',
                             size: 1000,
                             body: ejs.Request()
@@ -365,10 +408,12 @@
                         }).
                            then(function (resp) {
                                vm.hitSearch = resp.hits.hits;
-                               vm.total = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
+                               vm.total = resp.hits.total;
+                               vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
                                vm.getCurrentPageData(vm.hitSearch);
                                vm.type = "";
-                           });
+                            $location.search().field = "";
+                        });
                     }
 
 
@@ -386,14 +431,11 @@
             }      
 
             function init() {
-                if (vm.index === "")
-                  {  vm.initdex = vm.indicesName;}
-                else {
-                    vm.initdex = vm.index;
-                }
-                datasearch.getSampledata(vm.initdex,vm.type, vm.pagecount,vm.st,vm.ft).then(function (resp) {
+               
+                datasearch.getSampledata(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.st, vm.ft).then(function (resp) {
                     vm.hitSearch = resp.hits.hits;
-                    vm.total = resp.hits.total < vm.pagecount?resp.hits.total:vm.pagecount;  
+                    vm.total = resp.hits.total;
+                    vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
                     vm.getCurrentPageData(vm.hitSearch);
                     vm.type = "";
                     log('Loaded sample document');
@@ -405,35 +447,48 @@
 //  Search and filter
             vm.fselect = "";
             vm.im = 0;
+        vm.condition = "";
             function search() {
-
-                if (vm.type === "" || vm.type === undefined || vm.type === "all") {
-                    if (vm.searchText == undefined || vm.searchText === "") {
-                        log("input text");
+              
+                if(vm.fi===""||vm.filterAggName===""||vm.filterAggName===undefined||vm.condition===""||vm.condition===undefined)
+                 {   if (vm.searchText == undefined || vm.searchText === "") {                      
                         init();
+                        random();
                         return;
                     }
                     else {
-                        datasearch.stringSearch(vm, type, pagecount, searchText, vm.st, vm.ft).then(function (resp) {
+                        datasearch.stringSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.searchText, vm.st, vm.ft).
+                            then(function (resp) {
+                                random();
                             vm.hitSearch = resp.hits.hits;
-                            vm.total = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
+                            vm.total = resp.hits.total;
+                            vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
                             vm.getCurrentPageData(vm.hitSearch);
+                           
                         }, function (err) {
                             log(err.message);
+
                         });
-                    }
-                }
+
+                       
+                    }}
+                
+                else{
 
 
-
-                datasearch.basicSearch(vm.index, vm.type, vm.pagecount, vm.field, vm.searchText, vm.filterAggName, vm.fi, vm.condition, vm.st, vm.ft)
+                datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, vm.filterAggName, vm.fi, vm.condition, vm.st, vm.ft)
             .then(function (resp) {
+                random();
                 vm.hitSearch = resp.hits.hits;
-                vm.total = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
+                vm.total = resp.hits.total;
+                vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
                 vm.getCurrentPageData(vm.hitSearch);
             }, function (err) {
                 log(err.message);
             });
+                }
+
+                
 
             }
 
@@ -615,9 +670,7 @@
              }
 
 
-
-
-    
+        
 
     });
 })();
@@ -643,8 +696,21 @@
                 item: ""
             };
 
-            $scope.ok = function () {
-                $modalInstance.close($scope.selected.item);
+            $scope.myData = [{ name: "Moroni", age: 50 },
+                     { name: "Tiancum", age: 43 },
+                     { name: "Jacob", age: 27 },
+                     { name: "Nephi", age: 29 },
+                     { name: "Enos", age: 34 }];
+            $scope.gridOptions = { data: 'myData' };
+
+
+            $scope.ok = function (x) {
+               // $modalInstance.close($scope.selected.item);
+
+
+              //  $location.search('field', f);
+                toastr.info(x);
+                // $location.path('/els/' + $scope.selected.item);
             };
 
             $scope.cancel = function () {

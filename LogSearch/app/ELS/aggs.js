@@ -18,7 +18,7 @@
             vm.total = 0;
             vm.mystyle = { 'color': 'blue' };
             vm.aggName = "";
-            vm.type = '';
+            vm.type = 'logs';
             vm.filterAggName = "";
             vm.pagecount = 10;
             vm.indices = ['logs', 'logsd'];
@@ -164,8 +164,8 @@
                 vm.tablechart = "table";
 
                 client.search({
-                    index: vm.index,
-                    type: vm.type,
+                    index: vm.indicesName,
+                    type: "logs",
                     body: ejs.Request()
                         .aggregation(ejs.TermsAggregation("agg").field(aggName))       
 
@@ -369,6 +369,8 @@
             function getIndexName() {
 
                 vm.indicesName = $rootScope.index;
+                vm.index = vm.indicesName[0];
+                vm.fieldsName = dataconfig.getFieldName(vm.index, vm.type);
                 drawtreemap();
             }
 

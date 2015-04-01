@@ -11,7 +11,6 @@
     </div>
 
   
-
     
 <section class="matter">
 <div class="container-fluid">
@@ -22,17 +21,10 @@
         <button class="btn btn-large btn-info btn-notext" type="button" data-ng-click="vm.search()">
             <i class="fa fa-search"> Search </i>
         </button>
-      
-
-        <select ng-model="vm.index" class="form-control" data-ng-click="vm.getTypeName()" style="width: 120px">          
-            <option value="all">all</option>
-            <option value={{doc}} data-ng-repeat="doc in vm.indicesName">{{doc}} </option>
-        </select>
-        <select ng-model="vm.type" class="form-control" data-ng-click="vm.getFieldName()" style="width: 120px">
-            <option value="" disabled selected>Select your Type</option>
-            <option value="all"> all</option>
-            <option value={{doc}} data-ng-repeat="doc in vm.typesName">{{doc}} </option>
-        </select>
+        <button class="btn-group-sm" type="button">
+            <i class="fa fa-question-circle" tooltip="{{vm.Syntax.title}}" tooltip-trigger="click" tooltip-placement="right"> </i>
+        </button>
+     
 
         <select ng-model="vm.field" class="form-control" style="width: 120px">
             <option value="" disabled selected>Select your Field</option>
@@ -40,26 +32,31 @@
             <option value={{doc}} data-ng-repeat="doc in vm.fieldsName">{{doc}} </option>
         </select>
 
-        <select ng-model="vm.dadjust" data-ng-click="vm.filterst()"  class="form-control" style="width: 120px">
-            <option selected value=30>Last one Month</option>
-            <option value=28>Last four weeks</option>
-            <option value=21>Last three weeks</option>
-            <option value=14>Last two weeks</option>
-            <option value=7>Last week</option>
-            <option value=5>Last five days</option>
-        </select>
-     
+
         <button type="button" class="btn btn-default" ng-click="vm.toggleMin()" tooltip="After today restriction">Min date</button>
+
+        <div class="btn-group pull-right" dropdown is-open="status.isopen">
+            <button type="button" class="btn btn-primary dropdown-toggle " dropdown-toggle ng-disabled="disabled">
+                History <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" ng-model="vm.dadjust">
+                <li ng-repeat="choice in vm.it" data-ng-click="vm.filterst(choice)">
+                    <a>{{choice}}</a>
+                        <li class="divider"></li>
+                <li><a href="#/dashboard">Separated link</a></li>
+            </ul>
+        </div>
+
         <div class="input-group">
             <input type="text" class="form-control" datepicker-popup="{{vm.format}}" ng-model="vm.st"
-                   is-open="vm.timeopened" min-date="vm.minDate" max-date="'2015-06-22'" datepicker-options="vm.dateOptions"
+                   is-open="vm.timeopened" min-date="vm.minDate"  datepicker-options="vm.dateOptions"
                    date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  start date" ng-show="false" />
             <span class="input-group-btn">
                 <button type="button" class="btn btn-lg" ng-click="vm.timeopen($event)"><i class="fa fa-calendar"> Ini Day </i></button>
 
 
                 <input type="text" class="form-control" datepicker-popup="{{vm.format}}" ng-model="vm.ft"
-                       is-open="vm.ftimeopened" min-date="vm.minDate" max-date="vm.maxDate" datepicker-options="vm.dateOptions"
+                       is-open="vm.ftimeopened" min-date="vm.minDate"  datepicker-options="vm.dateOptions"
                        date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  end date" ng-show="false" />
 
                 <button type="button" class="btn btn-lg" ng-click="vm.ftimeopen($event)"><i class="fa fa-calendar"> End Day </i></button>
@@ -71,19 +68,7 @@
     </div>
     <div class="input-append row-fluid">           
 
-
-            <div class="btn-group pull-right" dropdown is-open="status.isopen">
-                <button type="button" class="btn btn-primary dropdown-toggle " dropdown-toggle ng-disabled="disabled">
-                    Field<span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#">Separated link</a></li>
-                </ul>
-            </div>       
+      
         <div id="filter" class="btn-group">
             <input type="text" size="8"
                    data-ng-model="vm.fi"
@@ -111,14 +96,14 @@
         <div class="row-fluid">
             <div>
                 <div id="space-for-buttons"></div>
-                <select ng-model="vm.pagecount" class="input-medium pull-right">
+                <select ng-model="vm.pagecount" class="input-medium pull-right" ng-click="vm.refreshPage()">
                     <option value=10>10</option>
                     <option value=25>25</option>
                     <option vaule=50>50</option>
                     <option vaule=100>100</option>
                     <option selected vaule=1000>1000</option>
                 </select>
-                <select ng-model=" vm.paging.pageSize" class="input-medium pull-right">
+                <select ng-model=" vm.paging.pageSize" class="input-medium pull-right" ng-click="vm.refreshPage()">
                     <option value=10>10</option>
                     <option selected value=25>25</option>
                     <option vaule=50>50</option>
@@ -129,11 +114,12 @@
             <br><br>
             <hr />
         </div>
+       <progressbar class="progress-striped active" value="vm.dynamic" type="{{vm.ptype}}">{{vm.ptype}} <i ng-show="showWarning">!!! Watch out !!!</i></progressbar>
 
         <div class="row-fluid">
             <div class="widget wgreen">
                 <div data-cc-widget-header title="{{vm.title}}"
-                     subtitle="{{vm.total}} / {{vm.total}}"
+                     subtitle="{{vm.tt}} / {{vm.total}}"
                      right-text="Page {{vm.paging.currentPage}} of {{vm.paging.pageCount}}"></div>
             </div>
             <div data-ng-repeat="doc in vm.hits.buckets" class="fader-animation" data-ng-style="vm.mystyle">
@@ -168,20 +154,26 @@
 
             </table>
 
-
-
+   
             <script type="text/ng-template" id="myModalContent.html">
                 <div class="widget wviolet">
                     <div data-cc-widget-header title="{{title}}"></div>
                 </div>
+                <div class="gridStyle" ng-grid="gridOptions" ng-click="ok(selectedItems)"></div>
                 <div class="modal-body">
                     <ul>
-
-                        <li ng-click="selected.item = items._source.clientip">{{items._source.clientip}}</li>
-                        <li ng-click="selected.item = items._source.username">{{items._source.username}}</li>
-                        <li ng-click="selected.item = items._source.response">{{items._source.response}}</li>
-                        <li ng-click="selected.item = items._source.message">{{items._source.message}}</li>
-                        <li ng-click="selected.item = items._source.ip">{{items._source.ip}}</li>
+                        <li ng-click="selected.item = items._source.timestamp"><h5>Time :  <a>{{items._source.timestamp}}</a></h5></li>
+                        <li ng-click="selected.item = items._source.clientip"><h5>UserIP : </h5></li> <a ng-click="selected.item = 'clientip'">{{items._source.clientip}}</a>
+                        <li ng-click="selected.item = items._source.username"><a>UserName :  </a>{{items._source.username}}</li>
+                        <li ng-click="selected.item = items._source.verb"><a>HTTPmethod :  </a>{{items._source.verb}}</li>
+                        <li ng-click="selected.item = items._source.request"><a>ResponseApi :  </a>{{items._source.request}}</li>
+                        <li ng-click="selected.item = items._source.response"><a>Response :  </a>{{items._source.response}}</li>
+                        <li ng-click="selected.item = items._source.referrer"><a>Refferrer :  </a>{{items._source.referrer}}</li>
+                        <li ng-click="selected.item = items._source.agent"><a>Browser :  </a>{{items._source.agent}}</li>
+                        <li ng-click="selected.item = items._source.message"><a>Message :  </a>{{items._source.message}}</li>
+                        <li ng-click="selected.item = items._source.bytes"><a>MessageBytes :  </a>{{items._source.bytes}}</li>
+                        <li ng-click="selected.item = items._source.action"><a>UserAction :  </a>{{items._source.action}}</li>
+                        <li ng-click="selected.item = items._source.geoip"><a>Location :  </a>{{items._source.geoip|json}}</li>
 
                         <!--<ul ng-repeat="item in items._source">
                  <li ng-click="selected.item = item">{{field}}{{ item|json }}</li>
@@ -205,7 +197,7 @@
             <div class="widget-foot">
                 <div class="clearfix"></div>
                 <pagination boundary-links="true"
-                            total-items="vm.total"
+                            total-items="vm.tt"
                             items-per-page="vm.paging.pageSize"
                             data-ng-model="vm.paging.currentPage"
                             data-ng-change="vm.pageChanged()"
@@ -218,9 +210,8 @@
                 <div class="clearfix"></div>
             </div>
 
-            <button class="btn btn-sm btn-primary" type="button" ng-click="vm.random()">Randomize</button>
-            <progressbar class="progress-striped active" value="vm.dynamic" type="{{vm.ptype}}">{{vm.ptype}} <i ng-show="showWarning">!!! Watch out !!!</i></progressbar>
-
+           
+           
 
         </div>
 
