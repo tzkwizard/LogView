@@ -4,7 +4,7 @@
     var controllerId = 'aggs';
 
     angular.module('app')
-        .controller(controllerId, function ($rootScope,$scope, $location, common, client, datasearch, dataconfig) {
+        .controller(controllerId, function ($rootScope,$scope, $location, common,bsDialog, client, datasearch, dataconfig) {
 
 
             var vm = this;
@@ -12,6 +12,8 @@
             //variable
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
+            vm.searchText = "*";
+
 
             vm.hitSearch = "";
             vm.hits = "";
@@ -45,8 +47,15 @@
             vm.getFieldName = getFieldName;
             vm.getIndexName = getIndexName;
             vm.getTypeName = getTypeName;
+            vm.refresh = refresh;
 
-
+            function refresh($event) {
+           
+                    vm.searchText = '*';
+                    aggShow("");
+                $location.search.refresh = true;
+                toastr.info("Refresh");
+            }
 
             function drawtreemap() {
                 /*var data = google.visualization.arrayToDataTable([
@@ -97,7 +106,7 @@
                          data.addRow([m, n, 2, 3]);
                      });
                  });
-
+                 
 
                 var tree = new google.visualization.TreeMap(document.getElementById('treemap_div'));
 
@@ -126,7 +135,7 @@
             function activate() {
                 common.activateController([getIndexName()], controllerId)
                     .then(function () {
-                     
+                        log(vm.searchText);
                         log('Activated Aggs search View');
                         google.setOnLoadCallback(drawDashboard);
 
@@ -167,6 +176,7 @@
                     index: vm.indicesName,
                     type: "logs",
                     body: ejs.Request()
+                        .query(ejs.QueryStringQuery(vm.searchText))
                         .aggregation(ejs.TermsAggregation("agg").field(aggName))       
 
                 }).then(function (resp) {
@@ -174,10 +184,13 @@
                     vm.range = vm.range + aggName;
                     vm.barchart = vm.barchart + aggName;
                     vm.tablechart = vm.tablechart + aggName;
+                   // vm.hitSearch = resp.hits.hits;
                     vm.total = resp.hits.total;
-                    drawDashboard2(resp.aggregations.agg, aggName);                   
+                    if (resp.aggregations.agg.buckets.length > 1) {
+                         drawDashboard2(resp.aggregations.agg, aggName);
+                    }                   
                 }, function (err) {
-                    log(err.message);
+                   // log(err.message);
                 });
 
             }
@@ -189,26 +202,52 @@
                { main.removeChild(contain);}
 
                 if(vm.aggName===""||vm.aggName==="all")
-                {angular.forEach(vm.fieldsName, function (name) {
+                {
+                    vm.fieldsName = $rootScope.logfield;
+
+                    var index = vm.fieldsName.indexOf("@timestamp");
+                    vm.fieldsName.splice(index, 1);
+                    index = vm.fieldsName.indexOf("referrer");
+                    vm.fieldsName.splice(index, 1);
+                    index = vm.fieldsName.indexOf("timestamp");
+                    vm.fieldsName.splice(index, 1);
+                    index = vm.fieldsName.indexOf("request");
+                    vm.fieldsName.splice(index, 1);
+                    index = vm.fieldsName.indexOf("edata");
+                    vm.fieldsName.splice(index, 1);
+                    index = vm.fieldsName.indexOf("action");
+                    vm.fieldsName.splice(index, 1);
+                    index = vm.fieldsName.indexOf("host");
+                    vm.fieldsName.splice(index, 1);
+                    index = vm.fieldsName.indexOf("action");
+                    vm.fieldsName.splice(index, 1);
+                    index = vm.fieldsName.indexOf("agent");
+                    vm.fieldsName.splice(index, 1);
+                    index = vm.fieldsName.indexOf("action");
+                    vm.fieldsName.splice(index, 1);
+
+
+                    angular.forEach(vm.fieldsName, function (name) {
                     aggshows(name);
                 });
-                    return;
+                   
                 }
-   
+             else{
                 client.search({
-                    index: vm.index,
-                    type: vm.type,
+                    index: vm.indicesName,
+                    type: "logs",
                     body: ejs.Request()
+                        .query(ejs.QueryStringQuery(vm.searchText))
                         .aggregation(ejs.TermsAggregation("agg").field(aggName))          
 
                 }).then(function (resp) {                   
                     vm.total = resp.hits.total;
                     vm.hitSearch = resp.aggregations.agg.buckets;
-                    drawDashboard(resp.aggregations.agg);                    
+                    drawDashboard(resp.aggregations.agg, aggName);
                 }, function (err) {
                     log(err.message);
                 });
-
+                }
             }
 
             function drawDashboard2(agg,y) {
@@ -216,7 +255,7 @@
 
                 var data = new google.visualization.DataTable();
                 data.addColumn('string', 'key');
-                data.addColumn('number', 'Number');
+                data.addColumn('number', 'Count Range');
                 for (var i = 0; i < agg.buckets.length; i++) {
                     data.addRow([agg.buckets[i].key.toString(), agg.buckets[i].doc_count]);
 
@@ -230,7 +269,7 @@
                     'controlType': 'NumberRangeFilter',
                     'containerId': "range"+y,
                     'options': {
-                        'filterColumnLabel': 'Number'
+                        'filterColumnLabel': 'Count Range'
                     }
                 });
 
@@ -243,30 +282,36 @@
                         'height': 800,
                         'pieSliceText': 'value',
                         'legend': 'right',
-                        is3D: true
+                        'title': y
+                       
                     }
                 });
 
                 //table
 
-                var table = new google.visualization.ChartWrapper({
+                /*var table = new google.visualization.ChartWrapper({
                     'chartType': 'Table',
                     'containerId': "table"+y,
                     'options': {
                         'width': '300px'
                     }
                 });
+*/
+                var name = "table" + y;
+                drawTable(data,name,y);
 
                 // Establish dependencies, declaring that 'filter' drives 'pieChart',
                 // so that the pie chart will only display entries that are let through
                 // given the chosen slider range.
-                dashboard.bind(donutRangeSlider, [pieChart, table]);
+                dashboard.bind(donutRangeSlider, [pieChart]);
 
                 // Draw the dashboard.
                 dashboard.draw(data);
+                //$location.search.text = "*";
+
             }
 
-        function drawDashboard(agg) {
+            function drawDashboard(agg, aggName) {
 
             // Create our data table.
             /*var data = google.visualization.arrayToDataTable([
@@ -284,9 +329,9 @@
 
 
 
-            if (vm.typesName.indexOf(vm.type) === -1 || vm.fieldsName.indexOf(vm.aggName) === -1) {
+            /*if (vm.typesName.indexOf(vm.type) === -1 || vm.fieldsName.indexOf(vm.aggName) === -1) {
                 return;
-            }
+            }*/
 
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'key');
@@ -317,6 +362,7 @@
                     'height': 800,
                     'pieSliceText': 'value',
                     'legend': 'right',
+                    'title': aggName,
                     is3D: true
                 }
             });
@@ -331,7 +377,7 @@
                 }
             });*/
 
-            drawTable(data);
+            drawTable(data, 'table_div');
 
 // Establish dependencies, declaring that 'filter' drives 'pieChart',
                 // so that the pie chart will only display entries that are let through
@@ -340,8 +386,8 @@
 
                 // Draw the dashboard.
                 dashboard.draw(data);
-
-                datasearch.getSampledata(vm.index, vm.type, 500).then(function (resp) {
+            vm.ft = new Date();
+                datasearch.getSampledata(vm.index, vm.type, 1500,"2000-10-02",vm.ft).then(function (resp) {
                     vm.hit = resp.hits.hits;
                     drawMap(vm.hit);
                 }, function (err) {
@@ -368,10 +414,19 @@
 
             function getIndexName() {
 
+
+                /*if (vm.searchText==="*") {
+                    vm.searchText = $location.search.text;
+                }*/
                 vm.indicesName = $rootScope.index;
-                vm.index = vm.indicesName[0];
-                vm.fieldsName = dataconfig.getFieldName(vm.index, vm.type);
-                drawtreemap();
+                //vm.index = vm.indicesName[0];
+                vm.index = "logstash-2015.04.01";
+
+                //vm.fieldsName = dataconfig.getFieldName(vm.index, vm.type);
+               // vm.fieldsName = $rootScope.logfield;
+              //  drawtreemap();
+                aggShow("");
+                
             }
 
             function getTypeName() {
@@ -413,7 +468,7 @@
 
                 var table =
                     new google.visualization.Table(document.getElementById('table'));
-             //   table.draw(geoData, { showRowNumber: false });
+               //table.draw(geoData, { showRowNumber: false });
 
                 var map =
                     new google.visualization.Map(document.getElementById('map_div'));
@@ -435,10 +490,10 @@
 
             }
 
-        function drawTable(data) {
+        function drawTable(data,name,field) {
             
 
-            var table = new google.visualization.Table(document.getElementById('table_div'));
+            var table = new google.visualization.Table(document.getElementById(name));
 
             table.draw(data, { showRowNumber: true });
            /* google.visualization.events.addListener(table, 'select', selectHandler);
@@ -469,17 +524,30 @@
             }*/
             google.visualization.events.addListener(table, 'select', function () {
                 var row = table.getSelection()[0].row;
-                alert('You selected ' + data.getValue(row, 0));
-            
-            var row = table.getSelection()[0].row;
+              //  alert('You selected ' + data.getValue(row, 0) + data.getValue(row, 1));
+                
+          /*  var row = table.getSelection()[0].row;
                 var x = data.getValue(row, 0);
                 var route = '/els';
                 var field = vm.aggName;
-                
+               
                 $location.search('logs', "logs");
                 $location.search('log', "log");
-                $location.search('field', field);
-                $location.path(route + x);
+                $location.search('field', field);*/
+               // if(field.substring(field.length-3))
+                if (field.substring(field.length - 3, field.length) === "raw") {
+                    log(field.substring(0, field.length - 4));
+                    field = field.substring(0, field.length - 4);
+                }
+
+
+                if (vm.searchText==="*")
+                { vm.searchText = field+" : \""+data.getValue(row, 0)+"\""; } else {
+                    vm.searchText += " AND " + field + " : \"" + data.getValue(row, 0) + "\"";
+                }
+                log(vm.searchText);
+                aggShow("");
+                
             });
            
         }

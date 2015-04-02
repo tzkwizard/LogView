@@ -27,15 +27,16 @@
     ]);
     
     // Handle routing errors and success events
-    app.run(['$rootScope', '$route', 'breeze', 'dataconfig', 'routeMediator', 'client',
-        function ($rootScope, $route, breeze, dataconfig, routeMediator,client) {
+    app.run(['$location','$rootScope', '$route', 'breeze', 'dataconfig', 'routeMediator', 'client',
+        function ($location,$rootScope, $route, breeze, dataconfig, routeMediator, client) {
         // Include $route to kick start the router.
       // datacontext.prime();
         routeMediator.setRoutingHandlers();
         
         $rootScope.index = dataconfig.filterIndex();
-            $rootScope.logtype = "logs";
-
+        $rootScope.logtype = "logs";
+        $rootScope.logfield = dataconfig.getFieldName("logstash-2015.04.01", "logs");
+        $location.search.text = "*";
         client.ping({
             requestTimeout: 1000,
             hello: "elasticsearch!"

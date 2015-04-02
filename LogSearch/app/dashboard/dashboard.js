@@ -31,7 +31,7 @@
             pieChart();
             geoMap();
         }
-
+            
             function activate() {
                 common.activateController([init()], controllerId)
                     .then(function () {
@@ -48,7 +48,7 @@
             function geoMap() {
                 
             client.search({
-                index: ["logstash-2015.03.23", "logstash-2015.03.24"],
+                index: ["logstash-2015.03.23", "logstash-2015.03.24", "logstash-2015.04.01", "logstash-2015.04.02"],
                 type: 'logs',
                 size:100,
                 body:
@@ -57,8 +57,8 @@
                         .aggregation(ejs.TermsAggregation("agg").field("geoip.city_name.raw").size(100))
 
             }).then(function(resp) {
-                //drawMap(resp.hits.hits);
-                drawMap(resp.aggregations.agg.buckets);
+                vm.tt = resp.hits.total;
+                drawMap(resp.aggregations.agg.buckets,vm.tt);
             }, function(err) {
                 log(err.message);
             });
@@ -159,7 +159,7 @@
             });
         }
         vm.location = [];
-        function drawMap(r) {
+        function drawMap(r,tt) {
 
             google.setOnLoadCallback(drawMap);
             var geoData = new google.visualization.DataTable();
@@ -176,10 +176,11 @@
                /* if (vm.location.indexOf(n._source.clientip) === -1 && n._source.geoip.city_name!==undefined) {
                     vm.location.push(n._source.clientip);                   
                     geoData.addRow([n._source.geoip.city_name, n._source.clientip, n._source.geoip.latitude, n._source.geoip.longitude, 1]);
-                }
-*/
-               
-                    geoData.addRow([n.key.toString(),n.doc_count]);
+                }*/
+                
+                 if (n.doc_count>tt/40)
+               {
+                    geoData.addRow([n.key.toString(),n.doc_count]);}
          
                 
                 

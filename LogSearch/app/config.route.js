@@ -59,7 +59,8 @@
         $routeProvider.otherwise({ redirectTo: '/' });
         function setRoute(url, definition) {
             definition.resolve = angular.extend(definition.resolve || {}, {
-               // prime: prime
+                 //prime: prime
+
             });
 
             $routeProvider.when(url, definition);
@@ -67,11 +68,12 @@
     }
 
   //  prime.$inject = ['datacontext'];
-   // prime.$inject = ['dataconfig'];
-    function prime(d) {
+    //prime.$inject = ['dataconfig'];
+    //function prime(d) {
         //return d.prime();
-      //  d.filterIndex();
-    }
+        //  d.filterIndex();
+        $rootScope.logfield = d.getFieldName("logstash-2015.04.01","logs");
+    //}
     // Define the routes 
     function getRoutes() {
         return [

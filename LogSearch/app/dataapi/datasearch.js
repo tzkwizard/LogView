@@ -180,17 +180,13 @@
 
         function basicSearch(indices, type, pagecount, field, searchText, filterField, filter, condition,start,end) {
          
-            if (filter === "" || filter === undefined) {
-                if (searchText === "" || searchText === undefined) {
-
-                    return getSampledata(indices, type, pagecount, start, end);
-                } else {
-                    if (field === "" || field === "all" || field === undefined) {
+            if (filter === "" || filter === undefined) {               
+                   if (field === "" || field === "all" || field === undefined) {
                         return stringSearch(indices, type, pagecount, searchText, start, end);
                     } else {
                         return searchWithoutFilter(indices, type, pagecount, field, searchText, start, end);
                     }
-                }
+                
             } else {
                 if (searchText === "" || searchText === undefined) {    
                     if (filterField === "" || filterField === "all" || filterField === undefined) {

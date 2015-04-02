@@ -131,6 +131,7 @@
     <Content Include="app\ELS\els.js" />
     <Content Include="app\ELS\client.js" />
     <Content Include="app\ELS\Loading.html" />
+    <Content Include="app\ELS\Loading.js" />
     <Content Include="app\layout\topnav.js" />
     <Content Include="app\services\model.js" />
     <Content Include="app\services\routeMediator.js" />

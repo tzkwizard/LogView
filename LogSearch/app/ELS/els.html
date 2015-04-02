@@ -22,7 +22,7 @@
             <i class="fa fa-search"> Search </i>
         </button>
         <button class="btn-group-sm" type="button">
-            <i class="fa fa-question-circle" tooltip="{{vm.Syntax.title}}" tooltip-trigger="click" tooltip-placement="right"> </i>
+            <i class="fa fa-question-circle" tooltip="{{vm.Syntax.title}}+{{vm.Syntax.Description}}" tooltip-trigger="click" tooltip-placement="right"> </i>
         </button>
      
 
@@ -104,6 +104,7 @@
                     <option selected vaule=1000>1000</option>
                 </select>
                 <select ng-model=" vm.paging.pageSize" class="input-medium pull-right" ng-click="vm.refreshPage()">
+                    <option value=5>5</option>
                     <option value=10>10</option>
                     <option selected value=25>25</option>
                     <option vaule=50>50</option>
