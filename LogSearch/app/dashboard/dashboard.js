@@ -1,9 +1,9 @@
 ﻿(function () {
     'use strict';
     var controllerId = 'dashboard';
-    angular.module('app').controller(controllerId, ['$rootScope','common', 'dataconfig','client', dashboard]);
+    angular.module('app').controller(controllerId, ['$cookieStore','$rootScope','common', 'dataconfig','client', dashboard]);
 
-    function dashboard($rootScope,common, dataconfig, client) {
+    function dashboard($cookieStore,$rootScope, common, dataconfig, client) {
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
 
@@ -22,8 +22,21 @@
         vm.filterindex = filterindex;
         activate();
         function getIndexName() {
+            if ($cookieStore.get('index') !== undefined) {
+                if ($rootScope.index.length !== $cookieStore.get('index').length && $rootScope.index.length > 1) {
+                    $cookieStore.remove('index');
+                }
+            }
 
-            vm.indicesName = $rootScope.index;
+            if ($cookieStore.get('index') === undefined || $cookieStore.get('index').length <= 1) {
+
+                $cookieStore.put('index', $rootScope.index);
+            }
+
+
+
+            vm.indicesName = $cookieStore.get('index');
+          //  vm.indicesName = $rootScope.index;
         }
         function init() {
             getIndexName();

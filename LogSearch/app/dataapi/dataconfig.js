@@ -73,7 +73,7 @@
         }
 
         function filterIndex() {         
-            vm.findex = [];
+            /*vm.findex = [];
 
             client.cluster.state({
                 flatSettings: true
@@ -103,7 +103,38 @@
             }, function (err) {
                 log(err.message);
             });
-            return vm.findex;
+            return vm.findex;*/
+            vm.indicesName = [];
+
+            client.cluster.state({
+                flatSettings: true
+
+            }).then(function (resp) {
+                vm.hit = resp.routing_table.indices;
+                vm.j = 0;
+                vm.temp = [];
+                vm.tempindices = [];
+                angular.forEach(vm.hit, function (name) {
+
+                    vm.temp[vm.j] = name.shards;
+                    angular.forEach(vm.temp[vm.j], function (shard) {
+                        vm.tempindices[vm.j] = shard[0].index;
+
+                    });
+                    vm.j++;
+                });
+                vm.j = 0;
+                for (vm.i = 0; vm.i < vm.tempindices.length; vm.i++) {
+                    if (vm.tempindices[vm.i].substring(0, 8) === "logstash") {
+                        vm.indicesName[vm.j] = vm.tempindices[vm.i];
+                        vm.j++;
+                    }
+
+                }
+            }, function (err) {
+                log(err.message);
+            });
+            return vm.indicesName;
         }
 
 

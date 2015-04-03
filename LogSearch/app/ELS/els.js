@@ -4,8 +4,8 @@
     var controllerId = 'els';
 
     angular.module('app')
-        .controller(controllerId, function(bsDialog, $rootScope, $routeParams,
-        $filter, $injector, $log, $scope, $location, $modal, common, client, datasearch, dataconfig) {
+        .controller(controllerId, function(bsDialog,$rootScope, $routeParams,
+        $filter, $injector, $log, $scope, $location, $modal, common, client, datasearch, dataconfig, $cookieStore) {
 
 
         var vm = this;
@@ -84,7 +84,9 @@
                     vm.st = "";
                     return;
                 }
+                
 */
+            $cookieStore.put('index', $rootScope.index);
             var x = ejs.RangeQuery("bytes").gte(17);
             var y = ejs.TermQuery("verb.raw", "GET");
             client.search({
@@ -279,7 +281,7 @@
                 vm.st = moment(new Date()).subtract(7, 'days');
                 break;
             default:
-                log(x);
+               // log(x);
                 break;
             }
             search();
@@ -352,12 +354,21 @@
 
 
         function getIndexName() {
-            // vm.indicesName = dataconfig.getIndexName();
-            if ($rootScope.index === undefined || $rootScope.index === "") {
-                vm.indicesName = dataconfig.filterIndex();
-            } else {
-                vm.indicesName = $rootScope.index;
+            if ($cookieStore.get('index')!==undefined)
+           { if ($rootScope.index.length !== $cookieStore.get('index').length && $rootScope.index.length > 1) {
+                $cookieStore.remove('index');
+            }}
+
+            if ($cookieStore.get('index')===undefined||$cookieStore.get('index').length <= 1)
+            {
+               
+                $cookieStore.put('index', $rootScope.index);
             }
+            
+            
+           
+            vm.indicesName = $cookieStore.get('index');
+           
             getFieldName();
         }
 
@@ -643,22 +654,22 @@
                 item: ""
             };
 
-           /* $scope.myData = [{ name: "", age: "" }];
+            $scope.myData = [{ name: "", value: "" }];
 
             function fill(){
-            angular.forEach($scope.items._source, function (name) {
+            angular.forEach($scope.items._source, function (n) {
                     
-                $scope.myData.push({ name: "aotuo", value: $scope.items._source.name });
+                $scope.myData.push({ name: "aotuo", value:n});
 
             });
             }
             fill();
-          */
-           $scope.myData = [{ name: "Moroni", age: 50 },
+          
+           /*$scope.myData = [{ name: "Moroni", age: 50 },
                      { name: "Tiancum", age: 43 },
                      { name: "Jacob", age: 27 },
                      { name: "Nephi", age: 29 },
-                     { name: "Enos", age: 34 }];
+                     { name: "Enos", age: 34 }];*/
             $scope.gridOptions = { data: 'myData' };
 
 

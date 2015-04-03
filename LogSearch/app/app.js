@@ -11,6 +11,7 @@
         'ngAnimate',        // animations
         'ngRoute',          // routing
         'ngSanitize',       // sanitizes html bindings (ex: sidebar.js)
+        'ngCookies',
 
         // Custom modules 
         'common',           // common functions, logger, spinner
@@ -27,16 +28,22 @@
     ]);
     
     // Handle routing errors and success events
-    app.run(['$location','$rootScope', '$route', 'breeze', 'dataconfig', 'routeMediator', 'client',
-        function ($location,$rootScope, $route, breeze, dataconfig, routeMediator, client) {
+    app.run(['$cookieStore', '$rootScope', '$route', 'breeze', 'dataconfig', 'routeMediator', 'client',
+        function ($cookieStore, $rootScope, $route, breeze, dataconfig, routeMediator, client) {
         // Include $route to kick start the router.
       // datacontext.prime();
         routeMediator.setRoutingHandlers();
         
-        $rootScope.index = dataconfig.filterIndex();
+        $rootScope.index = dataconfig.filterIndex();        
         $rootScope.logtype = "logs";
         $rootScope.logfield = dataconfig.getFieldName("logstash-2015.04.01", "logs");
-        $location.search.text = "*";
+
+
+        //$cookieStore.put('index', dataconfig.filterIndex());
+       //  $cookies.logfield = $rootScope.logfield;
+      //  $cookies.logtype = $rootScope.logtype;
+       //     $cookies.index = "123";
+
         client.ping({
             requestTimeout: 1000,
             hello: "elasticsearch!"
@@ -47,6 +54,8 @@
                 toastr.info('elasticsearch cluster is connected');
             }
         });
+
+
 
     }]);
 })();

@@ -72,7 +72,7 @@
     //function prime(d) {
         //return d.prime();
         //  d.filterIndex();
-        $rootScope.logfield = d.getFieldName("logstash-2015.04.01","logs");
+      //  $rootScope.logfield = d.getFieldName("logstash-2015.04.01","logs");
     //}
     // Define the routes 
     function getRoutes() {

@@ -4,7 +4,7 @@
     var controllerId = 'aggs';
 
     angular.module('app')
-        .controller(controllerId, function ($rootScope,$scope, $location, common,bsDialog, client, datasearch, dataconfig) {
+        .controller(controllerId, function ($cookieStore,$rootScope, $scope, $location, common, bsDialog, client, datasearch, dataconfig) {
 
 
             var vm = this;
@@ -28,7 +28,7 @@
             vm.fieldsName = [];
             vm.typesName = [];
             vm.indicesName = [];
-            vm.index = 'logs';
+            vm.index = '';
             vm.type = '';
 
 
@@ -135,6 +135,7 @@
             function activate() {
                 common.activateController([getIndexName()], controllerId)
                     .then(function () {
+                        aggShow("");
                         log(vm.searchText);
                         log('Activated Aggs search View');
                         google.setOnLoadCallback(drawDashboard);
@@ -208,6 +209,8 @@
                     var index = vm.fieldsName.indexOf("@timestamp");
                     vm.fieldsName.splice(index, 1);
                     index = vm.fieldsName.indexOf("referrer");
+                    vm.fieldsName.splice(index, 1);
+                    index = vm.fieldsName.indexOf("referrer.raw");
                     vm.fieldsName.splice(index, 1);
                     index = vm.fieldsName.indexOf("timestamp");
                     vm.fieldsName.splice(index, 1);
@@ -413,20 +416,30 @@
 
 
             function getIndexName() {
+                if ($cookieStore.get('index') !== undefined) {
+                    if ($rootScope.index.length !== $cookieStore.get('index').length && $rootScope.index.length > 1) {
+                        $cookieStore.remove('index');
+                    }
+                }
+
+                if ($cookieStore.get('index') === undefined || $cookieStore.get('index').length <= 1) {
+
+                    $cookieStore.put('index', $rootScope.index);             
+                }
 
 
-                /*if (vm.searchText==="*") {
-                    vm.searchText = $location.search.text;
-                }*/
-                vm.indicesName = $rootScope.index;
+
+                vm.indicesName = $cookieStore.get('index');
+
+                // vm.indicesName = $rootScope.index;
+
                 //vm.index = vm.indicesName[0];
                 vm.index = "logstash-2015.04.01";
 
                 //vm.fieldsName = dataconfig.getFieldName(vm.index, vm.type);
                // vm.fieldsName = $rootScope.logfield;
               //  drawtreemap();
-                aggShow("");
-                
+              
             }
 
             function getTypeName() {
