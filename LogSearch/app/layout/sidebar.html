@@ -10,19 +10,34 @@
                 <a href="#{{r.url}}" data-ng-bind-html="r.config.settings.content"></a>
             </li>
 
+            <li class="nlightblue fade-selection-animation" data-ng-repeat="r in vm.agg ">
+                <a><i class="fa fa-cloud"></i> {{r}}</a>              
+            </li>
+
             <li class="nlightblue fade-selection-animation" ng-click="vm.showLocation()"> <a><i class="fa fa-map-marker"></i> Location</a></li>
 
             <ul collapse="vm.isCollapsed" class="nlightblue fade-selection-animation">
                 <li class="nlightblue fade-selection-animation" data-ng-click="vm.test(r,'logs.clientip.raw')"
                     data-ng-repeat="r in vm.location">
+                    <a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>
+                </li>
+            </ul>
+
+            <li class="nlightblue fade-selection-animation" ng-click="vm.showRequestAPI()"> <a><i class="fa fa-windows"></i> API</a></li>
+
+            <ul collapse="vm.isCollapsed2" class="nlightblue fade-selection-animation">
+                <li class="nlightblue fade-selection-animation" data-ng-click="vm.test(r,'logs.request.raw')"
+                    data-ng-repeat="r in vm.apiaddress">
                     <a style="color:whitesmoke">  {{r.key.toString()}} ({{r.doc_count}})    </a>
                 </li>
             </ul>
-            <li class="nlightblue fade-selection-animation" ng-click="vm.showUser()"> <a><i class="fa fa-users"></i> Users</a></li>
 
-            <ul collapse="vm.isCollapsed2" class="nlightblue fade-selection-animation">
+
+            <li class="nlightblue fade-selection-animation" ng-click="vm.showRequestMethod()"> <a><i class="fa fa-retweet"></i> Method</a></li>
+
+            <ul collapse="vm.isCollapsed3" class="nlightblue fade-selection-animation">
                 <li class="nlightblue fade-selection-animation" data-ng-click="vm.test(r,'logs.verb.raw')"
-                    data-ng-repeat="r in vm.host">
+                    data-ng-repeat="r in vm.httpmethod">
                     <a style="color:whitesmoke">  {{r.key.toString()}} ({{r.doc_count}})    </a>
                 </li>
             </ul>

@@ -147,7 +147,7 @@
         vm.paging = {
             currentPage: 1,
             maxPagesToShow: 5,
-            pageSize: 25
+            pageSize: 10
         };
 
         Object.defineProperty(vm.paging, 'pageCount', {
@@ -203,7 +203,7 @@
             //var value = Math.floor((Math.random() * 100) + 1);
             var value = vm.tt / vm.total * 100;
             var ptype;
-            log(value);
+            //log(value);
             if (value < 20) {
                 ptype = 'idle';
             } else if (value < 60) {
@@ -240,7 +240,7 @@
             var modalInstance = $modal.open({
                 templateUrl: 'myModalContent.html',
                 controller: 'ModalInstanceCtrl',
-                // size: size,
+                //size: 'lg',
                 resolve: {
                     items: function() {
                         return vm.popdata;
@@ -352,6 +352,12 @@
 
 //  Page load         
 
+         
+        vm.refresh = function () {
+            vm.searchText = "";
+            search();
+            log("refresh");
+        }
 
         function getIndexName() {
             if ($cookieStore.get('index')!==undefined)
@@ -390,8 +396,12 @@
         function activate() {
             common.activateController([getIndexName()], controllerId)
                 .then(function() {
-                    $location.search();
-                    //log($location.search().field);
+                    $location.search();                 
+                    if ($location.search.text !== "")
+                    {
+                        vm.searchText = $location.search.text;
+                    }
+
                     if ($location.search().field === "" || $location.search().field === undefined) {                        
                         search();
                     } else {
@@ -399,7 +409,7 @@
                         search();                     
                         $location.search().field = "";
                     }
-
+                    $location.search.text = "";
                     //init();
                     vm.showSplash = false;
                     log('Activated ELS search View');
@@ -654,7 +664,7 @@
                 item: ""
             };
 
-            $scope.myData = [{ name: "", value: "" }];
+           /* $scope.myData = [{ name: "", value: "" }];
 
             function fill(){
             angular.forEach($scope.items._source, function (n) {
@@ -663,23 +673,132 @@
 
             });
             }
-            fill();
-          
-           /*$scope.myData = [{ name: "Moroni", age: 50 },
-                     { name: "Tiancum", age: 43 },
-                     { name: "Jacob", age: 27 },
-                     { name: "Nephi", age: 29 },
-                     { name: "Enos", age: 34 }];*/
-            $scope.gridOptions = { data: 'myData' };
+            fill();*/
+            $scope.mySelections = [];
+            $scope.myData = [{ Field: "UserIP", Value: $scope.items._source.clientip },
+                     { Field: "Location", Value: $scope.items._source.geoip },
+                     { Field: "HTTPmethod ", Value: $scope.items._source.verb },
+                     { Field: "ResquestApi", Value: $scope.items._source.request },
+                     { Field: "RuquestTime", Value: $scope.items._source.timestamp },
+                     { Field: "Referrer", Value: $scope.items._source.referrer },
+                     { Field: "ActualAction", Value: $scope.items._source.action }
+                    
+            ];
 
 
-            $scope.ok = function (x) {
-               // $modalInstance.close($scope.selected.item);
+            $scope.gridOptions = {
+                columnDefs: [
+      { field: 'Field', displayName: 'Field', width: 120 },
+      { field: 'Value', displayName: 'Value', width: 120 }
+           ]    ,
+                data: 'myData',
+                selectedItems: $scope.mySelections,
+              //  multiSelect: false,
+                jqueryUITheme: true,
+                enableColumnResize: true,
+                afterSelectionChange: function () {
+                   //var x= $scope.mySelections.pop();
+                  //  toastr.info($scope.mySelections.pop());
+                    angular.forEach($scope.mySelections, function (item) {
+                       // toastr.info(item.Value);
+                        $scope.selected.item = item.Value;
+                    });
+                }
+            };
+              
+            var timezone = ($scope.items._source.geoip.timezone !== undefined) ? $scope.items._source.geoip.timezone : "";
+            var location = ($scope.items._source.geoip.location !== undefined) ? $scope.items._source.geoip.location : "";
+            var region = ($scope.items._source.geoip.region !== undefined) ? $scope.items._source.geoip.region : "";
+            var country = ($scope.items._source.geoip.country !== undefined) ? $scope.items._source.geoip.country : "";
+            var city = ($scope.items._source.geoip.city !== undefined) ? $scope.items._source.geoip.city : "";
+
+         
+            $scope.myData2 = [{ Field: "UserIP", Value: $scope.items._source.clientip },
+                   { Field: "Timezone", Value: timezone },
+                   { Field: "Coordinate ", Value: location },
+                   { Field: "Region", Value: region },
+                   { Field: "Country", Value: country },
+                   { Field: "City", Value: city }
+                
+
+            ];
+
+
+            $scope.gridOptions2 = {
+                columnDefs: [
+      { field: 'Field', displayName: 'Field', width: 120 },
+      { field: 'Value', displayName: 'Value', width: 300 }
+                ],
+                data: 'myData2',
+                selectedItems: $scope.mySelections,
+               // multiSelect: false,
+                jqueryUITheme: true,
+                enableColumnResize: true,
+                afterSelectionChange: function () {
+                    //var x= $scope.mySelections.pop();
+                    //  toastr.info($scope.mySelections.pop());
+                    angular.forEach($scope.mySelections, function (item) {
+                        // toastr.info(item.Value);
+                        $scope.selected.item = item.Value;
+                    });
+                }
+            };
+
+
+
+
+
+
+            $scope.myData3 = [{ Field: "UserIP", Value: $scope.items._source.clientip },
+                   { Field: "HTTPmethod ", Value: $scope.items._source.verb },
+                   { Field: "ResquestApi", Value: $scope.items._source.request },
+                   { Field: "Response", Value: $scope.items._source.response },
+                   { Field: "ApiResponse", Value: $scope.items._source.APIresponse },
+                   { Field: "RuquestTime", Value: $scope.items._source.timestamp },
+                   { Field: "Referrer", Value: $scope.items._source.referrer },
+                   { Field: "ActualAction", Value: $scope.items._source.action },
+                   { Field: "Brsower", Value: $scope.items._source.agent }
+
+            ];
+
+
+            $scope.gridOptions3 = {
+                columnDefs: [
+      { field: 'Field', displayName: 'Field', width: 120 },
+      { field: 'Value', displayName: 'Value', width: 420 }
+                ],
+                data: 'myData3',
+                selectedItems: $scope.mySelections,
+                multiSelect: false,
+                enableColumnResize: true,
+                jqueryUITheme: true,
+                afterSelectionChange: function () {
+                    //var x= $scope.mySelections.pop();
+                    //  toastr.info($scope.mySelections.pop());
+                    angular.forEach($scope.mySelections, function (item) {
+                        // toastr.info(item.Value);
+                        $scope.selected.item = item.Value;
+                    });
+                }
+            };
+
+
+
+
+
+
+            
+
+
+            $scope.ok = function () {
+               // 
 
 
               //  $location.search('field', f);
-                toastr.info(x);
-                // $location.path('/els/' + $scope.selected.item);
+                $location.search.text = $scope.selected.item;
+                //toastr.info($location.search.text);
+                $location.path('/els/');
+                $modalInstance.close($scope.selected.item);
             };
 
             $scope.cancel = function () {

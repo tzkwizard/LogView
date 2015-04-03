@@ -23,6 +23,8 @@
         'ui.bootstrap',   // ui-bootstrap (ex: carousel, pagination, dialog)    
         'elasticsearch',
         'ngGrid'
+
+        //'ui.grid', 'ui.grid.edit', 'ui.grid.selection'
       //  "google-chart"
         
     ]);

@@ -61,7 +61,7 @@
             function geoMap() {
                 
             client.search({
-                index: ["logstash-2015.03.23", "logstash-2015.03.24", "logstash-2015.04.01", "logstash-2015.04.02"],
+                index: ["logstash-2015.03.23", "logstash-2015.03.24", "logstash-2015.04.01", "logstash-2015.04.02", "logstash-2015.04.03"],
                 type: 'logs',
                 size:100,
                 body:

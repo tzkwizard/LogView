@@ -21,6 +21,9 @@
         <button class="btn btn-large btn-info btn-notext" type="button" data-ng-click="vm.search()">
             <i class="fa fa-search"> Search </i>
         </button>
+        <button class="btn btn-large btn-info btn-notext" type="button" data-ng-click="vm.refresh($event)">
+            <i class="fa fa-refresh"> Refresh </i>
+        </button>
         <button class="btn-group-sm" type="button">
             <i class="fa fa-question-circle" tooltip="{{vm.Syntax.title}}+{{vm.Syntax.Description}}" tooltip-trigger="click" tooltip-placement="right"> </i>
         </button>
@@ -41,11 +44,13 @@
             </button>
             <ul class="dropdown-menu" role="menu" ng-model="vm.dadjust">
                 <li ng-repeat="choice in vm.it" data-ng-click="vm.filterst(choice)">
-                    <a>{{choice}}</a>
-                        <li class="divider"></li>
+                <a>{{choice}}</a>
+                <li class="divider"></li>
                 <li><a href="#/dashboard">Separated link</a></li>
             </ul>
         </div>
+
+      
 
         <div class="input-group">
             <input type="text" class="form-control" datepicker-popup="{{vm.format}}" ng-model="vm.st"
@@ -104,9 +109,9 @@
                     <option selected vaule=1000>1000</option>
                 </select>
                 <select ng-model=" vm.paging.pageSize" class="input-medium pull-right" ng-click="vm.refreshPage()">
-                    <option value=5>5</option>
+                    <option selected value=5>5</option>
                     <option value=10>10</option>
-                    <option selected value=25>25</option>
+                    <option value=25>25</option>
                     <option vaule=50>50</option>
                     <option vaule=100>100</option>
                 </select>
@@ -132,9 +137,11 @@
                 <thead>
 
                     <tr>
-                        <th class="ip" data-ng-click="predicate = '_source.clientip'; reverse=!reverse">Ip&nbsp;</th>
+                        <!-- <th class="ip" data-ng-click="predicate = '_source.clientip'; reverse=!reverse">Ip&nbsp;</th>
                         <th class="username" data-ng-click="predicate = '_source.username'; reverse=!reverse">UserName&nbsp;</th>
-                        <th class="response" data-ng-click="predicate = '_source.response'; reverse=!reverse">Response&nbsp;</th>
+                        <th class="response" data-ng-click="predicate = '_source.response'; reverse=!reverse">Response&nbsp;</th>-->
+
+                        <th class="message" data-ng-click="predicate = '_source.timestamp'; reverse=!reverse">Time&nbsp;</th>
                         <th class="message" data-ng-click="predicate = '_source.message'; reverse=!reverse">Message&nbsp;</th>
                         <th class="message" data-ng-click="predicate = '_score'; reverse=!reverse">_score&nbsp;</th>
                         <th class="message" data-ng-click="predicate = '_index'; reverse=!reverse">Index&nbsp;</th>
@@ -144,9 +151,10 @@
 
                 <tbody>
                     <tr class="fader-animation" data-ng-repeat="doc in vm.res| orderBy:predicate:reverse" data-ng-click="vm.open(doc)">
-                        <td>{{doc._source.clientip}}</td>
+                        <!-- <td>{{doc._source.clientip}}</td>
                         <td>{{doc._source.username}}</td>
-                        <td>{{doc._source.response}}</td>
+                        <td>{{doc._source.response}}</td>-->
+                        <td>{{doc._source.timestamp| date:'medium'}}</td>
                         <td>{{doc._source.message}}</td>
                         <td>{{doc._score}}</td>
                         <td>{{doc._index}}</td>
@@ -155,34 +163,63 @@
 
             </table>
 
-   
+
             <script type="text/ng-template" id="myModalContent.html">
                 <div class="widget wviolet">
                     <div data-cc-widget-header title="{{title}}"></div>
                 </div>
-                <div class="gridStyle" ng-grid="gridOptions" ng-click="ok(selectedItems)"></div>
+               
+                <hr />
                 <div class="modal-body">
-                    <ul>
-                        <li ng-click="selected.item = items._source.timestamp"><h5>Time :  <a>{{items._source.timestamp}}</a></h5></li>
-                        <li ng-click="selected.item = items._source.clientip"><h5>UserIP : </h5></li> <a ng-click="selected.item = 'clientip'">{{items._source.clientip}}</a>
-                        <li ng-click="selected.item = items._source.username"><a>UserName :  </a>{{items._source.username}}</li>
-                        <li ng-click="selected.item = items._source.verb"><a>HTTPmethod :  </a>{{items._source.verb}}</li>
-                        <li ng-click="selected.item = items._source.request"><a>ResponseApi :  </a>{{items._source.request}}</li>
-                        <li ng-click="selected.item = items._source.response"><a>Response :  </a>{{items._source.response}}</li>
-                        <li ng-click="selected.item = items._source.referrer"><a>Refferrer :  </a>{{items._source.referrer}}</li>
-                        <li ng-click="selected.item = items._source.agent"><a>Browser :  </a>{{items._source.agent}}</li>
-                        <li ng-click="selected.item = items._source.message"><a>Message :  </a>{{items._source.message}}</li>
-                        <li ng-click="selected.item = items._source.bytes"><a>MessageBytes :  </a>{{items._source.bytes}}</li>
-                        <li ng-click="selected.item = items._source.action"><a>UserAction :  </a>{{items._source.action}}</li>
-                        <li ng-click="selected.item = items._source.geoip"><a>Location :  </a>{{items._source.geoip|json}}</li>
+                   <table class="columns">
+                       <col width="500">
+                    <tr>
+                        <td width="500">
+                            <h3> All Message Field </h3>
+                            <div class="gridStyle2" ng-grid="gridOptions"></div>
+                        </td>
 
-                        <!--<ul ng-repeat="item in items._source">
-                 <li ng-click="selected.item = item">{{field}}{{ item|json }}</li>
+                        <td width="500">
+                            <h3> User Basic Information </h3>
+                            <div class="gridStyle" ng-grid="gridOptions2"></div>
+                            <br><br> <hr />    
+                            <h3> User Action Information </h3>
+                            <div class="gridStyle" ng-grid="gridOptions3"></div>                            
+                        </td>
+                    </tr>
+                       <tr>
+                           <td width="500">                        
+                           </td>
+                           <td width="500">
+                              
+                           </td>
 
-                 </>-->
-                    </ul>
-                    Selected: <b>{{ selected.item |json }}</b>
-                </div>
+                       </tr>
+                      </table>
+                    <hr />          
+                    {{mySelections}}
+                        
+                        <ul>
+                            <!--  <li ng-click="selected.item = items._source.timestamp"><h5>Time :  <a>{{items._source.timestamp}}</a></h5></li>
+                                    <li ng-click="selected.item = items._source.clientip"><h5>UserIP : </h5></li> <a ng-click="selected.item = 'clientip'">{{items._source.clientip}}</a>
+                                    <li ng-click="selected.item = items._source.username"><a>UserName :  </a>{{items._source.username}}</li>
+                                    <li ng-click="selected.item = items._source.verb"><a>HTTPmethod :  </a>{{items._source.verb}}</li>
+                                    <li ng-click="selected.item = items._source.request"><a>ResponseApi :  </a>{{items._source.request}}</li>
+                                    <li ng-click="selected.item = items._source.response"><a>Response :  </a>{{items._source.response}}</li>
+                                    <li ng-click="selected.item = items._source.referrer"><a>Refferrer :  </a>{{items._source.referrer}}</li>
+                                    <li ng-click="selected.item = items._source.agent"><a>Browser :  </a>{{items._source.agent}}</li>
+                                    <li ng-click="selected.item = items._source.message"><a>Message :  </a>{{items._source.message}}</li>
+                                    <li ng-click="selected.item = items._source.bytes"><a>MessageBytes :  </a>{{items._source.bytes}}</li>
+                                    <li ng-click="selected.item = items._source.action"><a>UserAction :  </a>{{items._source.action}}</li>
+                                    <li ng-click="selected.item = items._source.geoip"><a>Location :  </a>{{items._source.geoip|json}}</li>
+            -->
+                            <!--<ul ng-repeat="item in items._source">
+            <li ng-click="selected.item = item">{{field}}{{ item|json }}</li>
+
+            </>-->
+                        </ul>
+                        Selected: <b>{{ selected.item |json }}</b>
+                    </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" ng-click="ok()">OK</button>
                     <button class="btn btn-warning" ng-click="cancel()">Cancel</button>

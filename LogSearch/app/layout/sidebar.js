@@ -16,41 +16,45 @@
         var keyCodes = config.keyCodes;
         vm.isCollapsed = false;
         vm.isCollapsed2 = false;
+        vm.isCollapsed3 = false;
         activate();
         vm.fieldsName = [];
+
         vm.location = "";
-        vm.host = "";
+        vm.httpmethod = "";
+        vm.apiaddress = "";
 
         vm.content = [];
         vm.content[0] = 4;
         vm.content[1] = 5;
         vm.getFieldName = getFieldName;
 
+        vm.agg = ["User","Location","Action"];
 
         vm.test = test;
 
         function activate() {
-           getNavRoutes();           
-           /* common.activateController([], controllerId)
-                .then(function() {
-                    log('Load Sidebar');
-
+            //getFieldName();
+                      
+            common.activateController([getNavRoutes()], controllerId)
+                .then(function() {                  
                 });
-*/
         }
 
         function test(r,f) {
             toastr.info(r.key.toString());
             //$location.search();
             $location.search.field = "";
-            $location.search('field', f);           
-            $location.path('/els/' + r.key.toString());
+            $location.search('field', f);
+            $location.search.text = r.key.toString();
+            $location.path('/els/')
+            //$location.path('/els/' + r.key.toString());
         }
 
 
         function getFieldName() {
             if (vm.fieldsName.length === 0) {
-                vm.fieldsName = dataconfig.getFieldName("logstash-2015.02.10", "logs");
+                vm.fieldsName = dataconfig.getFieldName("logstash-2015.04.01", "logs");
                 vm.isCollapsed = true;
             }
             vm.isCollapsed = !vm.isCollapsed;
@@ -79,11 +83,30 @@
             }
         }
 
+        vm.showRequestAPI = function () {
+            if (vm.apiaddress === "" || vm.apiaddress === undefined || $location.search.refresh) {
+                client.search({
+                    index: $rootScope.index,
+                    type: 'logs',
 
+                    body: ejs.Request()
+                        .aggregation(ejs.TermsAggregation("agg").field("request.raw").size(5))
+
+                }).then(function (resp) {
+                    vm.apiaddress = resp.aggregations.agg.buckets;
+                    $location.search.refresh = false;
+                    log("re");
+                }, function (err) {
+                    log(err.message);
+                });
+            } else {
+                vm.isCollapsed2 = !vm.isCollapsed2;
+            }
+        }
     
 
-        vm.showUser = function () {
-            if (vm.host === "" || vm.host === undefined || $location.search.refresh)
+        vm.showRequestMethod = function () {
+            if (vm.httpmethod === "" || vm.httpmethod === undefined || $location.search.refresh)
             {client.search({
                 index: $rootScope.index,
                 type: 'logs',
@@ -92,7 +115,7 @@
                     .aggregation(ejs.TermsAggregation("agg").field("verb.raw").size(5))
 
             }).then(function (resp) {
-                vm.host = resp.aggregations.agg.buckets;
+                vm.httpmethod = resp.aggregations.agg.buckets;
                 $location.search.refresh = false;
                 log("re");
             }, function (err) {
@@ -100,7 +123,7 @@
             });
             }
             else
-            {vm.isCollapsed2 = !vm.isCollapsed2;}
+            {vm.isCollapsed3 = !vm.isCollapsed3;}
         }
 
 
