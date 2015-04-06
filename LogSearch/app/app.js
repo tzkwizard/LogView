@@ -39,7 +39,12 @@
             $rootScope.index = dataconfig.filterIndex();
             $rootScope.logtype = "logs";
 
-            $rootScope.logfield = dataconfig.getFieldName("logstash-2015.04.01", "logs");
+
+            if ($rootScope.index !== undefined && $rootScope.index.length > 0) {
+
+                $rootScope.logfield = dataconfig.getFieldName($rootScope.index[0], "logs");
+                // $rootScope.logfield = dataconfig.getFieldName("logstash-2015.04.01", "logs");
+            }
 
 
 

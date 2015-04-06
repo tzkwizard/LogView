@@ -11,7 +11,7 @@
         vm.search = search;
         vm.refresh = refresh;
         vm.searchText = '';
-       // var keyCodes = config.keyCodes;
+        // var keyCodes = config.keyCodes;
         activate();
         vm.path = path;
         function path(n) {
@@ -20,14 +20,14 @@
                 case 1: $location.path("/dashboard"); break;
                 case 2: $location.path("/els"); break;
                 case 3: $location.path("/aggs"); break;
-                default:$location.path("/"); break;
+                default: $location.path("/"); break;
             }
-            
+
         }
-       
+
         function activate() { }
 
-       
+
         function search($event) {
             if ($event.keyCode === config.keyCodes.esc) {
                 vm.searchText = '';
@@ -39,7 +39,7 @@
                 var route = '/els/';
                 $location.search.text = vm.searchText;
                 $location.path('/els/');
-               // $location.path(route + vm.searchText);
+                // $location.path(route + vm.searchText);
             }
         }
         function refresh($event) {

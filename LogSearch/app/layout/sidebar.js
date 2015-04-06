@@ -9,6 +9,7 @@
         var vm = this;
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
+        var log = getLogFn(controllerId);
 
         vm.isCurrent = isCurrent;
         vm.search = search;

@@ -1,6 +1,6 @@
-﻿(function () { 
+﻿(function () {
     'use strict';
-    
+
     var controllerId = 'shell';
     angular.module('app').controller(controllerId,
         ['$rootScope', 'common', 'config', shell]);
@@ -9,7 +9,7 @@
         var vm = this;
         var logSuccess = common.logger.getLogFn(controllerId, 'success');
         var events = config.events;
-        vm.busyMessage = 'Please wait ...'; 
+        vm.busyMessage = 'Please wait ...';
         vm.isBusy = true;
         vm.spinnerOptions = {
             radius: 120,
@@ -23,24 +23,24 @@
         };
         vm.showSplash = true;
         activate();
-        
-     /*   $rootScope.$on('$locationChangeStart',
-   function(event, current, previous)
-   {
-       var answer = $window.confirm('Leave?');
 
-       if(!answer)
-       {
-          event.preventDefault();
-           return;
-      }
-   });*/
+        /*   $rootScope.$on('$locationChangeStart',
+      function(event, current, previous)
+      {
+          var answer = $window.confirm('Leave?');
+   
+          if(!answer)
+          {
+             event.preventDefault();
+              return;
+         }
+      });*/
 
 
         function activate() {
-          // logSuccess('Breezezz Angular loaded!', null, true);
-            common.activateController([], controllerId).then(function() {
-              vm.showSplash = false;
+            // logSuccess('Breezezz Angular loaded!', null, true);
+            common.activateController([], controllerId).then(function () {
+                vm.showSplash = false;
             });
         }
 
@@ -50,10 +50,10 @@
         $rootScope.$on('$routeChangeStart',
             function (event, next, current) { toggleSpinner(true); }
        );
-        
-       $rootScope.$on(events.controllerActivateSuccess,
-            function (data) { toggleSpinner(false); }
-        );
+
+        $rootScope.$on(events.controllerActivateSuccess,
+             function (data) { toggleSpinner(false); }
+         );
 
         $rootScope.$on(events.spinnerToggle,
             function (data) { toggleSpinner(data.show); }

@@ -55,7 +55,9 @@
             vm.getFieldName = getFieldName;
             vm.getIndexName = getIndexName;
             vm.getTypeName = getTypeName;
-            vm.addaddFilter = addFilter;
+            vm.filltext = filltext;
+            vm.addfilter = addfilter;
+            vm.removefilter = removefilter;
 
 
             vm.tests = tests;
@@ -63,6 +65,9 @@
             function tests(x) {
 
             }
+
+            vm.fi1 = "";
+
 
 
             function test() {
@@ -98,11 +103,6 @@
                         //.query(ejs.BoolQuery().must(ejs.MatchQuery("message", searchText)).mustNot(ejs.MatchQuery("message", "java")))
                         //  .query(ejs.BoostingQuery(ejs.MultiMatchQuery(["username", "response", "message", "ip"], searchText), ejs.MatchQuery("message", "java"), 0.2))
                         //   .query(ejs.CommonTermsQuery("message", searchText).cutoffFrequency(0.01).highFreqOperator("and").minimumShouldMatchLowFreq(2))
-                        //  .query(ejs.RangeQuery("ip").gte("19.18.200.201").lte("19.18.200.204"))
-                        // .query(ejs.MatchAllQuery())
-                        //.filter(ejs.BoolFilter().must(ejs.TermFilter("message", "dev")).mustNot(ejs.TermFilter("message", "java")))
-                        //.filter(ejs.TermFilter("username","dev"))
-                        //  .filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st))
                         //.query(ejs.BoolQuery().mustNot(ejs.QueryStringQuery('dev')))
                         .query(y)
                         .filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st))
@@ -116,34 +116,34 @@
                     log(err.message);
                 });
 
-                /*  client.suggest({
-                        index: 'logs',
-                        body: {
-                            mysuggester: {
-                                text: vm.searchText,
-                                term: {
-                                    field: 'message'
-                                }
-                            }
-                        }
-                    }, function(resp) {
-                        vm.hitSearch = resp;
-    
-                    }, function (err) {
-                            log(err.message);
-                        });*/
 
-                // var t1 = document.getElementById('jselect');
-                // var t2 = document.getElementById('fselect');
-                // var t3 = document.getElementById('input');
+                var t1 = document.getElementById('jselect1');
+                var t2 = document.getElementById('fselect1');
+                var t3 = document.getElementById('input1');
 
-                // addFilter();         
+                addFilter();
 
-                //  toastr.info(t1.value+t2.value+t3.value);
+                toastr.info(t1.value + t2.value + t3.value + vm.fi1);
+
+
+
 
             }
 
-            //      result showing
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //         result showing
             vm.paging = {
                 currentPage: 1,
                 maxPagesToShow: 5,
@@ -192,7 +192,9 @@
             }
 
 
-            //processorbar
+
+            //          processorbar
+
             vm.showWarning = "";
             vm.dynamic = "";
             vm.ptype = "";
@@ -220,7 +222,6 @@
                 vm.ptype = ptype;
             };
 
-            // vm.random();
 
 
             //   popup
@@ -255,10 +256,22 @@
                 });
             };
 
-            //   date pick
-            vm.it = ["Last three months", "Last Month", "Last four weeks", "Last three weeks", "Last two weeks", "Last week"];
-            vm.filterst = filterst;
 
+            //          date pick
+
+            vm.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'yyyy.MM.dd'];
+            vm.format = vm.formats[4];
+            vm.it = ["Last three months", "Last Month", "Last four weeks", "Last three weeks", "Last two weeks", "Last week"];
+            vm.dateOptions = {
+                formatYear: 'yy',
+                startingDay: 1
+            };
+
+
+            vm.filterst = filterst;
+            vm.ft = "";
+            vm.st = "";
+            today();
 
             function filterst(x) {
                 switch (x) {
@@ -288,12 +301,6 @@
 
             }
 
-
-            vm.ft = "";
-            vm.st = "";
-
-            today();
-
             function today() {
                 //vm.maxDate = new Date();
                 // vm.dt=$filter('date')(vm.tempd, "yyyy.MM.dd");
@@ -302,10 +309,11 @@
                 toggleMin();
             }
 
-            /*vm.today = function () {
-                    vm.dt = new Date();
-                
-                };*/
+            function toggleMin() {
+                vm.tmind = new Date();
+                vm.tmind.setMonth(vm.tmind.getMonth() - 1);
+                vm.minDate = vm.minDate ? null : vm.tmind;
+            };
 
 
             vm.clear = function () {
@@ -318,12 +326,6 @@
             };
             // vm.minDate = true;
             vm.toggleMin = toggleMin;
-
-            function toggleMin() {
-                vm.tmind = new Date();
-                vm.tmind.setMonth(vm.tmind.getMonth() - 1);
-                vm.minDate = vm.minDate ? null : vm.tmind;
-            };
 
 
             vm.timeopen = function ($event) {
@@ -341,23 +343,144 @@
             };
 
 
-            vm.dateOptions = {
-                formatYear: 'yy',
-                startingDay: 1
-            };
-
-            vm.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'yyyy.MM.dd'];
-            vm.format = vm.formats[4];
 
 
-            //  Page load         
+
+
+            //        Page load         
 
 
             vm.refresh = function () {
                 vm.searchText = "";
                 search();
                 log("refresh");
+
             }
+
+
+
+            function filltext() {
+
+                if (vm.im > 1) {
+                    vm.searchText = "";
+
+                    for (var i = 1; i < vm.im; i++) {
+                        var s1 = document.getElementById('jselect' + i.toString());
+                        var s2 = document.getElementById('fselect' + i.toString());
+                        var s3 = document.getElementById('input' + i.toString());
+
+                        if (s1.value === "MUST") {
+                            if (s3.value !== "") {
+                                if (i === 1) {
+                                    vm.searchText += s2.value + " : " + s3.value + "^2";
+                                } else {
+                                    vm.searchText += " AND " + s2.value + " : " + s3.value + "^2";
+                                }
+                            }
+                        }
+                        else if (s1.value === "MUST_NOT") {
+                            if (s3.value !== "") {
+                                if (i === 1) {
+                                    vm.searchText += " NOT " + s2.value + " : " + s3.value;
+                                } else {
+                                    vm.searchText += " NOT " + s2.value + " : " + s3.value;
+                                }
+                            }
+                        } else {
+                            if (s3.value !== "") {
+                                if (i === 1) {
+                                    vm.searchText += s2.value + " : " + s3.value;
+                                } else {
+                                    vm.searchText += " AND " + s2.value + " : " + s3.value;
+                                }
+                            }
+                        }
+
+                    }
+
+                }
+            }
+
+
+
+            function addfilter() {
+
+                var para = document.createElement("p");
+                /*  var node = document.createTextNode("filter:" + vm.im);
+  
+                  para.appendChild(node);*/
+
+                var element = document.getElementById("filter");
+                element.appendChild(para);
+
+                //var main = document.getElementById('filter');
+
+                var contain = document.createElement('div');
+                var cname = 'contain' + vm.im;
+                contain.setAttribute('id', cname);
+                element.appendChild(contain);
+
+
+
+                var input = document.createElement('input');
+                var iname = 'input' + vm.im;
+                input.setAttribute("data-ng-model", "vm.fi" + vm.im.toString());
+                input.setAttribute('id', iname);
+                contain.appendChild(input);
+
+
+
+                var xx = document.getElementById(iname);
+                var el = angular.element(xx);
+                $scope = el.scope();
+                $injector = el.injector();
+                $injector.invoke(function ($compile) {
+                    $compile(el)($scope);
+                });
+
+
+
+                var fselect = document.createElement('select');
+                var sname = 'fselect' + vm.im;
+                fselect.setAttribute('id', sname);
+                contain.appendChild(fselect);
+
+                angular.forEach(vm.fieldsName, function (name) {
+                    var opt = document.createElement('option');
+                    opt.value = name;
+                    opt.innerHTML = name;
+                    fselect.appendChild(opt);
+                });
+
+
+
+                var jselect = document.createElement('select');
+                var jname = 'jselect' + vm.im;
+                jselect.setAttribute('id', jname);
+                contain.appendChild(jselect);
+
+                vm.j = ['MUST', 'MUST_NOT', 'SHOULD'];
+                angular.forEach(vm.j, function (name) {
+                    var opt = document.createElement('option');
+                    opt.value = name;
+                    opt.innerHTML = name;
+                    jselect.appendChild(opt);
+                });
+
+                vm.im++;
+            }
+
+
+            function removefilter() {
+
+                var x = vm.im - 1;
+                var main = document.getElementById('filter');
+                var cname = 'contain' + x;
+                var contain = document.getElementById(cname);
+                main.removeChild(contain);
+                vm.im--;
+            }
+
 
             function getIndexName() {
                 if ($cookieStore.get('index') !== undefined) {
@@ -432,9 +555,11 @@
             }
 
 
-            //  Search and filter
+
+            //         Search and filter
+
             vm.fselect = "";
-            vm.im = 0;
+            vm.im = 1;
             vm.condition = "";
 
             function search() {
@@ -461,96 +586,6 @@
 
             }
 
-            function addFilter(i) {
-
-                var para = document.createElement("p");
-                var node = document.createTextNode("filter:" + vm.im);
-
-                para.appendChild(node);
-
-                var element = document.getElementById("filter");
-                element.appendChild(para);
-
-                //var main = document.getElementById('filter');
-                var contain = document.createElement('div');
-                contain.setAttribute('id', 'contain');
-                element.appendChild(contain);
-
-
-
-                var input = document.createElement('input');
-                var iname = 'input';
-                input.setAttribute("data-ng-model", "vm.fi");
-                input.setAttribute('id', iname);
-                contain.appendChild(input);
-
-
-
-                var xx = document.getElementById(iname);
-                var el = angular.element(xx);
-                $scope = el.scope();
-                $injector = el.injector();
-                $injector.invoke(function ($compile) {
-                    $compile(el)($scope);
-                });
-
-                /*
-                              var $scope = angular.element(el).scope();
-                                $scope.thing = newVal;
-                                $scope.$apply(); //tell angular to check dirty bindings again
-                                }*/
-
-
-
-
-                var fselect = document.createElement('select');
-                var sname = 'fselect';
-                fselect.setAttribute('id', sname);
-                fselect.setAttribute("data-ng-model", "vm.filterAggName");
-                contain.appendChild(fselect);
-
-                var xy = document.getElementById(sname);
-                var eld = angular.element(xy);
-                $scope = eld.scope();
-                $injector = eld.injector();
-                $injector.invoke(function ($compile) {
-                    $compile(eld)($scope);
-                });
-
-                // fselect.setAttribute("data-ng-model", "vm.filterAggName");
-                angular.forEach(vm.fieldsName, function (name) {
-                    var opt = document.createElement('option');
-
-                    opt.value = name;
-                    opt.innerHTML = name;
-                    fselect.appendChild(opt);
-                });
-
-
-
-                var jselect = document.createElement('select');
-                var jname = 'jselect';
-                jselect.setAttribute('id', jname);
-                contain.appendChild(jselect);
-
-                vm.j = ['MUST', 'MUST_NOT', 'SHOULD'];
-                angular.forEach(vm.j, function (name) {
-                    var opt = document.createElement('option');
-                    opt.value = name;
-                    opt.innerHTML = name;
-                    jselect.appendChild(opt);
-                });
-                //jselect.setAttribute("data-ng-model", "vm.condition");
-
-                /*   var el = angular.element("jselect");
-                   $scope = el.scope();
-                   $injector = el.injector();
-                   $injector.invoke(function ($compile) {
-                       $compile(el)($scope);
-                   });*/
-                vm.im++;
-
-            }
 
             function filtertemp(searchText) {
                 client.search({
@@ -595,8 +630,6 @@
                     log(err.message);
                 });
             }
-
-
 
 
             function mSearch(searchText) {
@@ -715,11 +748,7 @@
                 }
             };
 
-            /* var timezone = ($scope.items._source.geoip.timezone !== undefined) ? $scope.items._source.geoip.timezone : "";
-                var location = ($scope.items._source.geoip.location !== undefined) ? $scope.items._source.geoip.location : "";
-                var region = ($scope.items._source.geoip.region !== undefined) ? $scope.items._source.geoip.region : "";
-                var country = ($scope.items._source.geoip.country !== undefined) ? $scope.items._source.geoip.country : "";
-                var city = ($scope.items._source.geoip.city !== undefined) ? $scope.ite ms._source.geoip.city : "";*/
+
             $scope.myData2 = [
                 { Field: "UserIP", Value: $scope.items._source['clientip'] }
             ];
@@ -793,11 +822,6 @@
                     });
                 }
             };
-
-
-
-
-
 
 
 

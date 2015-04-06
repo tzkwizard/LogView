@@ -24,7 +24,7 @@
         // vm.people = [];
         vm.title = 'Dashboard';
         vm.indicesName = [];
-        vm.findicies = [];
+
         //  vm.getFieldName = getFieldName;
         vm.getIndexName = getIndexName;
         //   vm.getTypeName = getTypeName;
@@ -32,14 +32,44 @@
         vm.histGram = histGram;
         vm.init = init;
         vm.timeLineGram = timeLineGram;
-        vm.filterindex = filterindex;
-        activate();
+
+
 
         vm.test = test;
         function test() {
 
         }
 
+
+
+
+
+
+
+        //  Load
+        activate();
+        function activate() {
+            common.activateController([init()], controllerId)
+                .then(function () {
+
+
+                    google.setOnLoadCallback(drawMap);
+                    google.setOnLoadCallback(drawHist);
+                    google.setOnLoadCallback(drawpie);
+                    google.setOnLoadCallback(drawTimwLine);
+                    log('Activated Dashboard View');
+
+                });
+        }
+
+        function init() {
+            getIndexName();
+
+            $timeout(timeLineGram, 1200);
+            $timeout(pieChart, 1200);
+            $timeout(geoMap, 1200);
+            $timeout(histGram, 1200);
+        }
 
         function getIndexName() {
             if ($cookieStore.get('index') !== undefined) {
@@ -58,30 +88,10 @@
             vm.indicesName = $cookieStore.get('index');
             //  vm.indicesName = $rootScope.index;
         }
-        function init() {
-            getIndexName();
-
-            $timeout(timeLineGram, 500);
-            $timeout(pieChart, 500);
-            $timeout(geoMap, 500);
-            $timeout(histGram, 500);
-        }
-
-        function activate() {
-            common.activateController([init()], controllerId)
-                .then(function () {
-
-                    
-                    google.setOnLoadCallback(drawMap);
-                    google.setOnLoadCallback(drawHist);
-                    google.setOnLoadCallback(drawpie);
-                    google.setOnLoadCallback(drawTimwLine);
-                    log('Activated Dashboard View');
-                    
-            });
-        }
 
 
+        //   Draw Map
+        vm.location = [];
         function geoMap() {
 
             client.search({
@@ -156,15 +166,12 @@
                 function () {
                     table.setSelection(map.getSelection());
                 });
+
             vm.isBusy = false;
-
         }
 
 
-        function filterindex() {
-            vm.findicies = dataconfig.filterIndex();
-            histgram();
-        }
+        //   Draw Pie      
 
         function pieChart() {
             client.search({
@@ -183,7 +190,6 @@
                 log(err.message);
             });
         }
-
 
         function drawpie(agg) {
             var data = new google.visualization.DataTable();
@@ -245,6 +251,9 @@
 
         }
 
+
+        //   Time Chart
+
         function timeLineGram() {
 
             client.search({
@@ -262,7 +271,6 @@
                 log(err.message);
             });
         }
-        vm.location = [];
 
         function drawTimwLine(agg) {
             var data = new google.visualization.DataTable();
@@ -297,7 +305,6 @@
                 log(err.message);
             });
         }
-        vm.location = [];
 
         function drawHist(agg) {
 

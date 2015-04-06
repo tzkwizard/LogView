@@ -53,47 +53,48 @@
 
       
 
-        <div class="input-group">
-            <input type="text" class="form-control" datepicker-popup="{{vm.format}}" ng-model="vm.st"
-                   is-open="vm.timeopened" min-date="vm.minDate"  datepicker-options="vm.dateOptions"
-                   date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  start date" ng-show="false" />
-            <span class="input-group-btn">
-                <button type="button" class="btn btn-lg" ng-click="vm.timeopen($event)"><i class="fa fa-calendar"> Ini Day </i></button>
-
-
-                <input type="text" class="form-control" datepicker-popup="{{vm.format}}" ng-model="vm.ft"
-                       is-open="vm.ftimeopened" min-date="vm.minDate"  datepicker-options="vm.dateOptions"
-                       date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  end date" ng-show="false" />
-
-                <button type="button" class="btn btn-lg" ng-click="vm.ftimeopen($event)"><i class="fa fa-calendar"> End Day </i></button>
-
-                <select class="form-control" ng-model="vm.format" ng-options="f for f in vm.formats" ng-show="false"><option></option></select>
-
-            </span>
-        </div>
     </div>
-    <div class="input-append row-fluid">           
+<div class="input-append row-fluid">
 
-      
-        <div id="filter" class="btn-group">
-            <input type="text" size="8"
-                   data-ng-model="vm.fi"
-                   placeholder="  Filter " />
-            <select id="test" ng-model="vm.filterAggName" class="input-medium" style="width: 100px">
-                <option value={{doc}} data-ng-repeat="doc in vm.fieldsName">{{doc}} </option>
-            </select>
-            <select ng-model=" vm.condition" >      
-                <option selected value='MUST'>MUST</option>
-                <option vaule='MUST_NOT'>MUST_NOT</option>
-                <option vaule='SHOULD'>SHOULD</option>
-            </select>
-            <button data-ng-click="vm.test()" class="btn btn-info btn-notext " type="button">
-                <i class="fa fa-pie-chart">Test</i>
-            </button>
-        </div>
-        <addbuttonsbutton></addbuttonsbutton>
+    <div class="input-group-pull">
 
+        <select class="form-control" ng-model="vm.format" ng-options="f for f in vm.formats" ng-show="false"><option></option></select>
+
+        <input type="text" class="form-control" datepicker-popup="{{vm.format}}" ng-model="vm.st"
+               is-open="vm.timeopened" min-date="vm.minDate" datepicker-options="vm.dateOptions"
+               date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  start date" ng-show="false"/>
+        <button type="button" class="btn btn-large btn-info btn-notext" ng-click="vm.timeopen($event)"><i class="fa fa-calendar"> Ini Day </i></button>
+
+        <input type="text" class="form-control" datepicker-popup="{{vm.format}}" ng-model="vm.ft"
+               is-open="vm.ftimeopened" min-date="vm.minDate" datepicker-options="vm.dateOptions"
+               date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  end date" ng-show="false"/>
+        <button type="button" class="btn btn-large btn-info btn-notext" ng-click="vm.ftimeopen($event)"><i class="fa fa-calendar"> End Day </i></button>
     </div>
+  
+    
+
+    <div id="filter" class="btn-group">
+        <input type="text" size="8"
+               data-ng-model="vm.fi"
+               placeholder="  Filter "/>
+        <select id="test" ng-model="vm.filterAggName" class="input-medium" style="width: 100px">
+            <option value={{doc}} data-ng-repeat="doc in vm.fieldsName">{{doc}} </option>
+        </select>
+        <select ng-model=" vm.condition">
+            <option selected value='MUST'>MUST</option>
+            <option vaule='MUST_NOT'>MUST_NOT</option>
+            <option vaule='SHOULD'>SHOULD</option>
+        </select>
+        <button data-ng-click="vm.test()" class="btn btn-info btn-notext " type="button">
+            <i class="fa fa-pie-chart">Test</i>
+        </button>
+        
+    </div>
+
+
+
+
+</div>
 
 
    
@@ -101,7 +102,15 @@
 
         <div class="row-fluid">
             <div>
-                <div id="space-for-buttons"></div>
+                <button data-ng-click="vm.addfilter()" class="btn btn-info btn-notext " type="button">
+                    <i class="fa fa-plus-square"></i>
+                </button>
+                <button data-ng-click="vm.removefilter()" class="btn btn-info btn-notext " type="button">
+                    <i class="fa fa-minus-square"></i>
+                </button>
+                <button data-ng-click="vm.filltext()" class="btn btn-info btn-notext " type="button">
+                    <i class="fa fa-apple"> Fill </i>
+                </button>
                 <select ng-model="vm.pagecount" class="input-medium pull-right" ng-click="vm.refreshPage()">
                     <option value=10>10</option>
                     <option value=25>25</option>
