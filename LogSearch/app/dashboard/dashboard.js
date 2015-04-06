@@ -1,9 +1,9 @@
 ﻿(function () {
     'use strict';
     var controllerId = 'dashboard';
-    angular.module('app').controller(controllerId, ['$cookieStore','$rootScope','common', 'dataconfig','client', dashboard]);
+    angular.module('app').controller(controllerId, ['$timeout','$cookieStore','$rootScope','common', 'dataconfig','client', dashboard]);
 
-    function dashboard($cookieStore,$rootScope, common, dataconfig, client) {
+    function dashboard($timeout,$cookieStore, $rootScope, common, dataconfig, client) {
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
 
@@ -17,8 +17,9 @@
         vm.getIndexName = getIndexName;
         //   vm.getTypeName = getTypeName;
         vm.geoMap = geoMap;
-        vm.init = init;
         vm.histGram = histGram;
+        vm.init = init;
+        vm.timeLineGram = timeLineGram;
         vm.filterindex = filterindex;
         activate();
         function getIndexName() {
@@ -40,9 +41,11 @@
         }
         function init() {
             getIndexName();
-            histGram();
-            pieChart();
-            geoMap();
+
+            $timeout(timeLineGram, 500);
+            $timeout(pieChart, 500);
+            $timeout(geoMap, 500);
+            $timeout(histGram, 500);
         }
             
             function activate() {
@@ -50,24 +53,24 @@
                     .then(function () {
                        
                         log('Activated Dashboard View');                       
-                       //google.setOnLoadCallback(drawMap);
-                       // google.setOnLoadCallback(drawhist);
-                        //google.setOnLoadCallback(drawpie);
-                        
+                        google.setOnLoadCallback(drawMap);
+                        google.setOnLoadCallback(drawHist);
+                        google.setOnLoadCallback(drawpie);
+                        google.setOnLoadCallback(drawTimwLine);
                     });
             } 
          
          
             function geoMap() {
-                
+             
             client.search({
-                index: ["logstash-2015.03.23", "logstash-2015.03.24", "logstash-2015.04.01", "logstash-2015.04.02", "logstash-2015.04.03"],
+                index: ["logstash-2015.03.30", "logstash-2015.03.31", "logstash-2015.04.01", "logstash-2015.04.02", "logstash-2015.04.03", "logstash-2015.04.04", "logstash-2015.04.05", "logstash-2015.04.06"],
                 type: 'logs',
                 size:100,
                 body:
                     ejs.Request()
                         .query(ejs.MatchAllQuery())
-                        .aggregation(ejs.TermsAggregation("agg").field("geoip.city_name.raw").size(100))
+                        .aggregation(ejs.TermsAggregation("agg").field("geoip.city_name.raw").size(15))
 
             }).then(function(resp) {
                 vm.tt = resp.hits.total;
@@ -76,8 +79,66 @@
                 log(err.message);
             });
 
-        }
+            }
+            function drawMap(r, tt) {
 
+                google.setOnLoadCallback(drawMap);
+                var geoData = new google.visualization.DataTable();
+                geoData.addColumn('string', 'Name');
+                // geoData.addColumn('string', 'ip');
+                // geoData.addColumn('number', 'Lat');
+                //  geoData.addColumn('number', 'Lon');           
+                geoData.addColumn('number', 'Number');
+                //geoData.addRow([n._source.geoip.city_name, 1, n._source.geoip.latitude, n._source.geoip.longitude]);
+                vm.j = -1;
+                angular.forEach(r, function (n) {
+
+
+                    /* if (vm.location.indexOf(n._source.clientip) === -1 && n._source.geoip.city_name!==undefined) {
+                         vm.location.push(n._source.clientip);                   
+                         geoData.addRow([n._source.geoip.city_name, n._source.clientip, n._source.geoip.latitude, n._source.geoip.longitude, 1]);
+                     }*/
+
+                    if (n.doc_count > 10) {
+                        geoData.addRow([n.key.toString(), n.doc_count]);
+                    }
+
+
+
+                });
+
+                var geoView = new google.visualization.DataView(geoData);
+                geoView.setColumns([0, 1]);
+
+
+                var table =
+                    new google.visualization.Table(document.getElementById('dtable_div'));
+
+
+                // google.visualization.data.group(table, keys, columns)
+                table.draw(geoData, { showRowNumber: true });
+
+                var map =
+                    new google.visualization.Map(document.getElementById('dmap_div'));
+                map.draw(geoView, { showTip: true,enableScrollWheel:true,useMapTypeControl:true,zoomLevel:3});
+                // map.setSelection({ row: null, column: 1 });
+                // Set a 'select' event listener for the table.
+                // When the table is selected, we set the selection on the map.
+                google.visualization.events.addListener(table, 'select',
+                    function () {
+                        map.setSelection(table.getSelection());
+                    });
+
+                // Set a 'select' event listener for the map.
+                // When the map is selected, we set the selection on the table.
+                google.visualization.events.addListener(map, 'select',
+                    function () {
+                        table.setSelection(map.getSelection());
+                    });
+
+            }
+
+                        
         function filterindex() {
             vm.findicies = dataconfig.filterIndex();
             histgram();
@@ -89,10 +150,11 @@
                 type: 'logs',
                 body: ejs.Request()
                     .aggregation(ejs.TermsAggregation("agg1").field("verb"))
-                    .aggregation(ejs.TermsAggregation("agg2").field("clientip"))
+                    .aggregation(ejs.TermsAggregation("agg2").field("clientip.raw"))
                     .aggregation(ejs.TermsAggregation("agg3").field("request.raw"))   
 
-            }).then(function (resp) {               
+            }).then(function (resp) {
+                //vm.pietitle = ["verb","clientip.raw","request.raw"];
                 drawpie(resp.aggregations);
                 //log("1");
             }, function (err) {
@@ -115,10 +177,15 @@
                 is3D: true,
                 backgroundColor: '#00FFFF',
                 //legend: 'none',
-                'width': 520,
+                'width': 440,
                 'height': 300,
-                forceIFrame:true,
-                //pieSliceText: 'label','value',
+                forceIFrame: true,
+                tooltip: 
+                    {
+                        isHtml: true
+                     }
+            // pieSliceText: 'label','value',
+               // 'title': "verb"
             };
             piechart.draw(data, options);
 
@@ -154,7 +221,7 @@
             
         }
 
-        function histGram() {
+        function timeLineGram() {
 
             client.search({
                 index: vm.indicesName,
@@ -166,144 +233,105 @@
             }).then(function (resp) {
                 vm.total = resp.aggregations;
                 vm.hitSearch = resp.aggregations.agg.buckets;
-                drawhist(resp.aggregations.agg.buckets);
+                drawTimwLine(resp.aggregations.agg.buckets);
             }, function (err) {
                 log(err.message);
             });
         }
         vm.location = [];
-        function drawMap(r,tt) {
-
-            google.setOnLoadCallback(drawMap);
-            var geoData = new google.visualization.DataTable();
-            geoData.addColumn('string', 'Name');
-           // geoData.addColumn('string', 'ip');
-           // geoData.addColumn('number', 'Lat');
-          //  geoData.addColumn('number', 'Lon');           
-            geoData.addColumn('number', 'Number');
-            //geoData.addRow([n._source.geoip.city_name, 1, n._source.geoip.latitude, n._source.geoip.longitude]);
-            vm.j = -1;
-            angular.forEach(r, function (n) {
-
-
-               /* if (vm.location.indexOf(n._source.clientip) === -1 && n._source.geoip.city_name!==undefined) {
-                    vm.location.push(n._source.clientip);                   
-                    geoData.addRow([n._source.geoip.city_name, n._source.clientip, n._source.geoip.latitude, n._source.geoip.longitude, 1]);
-                }*/
-                
-                 if (n.doc_count>tt/40)
-               {
-                    geoData.addRow([n.key.toString(),n.doc_count]);}
-         
-                
-                
-            });
-
-            var geoView = new google.visualization.DataView(geoData);
-            geoView.setColumns([0,1]);
-          
-
-            var table =
-                new google.visualization.Table(document.getElementById('dtable_div'));
-
-            
-           // google.visualization.data.group(table, keys, columns)
-               table.draw(geoData, { showRowNumber: true });
-
-            var map =
-                new google.visualization.Map(document.getElementById('dmap_div'));
-            map.draw(geoView, { showTip: true });
-           // map.setSelection({ row: null, column: 1 });
-            // Set a 'select' event listener for the table.
-            // When the table is selected, we set the selection on the map.
-             google.visualization.events.addListener(table, 'select',
-                 function () {
-                     map.setSelection(table.getSelection());
-                 });
-
-            // Set a 'select' event listener for the map.
-            // When the map is selected, we set the selection on the table.
-            google.visualization.events.addListener(map, 'select',
-                function () {
-                    table.setSelection(map.getSelection());
-                });
-
-        }
        
+        function drawTimwLine(agg) {      
+            var data = new google.visualization.DataTable();
+            data.addColumn('date', 'Date');
+            data.addColumn('number', 'Count');
 
-        function drawhist(agg) {
-         /*   var data = google.visualization.arrayToDataTable([
-          ['Dinosaur', 'Length'],
-          ['Acrocanthosaurus (top-spined lizard)', 12.2],
-          ['Albertosaurus (Alberta lizard)', 9.1],
-          ['Allosaurus (other lizard)', 12.2],
-          ['Apatosaurus (deceptive lizard)', 22.9],
-          ['Archaeopteryx (ancient wing)', 0.9],
-          ['Argentinosaurus (Argentina lizard)', 36.6],
-          ['Baryonyx (heavy claws)', 9.1],
-          ['Brachiosaurus (arm lizard)', 30.5],
-          ['Ceratosaurus (horned lizard)', 6.1],
-          ['Coelophysis (hollow form)', 2.7],
-          ['Compsognathus (elegant jaw)', 0.9],
-          ['Deinonychus (terrible claw)', 2.7],
-          ['Diplodocus (double beam)', 27.1],
-          ['Dromicelomimus (emu mimic)', 3.4],
-          ['Gallimimus (fowl mimic)', 5.5],
-          ['Mamenchisaurus (Mamenchi lizard)', 21.0],
-          ['Megalosaurus (big lizard)', 7.9],
-          ['Microvenator (small hunter)', 1.2],
-          ['Ornithomimus (bird mimic)', 4.6],
-          ['Oviraptor (egg robber)', 1.5],
-          ['Plateosaurus (flat lizard)', 7.9],
-          ['Sauronithoides (narrow-clawed lizard)', 2.0],
-          ['Seismosaurus (tremor lizard)', 45.7],
-          ['Spinosaurus (spiny lizard)', 12.2],
-          ['Supersaurus (super lizard)', 30.5],
-          ['Tyrannosaurus (tyrant lizard)', 15.2],
-          ['Ultrasaurus (ultra lizard)', 30.5],
-          ['Velociraptor (swift robber)', 1.8]]);
+            angular.forEach(agg, function (n) {
+                data.addRow([new Date(n.key), n.doc_count]);
+            });
+            var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('TimeLine_div'));
+            chart.draw(data, {
+                displayAnnotations: true, dateFormat: 'MM-dd-yyyy',displayAnnotationsFilter:true,
+                thickness:3,wmode:'transparent'
+            });
+          
+        }
 
-            var Data = new google.visualization.DataTable();
-            Data.addColumn('string', 'Date');
+        function histGram() {
+
+            client.search({
+                index: vm.indicesName,
+                type: 'logs',
+                body: ejs.Request()
+                    .aggregation(ejs.DateHistogramAggregation("agg").field("@timestamp").interval("day"))
+                //.format("yyyy-MM-dd")
+
+            }).then(function (resp) {       
+                vm.total = resp.aggregations;
+                vm.hitSearch = resp.aggregations.agg.buckets;
+                drawHist(resp.aggregations.agg.buckets);
+            }, function (err) {
+                log(err.message);
+            });
+        }
+        vm.location = [];
+
+        function drawHist(agg) {
+             
+
+          /*  var Data = new google.visualization.DataTable();
+           Data.addColumn('date', 'Date');
             Data.addColumn('number', 'Number');
-        
+           // Data.addColumn('date', 'Date');
 
 
             angular.forEach(agg, function (n) {
-                Data.addRow([n.key_as_string,n.doc_count]);
+                Data.addRow([new Date(n.key_as_string.substring(0,4), n.key_as_string.substring(5,7), n.key_as_string.substring(8,10)), n.doc_count]);
+               // Data.addRow([n.doc_count, new Date(n.key_as_string.substring(0,4), n.key_as_string.substring(5,7), n.key_as_string.substring(8,10))]);
             });
 
 
             var options = {
-                title: 'Lengths of dinosaurs, in meters',
-                legend: { position: 'none' },
-                histogram: { bucketSize: 100 }
+          //      title: 'Lengths of dinosaurs, in meters',
+          //      legend: { position: 'none' },
+                //histogram: { bucketSize: 100 }
             };
 
-            var chart = new google.visualization.Histogram(document.getElementById('histgram'));
-            chart.draw(Data, options);*/
-
-
-
-            var data = new google.visualization.DataTable();
-            data.addColumn('date', 'Date');
-            data.addColumn('number', 'Count');
+            var chart = new google.visualization.Histogram(document.getElementById('DateHist_div'));
+            chart.draw(Data, options);
+*/
+                 var data = new google.visualization.DataTable();
+        data.addColumn('date', 'Date');
+        data.addColumn('number', 'Request');
+        
+      /*  data.addRows([
+    [new Date(2008, 1 ,1),0.7],
+   [new Date(2008, 1 ,2),0.5],
+        ]);*/
+        angular.forEach(agg, function (n) {
+            data.addRow([new Date(n.key), n.doc_count]);
             
-            angular.forEach(agg, function (n) {
-                data.addRow([new Date(n.key_as_string), n.doc_count]);
-            });
-            /*data.addRows([
-              [new Date("2008-02-10T00:00:00.000Z"), 30000],
-              [new Date(2008, 1, 2), 14045],
-              [new Date(2008, 1, 3), 55022],
-              [new Date(2008, 1, 4), 75284],
-              [new Date(2008, 1, 5), 41476],
-              [new Date(2008, 1, 6), 33322]
-            ]);*/
+            // Data.addRow([n.doc_count, new Date(n.key_as_string.substring(0,4), n.key_as_string.substring(5,7), n.key_as_string.substring(8,10))]);
+        });
+        
 
-            var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('DateHist_div'));
-            chart.draw(data, { displayAnnotations: true });
+        var options = google.charts.Bar.convertOptions({
+            title: 'Total Request Received Throughout the Day',
+            hAxis: {
+                format: 'MM/dd/yyyy',
+            },
+        });
+
+
+        var chart = new google.charts.Bar(document.getElementById('DateHist_div'));
+        chart.draw(data, options);
+    
+  /*      var chart = new google.visualization.LineChart(document.getElementById('DateHist_div'));
+           chart.draw(data, options);*/
+
         }
+
+
+
 
     }
 

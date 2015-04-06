@@ -115,7 +115,7 @@
                  url: '/aggs',
                  config: {
                      title: 'aggs',
-                     templateUrl: 'app/ELS/aggs.html',
+                     templateUrl: 'app/agg/aggs.html',
                      settings: {
                          nav: 3,
                          content: '<i class="fa fa-area-chart"></i> Aggs'

@@ -3,9 +3,9 @@
 
     var controllerId = 'topnav';
     angular.module('app').controller(controllerId,
-        ['$scope','$location', 'config', topnav]);
+        ['$window', '$route', '$scope', '$location', 'config', topnav]);
 
-    function topnav($scope,$location, config) {
+    function topnav($window, $route, $scope, $location, config) {
         var vm = this;
 
         vm.search = search;
@@ -48,6 +48,8 @@
                 return;
             }
             $location.search.refresh = true;
+            //$window.location.reload();
+            $route.reload();
             toastr.info("Refresh" + $location.path());
         }
 

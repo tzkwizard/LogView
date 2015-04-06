@@ -1,0 +1,5 @@
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\bin\Debug\LogView.exe.config
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\bin\Debug\LogView.exe
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\bin\Debug\LogView.pdb
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\obj\Debug\LogView.exe
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\obj\Debug\LogView.pdb

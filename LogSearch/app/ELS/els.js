@@ -4,7 +4,7 @@
     var controllerId = 'els';
 
     angular.module('app')
-        .controller(controllerId, function(bsDialog,$rootScope, $routeParams,
+        .controller(controllerId, function ($timeout,bsDialog, $rootScope, $routeParams,
         $filter, $injector, $log, $scope, $location, $modal, common, client, datasearch, dataconfig, $cookieStore) {
 
 
@@ -12,7 +12,7 @@
         vm.title = "Elasticsearch";
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
-        $scope.predicate = '_source.response';
+        $scope.predicate = '_source.timestamp';
         $scope.count = 0;
         //variable
 
@@ -86,7 +86,7 @@
                 }
                 
 */
-            $cookieStore.put('index', $rootScope.index);
+
             var x = ejs.RangeQuery("bytes").gte(17);
             var y = ejs.TermQuery("verb.raw", "GET");
             client.search({
@@ -147,7 +147,7 @@
         vm.paging = {
             currentPage: 1,
             maxPagesToShow: 5,
-            pageSize: 10
+            pageSize: 5
         };
 
         Object.defineProperty(vm.paging, 'pageCount', {
@@ -374,8 +374,9 @@
             
            
             vm.indicesName = $cookieStore.get('index');
-           
-            getFieldName();
+           // log(vm.indicesName.length);
+            $timeout(getFieldName, 500);
+           // getFieldName();
         }
 
         function getTypeName() {
@@ -388,6 +389,7 @@
             }
             if (vm.index !== "" && vm.index !== undefined) {
                 vm.fieldsName = dataconfig.getFieldName(vm.index, $rootScope.logtype);
+               // log(vm.fieldsName.length);
             }
 
         }
@@ -440,8 +442,8 @@
 
             if (vm.searchText == undefined || vm.searchText === "") {
                 init();
-                random();
-                
+                $timeout(random, 500);
+
             } else {
               
                 datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, vm.filterAggName, vm.fi, vm.condition, vm.st, vm.ft)
@@ -450,7 +452,7 @@
                 vm.total = resp.hits.total;
                 vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
                 vm.getCurrentPageData(vm.hitSearch);
-                random();
+                $timeout(random, 500);
             }, function (err) {
                 log(err.message);
             });
@@ -654,17 +656,17 @@
     var controllerId = 'ModalInstanceCtrl';
 
     angular.module('app')
-        .controller(controllerId, function ($scope, $modalInstance, $location, common, items) {
+        .controller(controllerId, function($scope, $modalInstance, $location, common, items) {
 
-            $scope.title = "Detailed search result";
-            $scope.items = items.data;
-            $scope.field = items.field;
+        $scope.title = "Detailed search result";
+        $scope.items = items.data;
+        $scope.field = items.field;
 
-            $scope.selected = {
-                item: ""
-            };
+        $scope.selected = {
+            item: ""
+        };
 
-           /* $scope.myData = [{ name: "", value: "" }];
+        /* $scope.myData = [{ name: "", value: "" }];
 
             function fill(){
             angular.forEach($scope.items._source, function (n) {
@@ -674,55 +676,66 @@
             });
             }
             fill();*/
-            $scope.mySelections = [];
-            $scope.myData = [{ Field: "UserIP", Value: $scope.items._source.clientip },
-                     { Field: "Location", Value: $scope.items._source.geoip },
-                     { Field: "HTTPmethod ", Value: $scope.items._source.verb },
-                     { Field: "ResquestApi", Value: $scope.items._source.request },
-                     { Field: "RuquestTime", Value: $scope.items._source.timestamp },
-                     { Field: "Referrer", Value: $scope.items._source.referrer },
-                     { Field: "ActualAction", Value: $scope.items._source.action }
-                    
-            ];
+        $scope.mySelections = [];
+        $scope.myData = [];
+
+        angular.forEach(Object.keys($scope.items._source), function(item) {
+            $scope.myData.push({
+                Field: item, Value: $scope.items._source[item]
+        });
+    });
+        
+       /* $scope.myData = [
+            { Field: "UserIP", Value: $scope.items._source.clientip },
+            { Field: "Location", Value: $scope.items._source.geoip },
+            { Field: "HTTPmethod ", Value: $scope.items._source.verb },
+            { Field: "ResquestApi", Value: $scope.items._source.request },
+            { Field: "RuquestTime", Value: $scope.items._source.timestamp },
+            { Field: "Referrer", Value: $scope.items._source.referrer },
+            { Field: "ActualAction", Value: $scope.items._source.action }
+        ];*/
 
 
-            $scope.gridOptions = {
-                columnDefs: [
-      { field: 'Field', displayName: 'Field', width: 120 },
-      { field: 'Value', displayName: 'Value', width: 120 }
-           ]    ,
-                data: 'myData',
-                selectedItems: $scope.mySelections,
-              //  multiSelect: false,
-                jqueryUITheme: true,
-                enableColumnResize: true,
-                afterSelectionChange: function () {
-                   //var x= $scope.mySelections.pop();
-                  //  toastr.info($scope.mySelections.pop());
-                    angular.forEach($scope.mySelections, function (item) {
-                       // toastr.info(item.Value);
-                        $scope.selected.item = item.Value;
-                    });
-                }
-            };
-              
-            var timezone = ($scope.items._source.geoip.timezone !== undefined) ? $scope.items._source.geoip.timezone : "";
+        $scope.gridOptions = {
+            columnDefs: [
+                { field: 'Field', displayName: 'Field', width: 120 },
+                { field: 'Value', displayName: 'Value', width: 120 }
+            ],
+            data: 'myData',
+            selectedItems: $scope.mySelections,
+            //  multiSelect: false,
+            jqueryUITheme: true,
+            enableColumnResize: true,
+            afterSelectionChange: function() {
+                //var x= $scope.mySelections.pop();
+                //  toastr.info($scope.mySelections.pop());
+                angular.forEach($scope.mySelections, function(item) {
+                    // toastr.info(item.Value);
+                    $scope.selected.item = item["Field"] + " : " + item["Value"];
+                });
+            }
+        };
+
+        /* var timezone = ($scope.items._source.geoip.timezone !== undefined) ? $scope.items._source.geoip.timezone : "";
             var location = ($scope.items._source.geoip.location !== undefined) ? $scope.items._source.geoip.location : "";
             var region = ($scope.items._source.geoip.region !== undefined) ? $scope.items._source.geoip.region : "";
             var country = ($scope.items._source.geoip.country !== undefined) ? $scope.items._source.geoip.country : "";
-            var city = ($scope.items._source.geoip.city !== undefined) ? $scope.items._source.geoip.city : "";
+            var city = ($scope.items._source.geoip.city !== undefined) ? $scope.ite ms._source.geoip.city : "";*/
+        $scope.myData2 = [
+            { Field: "UserIP", Value: $scope.items._source['clientip'] }
+        ];
+        var x = $scope.items._source;
+        if (x.hasOwnProperty('geoip')) {
+            toastr.info($scope.items._source['geoip']);
+         $scope.myData2.push({ Field: "Country", Value: $scope.items._source.geoip['country_name'] });       
+        $scope.myData2.push({ Field: "City", Value: $scope.items._source['geoip']['city_name'] });
+        $scope.myData2.push({ Field: "Region", Value: $scope.items._source['geoip']['real_region_name'] });
+        $scope.myData2.push({ Field: "postal_code", Value: $scope.items._source['geoip']['postal_code'] });
+        $scope.myData2.push({ Field: "Coordinate ", Value: $scope.items._source['geoip']['coordinates'] });
+        $scope.myData2.push({ Field: "Timezone", Value: $scope.items._source['geoip']['timezone'] });
 
-         
-            $scope.myData2 = [{ Field: "UserIP", Value: $scope.items._source.clientip },
-                   { Field: "Timezone", Value: timezone },
-                   { Field: "Coordinate ", Value: location },
-                   { Field: "Region", Value: region },
-                   { Field: "Country", Value: country },
-                   { Field: "City", Value: city }
-                
-
-            ];
-
+       }
+           
 
             $scope.gridOptions2 = {
                 columnDefs: [
@@ -739,7 +752,7 @@
                     //  toastr.info($scope.mySelections.pop());
                     angular.forEach($scope.mySelections, function (item) {
                         // toastr.info(item.Value);
-                        $scope.selected.item = item.Value;
+                        $scope.selected.item = item["Field"] + " : " + item["Value"];
                     });
                 }
             };
@@ -749,15 +762,15 @@
 
 
 
-            $scope.myData3 = [{ Field: "UserIP", Value: $scope.items._source.clientip },
-                   { Field: "HTTPmethod ", Value: $scope.items._source.verb },
-                   { Field: "ResquestApi", Value: $scope.items._source.request },
-                   { Field: "Response", Value: $scope.items._source.response },
-                   { Field: "ApiResponse", Value: $scope.items._source.APIresponse },
-                   { Field: "RuquestTime", Value: $scope.items._source.timestamp },
-                   { Field: "Referrer", Value: $scope.items._source.referrer },
-                   { Field: "ActualAction", Value: $scope.items._source.action },
-                   { Field: "Brsower", Value: $scope.items._source.agent }
+            $scope.myData3 = [{ Field: "UserIP", Value: $scope.items._source['clientip']},
+                   { Field: "HTTPmethod ", Value: $scope.items._source['verb'] },
+                   { Field: "ResquestApi", Value: $scope.items._source['request'] },
+                   { Field: "Response", Value: $scope.items._source['response'] },
+                   { Field: "ApiResponse", Value: $scope.items._source['APIresponse'] },
+                   { Field: "RuquestTime", Value: $scope.items._source['@timestamp'] },
+                   { Field: "Referrer", Value: $scope.items._source['referrer'] },
+                   { Field: "ActualAction", Value: $scope.items._source['action'] },
+                   { Field: "Brsower", Value: $scope.items._source['agent'] }
 
             ];
 
@@ -777,7 +790,7 @@
                     //  toastr.info($scope.mySelections.pop());
                     angular.forEach($scope.mySelections, function (item) {
                         // toastr.info(item.Value);
-                        $scope.selected.item = item.Value;
+                        $scope.selected.item = item["Field"] + " : " + item["Value"];
                     });
                 }
             };

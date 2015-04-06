@@ -14,6 +14,18 @@
                 <a><i class="fa fa-cloud"></i> {{r}}</a>              
             </li>
 
+
+
+            <li class="nlightblue fade-selection-animation" ng-click="vm.showUser()"> <a><i class="fa fa-user"></i> User</a></li>
+
+            <ul collapse="vm.isCollapsed4" class="nlightblue fade-selection-animation">
+                <li class="nlightblue fade-selection-animation" data-ng-click="vm.test(r,'logs.ident.raw')"
+                    data-ng-repeat="r in vm.user">
+                    <a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>
+                </li>
+            </ul>
+
+
             <li class="nlightblue fade-selection-animation" ng-click="vm.showLocation()"> <a><i class="fa fa-map-marker"></i> Location</a></li>
 
             <ul collapse="vm.isCollapsed" class="nlightblue fade-selection-animation">

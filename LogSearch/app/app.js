@@ -5,7 +5,7 @@
     });*/
    
     'use strict';
-    google.load('visualization', '1', { packages: ['corechart', 'controls', 'table', 'map', 'annotatedtimeline','treemap'] });
+    google.load('visualization', '1', { packages: ['bar','corechart', 'controls', 'table', 'map', 'annotatedtimeline','treemap'] });
     var app = angular.module('app', [
         // Angular modules 
         'ngAnimate',        // animations
@@ -38,13 +38,11 @@
         
         $rootScope.index = dataconfig.filterIndex();        
         $rootScope.logtype = "logs";
+
         $rootScope.logfield = dataconfig.getFieldName("logstash-2015.04.01", "logs");
 
 
-        //$cookieStore.put('index', dataconfig.filterIndex());
-       //  $cookies.logfield = $rootScope.logfield;
-      //  $cookies.logtype = $rootScope.logtype;
-       //     $cookies.index = "123";
+      
 
         client.ping({
             requestTimeout: 1000,

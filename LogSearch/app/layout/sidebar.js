@@ -17,19 +17,21 @@
         vm.isCollapsed = false;
         vm.isCollapsed2 = false;
         vm.isCollapsed3 = false;
+        vm.isCollapsed4 = false;
         activate();
         vm.fieldsName = [];
 
         vm.location = "";
         vm.httpmethod = "";
         vm.apiaddress = "";
+        vm.user = "";
 
         vm.content = [];
         vm.content[0] = 4;
         vm.content[1] = 5;
         vm.getFieldName = getFieldName;
 
-        vm.agg = ["User","Location","Action"];
+        vm.agg = ["Ace","Luffy","Sabo"];
 
         vm.test = test;
 
@@ -126,6 +128,26 @@
             {vm.isCollapsed3 = !vm.isCollapsed3;}
         }
 
+
+        vm.showUser = function () {
+            if (vm.user === "" || vm.user === undefined || $location.search.refresh) {
+                client.search({
+                    index: $rootScope.index,
+                    type: 'logs',
+
+                    body: ejs.Request()
+                        .aggregation(ejs.TermsAggregation("agg").field("ident.raw").size(5))
+
+                }).then(function (resp) {
+                    vm.user = resp.aggregations.agg.buckets;
+                    $location.search.refresh = false;
+                    log("re");
+                }, function (err) {
+                    log(err.message);
+                });
+            }
+            else { vm.isCollapsed4 = !vm.isCollapsed4; }
+        }
 
         function getNavRoutes() {
             vm.navRoutes = routes.filter(function(r) {
