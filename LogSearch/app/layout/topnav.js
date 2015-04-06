@@ -37,8 +37,9 @@
 
             if ($event.type === 'click' || $event.keyCode === config.keyCodes.enter) {
                 var route = '/els/';
-             
-                $location.path(route + vm.searchText);
+                $location.search.text = vm.searchText;
+                $location.path('/els/');
+               // $location.path(route + vm.searchText);
             }
         }
         function refresh($event) {

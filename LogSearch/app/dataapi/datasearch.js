@@ -1,4 +1,4 @@
-﻿(function() {
+﻿(function () {
     'use strict';
 
     var serviceId = 'datasearch';
@@ -39,32 +39,32 @@
 
             switch (choice) {
 
-            case 1:
-            {
-                qmust = stringQ;
-                if (condition === "MUST") {
-                    qmust2 = matchallF;
-                    qmustnot = matchallFfalse2;
-                } else {
-                    qmust2 = matchallFfalse;
-                    qmustnot = matchallF;
-                }
-                fmust = termFfalse;
-                break;
-            }
+                case 1:
+                    {
+                        qmust = stringQ;
+                        if (condition === "MUST") {
+                            qmust2 = matchallF;
+                            qmustnot = matchallFfalse2;
+                        } else {
+                            qmust2 = matchallFfalse;
+                            qmustnot = matchallF;
+                        }
+                        fmust = termFfalse;
+                        break;
+                    }
 
-            case 2:
-            {
-                qmust = stringQ;
-                qmust2 = matchallFfalse;
-                if (condition === "MUST") {
-                    fmust = termF;
-                } else {
-                    fmust = termFfalse2;
-                }
-                qmustnot = matchallFfalse2;
-                break;
-            }
+                case 2:
+                    {
+                        qmust = stringQ;
+                        qmust2 = matchallFfalse;
+                        if (condition === "MUST") {
+                            fmust = termF;
+                        } else {
+                            fmust = termFfalse2;
+                        }
+                        qmustnot = matchallFfalse2;
+                        break;
+                    }
 
 
             }
@@ -80,7 +80,7 @@
         }
 
 
-        function getSampledata(indices, type, pagecount,start,end) {
+        function getSampledata(indices, type, pagecount, start, end) {
             return client.search({
                 index: indices,
                 //type: type,
@@ -106,8 +106,8 @@
             });
         }
 
-        function stringSearch(indices, type, pagecount, searchText,start,end) {
-            
+        function stringSearch(indices, type, pagecount, searchText, start, end) {
+
             return client.search({
                 index: indices,
                 type: type,
@@ -118,7 +118,7 @@
             });
         }
 
-        function searchWithoutFilter(indices, type, pagecount, field, searchText,start,end) {
+        function searchWithoutFilter(indices, type, pagecount, field, searchText, start, end) {
             return client.search({
                 index: indices,
                 type: type,
@@ -130,7 +130,7 @@
         }
 
 
-        function termqueryandfilter(indices, type, pagecount, field, searchText, filterField, filter, condition,start,end) {
+        function termqueryandfilter(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end) {
             /*  if (field === "" || field === "all") {
                 // mSearch(searchText); 
                 return stringSearch(indices, type, pagecount, searchText);
@@ -178,17 +178,17 @@
         }
 
 
-        function basicSearch(indices, type, pagecount, field, searchText, filterField, filter, condition,start,end) {
-         
-            if (filter === "" || filter === undefined) {               
-                   if (field === "" || field === "all" || field === undefined) {
-                        return stringSearch(indices, type, pagecount, searchText, start, end);
-                    } else {
-                        return searchWithoutFilter(indices, type, pagecount, field, searchText, start, end);
-                    }
-                
+        function basicSearch(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end) {
+
+            if (filter === "" || filter === undefined) {
+                if (field === "" || field === "all" || field === undefined) {
+                    return stringSearch(indices, type, pagecount, searchText, start, end);
+                } else {
+                    return searchWithoutFilter(indices, type, pagecount, field, searchText, start, end);
+                }
+
             } else {
-                if (searchText === "" || searchText === undefined) {    
+                if (searchText === "" || searchText === undefined) {
                     if (filterField === "" || filterField === "all" || filterField === undefined) {
                         return stringSearch(indices, type, pagecount, searchText, start, end);
                     } else {

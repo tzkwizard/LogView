@@ -1,9 +1,9 @@
-﻿(function () { 
+﻿(function () {
     'use strict';
-    
+
     var controllerId = 'sidebar';
     angular.module('app').controller(controllerId,
-        ['$rootScope','$location','$route', 'config', 'routes','dataconfig','client','common', sidebar]);
+        ['$rootScope', '$location', '$route', 'config', 'routes', 'dataconfig', 'client', 'common', sidebar]);
 
     function sidebar($rootScope, $location, $route, config, routes, dataconfig, client, common) {
         var vm = this;
@@ -31,19 +31,19 @@
         vm.content[1] = 5;
         vm.getFieldName = getFieldName;
 
-        vm.agg = ["Ace","Luffy","Sabo"];
+        vm.agg = ["Ace", "Luffy", "Sabo"];
 
         vm.test = test;
 
         function activate() {
             //getFieldName();
-                      
+
             common.activateController([getNavRoutes()], controllerId)
-                .then(function() {                  
+                .then(function () {
                 });
         }
 
-        function test(r,f) {
+        function test(r, f) {
             toastr.info(r.key.toString());
             //$location.search();
             $location.search.field = "";
@@ -62,25 +62,25 @@
             vm.isCollapsed = !vm.isCollapsed;
         }
 
-    
 
-        vm.showLocation = function() {
-            if (vm.location === "" || vm.location === undefined || $location.search.refresh)
-               { client.search({
+
+        vm.showLocation = function () {
+            if (vm.location === "" || vm.location === undefined || $location.search.refresh) {
+                client.search({
                     index: $rootScope.index,
                     type: 'logs',
 
                     body: ejs.Request()
                         .aggregation(ejs.TermsAggregation("agg").field("clientip.raw").size(10))
 
-                }).then(function(resp) {
+                }).then(function (resp) {
                     vm.location = resp.aggregations.agg.buckets;
                     $location.search.refresh = false;
-                       log("re");
-                   }, function(err) {
+                    log("re");
+                }, function (err) {
                     log(err.message);
                 });
-        }else{
+            } else {
                 vm.isCollapsed = !vm.isCollapsed;
             }
         }
@@ -105,27 +105,26 @@
                 vm.isCollapsed2 = !vm.isCollapsed2;
             }
         }
-    
+
 
         vm.showRequestMethod = function () {
-            if (vm.httpmethod === "" || vm.httpmethod === undefined || $location.search.refresh)
-            {client.search({
-                index: $rootScope.index,
-                type: 'logs',
+            if (vm.httpmethod === "" || vm.httpmethod === undefined || $location.search.refresh) {
+                client.search({
+                    index: $rootScope.index,
+                    type: 'logs',
 
-                body: ejs.Request()
-                    .aggregation(ejs.TermsAggregation("agg").field("verb.raw").size(5))
+                    body: ejs.Request()
+                        .aggregation(ejs.TermsAggregation("agg").field("verb.raw").size(5))
 
-            }).then(function (resp) {
-                vm.httpmethod = resp.aggregations.agg.buckets;
-                $location.search.refresh = false;
-                log("re");
-            }, function (err) {
-                log(err.message);
-            });
+                }).then(function (resp) {
+                    vm.httpmethod = resp.aggregations.agg.buckets;
+                    $location.search.refresh = false;
+                    log("re");
+                }, function (err) {
+                    log(err.message);
+                });
             }
-            else
-            {vm.isCollapsed3 = !vm.isCollapsed3;}
+            else { vm.isCollapsed3 = !vm.isCollapsed3; }
         }
 
 
@@ -150,13 +149,13 @@
         }
 
         function getNavRoutes() {
-            vm.navRoutes = routes.filter(function(r) {
+            vm.navRoutes = routes.filter(function (r) {
                 return r.config.settings && r.config.settings.nav;
-            }).sort(function(r1, r2) {
+            }).sort(function (r1, r2) {
                 return r1.config.settings.nav - r2.config.settings.nav;
             });
         }
-        
+
         function isCurrent(route) {
             if (!route.config.title || !$route.current || !$route.current.title) {
                 return '';

@@ -16,17 +16,17 @@
             getTypeName: getTypeName,
             getFieldName: getFieldName,
             createContainer: createContainer,
-            filterIndex: filterIndex,         
-            prime:prime
-    }
+            filterIndex: filterIndex,
+            prime: prime
+        }
         return service;
 
         function prime() {
             filterIndex();
             log('Load Index');
-            
+
         }
-       
+
         function createContainer(aggName) {
             var main = document.getElementById('div2');
             var contain = document.createElement('div');
@@ -72,7 +72,7 @@
             cell2.appendChild(divd);
         }
 
-        function filterIndex() {         
+        function filterIndex() {
             /*vm.findex = [];
 
             client.cluster.state({
@@ -140,7 +140,7 @@
 
         function getIndexName() {
             vm.indicesName = [];
-            
+
             client.cluster.state({
                 flatSettings: true
 
@@ -153,10 +153,10 @@
 
                     vm.temp[vm.j] = name.shards;
                     angular.forEach(vm.temp[vm.j], function (shard) {
-                            vm.tempindices[vm.j] = shard[0].index;
-                     
+                        vm.tempindices[vm.j] = shard[0].index;
+
                     });
-                    vm.j++;                   
+                    vm.j++;
                 });
                 vm.j = 0;
                 for (vm.i = 0; vm.i < vm.tempindices.length; vm.i++) {
@@ -164,7 +164,7 @@
                         vm.indicesName[vm.j] = vm.tempindices[vm.i];
                         vm.j++;
                     }
-                    
+
                 }
             }, function (err) {
                 log(err.message);
@@ -231,7 +231,7 @@
 
 
 
-      
+
 
     }
 })();
