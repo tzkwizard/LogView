@@ -238,8 +238,26 @@
             }
 
             function getIndexName() {            
-                vm.indicesName = dataconfig.checkCookie('index', "");
+                if ($cookieStore.get('index') !== undefined) {
+                    if ($rootScope.index.length !== $cookieStore.get('index').length && $rootScope.index.length > 1) {
+                        $cookieStore.remove('index');
+                    }
 
+                }
+                vm.indicesName = $cookieStore.get('index');
+                if ($cookieStore.get('index') === undefined || $cookieStore.get('index').length <= 1) {
+                    if ($rootScope.index !== undefined && $rootScope.index.length >= 1) {
+                        $cookieStore.put('index', $rootScope.index);
+                        vm.indicesName = $cookieStore.get('index');
+                    } else {
+
+                        vm.indicesName = dataconfig.initIndex();
+                    }
+                }
+
+
+                // log(vm.indicesName.length);
+                // $timeout(renew, 500);           
                // vm.indicesName = $cookieStore.get('index');
                 vm.treestatus = true;
                 // vm.indicesName = $rootScope.index;
@@ -254,14 +272,37 @@
             }
 
             function getFieldName() {
-                vm.fieldsName = dataconfig.checkCookie('logfield', vm.indicesName[0]);
+                
+
+                if ($cookieStore.get('logfield') !== undefined) {
+                    if ($rootScope.logfield.length !== $cookieStore.get('logfield').length && $rootScope.logfield.length > 1) {
+                        $cookieStore.remove('logfield');
+                    }
+
+                }
+                vm.fieldsName = $cookieStore.get('logfield');
+
+                if ($cookieStore.get('logfield') === undefined || $cookieStore.get('logfield').length <= 1) {
+                    if ($rootScope.logfield !== undefined && $rootScope.logfield.length >= 1) {
+                        $cookieStore.put('logfield', $rootScope.logfield);
+                        vm.fieldsName = $cookieStore.get('logfield');
+                    } else {
+
+                        vm.fieldsName = dataconfig.getFieldName(vm.indicesName[0], $rootScope.logtype);
+                        
+                    }
+                }
+               
+
+
+               // vm.fieldsName = dataconfig.checkCookie('logfield', vm.indicesName[0]);
 
                 vm.aggName = "";
-                $timeout(drawtreemap, 200);
+                $timeout(drawtreemap, 500);
+                
             }
 
-
-
+           
 
             //   Draw chart
 

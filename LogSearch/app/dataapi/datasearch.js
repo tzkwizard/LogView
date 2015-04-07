@@ -7,7 +7,7 @@
     function datasearch(common, client) {
 
         var vm = this;
-        vm.typesName = [];
+       
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(serviceId);
         var service = {
@@ -24,6 +24,8 @@
         }
         return service;
 
+
+        // Aggragation
         function dateHistogramAggregation(index, type, aggfield, span) {
             return client.search({
                 index: index,
@@ -34,7 +36,6 @@
 
             });
         }
-
 
         function termAggragation(indices, type, aggfield, size) {
             return client.search({
@@ -59,6 +60,7 @@
         }
 
 
+       // Filter
 
         function stringquery(indices, type, pagecount, field, searchText, filterField, filter, condition, choice) {
 
@@ -215,6 +217,8 @@
             });
         }
 
+
+        // Main search 
 
         function basicSearch(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end) {
 

@@ -58,7 +58,17 @@
             </ul>
 
 
+            <li class="nlightblue fade-selection-animation" ng-click="vm.showUserAction()"> <a><i class="fa fa-android"></i> Action</a></li>
 
+            <ul collapse="vm.isCollapsed5" class="nlightblue fade-selection-animation">
+                <li class="nlightblue fade-selection-animation" data-ng-click="vm.test(r,'logs.action.raw')"
+                    data-ng-repeat="r in vm.useraction">
+                    <a style="color:whitesmoke">  {{r.key.toString()}} ({{r.doc_count}})    </a>
+                </li>
+            </ul>
+
+
+            
 
 
             <accordion close-others="oneAtATime">

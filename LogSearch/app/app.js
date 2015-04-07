@@ -30,24 +30,19 @@
     ]);
 
     // Handle routing errors and success events
-    app.run(['$cookieStore', '$rootScope', '$route', 'breeze', 'dataconfig', 'routeMediator', 'client',
-        function ($cookieStore, $rootScope, $route, breeze, dataconfig, routeMediator, client) {
+    app.run(['$timeout', '$cookieStore', '$rootScope', '$route', 'breeze', 'dataconfig', 'routeMediator', 'client',
+        function ($timeout,$cookieStore, $rootScope, $route, breeze, dataconfig, routeMediator, client) {
             // Include $route to kick start the router.
             // datacontext.prime();
             routeMediator.setRoutingHandlers();
 
-            $rootScope.index = dataconfig.filterIndex();
+            //$rootScope.index = dataconfig.filterIndex();
+            $rootScope.index = dataconfig.initIndex();
             $rootScope.logtype = "logs";
+            $timeout(xx,500);
 
-
-            if ($rootScope.index !== undefined && $rootScope.index.length > 0) {
-
-                $rootScope.logfield = dataconfig.getFieldName($rootScope.index[0], "logs");
-                // $rootScope.logfield = dataconfig.getFieldName("logstash-2015.04.01", "logs");
-            }
-
-
-
+            function xx()
+            { $rootScope.logfield = dataconfig.getFieldName($rootScope.index[0], $rootScope.logtype); }
 
             client.ping({
                 requestTimeout: 1000,

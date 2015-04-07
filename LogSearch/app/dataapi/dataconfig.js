@@ -2,13 +2,11 @@
     'use strict';
 
     var serviceId = 'dataconfig';
-    angular.module('app').factory(serviceId, ['$rootScope', '$cookieStore', 'common', 'client', dataconfig]);
+    angular.module('app').factory(serviceId, ['$timeout', '$rootScope', '$cookieStore', 'common', 'client', dataconfig]);
 
-    function dataconfig($rootScope, $cookieStore, common, client) {
+    function dataconfig($timeout, $rootScope, $cookieStore, common, client) {
 
         var vm = this;
-        vm.typesName = [];
-        vm.findex = [];
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(serviceId);
         var service = {
@@ -16,10 +14,9 @@
             getTypeName: getTypeName,
             getFieldName: getFieldName,
             createContainer: createContainer,
-            filterIndex: filterIndex,
             addFilter: addFilter,
             removeFilter: removeFilter,
-            checkCookie: checkCookie,
+            initIndex: initIndex,
             prime: prime
         }
         return service;
@@ -75,84 +72,54 @@
             cell2.appendChild(divd);
         }
 
-        function filterIndex() {
-            /*vm.findex = [];
+
+        function initIndex() {
+            var indicesName = [];
 
             client.cluster.state({
                 flatSettings: true
 
             }).then(function (resp) {
-                vm.hit = resp.routing_table.indices;
-                vm.j = 0;
-                vm.temp = [];
-                vm.tempindices = [];
-                angular.forEach(vm.hit, function (name) {
+                var hit = resp.routing_table.indices;
+                var j = 0;
+                var temp = [];
+                var tempindices = [];
+                angular.forEach(hit, function (name) {
 
-                    vm.temp[vm.j] = name.shards;
-                    angular.forEach(vm.temp[vm.j], function (shard) {
-                        vm.tempindices[vm.j] = shard[0].index;
+                    temp[j] = name.shards;
+                    angular.forEach(temp[j], function (shard) {
+                        tempindices[j] = shard[0].index;
 
                     });
-                    vm.j++;
+                    j++;
                 });
-                vm.j = 0;
-                for (vm.i = 0; vm.i < vm.tempindices.length; vm.i++) {
-                    if (vm.tempindices[vm.i].substring(0, 8) === "logstash") {
-                        vm.findex[vm.j] = vm.tempindices[vm.i];
-                        vm.j++;
+                j = 0;
+                for (var i = 0; i < tempindices.length; i++) {
+                    if (tempindices[i].substring(0, 8) === "logstash") {
+                        indicesName[j] = tempindices[i];
+                        j++;
                     }
 
                 }
             }, function (err) {
                 log(err.message);
             });
-            return vm.findex;*/
-            vm.indicesName = [];
-
-            client.cluster.state({
-                flatSettings: true
-
-            }).then(function (resp) {
-                vm.hit = resp.routing_table.indices;
-                vm.j = 0;
-                vm.temp = [];
-                vm.tempindices = [];
-                angular.forEach(vm.hit, function (name) {
-
-                    vm.temp[vm.j] = name.shards;
-                    angular.forEach(vm.temp[vm.j], function (shard) {
-                        vm.tempindices[vm.j] = shard[0].index;
-
-                    });
-                    vm.j++;
-                });
-                vm.j = 0;
-                for (vm.i = 0; vm.i < vm.tempindices.length; vm.i++) {
-                    if (vm.tempindices[vm.i].substring(0, 8) === "logstash") {
-                        vm.indicesName[vm.j] = vm.tempindices[vm.i];
-                        vm.j++;
-                    }
-
-                }
-            }, function (err) {
-                log(err.message);
-            });
-            return vm.indicesName;
+            return indicesName;
         }
 
 
         function getIndexName() {
-            vm.indicesName = [];
+            var indicesName = [];
 
             client.cluster.state({
                 flatSettings: true
 
             }).then(function (resp) {
-                vm.hit = resp.routing_table.indices;
-                vm.j = 0;
-                vm.temp = [];
-                vm.tempindices = [];
-                angular.forEach(vm.hit, function (name) {
+                var hit = resp.routing_table.indices;
+                var j = 0;
+                var temp = [];
+                var tempindices = [];
+                angular.forEach(hit, function (name) {
 
                     vm.temp[vm.j] = name.shards;
                     angular.forEach(vm.temp[vm.j], function (shard) {
@@ -161,24 +128,24 @@
                     });
                     vm.j++;
                 });
-                vm.j = 0;
-                for (vm.i = 0; vm.i < vm.tempindices.length; vm.i++) {
-                    if (vm.tempindices[vm.i].substring(0, 1) !== ".") {
-                        vm.indicesName[vm.j] = vm.tempindices[vm.i];
-                        vm.j++;
+                j = 0;
+                for (var i = 0; i < tempindices.length; i++) {
+                    if (tempindices[i].substring(0, 1) !== ".") {
+                        indicesName[j] = tempindices[i];
+                        j++;
                     }
 
                 }
             }, function (err) {
                 log(err.message);
             });
-            return vm.indicesName;
+            return indicesName;
         }
 
         function getTypeName(index, pagecount) {
             if (index === "all" || index === "")
                 return "";
-            vm.typesName = [];
+            var typesName = [];
             client.search({
                 index: index,
                 size: pagecount,
@@ -188,24 +155,24 @@
                     }
                 }
             }).then(function (resp) {
-                vm.map = resp.hits.hits;
-                angular.forEach(vm.map, function (n) {
-                    if (vm.typesName.indexOf(n._type) === -1) {
-                        vm.typesName.push(n._type);
+                var map = resp.hits.hits;
+                angular.forEach(map, function (n) {
+                    if (typesName.indexOf(n._type) === -1) {
+                        typesName.push(n._type);
                     }
                 });
 
             }, function (err) {
                 log(err.message);
             });
-            return vm.typesName;
+            return typesName;
         }
 
         function getFieldName(index, type) {
             if (type === "all" || type === "")
                 //|| vm.typesName.indexOf(type) === -1
                 return "";
-            vm.fieldsName = [];
+            var fieldsName = [];
             client.indices.getFieldMapping({
                 index: index,
                 type: type,
@@ -214,13 +181,13 @@
                 //vm.map = resp.logs.mappings.logs;
 
                 angular.forEach(resp, function (m) {
-                    vm.map = m.mappings;
-                    angular.forEach(vm.map, function (n) {
-                        vm.j = 0;
+                    var map = m.mappings;
+                    angular.forEach(map, function (n) {
+                        var j = 0;
                         angular.forEach(n, function (name) {
                             if (name.full_name.substring(0, 1) !== '_' && name.full_name !== 'constant_score.filter.exists.field') {
-                                vm.fieldsName[vm.j] = name.full_name;
-                                vm.j++;
+                                fieldsName[j] = name.full_name;
+                                j++;
                             }
                         }
                         );
@@ -229,10 +196,10 @@
             }, function (err) {
                 log(err.message);
             });
-            return vm.fieldsName;
+            return fieldsName;
         }
 
-        function addFilter(n) {
+        function addFilter(n, fieldsName) {
             var para = document.createElement("p");
             /*  var node = document.createTextNode("filter:" + n);
 
@@ -273,7 +240,7 @@
             fselect.setAttribute('id', sname);
             contain.appendChild(fselect);
 
-            angular.forEach(vm.fieldsName, function (name) {
+            angular.forEach(fieldsName, function (name) {
                 var opt = document.createElement('option');
                 opt.value = name;
                 opt.innerHTML = name;
@@ -287,8 +254,8 @@
             jselect.setAttribute('id', jname);
             contain.appendChild(jselect);
 
-            vm.j = ['MUST', 'MUST_NOT', 'SHOULD'];
-            angular.forEach(vm.j, function (name) {
+            var j = ['MUST', 'MUST_NOT', 'SHOULD'];
+            angular.forEach(j, function (name) {
                 var opt = document.createElement('option');
                 opt.value = name;
                 opt.innerHTML = name;
@@ -303,32 +270,7 @@
             main.removeChild(contain);
         }
 
-        function checkCookie(att, index) {
-            if ($rootScope.logfield !== undefined) {
-                if ($cookieStore.get(att) !== undefined) {
-                    if ($rootScope.index.length !== $cookieStore.get(att).length && $rootScope.index.length > 1) {
-                        $cookieStore.remove(att);
-                    }
-                }
 
-                if ($cookieStore.get(att) === undefined || $cookieStore.get(att).length <= 1) {
-
-                    $cookieStore.put(att, $rootScope.index);
-                }
-                return $cookieStore.get(att);
-            } else {
-
-                if (att === 'logfield') {
-                    return getFieldName(index, $rootScope.logtype);
-                } else if (att === 'index') {
-                    return filterIndex();
-
-                }
-                else {
-                    return null;
-                }
-            }
-        }
 
     }
 })();

@@ -69,14 +69,34 @@
             $timeout(pieChart, 1200);
             $timeout(geoMap, 1200);
             $timeout(histGram, 1200);
+            //$timeout(renew, 800);
         }
 
-        function getIndexName() {
-    
-            vm.indicesName= dataconfig.checkCookie('index',"");
+ 
 
-           // vm.indicesName = $cookieStore.get('index');
-            //  vm.indicesName = $rootScope.index;
+        function getIndexName() {
+             
+            if ($cookieStore.get('index') !== undefined) {
+                if ($rootScope.index.length !== $cookieStore.get('index').length && $rootScope.index.length > 1) {
+                    $cookieStore.remove('index');
+                }
+                
+            }
+            vm.indicesName = $cookieStore.get('index');
+
+            if ($cookieStore.get('index') === undefined || $cookieStore.get('index').length <= 1) {
+                if ($rootScope.index !== undefined && $rootScope.index.length >= 1) {
+                    $cookieStore.put('index', $rootScope.index);
+                    vm.indicesName = $cookieStore.get('index');
+                } else {
+
+                    vm.indicesName = dataconfig.filterIndex();
+                }
+            }
+            
+
+
+            
         }
 
 
@@ -262,8 +282,7 @@
         }
 
         function histGram() {
-       
-
+    
             datasearch.dateHistogramAggregation(vm.indicesName, 'logs', "@timestamp", "day").then(function (resp) {
                 vm.total = resp.aggregations;
                 vm.hitSearch = resp.aggregations.agg.buckets;

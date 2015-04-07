@@ -273,7 +273,7 @@
                 formatYear: 'yy',
                 startingDay: 1
             };
-           
+
             vm.ft = "";
             vm.st = "";
             today();
@@ -332,7 +332,7 @@
             vm.disabled = function (date, mode) {
                 //return (mode === 'day' && (date.getDay() === 0 || date.getDay() === 6));
             };
-       
+
             vm.timeopen = function ($event) {
                 $event.preventDefault();
                 $event.stopPropagation();
@@ -407,7 +407,7 @@
 
 
             function addfilter() {
-                dataconfig.addFilter(vm.im);
+                dataconfig.addFilter(vm.im, vm.fieldsName);
                 vm.im++;
             }
 
@@ -422,20 +422,43 @@
             }
 
 
-            function getIndexName() {            
-                vm.indicesName = dataconfig.checkCookie('index', "");
+            function getIndexName() {
 
-                //vm.indicesName = $cookieStore.get('index');
+
+
+                if ($cookieStore.get('index') !== undefined) {
+                    if ($rootScope.index.length !== $cookieStore.get('index').length && $rootScope.index.length > 1) {
+                        $cookieStore.remove('index');
+                    }
+
+                }
+                vm.indicesName = $cookieStore.get('index');
+                if ($cookieStore.get('index') === undefined || $cookieStore.get('index').length <= 1) {
+                    if ($rootScope.index !== undefined && $rootScope.index.length >= 1) {
+                        $cookieStore.put('index', $rootScope.index);
+                        vm.indicesName = $cookieStore.get('index');
+                    } else {
+
+                        vm.indicesName = dataconfig.initIndex();
+                    }
+                }
+
+
                 // log(vm.indicesName.length);
+                // $timeout(renew, 500);
                 $timeout(getFieldName, 500);
                 // getFieldName();
             }
+
+
 
             function getTypeName() {
                 vm.typesName = dataconfig.getTypeName(vm.index, vm.pagecount);
             }
 
             function getFieldName() {
+
+
                 if (vm.indicesName[0] !== "" && vm.indicesName[0] !== undefined) {
                     vm.index = vm.indicesName[0];
                 }
@@ -488,8 +511,8 @@
 
 
             //         Search and filter
-       
-            
+
+
             vm.condition = "";
 
             function search() {

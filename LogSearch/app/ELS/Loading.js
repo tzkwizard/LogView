@@ -3,15 +3,17 @@
 
     var controllerId = 'Loading';
     angular.module('app').controller(controllerId,
-        ['common',Loading]);
+        ['$rootScope', 'common', Loading]);
 
-    function Loading(common) {
+    function Loading($rootScope,common) {
         var vm = this;   
         
         activate();
 
         function activate() {
-            common.activateController([], controllerId).then(function () {              
+            common.activateController([], controllerId).then(function () {
+                vm.xx = $rootScope.index;
+                vm.yy = $rootScope.logfield;
             });
         }
 
