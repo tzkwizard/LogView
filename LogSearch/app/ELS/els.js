@@ -58,6 +58,8 @@
             vm.filltext = filltext;
             vm.addfilter = addfilter;
             vm.removefilter = removefilter;
+            vm.filterst = filterst;
+
 
 
             vm.tests = tests;
@@ -152,7 +154,6 @@
 
             Object.defineProperty(vm.paging, 'pageCount', {
                 get: function () {
-
                     return Math.floor(vm.tt / vm.paging.pageSize) + 1;
                 }
             });
@@ -173,23 +174,22 @@
                 vm.getCurrentPageData(vm.hitSearch);
             }
 
-
             vm.refreshPage = refreshPage;
 
             function refreshPage() {
                 // vm.tt = vm.total;
-
-
                 if (vm.tt > vm.pagecount) {
                     vm.tt = vm.pagecount;
                 } else {
                     vm.tt = Math.min(vm.total, vm.pagecount);
                 }
 
-
                 vm.getCurrentPageData(vm.hitSearch);
                 random();
             }
+
+
+
 
 
 
@@ -221,6 +221,9 @@
                 vm.dynamic = value;
                 vm.ptype = ptype;
             };
+
+
+
 
 
 
@@ -257,6 +260,10 @@
             };
 
 
+
+
+
+
             //          date pick
 
             vm.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'yyyy.MM.dd'];
@@ -266,12 +273,11 @@
                 formatYear: 'yy',
                 startingDay: 1
             };
-
-
-            vm.filterst = filterst;
+           
             vm.ft = "";
             vm.st = "";
             today();
+
 
             function filterst(x) {
                 switch (x) {
@@ -309,6 +315,8 @@
                 toggleMin();
             }
 
+            vm.toggleMin = toggleMin;
+            // vm.minDate = true;
             function toggleMin() {
                 vm.tmind = new Date();
                 vm.tmind.setMonth(vm.tmind.getMonth() - 1);
@@ -324,10 +332,7 @@
             vm.disabled = function (date, mode) {
                 //return (mode === 'day' && (date.getDay() === 0 || date.getDay() === 6));
             };
-            // vm.minDate = true;
-            vm.toggleMin = toggleMin;
-
-
+       
             vm.timeopen = function ($event) {
                 $event.preventDefault();
                 $event.stopPropagation();
@@ -346,9 +351,9 @@
 
 
 
-
             //        Page load         
 
+            vm.im = 1;
 
             vm.refresh = function () {
                 vm.searchText = "";
@@ -356,8 +361,6 @@
                 log("refresh");
 
             }
-
-
 
             function filltext() {
 
@@ -404,69 +407,7 @@
 
 
             function addfilter() {
-
-                var para = document.createElement("p");
-                /*  var node = document.createTextNode("filter:" + vm.im);
-  
-                  para.appendChild(node);*/
-
-                var element = document.getElementById("filter");
-                element.appendChild(para);
-
-                //var main = document.getElementById('filter');
-
-                var contain = document.createElement('div');
-                var cname = 'contain' + vm.im;
-                contain.setAttribute('id', cname);
-                element.appendChild(contain);
-
-
-
-                var input = document.createElement('input');
-                var iname = 'input' + vm.im;
-                input.setAttribute("data-ng-model", "vm.fi" + vm.im.toString());
-                input.setAttribute('id', iname);
-                contain.appendChild(input);
-
-
-
-                var xx = document.getElementById(iname);
-                var el = angular.element(xx);
-                $scope = el.scope();
-                $injector = el.injector();
-                $injector.invoke(function ($compile) {
-                    $compile(el)($scope);
-                });
-
-
-
-                var fselect = document.createElement('select');
-                var sname = 'fselect' + vm.im;
-                fselect.setAttribute('id', sname);
-                contain.appendChild(fselect);
-
-                angular.forEach(vm.fieldsName, function (name) {
-                    var opt = document.createElement('option');
-                    opt.value = name;
-                    opt.innerHTML = name;
-                    fselect.appendChild(opt);
-                });
-
-
-
-                var jselect = document.createElement('select');
-                var jname = 'jselect' + vm.im;
-                jselect.setAttribute('id', jname);
-                contain.appendChild(jselect);
-
-                vm.j = ['MUST', 'MUST_NOT', 'SHOULD'];
-                angular.forEach(vm.j, function (name) {
-                    var opt = document.createElement('option');
-                    opt.value = name;
-                    opt.innerHTML = name;
-                    jselect.appendChild(opt);
-                });
-
+                dataconfig.addFilter(vm.im);
                 vm.im++;
             }
 
@@ -474,29 +415,17 @@
             function removefilter() {
 
                 var x = vm.im - 1;
-                var main = document.getElementById('filter');
-                var cname = 'contain' + x;
-                var contain = document.getElementById(cname);
-                main.removeChild(contain);
-                vm.im--;
+                if (x >= 1) {
+                    dataconfig.removeFilter(x);
+                    vm.im--;
+                }
             }
 
 
-            function getIndexName() {
-                if ($cookieStore.get('index') !== undefined) {
-                    if ($rootScope.index.length !== $cookieStore.get('index').length && $rootScope.index.length > 1) {
-                        $cookieStore.remove('index');
-                    }
-                }
+            function getIndexName() {            
+                vm.indicesName = dataconfig.checkCookie('index', "");
 
-                if ($cookieStore.get('index') === undefined || $cookieStore.get('index').length <= 1) {
-
-                    $cookieStore.put('index', $rootScope.index);
-                }
-
-
-
-                vm.indicesName = $cookieStore.get('index');
+                //vm.indicesName = $cookieStore.get('index');
                 // log(vm.indicesName.length);
                 $timeout(getFieldName, 500);
                 // getFieldName();
@@ -556,10 +485,11 @@
 
 
 
-            //         Search and filter
 
-            vm.fselect = "";
-            vm.im = 1;
+
+            //         Search and filter
+       
+            
             vm.condition = "";
 
             function search() {
@@ -858,26 +788,5 @@
                    vm.j++;
                }
            }
-
-           function geti() {
-               vm.j = 0;
-               vm.z = 0;
-               vm.i = 0;
-
-               for (vm.i = 0; vm.i < 144; vm.i++) {
-                   client.indices.exists({
-                       index: vm.t[vm.i]
-                   }).then(function(resp) {
-                       if (resp) {
-                           vm.indexName[vm.j] = vm.t[vm.z];
-                           vm.j++;
-                           log(vm.z);
-                       }
-                       vm.z++;
-                   }, function(err) {
-                       log(err.message);
-                   });
-
-               }
-           }
+         
        }*/

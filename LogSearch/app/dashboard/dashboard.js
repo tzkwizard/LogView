@@ -1,14 +1,14 @@
 ﻿(function () {
     'use strict';
     var controllerId = 'dashboard';
-    angular.module('app').controller(controllerId, ['$timeout', '$cookieStore', '$rootScope', 'common', 'dataconfig', 'client', dashboard]);
+    angular.module('app').controller(controllerId, ['$timeout', '$cookieStore', '$rootScope', 'common', 'dataconfig', 'datasearch', 'client', dashboard]);
 
-    function dashboard($timeout, $cookieStore, $rootScope, common, dataconfig, client) {
+    function dashboard($timeout, $cookieStore, $rootScope, common, dataconfig,datasearch, client) {
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
 
         var vm = this;
-
+        vm.size = 15;
         vm.isBusy = true;
         vm.busyMessage = "wait";
         vm.spinnerOptions = {
@@ -72,20 +72,10 @@
         }
 
         function getIndexName() {
-            if ($cookieStore.get('index') !== undefined) {
-                if ($rootScope.index.length !== $cookieStore.get('index').length && $rootScope.index.length > 1) {
-                    $cookieStore.remove('index');
-                }
-            }
+    
+            vm.indicesName= dataconfig.checkCookie('index',"");
 
-            if ($cookieStore.get('index') === undefined || $cookieStore.get('index').length <= 1) {
-
-                $cookieStore.put('index', $rootScope.index);
-            }
-
-
-
-            vm.indicesName = $cookieStore.get('index');
+           // vm.indicesName = $cookieStore.get('index');
             //  vm.indicesName = $rootScope.index;
         }
 
@@ -93,17 +83,7 @@
         //   Draw Map
         vm.location = [];
         function geoMap() {
-
-            client.search({
-                index: ["logstash-2015.03.30", "logstash-2015.03.31", "logstash-2015.04.01", "logstash-2015.04.02", "logstash-2015.04.03", "logstash-2015.04.04", "logstash-2015.04.05", "logstash-2015.04.06"],
-                type: 'logs',
-                size: 100,
-                body:
-                    ejs.Request()
-                        .query(ejs.MatchAllQuery())
-                        .aggregation(ejs.TermsAggregation("agg").field("geoip.city_name.raw").size(15))
-
-            }).then(function (resp) {
+            datasearch.termAggragation(vm.indicesName, 'logs', "geoip.city_name.raw", vm.size).then(function (resp) {
                 vm.tt = resp.hits.total;
                 drawMap(resp.aggregations.agg.buckets, vm.tt);
             }, function (err) {
@@ -256,14 +236,7 @@
 
         function timeLineGram() {
 
-            client.search({
-                index: vm.indicesName,
-                type: 'logs',
-                body: ejs.Request()
-                    .aggregation(ejs.DateHistogramAggregation("agg").field("@timestamp").interval("day"))
-                //.format("yyyy-MM-dd")
-
-            }).then(function (resp) {
+            datasearch.dateHistogramAggregation(vm.indicesName, 'logs', "@timestamp", "day").then(function (resp) {
                 vm.total = resp.aggregations;
                 vm.hitSearch = resp.aggregations.agg.buckets;
                 drawTimwLine(resp.aggregations.agg.buckets);
@@ -289,15 +262,9 @@
         }
 
         function histGram() {
+       
 
-            client.search({
-                index: vm.indicesName,
-                type: 'logs',
-                body: ejs.Request()
-                    .aggregation(ejs.DateHistogramAggregation("agg").field("@timestamp").interval("day"))
-                //.format("yyyy-MM-dd")
-
-            }).then(function (resp) {
+            datasearch.dateHistogramAggregation(vm.indicesName, 'logs', "@timestamp", "day").then(function (resp) {
                 vm.total = resp.aggregations;
                 vm.hitSearch = resp.aggregations.agg.buckets;
                 drawHist(resp.aggregations.agg.buckets);

@@ -2,9 +2,9 @@
     'use strict';
 
     var serviceId = 'dataconfig';
-    angular.module('app').factory(serviceId, ['common', 'client', dataconfig]);
+    angular.module('app').factory(serviceId, ['$rootScope', '$cookieStore', 'common', 'client', dataconfig]);
 
-    function dataconfig(common, client) {
+    function dataconfig($rootScope, $cookieStore, common, client) {
 
         var vm = this;
         vm.typesName = [];
@@ -17,6 +17,9 @@
             getFieldName: getFieldName,
             createContainer: createContainer,
             filterIndex: filterIndex,
+            addFilter: addFilter,
+            removeFilter: removeFilter,
+            checkCookie: checkCookie,
             prime: prime
         }
         return service;
@@ -229,9 +232,103 @@
             return vm.fieldsName;
         }
 
+        function addFilter(n) {
+            var para = document.createElement("p");
+            /*  var node = document.createTextNode("filter:" + n);
+
+              para.appendChild(node);*/
+
+            var element = document.getElementById("filter");
+            element.appendChild(para);
+
+            //var main = document.getElementById('filter');
+
+            var contain = document.createElement('div');
+            var cname = 'contain' + n;
+            contain.setAttribute('id', cname);
+            element.appendChild(contain);
 
 
 
+            var input = document.createElement('input');
+            var iname = 'input' + n;
+            input.setAttribute("data-ng-model", "vm.fi" + n.toString());
+            input.setAttribute('id', iname);
+            contain.appendChild(input);
+
+
+
+            var xx = document.getElementById(iname);
+            /*var el = angular.element(xx);
+            $scope = el.scope();
+            $injector = el.injector();
+            $injector.invoke(function ($compile) {
+                $compile(el)($scope);
+            });*/
+
+
+
+            var fselect = document.createElement('select');
+            var sname = 'fselect' + n;
+            fselect.setAttribute('id', sname);
+            contain.appendChild(fselect);
+
+            angular.forEach(vm.fieldsName, function (name) {
+                var opt = document.createElement('option');
+                opt.value = name;
+                opt.innerHTML = name;
+                fselect.appendChild(opt);
+            });
+
+
+
+            var jselect = document.createElement('select');
+            var jname = 'jselect' + n;
+            jselect.setAttribute('id', jname);
+            contain.appendChild(jselect);
+
+            vm.j = ['MUST', 'MUST_NOT', 'SHOULD'];
+            angular.forEach(vm.j, function (name) {
+                var opt = document.createElement('option');
+                opt.value = name;
+                opt.innerHTML = name;
+                jselect.appendChild(opt);
+            });
+        }
+
+        function removeFilter(n) {
+            var main = document.getElementById('filter');
+            var cname = 'contain' + n;
+            var contain = document.getElementById(cname);
+            main.removeChild(contain);
+        }
+
+        function checkCookie(att, index) {
+            if ($rootScope.logfield !== undefined) {
+                if ($cookieStore.get(att) !== undefined) {
+                    if ($rootScope.index.length !== $cookieStore.get(att).length && $rootScope.index.length > 1) {
+                        $cookieStore.remove(att);
+                    }
+                }
+
+                if ($cookieStore.get(att) === undefined || $cookieStore.get(att).length <= 1) {
+
+                    $cookieStore.put(att, $rootScope.index);
+                }
+                return $cookieStore.get(att);
+            } else {
+
+                if (att === 'logfield') {
+                    return getFieldName(index, $rootScope.logtype);
+                } else if (att === 'index') {
+                    return filterIndex();
+
+                }
+                else {
+                    return null;
+                }
+            }
+        }
 
     }
 })();

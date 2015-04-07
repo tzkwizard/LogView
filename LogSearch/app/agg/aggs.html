@@ -15,7 +15,7 @@
                     <option selected value="all">all</option>
                     <option value={{doc}} data-ng-repeat="doc in vm.indicesName">{{doc}} </option>
                 </select>
-                <select ng-model="vm.type" class="form-control" data-ng-click="vm.getFieldName()" style="width: 50px">
+                <select ng-model="vm.type" class="form-control" style="width: 50px" ng-show="false">
                     <option selected value="all"> all</option>
                     <option value={{doc}} data-ng-repeat="doc in vm.typesName">{{doc}} </option>
                 </select>
@@ -36,6 +36,9 @@
                     <div data-cc-widget-header title="{{vm.title}}" subtitle="{{vm.total}} / {{vm.total}}"></div>
                 </div>
                 {{vm.searchText}}
+                <button class="btn btn-large btn-info btn-notext pull-right" type="button" data-ng-click="vm.clear()">
+                    <i class="fa fa-trash-o"> Clear </i>
+                </button>
                 <div class="fader-animation" data-ng-repeat="doc in vm.refinedsearch">
                     <li>{{doc.key}} : {{doc.value}}</li>
                 </div>
@@ -80,24 +83,14 @@
                     </table>                  
                 </div>
             <div id="table2_div"></div>
-           
-            
-
-            <!-- <div data-ng-repeat="doc in vm.hitSearch">
-                {{doc._source.ip}} <br>
-                {{vm.aggName}}
-            </div>-->
 
         </div>
-
     </section>
 </section>
 
 
-<!--
-     
-    <div data-ng-attr-id={{vm.dashboard}}>
-    $1$Divs that will hold each control and chart#1#
+<!-- <div data-ng-attr-id={{vm.dashboard}}>
+    Divs that will hold each control and chart
     <table class="columns">
         <tr>
             <td>

@@ -2,9 +2,9 @@
     'use strict';
 
     var serviceId = 'datasearch';
-    angular.module('app').factory(serviceId, ['common', 'client', datacontext]);
+    angular.module('app').factory(serviceId, ['common', 'client', datasearch]);
 
-    function datacontext(common, client) {
+    function datasearch(common, client) {
 
         var vm = this;
         vm.typesName = [];
@@ -17,9 +17,47 @@
             basicSearch: basicSearch,
             stringquery: stringquery,
             termqueryandfilter: termqueryandfilter,
-            getFieldsample: getFieldsample
+            getFieldsample: getFieldsample,
+            termAggragation: termAggragation,
+            termAggragationwithQuery: termAggragationwithQuery,
+            dateHistogramAggregation: dateHistogramAggregation
         }
         return service;
+
+        function dateHistogramAggregation(index, type, aggfield, span) {
+            return client.search({
+                index: index,
+                type: type,
+                body: ejs.Request()
+                    .aggregation(ejs.DateHistogramAggregation("agg").field(aggfield).interval(span))
+                //.format("yyyy-MM-dd")
+
+            });
+        }
+
+
+        function termAggragation(indices, type, aggfield, size) {
+            return client.search({
+                index: indices,
+                type: type,
+                body:
+                    ejs.Request()
+                        .query(ejs.MatchAllQuery())
+                        .aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size))
+            });
+
+        }
+        function termAggragationwithQuery(indices, type, aggfield, size, searchText) {
+            return client.search({
+                index: indices,
+                type: type,
+                body: ejs.Request()
+                    .query(ejs.QueryStringQuery(searchText))
+                    .aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size))
+
+            });
+        }
+
 
 
         function stringquery(indices, type, pagecount, field, searchText, filterField, filter, condition, choice) {

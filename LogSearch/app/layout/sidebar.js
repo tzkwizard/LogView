@@ -93,7 +93,7 @@
                     type: 'logs',
 
                     body: ejs.Request()
-                        .aggregation(ejs.TermsAggregation("agg").field("request.raw").size(5))
+                        .aggregation(ejs.TermsAggregation("agg").field("request.raw").size(10))
 
                 }).then(function (resp) {
                     vm.apiaddress = resp.aggregations.agg.buckets;
@@ -115,7 +115,7 @@
                     type: 'logs',
 
                     body: ejs.Request()
-                        .aggregation(ejs.TermsAggregation("agg").field("verb.raw").size(5))
+                        .aggregation(ejs.TermsAggregation("agg").field("verb.raw").size(10))
 
                 }).then(function (resp) {
                     vm.httpmethod = resp.aggregations.agg.buckets;
@@ -136,7 +136,7 @@
                     type: 'logs',
 
                     body: ejs.Request()
-                        .aggregation(ejs.TermsAggregation("agg").field("ident.raw").size(5))
+                        .aggregation(ejs.TermsAggregation("agg").field("ident.raw").size(10))
 
                 }).then(function (resp) {
                     vm.user = resp.aggregations.agg.buckets;
