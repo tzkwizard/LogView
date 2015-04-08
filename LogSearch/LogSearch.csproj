@@ -116,9 +116,12 @@
     <Content Include="app\ELS\client.js" />
     <Content Include="app\ELS\Loading.html" />
     <Content Include="app\ELS\Loading.js" />
+    <Content Include="app\ELS\TODO.html" />
+    <Content Include="app\ELS\TODO.js" />
     <Content Include="app\layout\topnav.js" />
     <Content Include="app\services\model.js" />
     <Content Include="app\services\routeMediator.js" />
+    <Content Include="battlefield.jpg" />
     <Content Include="ccfavicon.ico" />
     <Content Include="content\bootstrap-theme.css" />
     <Content Include="content\bootstrap-theme.min.css" />

@@ -7,7 +7,7 @@
     function datasearch(common, client) {
 
         var vm = this;
-       
+
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(serviceId);
         var service = {
@@ -26,41 +26,48 @@
 
 
         // Aggragation
-        function dateHistogramAggregation(index, type, aggfield, span) {
+        function dateHistogramAggregation(index, type, aggfield, span, start, end) {
             return client.search({
                 index: index,
                 type: type,
                 body: ejs.Request()
-                    .aggregation(ejs.DateHistogramAggregation("agg").field(aggfield).interval(span))
+                    .aggregation(ejs.FilterAggregation("ag").aggregation(ejs.DateHistogramAggregation("agg").field(aggfield).interval(span)).filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)))
+                // .aggregation(ejs.DateHistogramAggregation("agg").field(aggfield).interval(span))
+                //  .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
                 //.format("yyyy-MM-dd")
 
             });
         }
 
-        function termAggragation(indices, type, aggfield, size) {
+        function termAggragation(indices, type, aggfield, size, start, end) {
             return client.search({
                 index: indices,
                 type: type,
                 body:
                     ejs.Request()
                         .query(ejs.MatchAllQuery())
-                        .aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size))
+                         .aggregation(ejs.FilterAggregation("ag").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size)))
+                //.aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size))
+                // .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
             });
 
         }
-        function termAggragationwithQuery(indices, type, aggfield, size, searchText) {
+        function termAggragationwithQuery(indices, type, aggfield, size, searchText, start, end) {
             return client.search({
                 index: indices,
                 type: type,
                 body: ejs.Request()
                     .query(ejs.QueryStringQuery(searchText))
-                    .aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size))
+                     .aggregation(ejs.FilterAggregation("ag").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size)))
+
+                //  .aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size))
+                // .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
 
             });
         }
 
 
-       // Filter
+        // Filter
 
         function stringquery(indices, type, pagecount, field, searchText, filterField, filter, condition, choice) {
 

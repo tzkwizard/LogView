@@ -9,14 +9,16 @@
     // Configure the routes and route resolvers
     app.config(['$routeProvider', 'routes', '$locationProvider', routeConfigurator]);
     function routeConfigurator($routeProvider, routes, $locationProvider) {
-
-
-     /*   $locationProvider.html5Mode({
-            enabled: true,
-           
-        });
+        
+     /*   $locationProvider
+      .html5Mode({
+          enabled: true,
+          requireBase: false,
+          rewriteLinks:false
+        });*/
+ 
        //TODO get rid of me 
-        $routeProvider.when('/invalid', {
+      /*  $routeProvider.when('/invalid', {
             templateUrl:'/app/els/els.html'   
             }
             );*/
@@ -121,7 +123,18 @@
                          content: '<i class="fa fa-area-chart"></i> Aggs'
                      }
                  }
-             },            
+             },
+             {
+                 url: '/todo',
+                 config: {
+                     title: 'TODO',
+                     templateUrl: 'app/ELS/TODO.html',
+                     settings: {
+                         nav: 4,
+                         content: '<i class="fa fa-cloud"></i> TODO'
+                     }
+                 }
+             },
              {
                  url: '/els/:search',
                  config: {

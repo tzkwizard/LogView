@@ -118,9 +118,9 @@
             vm.treestatus = true;
             function treeMap(index, aggName) {
 
-                datasearch.termAggragation(index, 'logs', aggName,vm.size).then(function (resp) {
+                datasearch.termAggragation(index, 'logs', aggName, vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
 
-                    var tt = resp.aggregations.agg.buckets;
+                    var tt = resp.aggregations.ag.agg.buckets;
 
 
                     angular.forEach(tt, function (y) {
@@ -237,7 +237,7 @@
                     });
             }
 
-            function getIndexName() {            
+            function getIndexName() {
                 if ($cookieStore.get('index') !== undefined) {
                     if ($rootScope.index.length !== $cookieStore.get('index').length && $rootScope.index.length > 1) {
                         $cookieStore.remove('index');
@@ -258,7 +258,7 @@
 
                 // log(vm.indicesName.length);
                 // $timeout(renew, 500);           
-               // vm.indicesName = $cookieStore.get('index');
+                // vm.indicesName = $cookieStore.get('index');
                 vm.treestatus = true;
                 // vm.indicesName = $rootScope.index;
                 //vm.index = vm.indicesName[0];
@@ -272,7 +272,7 @@
             }
 
             function getFieldName() {
-                
+
 
                 if ($cookieStore.get('logfield') !== undefined) {
                     if ($rootScope.logfield.length !== $cookieStore.get('logfield').length && $rootScope.logfield.length > 1) {
@@ -289,20 +289,20 @@
                     } else {
 
                         vm.fieldsName = dataconfig.getFieldName(vm.indicesName[0], $rootScope.logtype);
-                        
+
                     }
                 }
-               
 
 
-               // vm.fieldsName = dataconfig.checkCookie('logfield', vm.indicesName[0]);
+
+                // vm.fieldsName = dataconfig.checkCookie('logfield', vm.indicesName[0]);
 
                 vm.aggName = "";
                 $timeout(drawtreemap, 500);
-                
+
             }
 
-           
+
 
             //   Draw chart
 
@@ -351,12 +351,12 @@
                     });
 
                 }
-                else {                 
+                else {
 
-                    datasearch.termAggragationwithQuery(vm.indicesName, 'logs', aggName, vm.size, vm.searchText).then(function (resp) {
+                    datasearch.termAggragationwithQuery(vm.indicesName, 'logs', aggName, vm.size, vm.searchText, $rootScope.st, $rootScope.ft).then(function (resp) {
                         vm.total = resp.hits.total;
-                        vm.hitSearch = resp.aggregations.agg.buckets;
-                        drawDashboard(resp.aggregations.agg, aggName);
+                        vm.hitSearch = resp.aggregations.ag.agg.buckets;
+                        drawDashboard(resp.aggregations.ag.agg, aggName);
                     }, function (err) {
                         log(err.message);
                     });
@@ -373,15 +373,15 @@
                 vm.barchart = "bar";
                 vm.tablechart = "table";
 
-                datasearch.termAggragationwithQuery(vm.indicesName, 'logs', aggName, vm.size, vm.searchText).then(function (resp) {
+                datasearch.termAggragationwithQuery(vm.indicesName, 'logs', aggName, vm.size, vm.searchText, $rootScope.st, $rootScope.ft).then(function (resp) {
                     vm.dashboard = vm.dashboard + aggName;
                     vm.range = vm.range + aggName;
                     vm.barchart = vm.barchart + aggName;
                     vm.tablechart = vm.tablechart + aggName;
                     // vm.hitSearch = resp.hits.hits;
                     vm.total = resp.hits.total;
-                    if (resp.aggregations.agg.buckets.length > 1) {
-                        drawDashboard2(resp.aggregations.agg, aggName);
+                    if (resp.aggregations.ag.agg.buckets.length > 1) {
+                        drawDashboard2(resp.aggregations.ag.agg, aggName);
                     }
 
 
@@ -554,7 +554,7 @@
 
             function drawMap(r) {
 
-              var geoData = new google.visualization.DataTable();
+                var geoData = new google.visualization.DataTable();
                 geoData.addColumn('number', 'Lat');
                 geoData.addColumn('number', 'Lon');
                 geoData.addColumn('string', 'Name');

@@ -3,7 +3,7 @@
     var controllerId = 'dashboard';
     angular.module('app').controller(controllerId, ['$timeout', '$cookieStore', '$rootScope', 'common', 'dataconfig', 'datasearch', 'client', dashboard]);
 
-    function dashboard($timeout, $cookieStore, $rootScope, common, dataconfig,datasearch, client) {
+    function dashboard($timeout, $cookieStore, $rootScope, common, dataconfig, datasearch, client) {
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
 
@@ -47,11 +47,14 @@
 
 
         //  Load
+        vm.st = "";
+        vm.ft = "";
         activate();
         function activate() {
             common.activateController([init()], controllerId)
                 .then(function () {
-
+                    vm.ft = $rootScope.ft;
+                    vm.st = $rootScope.st;
 
                     google.setOnLoadCallback(drawMap);
                     google.setOnLoadCallback(drawHist);
@@ -72,15 +75,15 @@
             //$timeout(renew, 800);
         }
 
- 
+
 
         function getIndexName() {
-             
+
             if ($cookieStore.get('index') !== undefined) {
                 if ($rootScope.index.length !== $cookieStore.get('index').length && $rootScope.index.length > 1) {
                     $cookieStore.remove('index');
                 }
-                
+
             }
             vm.indicesName = $cookieStore.get('index');
 
@@ -93,19 +96,19 @@
                     vm.indicesName = dataconfig.filterIndex();
                 }
             }
-            
 
 
-            
+
+
         }
 
 
         //   Draw Map
         vm.location = [];
         function geoMap() {
-            datasearch.termAggragation(vm.indicesName, 'logs', "geoip.city_name.raw", vm.size).then(function (resp) {
+            datasearch.termAggragation(vm.indicesName, 'logs', "geoip.city_name.raw", vm.size, vm.st, vm.ft).then(function (resp) {
                 vm.tt = resp.hits.total;
-                drawMap(resp.aggregations.agg.buckets, vm.tt);
+                drawMap(resp.aggregations.ag.agg.buckets, vm.tt);
             }, function (err) {
                 log(err.message);
             });
@@ -178,9 +181,10 @@
                 index: vm.indicesName,
                 type: 'logs',
                 body: ejs.Request()
-                    .aggregation(ejs.TermsAggregation("agg1").field("verb"))
-                    .aggregation(ejs.TermsAggregation("agg2").field("clientip.raw"))
-                    .aggregation(ejs.TermsAggregation("agg3").field("request.raw"))
+                     .aggregation(ejs.FilterAggregation("ag1").filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st)).agg(ejs.TermsAggregation("agg1").field("verb")))
+                    .aggregation(ejs.FilterAggregation("ag2").filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st)).agg(ejs.TermsAggregation("agg2").field("clientip.raw")))
+                    .aggregation(ejs.FilterAggregation("ag3").filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st)).agg(ejs.TermsAggregation("agg3").field("request.raw")))
+
 
             }).then(function (resp) {
                 //vm.pietitle = ["verb","clientip.raw","request.raw"];
@@ -195,7 +199,7 @@
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'key');
             data.addColumn('number', 'Number');
-            angular.forEach(agg.agg1.buckets, function (n) {
+            angular.forEach(agg.ag1.agg1.buckets, function (n) {
                 data.addRow([n.key.toString(), n.doc_count]);
 
             });
@@ -221,7 +225,7 @@
             var data1 = new google.visualization.DataTable();
             data1.addColumn('string', 'key');
             data1.addColumn('number', 'Number');
-            angular.forEach(agg.agg2.buckets, function (n) {
+            angular.forEach(agg.ag2.agg2.buckets, function (n) {
                 data1.addRow([n.key.toString(), n.doc_count]);
 
             });
@@ -232,7 +236,7 @@
             var data2 = new google.visualization.DataTable();
             data2.addColumn('string', 'key');
             data2.addColumn('number', 'Number');
-            angular.forEach(agg.agg3.buckets, function (n) {
+            angular.forEach(agg.ag3.agg3.buckets, function (n) {
                 data2.addRow([n.key.toString(), n.doc_count]);
 
             });
@@ -256,10 +260,10 @@
 
         function timeLineGram() {
 
-            datasearch.dateHistogramAggregation(vm.indicesName, 'logs', "@timestamp", "day").then(function (resp) {
+            datasearch.dateHistogramAggregation(vm.indicesName, 'logs', "@timestamp", "day", vm.st, vm.ft).then(function (resp) {
                 vm.total = resp.aggregations;
-                vm.hitSearch = resp.aggregations.agg.buckets;
-                drawTimwLine(resp.aggregations.agg.buckets);
+                vm.hitSearch = resp.aggregations.ag.agg.buckets;
+                drawTimwLine(resp.aggregations.ag.agg.buckets);
             }, function (err) {
                 log(err.message);
             });
@@ -282,11 +286,11 @@
         }
 
         function histGram() {
-    
-            datasearch.dateHistogramAggregation(vm.indicesName, 'logs', "@timestamp", "day").then(function (resp) {
+
+            datasearch.dateHistogramAggregation(vm.indicesName, 'logs', "@timestamp", "day", vm.st, vm.ft).then(function (resp) {
                 vm.total = resp.aggregations;
-                vm.hitSearch = resp.aggregations.agg.buckets;
-                drawHist(resp.aggregations.agg.buckets);
+                vm.hitSearch = resp.aggregations.ag.agg.buckets;
+                drawHist(resp.aggregations.ag.agg.buckets);
             }, function (err) {
                 log(err.message);
             });

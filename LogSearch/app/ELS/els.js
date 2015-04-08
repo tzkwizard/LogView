@@ -276,7 +276,7 @@
 
             vm.ft = "";
             vm.st = "";
-            today();
+            //today();
 
 
             function filterst(x) {
@@ -303,6 +303,8 @@
                         // log(x);
                         break;
                 }
+                $rootScope.ft = vm.ft;
+                $rootScope.st = vm.st;
                 search();
 
             }
@@ -474,6 +476,8 @@
                 common.activateController([getIndexName()], controllerId)
                     .then(function () {
                         $location.search();
+                        vm.ft = $rootScope.ft;
+                        vm.st = $rootScope.st;
                         if ($location.search.text !== "") {
                             vm.searchText = $location.search.text;
                         }

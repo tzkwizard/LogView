@@ -5,7 +5,7 @@
     angular.module('app').controller(controllerId,
         ['$rootScope', '$location', '$route', 'config', 'routes', 'dataconfig', 'datasearch', 'client', 'common', sidebar]);
 
-    function sidebar($rootScope, $location, $route, config, routes, dataconfig,datasearch, client, common) {
+    function sidebar($rootScope, $location, $route, config, routes, dataconfig, datasearch, client, common) {
         var vm = this;
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
@@ -70,9 +70,9 @@
 
         vm.showLocation = function () {
             if (vm.location === "" || vm.location === undefined || $location.search.refresh) {
-              
-                datasearch.termAggragation($rootScope.index, 'logs', "clientip.raw",vm.size).then(function (resp) {
-                    vm.location = resp.aggregations.agg.buckets;
+
+                datasearch.termAggragation($rootScope.index, 'logs', "clientip.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
+                    vm.location = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
                     log("re");
                 }, function (err) {
@@ -84,9 +84,9 @@
         }
 
         vm.showRequestAPI = function () {
-            if (vm.apiaddress === "" || vm.apiaddress === undefined || $location.search.refresh) {           
-                datasearch.termAggragation($rootScope.index, 'logs', "request.raw", vm.size).then(function (resp) {
-                    vm.apiaddress = resp.aggregations.agg.buckets;
+            if (vm.apiaddress === "" || vm.apiaddress === undefined || $location.search.refresh) {
+                datasearch.termAggragation($rootScope.index, 'logs', "request.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
+                    vm.apiaddress = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
                     log("re");
                 }, function (err) {
@@ -100,8 +100,8 @@
 
         vm.showRequestMethod = function () {
             if (vm.httpmethod === "" || vm.httpmethod === undefined || $location.search.refresh) {
-                datasearch.termAggragation($rootScope.index, 'logs', "verb.raw", vm.size).then(function (resp) {
-                    vm.httpmethod = resp.aggregations.agg.buckets;
+                datasearch.termAggragation($rootScope.index, 'logs', "verb.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
+                    vm.httpmethod = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
                     log("re");
                 }, function (err) {
@@ -113,9 +113,9 @@
 
 
         vm.showUser = function () {
-            if (vm.user === "" || vm.user === undefined || $location.search.refresh) {          
-                datasearch.termAggragation($rootScope.index, 'logs', "ident.raw", vm.size).then(function (resp) {
-                    vm.user = resp.aggregations.agg.buckets;
+            if (vm.user === "" || vm.user === undefined || $location.search.refresh) {
+                datasearch.termAggragation($rootScope.index, 'logs', "ident.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
+                    vm.user = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
                     log("re");
                 }, function (err) {
@@ -127,8 +127,8 @@
 
         vm.showUserAction = function () {
             if (vm.useraction === "" || vm.useraction === undefined || $location.search.refresh) {
-                datasearch.termAggragation($rootScope.index, 'logs', "action.raw", vm.size).then(function (resp) {
-                    vm.useraction = resp.aggregations.agg.buckets;
+                datasearch.termAggragation($rootScope.index, 'logs', "action.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
+                    vm.useraction = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
                     log("re");
                 }, function (err) {

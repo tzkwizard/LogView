@@ -31,7 +31,7 @@
 
     // Handle routing errors and success events
     app.run(['$timeout', '$cookieStore', '$rootScope', '$route', 'breeze', 'dataconfig', 'routeMediator', 'client',
-        function ($timeout,$cookieStore, $rootScope, $route, breeze, dataconfig, routeMediator, client) {
+        function ($timeout, $cookieStore, $rootScope, $route, breeze, dataconfig, routeMediator, client) {
             // Include $route to kick start the router.
             // datacontext.prime();
             routeMediator.setRoutingHandlers();
@@ -39,10 +39,16 @@
             //$rootScope.index = dataconfig.filterIndex();
             $rootScope.index = dataconfig.initIndex();
             $rootScope.logtype = "logs";
-            $timeout(xx,500);
+            $timeout(xx, 500);
 
-            function xx()
-            { $rootScope.logfield = dataconfig.getFieldName($rootScope.index[0], $rootScope.logtype); }
+            function xx() {
+                $rootScope.logfield = dataconfig.getFieldName($rootScope.index[0], $rootScope.logtype);
+                $rootScope.st = moment(new Date()).subtract(2, 'month');
+                $rootScope.ft = new Date();
+            }
+
+
+
 
             client.ping({
                 requestTimeout: 1000,
