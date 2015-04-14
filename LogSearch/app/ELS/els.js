@@ -356,7 +356,7 @@
             //        Page load         
 
             vm.im = 1;
-
+            //
             vm.refresh = function () {
 
                 BootstrapDialog.confirm({
