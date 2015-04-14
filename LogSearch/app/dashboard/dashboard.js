@@ -182,7 +182,7 @@
                 type: 'logs',
                 body: ejs.Request()
                      .aggregation(ejs.FilterAggregation("ag1").filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st)).agg(ejs.TermsAggregation("agg1").field("verb")))
-                    .aggregation(ejs.FilterAggregation("ag2").filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st)).agg(ejs.TermsAggregation("agg2").field("clientip.raw")))
+                    .aggregation(ejs.FilterAggregation("ag2").filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st)).agg(ejs.TermsAggregation("agg2").field("geoip.city_name.raw")))
                     .aggregation(ejs.FilterAggregation("ag3").filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st)).agg(ejs.TermsAggregation("agg3").field("request.raw")))
 
 

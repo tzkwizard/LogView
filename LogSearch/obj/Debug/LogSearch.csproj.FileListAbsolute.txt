@@ -214,6 +214,6 @@ C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogSearch\bin
 C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogSearch\bin\ru\System.Spatial.resources.dll
 C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogSearch\bin\zh-Hans\System.Spatial.resources.dll
 C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogSearch\bin\zh-Hant\System.Spatial.resources.dll
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogSearch\obj\Debug\LogSearch.csprojResolveAssemblyReference.cache
 C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogSearch\obj\Debug\LogSearch.dll
 C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogSearch\obj\Debug\LogSearch.pdb
-C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogSearch\obj\Debug\LogSearch.csprojResolveAssemblyReference.cache

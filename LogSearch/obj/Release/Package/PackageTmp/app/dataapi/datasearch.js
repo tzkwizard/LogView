@@ -1,13 +1,13 @@
-﻿(function() {
+﻿(function () {
     'use strict';
 
     var serviceId = 'datasearch';
-    angular.module('app').factory(serviceId, ['common', 'client', datacontext]);
+    angular.module('app').factory(serviceId, ['common', 'client', datasearch]);
 
-    function datacontext(common, client) {
+    function datasearch(common, client) {
 
         var vm = this;
-        vm.typesName = [];
+
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(serviceId);
         var service = {
@@ -17,10 +17,57 @@
             basicSearch: basicSearch,
             stringquery: stringquery,
             termqueryandfilter: termqueryandfilter,
-            getFieldsample: getFieldsample
+            getFieldsample: getFieldsample,
+            termAggragation: termAggragation,
+            termAggragationwithQuery: termAggragationwithQuery,
+            dateHistogramAggregation: dateHistogramAggregation
         }
         return service;
 
+
+        // Aggragation
+        function dateHistogramAggregation(index, type, aggfield, span, start, end) {
+            return client.search({
+                index: index,
+                type: type,
+                body: ejs.Request()
+                    .aggregation(ejs.FilterAggregation("ag").aggregation(ejs.DateHistogramAggregation("agg").field(aggfield).interval(span)).filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)))
+                // .aggregation(ejs.DateHistogramAggregation("agg").field(aggfield).interval(span))
+                //  .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
+                //.format("yyyy-MM-dd")
+
+            });
+        }
+
+        function termAggragation(indices, type, aggfield, size, start, end) {
+            return client.search({
+                index: indices,
+                type: type,
+                body:
+                    ejs.Request()
+                        .query(ejs.MatchAllQuery())
+                         .aggregation(ejs.FilterAggregation("ag").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size)))
+                //.aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size))
+                // .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
+            });
+
+        }
+        function termAggragationwithQuery(indices, type, aggfield, size, searchText, start, end) {
+            return client.search({
+                index: indices,
+                type: type,
+                body: ejs.Request()
+                    .query(ejs.QueryStringQuery(searchText))
+                     .aggregation(ejs.FilterAggregation("ag").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size)))
+
+                //  .aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size))
+                // .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
+
+            });
+        }
+
+
+        // Filter
 
         function stringquery(indices, type, pagecount, field, searchText, filterField, filter, condition, choice) {
 
@@ -39,32 +86,32 @@
 
             switch (choice) {
 
-            case 1:
-            {
-                qmust = stringQ;
-                if (condition === "MUST") {
-                    qmust2 = matchallF;
-                    qmustnot = matchallFfalse2;
-                } else {
-                    qmust2 = matchallFfalse;
-                    qmustnot = matchallF;
-                }
-                fmust = termFfalse;
-                break;
-            }
+                case 1:
+                    {
+                        qmust = stringQ;
+                        if (condition === "MUST") {
+                            qmust2 = matchallF;
+                            qmustnot = matchallFfalse2;
+                        } else {
+                            qmust2 = matchallFfalse;
+                            qmustnot = matchallF;
+                        }
+                        fmust = termFfalse;
+                        break;
+                    }
 
-            case 2:
-            {
-                qmust = stringQ;
-                qmust2 = matchallFfalse;
-                if (condition === "MUST") {
-                    fmust = termF;
-                } else {
-                    fmust = termFfalse2;
-                }
-                qmustnot = matchallFfalse2;
-                break;
-            }
+                case 2:
+                    {
+                        qmust = stringQ;
+                        qmust2 = matchallFfalse;
+                        if (condition === "MUST") {
+                            fmust = termF;
+                        } else {
+                            fmust = termFfalse2;
+                        }
+                        qmustnot = matchallFfalse2;
+                        break;
+                    }
 
 
             }
@@ -80,7 +127,7 @@
         }
 
 
-        function getSampledata(indices, type, pagecount,start,end) {
+        function getSampledata(indices, type, pagecount, start, end) {
             return client.search({
                 index: indices,
                 //type: type,
@@ -106,8 +153,8 @@
             });
         }
 
-        function stringSearch(indices, type, pagecount, searchText,start,end) {
-            
+        function stringSearch(indices, type, pagecount, searchText, start, end) {
+
             return client.search({
                 index: indices,
                 type: type,
@@ -118,7 +165,7 @@
             });
         }
 
-        function searchWithoutFilter(indices, type, pagecount, field, searchText,start,end) {
+        function searchWithoutFilter(indices, type, pagecount, field, searchText, start, end) {
             return client.search({
                 index: indices,
                 type: type,
@@ -130,7 +177,7 @@
         }
 
 
-        function termqueryandfilter(indices, type, pagecount, field, searchText, filterField, filter, condition,start,end) {
+        function termqueryandfilter(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end) {
             /*  if (field === "" || field === "all") {
                 // mSearch(searchText); 
                 return stringSearch(indices, type, pagecount, searchText);
@@ -178,21 +225,19 @@
         }
 
 
-        function basicSearch(indices, type, pagecount, field, searchText, filterField, filter, condition,start,end) {
-         
-            if (filter === "" || filter === undefined) {
-                if (searchText === "" || searchText === undefined) {
+        // Main search 
 
-                    return getSampledata(indices, type, pagecount, start, end);
+        function basicSearch(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end) {
+
+            if (filter === "" || filter === undefined) {
+                if (field === "" || field === "all" || field === undefined) {
+                    return stringSearch(indices, type, pagecount, searchText, start, end);
                 } else {
-                    if (field === "" || field === "all" || field === undefined) {
-                        return stringSearch(indices, type, pagecount, searchText, start, end);
-                    } else {
-                        return searchWithoutFilter(indices, type, pagecount, field, searchText, start, end);
-                    }
+                    return searchWithoutFilter(indices, type, pagecount, field, searchText, start, end);
                 }
+
             } else {
-                if (searchText === "" || searchText === undefined) {    
+                if (searchText === "" || searchText === undefined) {
                     if (filterField === "" || filterField === "all" || filterField === undefined) {
                         return stringSearch(indices, type, pagecount, searchText, start, end);
                     } else {

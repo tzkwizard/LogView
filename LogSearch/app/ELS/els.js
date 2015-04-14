@@ -123,11 +123,11 @@
                 var t2 = document.getElementById('fselect1');
                 var t3 = document.getElementById('input1');
 
-                addFilter();
+               
 
-                toastr.info(t1.value + t2.value + t3.value + vm.fi1);
+               // toastr.info(t1.value + t2.value + t3.value + vm.fi1);
 
-
+               
 
 
             }
@@ -358,9 +358,31 @@
             vm.im = 1;
 
             vm.refresh = function () {
-                vm.searchText = "";
+
+                BootstrapDialog.confirm({
+                    message: 'Sure to Refresh?',
+                    closable: true, // <-- Default value is false
+                    draggable: true, // <-- Default value is false
+                    btnCancelLabel: 'No thanks', // <-- Default value is 'Cancel',
+                    btnOKLabel: 'Sure!', // <-- Default value is 'OK',
+                    btnOKClass: 'btn-warning', // <-- If you didn't specify it, dialog type will be used,
+                    callback: function (result) {
+                        // result will be true if button was click, while it will be false if users close the dialog directly.
+                        if (result) {
+                            vm.searchText = "";
+                            search();
+                            log("refresh");
+                        } else {
+                            log('Nope.');
+                        }
+                    }
+                });
+
+
+             /*   vm.searchText = "";
                 search();
-                log("refresh");
+                log("refresh");*/
+               
 
             }
 
@@ -520,7 +542,7 @@
             vm.condition = "";
 
             function search() {
-
+                vm.hitSearch = "";
                 if (vm.searchText == undefined || vm.searchText === "") {
                     init();
                     $timeout(random, 500);
@@ -531,6 +553,9 @@
                 .then(function (resp) {
                     vm.hitSearch = resp.hits.hits;
                     vm.total = resp.hits.total;
+                    if (vm.total === 0) {
+                        log("None Result");
+                    }
                     vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
                     vm.getCurrentPageData(vm.hitSearch);
                     $timeout(random, 500);
@@ -615,17 +640,7 @@
                 }, function (err) {
                     log(err.message);
                 });
-                /* client.search({
-                     index: 'logs',
-                     type: 'log',
-                     body: ejs.Request()
-                         .query(ejs.MultiMatchQuery(["username", "response", "message", "ip"], searchText))
-                     //  .filter(ejs.TermFilter(vm.filterAggName, vm.fi))
-                 }).then(function (resp) {
-                     vm.hitSearch = resp.hits.hits;
-                 }, function (err) {
-                     log(err.message);
-             });*/
+
             }
 
 
@@ -655,16 +670,6 @@
                 item: ""
             };
 
-            /* $scope.myData = [{ name: "", value: "" }];
-    
-                function fill(){
-                angular.forEach($scope.items._source, function (n) {
-                        
-                    $scope.myData.push({ name: "aotuo", value:n});
-    
-                });
-                }
-                fill();*/
             $scope.mySelections = [];
             $scope.myData = [];
 
@@ -762,8 +767,8 @@
 
             $scope.gridOptions3 = {
                 columnDefs: [
-      { field: 'Field', displayName: 'Field', width: 120 },
-      { field: 'Value', displayName: 'Value', width: 420 }
+                     { field: 'Field', displayName: 'Field', width: 120 },
+                     { field: 'Value', displayName: 'Value', width: 420 }
                 ],
                 data: 'myData3',
                 selectedItems: $scope.mySelections,

@@ -9,14 +9,16 @@
     // Configure the routes and route resolvers
     app.config(['$routeProvider', 'routes', '$locationProvider', routeConfigurator]);
     function routeConfigurator($routeProvider, routes, $locationProvider) {
-
-
-     /*   $locationProvider.html5Mode({
-            enabled: true,
-           
-        });
+        
+     /*   $locationProvider
+      .html5Mode({
+          enabled: true,
+          requireBase: false,
+          rewriteLinks:false
+        });*/
+ 
        //TODO get rid of me 
-        $routeProvider.when('/invalid', {
+      /*  $routeProvider.when('/invalid', {
             templateUrl:'/app/els/els.html'   
             }
             );*/
@@ -59,18 +61,20 @@
         $routeProvider.otherwise({ redirectTo: '/' });
         function setRoute(url, definition) {
             definition.resolve = angular.extend(definition.resolve || {}, {
-               // prime: prime
+                 prime: prime
+
             });
 
             $routeProvider.when(url, definition);
         }
     }
 
-  //  prime.$inject = ['datacontext'];
-   // prime.$inject = ['dataconfig'];
+   // prime.$inject = ['datacontext'];
+    prime.$inject = ['dataconfig'];
     function prime(d) {
-        //return d.prime();
-      //  d.filterIndex();
+         d.prime();
+        //  d.filterIndex();
+      //  $rootScope.logfield = d.getFieldName("logstash-2015.04.01","logs");
     }
     // Define the routes 
     function getRoutes() {
@@ -113,13 +117,24 @@
                  url: '/aggs',
                  config: {
                      title: 'aggs',
-                     templateUrl: 'app/ELS/aggs.html',
+                     templateUrl: 'app/agg/aggs.html',
                      settings: {
                          nav: 3,
                          content: '<i class="fa fa-area-chart"></i> Aggs'
                      }
                  }
-             },            
+             },
+             {
+                 url: '/todo',
+                 config: {
+                     title: 'TODO',
+                     templateUrl: 'app/ELS/TODO.html',
+                     settings: {
+                         nav: 4,
+                         content: '<i class="fa fa-cloud"></i> TODO'
+                     }
+                 }
+             },
              {
                  url: '/els/:search',
                  config: {

@@ -22,7 +22,7 @@
             <li class="nlightblue fade-selection-animation" ng-click="vm.showUser()"> <a><i class="fa fa-user"></i> User</a></li>
 
             <ul collapse="vm.isCollapsed4" class="nlightblue fade-selection-animation">
-                <li class="nlightblue fade-selection-animation" data-ng-click="vm.test(r,'logs.ident.raw')"
+                <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.ident.raw')"
                     data-ng-repeat="r in vm.user">
                     <a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>
                 </li>
@@ -32,7 +32,7 @@
             <li class="nlightblue fade-selection-animation" ng-click="vm.showLocation()"> <a><i class="fa fa-map-marker"></i> Location</a></li>
 
             <ul collapse="vm.isCollapsed" class="nlightblue fade-selection-animation">
-                <li class="nlightblue fade-selection-animation" data-ng-click="vm.test(r,'logs.clientip.raw')"
+                <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.geoip.city_name.raw')"
                     data-ng-repeat="r in vm.location">
                     <a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>
                 </li>
@@ -41,7 +41,7 @@
             <li class="nlightblue fade-selection-animation" ng-click="vm.showRequestAPI()"> <a><i class="fa fa-windows"></i> API</a></li>
 
             <ul collapse="vm.isCollapsed2" class="nlightblue fade-selection-animation">
-                <li class="nlightblue fade-selection-animation" data-ng-click="vm.test(r,'logs.request.raw')"
+                <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.request.raw')"
                     data-ng-repeat="r in vm.apiaddress">
                     <a style="color:whitesmoke">  {{r.key.toString()}} ({{r.doc_count}})    </a>
                 </li>
@@ -51,7 +51,7 @@
             <li class="nlightblue fade-selection-animation" ng-click="vm.showRequestMethod()"> <a><i class="fa fa-retweet"></i> Method</a></li>
 
             <ul collapse="vm.isCollapsed3" class="nlightblue fade-selection-animation">
-                <li class="nlightblue fade-selection-animation" data-ng-click="vm.test(r,'logs.verb.raw')"
+                <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.verb.raw')"
                     data-ng-repeat="r in vm.httpmethod">
                     <a style="color:whitesmoke">  {{r.key.toString()}} ({{r.doc_count}})    </a>
                 </li>
@@ -61,7 +61,7 @@
             <li class="nlightblue fade-selection-animation" ng-click="vm.showUserAction()"> <a><i class="fa fa-android"></i> Action</a></li>
 
             <ul collapse="vm.isCollapsed5" class="nlightblue fade-selection-animation">
-                <li class="nlightblue fade-selection-animation" data-ng-click="vm.test(r,'logs.action.raw')"
+                <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.action.raw')"
                     data-ng-repeat="r in vm.useraction">
                     <a style="color:whitesmoke">  {{r.key.toString()}} ({{r.doc_count}})    </a>
                 </li>

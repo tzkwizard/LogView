@@ -17,10 +17,10 @@
     <input type="text" class="form-control"
            data-ng-model="vm.searchText"
            placeholder="  Search"/>
-    <button class="btn btn-large btn-info btn-notext" type="button" data-ng-click="vm.search()">
+    <button class="btn btn-large btn-info btn-notext ng-click-active" type="button" data-ng-click="vm.search()">
         <i class="fa fa-search"> Search </i>
     </button>
-    <button class="btn btn-large btn-info btn-notext" type="button" data-ng-click="vm.refresh($event)">
+    <button class="btn btn-large btn-info btn-notext ng-click-active" type="button" data-ng-click="vm.refresh($event)">
         <i class="fa fa-refresh"> Refresh </i>
     </button>
     <button class="btn-group-sm" type="button">
@@ -115,6 +115,7 @@
             <option vaule=50>50</option>
             <option vaule=100>100</option>
             <option selected vaule=1000>1000</option>
+            <option selected vaule=9999>9999</option>
         </select>
         <select ng-model=" vm.paging.pageSize" class="input-medium pull-right" ng-click="vm.refreshPage()">
             <option selected value=5>5</option>
@@ -172,9 +173,9 @@
     </li>
 
     <script type="text/ng-template" id="myModalContent.html">
-                <div class="widget wviolet">
-                    <div data-cc-widget-header title="{{title}}"></div>
-                </div>
+        <div class="widget wlightblue">
+            <div data-cc-widget-header title="{{title}}"></div>
+        </div>
                
                 <hr />
                 <div class="modal-body">

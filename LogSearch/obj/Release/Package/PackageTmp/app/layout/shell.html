@@ -1,9 +1,9 @@
-﻿<div data-ng-controller="shell as vm"  >    
+﻿<div data-ng-controller="shell as vm">
 
     <div id="splash-page" data-ng-show="vm.showSplash" class="dissolve-animation">
         <div class="page-splash">
             <div class="page-splash-message">
-               Loading...Loading...
+                Loading...Loading...
             </div>
             <div class="progress progress-striped active page-progress-bar">
                 <div class="bar"></div>
@@ -15,7 +15,6 @@
     <header class="clearfix">
         <div data-ng-include="'/app/layout/topnav.html'"></div>
     </header>
-    <hr><hr><hr><hr>
     <section id="content" class="content">
         <div data-ng-show="vm.isBusy" class="page-splash dissolve-animation">
             <div data-cc-spinner="vm.spinnerOptions"></div>

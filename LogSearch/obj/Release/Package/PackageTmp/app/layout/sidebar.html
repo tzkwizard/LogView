@@ -1,6 +1,9 @@
 ﻿<div data-cc-sidebar data-ng-controller="sidebar as vm" >
     <div class="sidebar-filler"></div>
-    <div class="sidebar-dropdown"><a href="#">Menu</a></div>
+
+    <div class="sidebar-dropdown"><a href="#">Menu</a>
+    </div>
+
     <div class="sidebar-inner">
         <div class="sidebar-widget">          
         </div>
@@ -10,25 +13,62 @@
                 <a href="#{{r.url}}" data-ng-bind-html="r.config.settings.content"></a>
             </li>
 
+            <li class="nlightblue fade-selection-animation" data-ng-repeat="r in vm.agg ">
+                <a><i class="fa fa-cloud"></i> {{r}}</a>              
+            </li>
+
+
+
+            <li class="nlightblue fade-selection-animation" ng-click="vm.showUser()"> <a><i class="fa fa-user"></i> User</a></li>
+
+            <ul collapse="vm.isCollapsed4" class="nlightblue fade-selection-animation">
+                <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.ident.raw')"
+                    data-ng-repeat="r in vm.user">
+                    <a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>
+                </li>
+            </ul>
+
+
             <li class="nlightblue fade-selection-animation" ng-click="vm.showLocation()"> <a><i class="fa fa-map-marker"></i> Location</a></li>
 
             <ul collapse="vm.isCollapsed" class="nlightblue fade-selection-animation">
-                <li class="nlightblue fade-selection-animation" data-ng-click="vm.test(r,'logs.clientip.raw')"
+                <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.geoip.city_name.raw')"
                     data-ng-repeat="r in vm.location">
-                    <a style="color:whitesmoke">  {{r.key.toString()}} ({{r.doc_count}})    </a>
+                    <a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>
                 </li>
             </ul>
-            <li class="nlightblue fade-selection-animation" ng-click="vm.showUser()"> <a><i class="fa fa-users"></i> Users</a></li>
+
+            <li class="nlightblue fade-selection-animation" ng-click="vm.showRequestAPI()"> <a><i class="fa fa-windows"></i> API</a></li>
 
             <ul collapse="vm.isCollapsed2" class="nlightblue fade-selection-animation">
-                <li class="nlightblue fade-selection-animation" data-ng-click="vm.test(r,'logs.verb.raw')"
-                    data-ng-repeat="r in vm.host">
+                <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.request.raw')"
+                    data-ng-repeat="r in vm.apiaddress">
                     <a style="color:whitesmoke">  {{r.key.toString()}} ({{r.doc_count}})    </a>
                 </li>
             </ul>
 
 
+            <li class="nlightblue fade-selection-animation" ng-click="vm.showRequestMethod()"> <a><i class="fa fa-retweet"></i> Method</a></li>
 
+            <ul collapse="vm.isCollapsed3" class="nlightblue fade-selection-animation">
+                <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.verb.raw')"
+                    data-ng-repeat="r in vm.httpmethod">
+                    <a style="color:whitesmoke">  {{r.key.toString()}} ({{r.doc_count}})    </a>
+                </li>
+            </ul>
+
+
+            <li class="nlightblue fade-selection-animation" ng-click="vm.showUserAction()"> <a><i class="fa fa-android"></i> Action</a></li>
+
+            <ul collapse="vm.isCollapsed5" class="nlightblue fade-selection-animation">
+                <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.action.raw')"
+                    data-ng-repeat="r in vm.useraction">
+                    <a style="color:whitesmoke">  {{r.key.toString()}} ({{r.doc_count}})    </a>
+                </li>
+            </ul>
+
+
+            
 
 
             <accordion close-others="oneAtATime">
@@ -49,22 +89,11 @@
             </accordion>
 
         </ul>
-
-
-        
-
-            
-           <!-- <button class="btn btn-default" ng-click="vm.getFieldName()" style="background-color: transparent; color: white">Show Field</button>-->
-            <hr>
-            <ul collapse="vm.isCollapsed" class="nlightblue fade-selection-animation">
-                <!-- <li data-ng-repeat="content in vm.fieldsName" style="background-color: transparent; color: white">{{content}}</li>-->
-                <li class="nlightblue fade-selection-animation" data-ng-click="vm.test(r)"
-                    data-ng-repeat="r in vm.fieldsName">
-                    {{r}}
-                </li>
-            </ul>
-
+  
            
-        </div>
-        
-  </div>
+            <hr>
+
+
+    </div>
+
+</div>

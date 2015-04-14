@@ -2,9 +2,9 @@
     'use strict';
 
     var serviceId = 'dataconfig';
-    angular.module('app').factory(serviceId, ['$timeout', '$rootScope', '$cookieStore', 'common', 'client', dataconfig]);
+    angular.module('app').factory(serviceId, ['$timeout', '$rootScope', '$cookieStore', 'common', 'client', 'datasearch', dataconfig]);
 
-    function dataconfig($timeout, $rootScope, $cookieStore, common, client) {
+    function dataconfig($timeout, $rootScope, $cookieStore, common, client, datasearch) {
 
         var vm = this;
         var getLogFn = common.logger.getLogFn;
@@ -17,14 +17,46 @@
             addFilter: addFilter,
             removeFilter: removeFilter,
             initIndex: initIndex,
+            xx:xx,
+            yy:yy,
             prime: prime
         }
         return service;
+        function xx() {
+            $rootScope.logfield = getFieldName($rootScope.index[0], $rootScope.logtype);
+            $rootScope.st = moment(new Date()).subtract(2, 'month');
+            $rootScope.ft = new Date();
+            $timeout(yy, 500);
+        }
+
+        function yy() {
+            var word = [];
+            var pfx = ["ident.raw", "auth.raw", "geoip.city_name.raw", "request.raw", "geoip.country_name.raw", "geoip.region_name.raw", "geoip.postal_code.raw"];
+            angular.forEach(pfx, function (agg) {
+
+                datasearch.termAggragation($rootScope.index, 'logs', agg, 40, $rootScope.st, $rootScope.ft)
+                    .then(function (resp) {
+                        var tt = resp.aggregations.ag.agg.buckets;
+
+                        angular.forEach(tt, function (y) {
+                            word.push(y.key);
+                        });
+                        // toastr.info(vm.ip);
+                    }, function (err) {
+                        //log(err.message);
+                    });
+
+            });
+            $rootScope.ip = word;
+            log(word.length);
+        }
 
         function prime() {
-            filterIndex();
-            log('Load Index');
-
+           // $rootScope.index = initIndex();
+          //  $rootScope.logtype = "logs";
+          //  $timeout(xx, 500);          
+           // log("1");
+           
         }
 
         function createContainer(aggName) {
@@ -102,7 +134,7 @@
 
                 }
             }, function (err) {
-                log(err.message);
+               log(err.message);
             });
             return indicesName;
         }
@@ -137,7 +169,7 @@
 
                 }
             }, function (err) {
-                log(err.message);
+               // log(err.message);
             });
             return indicesName;
         }
@@ -194,7 +226,7 @@
                     });
                 });
             }, function (err) {
-                log(err.message);
+              //  log(err.message);
             });
             return fieldsName;
         }

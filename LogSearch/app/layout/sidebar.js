@@ -35,9 +35,9 @@
         vm.content[1] = 5;
         vm.getFieldName = getFieldName;
 
-        vm.agg = ["Ace", "Luffy", "Sabo"];
+        vm.agg = ["Ace"];
 
-        vm.test = test;
+        vm.sidebarNav = sidebarNav;
 
         function activate() {
             //getFieldName();
@@ -47,7 +47,7 @@
                 });
         }
 
-        function test(r, f) {
+        function sidebarNav(r, f) {
             toastr.info(r.key.toString());
             //$location.search();
             $location.search.field = "";
@@ -71,7 +71,7 @@
         vm.showLocation = function () {
             if (vm.location === "" || vm.location === undefined || $location.search.refresh) {
 
-                datasearch.termAggragation($rootScope.index, 'logs', "clientip.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
+                datasearch.termAggragation($rootScope.index, 'logs', "geoip.city_name.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
                     vm.location = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
                     log("re");

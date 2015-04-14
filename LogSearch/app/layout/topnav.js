@@ -16,7 +16,7 @@
         vm.ip = [];
 
         vm.init = init;
-
+        vm.loading = true;
 
 
 
@@ -73,17 +73,14 @@
 
 
 
-
-
-
-
+       
 
 
 
 
         function init() {
             var word = [];
-            vm.pfx = ["ident.raw", "auth.raw", "action.raw", "geoip.city_name.raw", "request.raw", "geoip.country_name.raw", "geoip.region_name.raw", "geoip.postal_code.raw"];
+            vm.pfx = ["ident.raw", "auth.raw", "geoip.city_name.raw", "request.raw", "geoip.country_name.raw", "geoip.region_name.raw", "geoip.postal_code.raw"];
             angular.forEach(vm.pfx, function (agg) {
 
                 datasearch.termAggragation($rootScope.index, 'logs', agg, 40, $rootScope.st, $rootScope.ft)
@@ -100,6 +97,7 @@
 
             });
             vm.ip = word;
+            //$rootScope.ip = word;
         }
 
 
