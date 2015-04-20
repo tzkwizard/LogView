@@ -77,11 +77,11 @@
     <div id="filter" class="btn-group">
         <input type="text" size="8"
                data-ng-model="vm.fi"
-               placeholder="  Filter "/>
-        <select id="test" ng-model="vm.filterAggName" class="input-medium" style="width: 100px">
+               placeholder="  Filter " ng-show="false" />
+        <select id="test" ng-model="vm.filterAggName" ng-show="false" class="input-medium" style="width: 100px">
             <option value={{doc}} data-ng-repeat="doc in vm.fieldsName">{{doc}} </option>
         </select>
-        <select ng-model=" vm.condition">
+        <select ng-model=" vm.condition" ng-show="false">
             <option selected value='MUST'>MUST</option>
             <option vaule='MUST_NOT'>MUST_NOT</option>
             <option vaule='SHOULD'>SHOULD</option>
@@ -172,55 +172,52 @@
         <hr> <a>{{doc._source['@timestamp']}}</a> ---- {{doc._source.message}}
     </li>
 
-    <script type="text/ng-template" id="myModalContent.html">
+    <script type="text/ng-template" id="resultModal.html">
         <div class="widget wlightblue">
             <div data-cc-widget-header title="{{title}}"></div>
         </div>
-               
-                <hr />
-                <div class="modal-body">
-                   <table class="columns">
-                       <col width="500">
-                    <tr>
-                        <td width="500">
-                            <h3> All Message Field </h3>
-                            <div class="gridStyle2" ng-grid="gridOptions"></div>
-                        </td>
 
-                        <td width="500">
-                            <h3> User Basic Information </h3>
-                            <div class="gridStyle" ng-grid="gridOptions2"></div>
-                            <br><br> <hr />    
-                            <h3> User Action Information </h3>
-                            <div class="gridStyle" ng-grid="gridOptions3"></div>                            
-                        </td>
-                    </tr>
-                       <tr>
-                           <td width="500">                        
-                           </td>
-                           <td width="500">
-                              
-                           </td>
+        <hr />
+        <div class="modal-body">
+            <table class="columns">
+                <col width="500">
+                <tr>
+                    <td width="500">
+                        <h3> All Message Field </h3>
+                        <div class="gridStyle2" ng-grid="gridOptions"></div>
+                    </td>
 
-                       </tr>
-                      </table>
-                    <hr />          
-                    {{mySelections}}
-                        
-                        <ul>
-                            <!--  <li ng-click="selected.item = items._source.timestamp"><h5>Time :  <a>{{items._source.timestamp}}</a></h5></li>-->
-                            <!--<ul ng-repeat="item in items._source">
-            <li ng-click="selected.item = item">{{field}}{{ item|json }}</li>
+                    <td width="500">
+                        <h3> User Basic Information </h3>
+                        <div class="gridStyle" ng-grid="gridOptions2"></div>
+                        <br><br> <hr />
+                        <h3> User Action Information </h3>
+                        <div class="gridStyle" ng-grid="gridOptions3"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="500"></td>
+                    <td width="500"></td>
 
-            </>-->
-                        </ul>
-                        Selected: <b>{{ selected.item |json }}</b>
-                    </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" ng-click="ok()">OK</button>
-                    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-                </div>
-            </script>
+                </tr>
+            </table>
+            <hr />
+            {{mySelections}}
+
+            <ul>
+                <!--  <li ng-click="selected.item = items._source.timestamp"><h5>Time :  <a>{{items._source.timestamp}}</a></h5></li>-->
+                <!--<ul ng-repeat="item in items._source">
+                <li ng-click="selected.item = item">{{field}}{{ item|json }}</li>
+
+                </>-->
+            </ul>
+            Selected: <b>{{ selected.item |json }}</b>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
 
 
 

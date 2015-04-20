@@ -11,6 +11,26 @@
         </div>
     </div>
 
+    <script type="text/ng-template" id="loginModal.html">
+        <div class="widget wlightblue">
+            <div data-cc-widget-header title="{{title}}"></div>
+        </div>
+        <input type="text" class="form-control"
+               data-ng-model="username"
+               placeholder="  Username " />
+        <input type="password" class="form-control"
+               data-ng-model="password"
+               placeholder="  Password " />
+        
+        <div class="modal-body">
+         
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <!--<button class="btn btn-warning" ng-click="cancel()">Cancel</button>-->
+        </div>
+    </script>
+
 
     <header class="clearfix">
         <div data-ng-include="'/app/layout/topnav.html'"></div>

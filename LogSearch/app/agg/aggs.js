@@ -145,70 +145,75 @@
               ['S. Africa', 'Africa', 30, 43],          
               ['Beijing','China',23,22]
                     ]);*/
-                var datatree = new google.visualization.DataTable();
-                vm.fieldstree = [];
-                vm.fieldstree = vm.fieldsName;
-                datatree.addColumn('string', 'Name');
-                datatree.addColumn('string', 'Parent');
-                datatree.addColumn('number', 'count');
-                datatree.addColumn('number', 'color');
+                try {
+                    var datatree = new google.visualization.DataTable();
+                    vm.fieldstree = [];
+                    vm.fieldstree = vm.fieldsName;
+                    datatree.addColumn('string', 'Name');
+                    datatree.addColumn('string', 'Parent');
+                    datatree.addColumn('number', 'count');
+                    datatree.addColumn('number', 'color');
 
 
-                //vm.fieldstree = ["a", "b", "c", "d"];
-                datatree.addRow(["Elasticsearch", null, 0, 0]);
-                angular.forEach(vm.indicesName, function (n) {
+                    //vm.fieldstree = ["a", "b", "c", "d"];
+                    datatree.addRow(["Elasticsearch", null, 0, 0]);
+                    angular.forEach(vm.indicesName, function(n) {
 
-                    datatree.addRow([n, "Elasticsearch", 0, 0]);
-                    angular.forEach(vm.fieldstree, function (m) {
+                        datatree.addRow([n, "Elasticsearch", 0, 0]);
+                        angular.forEach(vm.fieldstree, function(m) {
 
-                        var x = Math.random() * 100 - 50;
-                        datatree.addRow([m + "\n" + n, n, 0, 0]);
+                            var x = Math.random() * 100 - 50;
+                            datatree.addRow([m + "\n" + n, n, 0, 0]);
 
-                        /*angular.forEach(vm.fieldstree, function(zz) {
+                            /*angular.forEach(vm.fieldstree, function(zz) {
                             var y = Math.random() * 100 - 50;
                             data.addRow([y.toString() + m, m + "--" + n, 1, y]);
                         });*/
-                        treeMap(n, m,datatree);
+                            treeMap(n, m, datatree);
 
-                    });
-
-
-                });
-
-
-                var tree = new google.visualization.TreeMap(document.getElementById('treemap_div'));
-
-                vm.dd = dd;
-
-                $timeout(dd, 1500);
-                function dd() {
-
-
-                    tree.draw(datatree, {
-                        minColor: '#FFFFFF',
-                        midColor: '#2EFEF7',
-                        maxColor: '#00BFFF',
-                        headerHeight: 15,
-                        fontColor: 'black',
-                        showScale: true,
-                        showTooltips: true,
-                        generateTooltip: showStaticTooltip
-                    });
-
-                    function showStaticTooltip(row, size, value) {
-                        return '<div style="background:#fd9; padding:10px; border-style:solid">' +
-                            '<a> Tag:' + datatree.getValue(row, 0) + '<hr>' + '</b> Size:' + size + '</b> Value:' + value + '</a>.</div>';
-                    }
-
-
-                    google.visualization.events.addListener(tree, 'select',
-                        function () {
-                            tree.goUpAndDraw();
                         });
 
-                    aggShow();
 
-                }
+                    });
+
+
+                    var tree = new google.visualization.TreeMap(document.getElementById('treemap_div'));
+
+                    vm.dd = dd;
+
+                    $timeout(dd, 1500);
+
+                    function dd() {
+
+
+                        tree.draw(datatree, {
+                            minColor: '#FFFFFF',
+                            midColor: '#2EFEF7',
+                            maxColor: '#00BFFF',
+                            headerHeight: 15,
+                            fontColor: 'black',
+                            showScale: true,
+                            showTooltips: true,
+                            generateTooltip: showStaticTooltip
+                        });
+
+                        function showStaticTooltip(row, size, value) {
+                            return '<div style="background:#fd9; padding:10px; border-style:solid">' +
+                                '<a> Tag:' + datatree.getValue(row, 0) + '<hr>' + '</b> Size:' + size + '</b> Value:' + value + '</a>.</div>';
+                        }
+
+
+                        google.visualization.events.addListener(tree, 'select',
+                            function() {
+                                tree.goUpAndDraw();
+                            });
+
+                        aggShow();
+
+                    }
+                } catch (ex) {
+                    log("Loading Map error"+ex);
+                } 
 
 
             }
@@ -300,8 +305,10 @@
                 // vm.fieldsName = dataconfig.checkCookie('logfield', vm.indicesName[0]);
 
                 vm.aggName = "";
-                if(vm.treestatus)
-                {$timeout(drawtreemap, 500);}
+                if (vm.treestatus) {                   
+                        $timeout(drawtreemap, 800);
+                    
+                }
 
             }
 
@@ -309,13 +316,14 @@
 
             //   Draw chart
 
-            function aggShow(aggName) {
+        function aggShow(aggName) {
 
-                var main = document.getElementById('div2');
-                var contain = document.getElementById('contain');
-                if (contain !== null)
-                { main.removeChild(contain); }
-
+            var main = document.getElementById('div2');
+            var contain = document.getElementById('contain');
+            if (contain !== null) {
+                main.removeChild(contain);
+            }
+            try {
                 if (vm.aggName === "" || vm.aggName === "all") {
                     // vm.fieldsName = $rootScope.logfield;
 
@@ -342,12 +350,10 @@
                     index = vm.fieldsName.indexOf("action");
                     vm.fieldsName.splice(index, 1);
 
-                   
-
 
                     var flag;
-                    angular.forEach(vm.fieldsName, function (name) {
-                        if (vm.fieldsName.length <=2) {
+                    angular.forEach(vm.fieldsName, function(name) {
+                        if (vm.fieldsName.length <= 2) {
                             flag = true;
                         } else {
                             flag = false;
@@ -355,18 +361,21 @@
                         aggshows(name, flag);
                     });
 
-                }
-                else {
+                } else {
 
-                    datasearch.termAggragationwithQuery(vm.indicesName, 'logs', aggName, vm.size, vm.searchText, $rootScope.st, $rootScope.ft).then(function (resp) {
+                    datasearch.termAggragationwithQuery(vm.indicesName, 'logs', aggName, vm.size, vm.searchText, $rootScope.st, $rootScope.ft).then(function(resp) {
                         vm.total = resp.hits.total;
                         vm.hitSearch = resp.aggregations.ag.agg.buckets;
                         drawDashboard(resp.aggregations.ag.agg, aggName);
-                    }, function (err) {
+                    }, function(err) {
                         // log(err.message);
                     });
                 }
-                vm.isBusy = false;
+            } catch (ex) {
+                log("Loading pie Error"+ex);
+            }
+
+        vm.isBusy = false;
             }
 
             function aggshows(aggName, flag) {

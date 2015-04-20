@@ -74,7 +74,7 @@
                 datasearch.termAggragation($rootScope.index, 'logs', "geoip.city_name.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
                     vm.location = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
-                    log("re");
+                    // log("re");
                 }, function (err) {
                     log(err.message);
                 });
@@ -88,7 +88,7 @@
                 datasearch.termAggragation($rootScope.index, 'logs', "request.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
                     vm.apiaddress = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
-                    log("re");
+                    //log("re");
                 }, function (err) {
                     log(err.message);
                 });
@@ -103,7 +103,7 @@
                 datasearch.termAggragation($rootScope.index, 'logs', "verb.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
                     vm.httpmethod = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
-                    log("re");
+                    //log("re");
                 }, function (err) {
                     log(err.message);
                 });
@@ -117,7 +117,7 @@
                 datasearch.termAggragation($rootScope.index, 'logs', "ident.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
                     vm.user = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
-                    log("re");
+                    //  log("re");
                 }, function (err) {
                     log(err.message);
                 });
@@ -130,7 +130,7 @@
                 datasearch.termAggragation($rootScope.index, 'logs', "action.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
                     vm.useraction = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
-                    log("re");
+                    //  log("re");
                 }, function (err) {
                     log(err.message);
                 });

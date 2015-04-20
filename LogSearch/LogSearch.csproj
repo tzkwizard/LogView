@@ -195,6 +195,10 @@
     <Content Include="Scripts\angular-route.min.js.map" />
     <Content Include="Scripts\angular-sanitize.min.js.map" />
     <Content Include="Scripts\bootstrap-dialog.js" />
+    <Content Include="Scripts\elasticsearch.angular.min.js" />
+    <Content Include="Scripts\elasticsearch.jquery.js" />
+    <Content Include="Scripts\elasticsearch.jquery.min.js" />
+    <Content Include="Scripts\elasticsearch.min.js" />
     <Content Include="Scripts\errors.json" />
     <Content Include="Scripts\angular-touch.min.js.map" />
     <Content Include="Scripts\angular-resource.min.js.map" />

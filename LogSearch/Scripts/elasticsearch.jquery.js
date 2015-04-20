@@ -18298,40 +18298,46 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
 }.call(this));
 
 },{}],15:[function(require,module,exports){
-var process=require("__browserify_process");/**
- * Wrapper for the elasticsearch.js client, which will register the client constructor
- * as a factory within angular that can be easily injected with Angular's awesome DI.
- *
- * It will also instruct the client to use Angular's $http service for it's ajax requests
- */
-var AngularConnector = require('./lib/connectors/angular');
-var Client = require('./lib/client');
+var process=require("__browserify_process");/* global jQuery */
+(function ($) {
+  process.jquery_build = true;
+  var es = require('./elasticsearch');
 
-process.angular_build = true;
+  function defer() {
+    var def = $.Deferred();
+    // def.promise is usually a property (in normal implementations)
+    // we override the promise to keep things working
+    def.promise = def.promise();
+    return def;
+  }
 
-/* global angular */
-angular.module('elasticsearch', [])
-  .factory('esFactory', ['$injector', '$q', function ($injector, $q) {
+  $.es = $.extend({}, es);
+  $.es.Client = function (config) {
+    config = config || {};
+    config.defer = defer;
+    config.$ = $;
+    return new es.Client(config);
+  };
 
-    var factory = function (config) {
-      config = config || {};
-      config.connectionClass = AngularConnector;
-      config.$injector = $injector;
-      config.defer = function () {
-        return $q.defer();
-      };
-      config.serializer = config.serializer || 'angular';
-      return new Client(config);
-    };
+}(jQuery));
+},{"./elasticsearch":16,"__browserify_process":13}],16:[function(require,module,exports){
+// In order to help people who were accidentally upgraded to this ES client,
+// throw an error when they try to instanciate the exported function.
+// previous "elasticsearch" module -> https://github.com/ncb000gt/node-es
+function es() {
+  throw new Error('Looks like you are expecting the previous "elasticsearch" module. ' +
+    'It is now the "es" module. To create a client with this module use ' +
+    '`new es.Client(params)`.');
+}
 
-    factory.errors = require('./lib/errors');
-    factory.ConnectionPool = require('./lib/connection_pool');
-    factory.Transport = require('./lib/transport');
+es.Client = require('./lib/client');
+es.ConnectionPool = require('./lib/connection_pool');
+es.Transport = require('./lib/transport');
+es.errors = require('./lib/errors');
 
-    return factory;
-  }]);
+module.exports = es;
 
-},{"./lib/client":20,"./lib/connection_pool":23,"./lib/connectors/angular":24,"./lib/errors":26,"./lib/transport":38,"__browserify_process":13}],16:[function(require,module,exports){
+},{"./lib/client":21,"./lib/connection_pool":24,"./lib/errors":27,"./lib/transport":39}],17:[function(require,module,exports){
 /* jshint maxlen: false */
 
 var ca = require('../client_action');
@@ -23972,7 +23978,7 @@ api.create = ca.proxy(api.index, {
     params.op_type = 'create';
   }
 });
-},{"../client_action":21}],17:[function(require,module,exports){
+},{"../client_action":22}],18:[function(require,module,exports){
 /* jshint maxlen: false */
 
 var ca = require('../client_action');
@@ -30174,7 +30180,7 @@ api.create = ca.proxy(api.index, {
     params.op_type = 'create';
   }
 });
-},{"../client_action":21}],18:[function(require,module,exports){
+},{"../client_action":22}],19:[function(require,module,exports){
 /* jshint maxlen: false */
 
 var ca = require('../client_action');
@@ -36401,14 +36407,14 @@ api.create = ca.proxy(api.index, {
     params.op_type = 'create';
   }
 });
-},{"../client_action":21}],19:[function(require,module,exports){
+},{"../client_action":22}],20:[function(require,module,exports){
 module.exports = {
   '1.5': require('./1_5'),
   '1.4': require('./1_4'),
   '1.3': require('./1_3')
 };
 
-},{"./1_3":16,"./1_4":17,"./1_5":18}],20:[function(require,module,exports){
+},{"./1_3":17,"./1_4":18,"./1_5":19}],21:[function(require,module,exports){
 /**
  * A client that makes requests to Elasticsearch via a {{#crossLink "Transport"}}Transport{{/crossLink}}
  *
@@ -36483,7 +36489,7 @@ function Client(config) {
 }
 
 Client.apis = require('./apis');
-},{"./apis":19,"./transport":38,"./utils":40}],21:[function(require,module,exports){
+},{"./apis":20,"./transport":39,"./utils":41}],22:[function(require,module,exports){
 /**
  * Constructs a function that can be called to make a request to ES
  * @type {[type]}
@@ -36812,7 +36818,7 @@ ClientAction.proxy = function (fn, spec) {
   };
 };
 
-},{"./utils":40}],22:[function(require,module,exports){
+},{"./utils":41}],23:[function(require,module,exports){
 module.exports = ConnectionAbstract;
 
 var _ = require('./utils');
@@ -36912,7 +36918,7 @@ ConnectionAbstract.prototype.setStatus = function (status) {
     this.removeAllListeners();
   }
 };
-},{"./errors":26,"./host":27,"./log":28,"./utils":40,"events":4}],23:[function(require,module,exports){
+},{"./errors":27,"./host":28,"./log":29,"./utils":41,"events":4}],24:[function(require,module,exports){
 var process=require("__browserify_process");/**
  * Manager of connections to a node(s), capable of ensuring that connections are clear and living
  * before providing them to the application
@@ -37250,76 +37256,7 @@ ConnectionPool.prototype.close = function () {
   this.setHosts([]);
 };
 ConnectionPool.prototype.empty = ConnectionPool.prototype.close;
-},{"./connectors":25,"./log":28,"./selectors":33,"./utils":40,"__browserify_process":13}],24:[function(require,module,exports){
-var Buffer=require("__browserify_Buffer").Buffer;/**
- * Connection that registers a module with angular, using angular's $http service
- * to communicate with ES.
- *
- * @class connections.Angular
- */
-module.exports = AngularConnector;
-
-var _ = require('../utils');
-var ConnectionAbstract = require('../connection');
-var ConnectionFault = require('../errors').ConnectionFault;
-
-function makeAuthHeader(auth) {
-  return 'Basic ' + (new Buffer(auth, 'utf8')).toString('base64');
-}
-
-function AngularConnector(host, config) {
-  ConnectionAbstract.call(this, host, config);
-  var self = this;
-  self.headerDefaults = {};
-
-  if (self.host.auth) {
-    self.headerDefaults.Authorization = makeAuthHeader(self.host.auth);
-  }
-
-  config.$injector.invoke(['$http', '$q', function ($http, $q) {
-    self.$q = $q;
-    self.$http = $http;
-  }]);
-}
-_.inherits(AngularConnector, ConnectionAbstract);
-
-AngularConnector.prototype.request = function (userParams, cb) {
-  var abort = this.$q.defer();
-  var params = _.cloneDeep(userParams);
-
-  params.headers = _.defaults(params.headers || {}, this.headerDefaults);
-  if (params.auth) {
-    params.headers.Authorization = makeAuthHeader(params.auth);
-  }
-
-  // inform the host not to use the auth, by overriding it in the params
-  params.auth = false;
-
-  this.$http({
-    method: params.method,
-    url: this.host.makeUrl(params),
-    data: params.body,
-    cache: false,
-    headers: this.host.getHeaders(params.headers),
-    transformRequest: [],
-    transformResponse: [],
-    // not actually for timing out, that's handled by the transport
-    timeout: abort.promise
-  }).then(function (response) {
-    cb(null, response.data, response.status, response.headers());
-  }, function (err) {
-    if (err.status) {
-      cb(null, err.data, err.status, err.headers());
-    } else {
-      cb(new ConnectionFault(err.message));
-    }
-  });
-
-  return function () {
-    abort.resolve();
-  };
-};
-},{"../connection":22,"../errors":26,"../utils":40,"__browserify_Buffer":12}],25:[function(require,module,exports){
+},{"./connectors":25,"./log":29,"./selectors":34,"./utils":41,"__browserify_process":13}],25:[function(require,module,exports){
 var opts = {
   xhr: require('./xhr'),
   jquery: require('./jquery'),
@@ -37345,7 +37282,59 @@ if (opts.xhr) {
 
 module.exports = opts;
 
-},{"../utils":40,"./angular":24,"./jquery":1,"./xhr":1}],26:[function(require,module,exports){
+},{"../utils":41,"./angular":1,"./jquery":26,"./xhr":1}],26:[function(require,module,exports){
+/* jshint browser: true, jquery: true */
+
+/**
+ * Simple connection class for using the XHR object in browsers
+ *
+ * @class {XhrConnection}
+ */
+module.exports = JqueryConnector;
+
+var _ = require('../utils');
+var ConnectionAbstract = require('../connection');
+var ConnectionFault = require('../errors').ConnectionFault;
+
+function JqueryConnector(host, config) {
+  ConnectionAbstract.call(this, host, config);
+}
+_.inherits(JqueryConnector, ConnectionAbstract);
+
+JqueryConnector.prototype.request = function (params, cb) {
+  var ajax = {
+    url: this.host.makeUrl(params),
+    data: params.body,
+    type: params.method,
+    dataType: 'text',
+    headers: this.host.getHeaders(params.headers),
+    done: cb
+  };
+
+  if (params.auth) {
+    var auths = params.auth.split(':');
+    ajax.username = auths[0];
+    ajax.password = auths[1];
+  }
+
+  var jqXHR = jQuery.ajax(ajax)
+    .done(function (data, textStatus, jqXHR) {
+      cb(null, data, jqXHR.statusCode(), {
+        'content-type': jqXHR.getResponseHeader('content-type')
+      });
+    })
+    .fail(function (jqXHR, textStatus, err) {
+      cb(new ConnectionFault(err && err.message));
+    });
+
+  return function () {
+    jqXHR.abort();
+  };
+};
+
+
+
+},{"../connection":23,"../errors":27,"../utils":41}],27:[function(require,module,exports){
 var _ = require('./utils');
 var errors = module.exports;
 
@@ -37499,7 +37488,7 @@ _.each(statusCodes, function (name, status) {
   errors[className] = StatusCodeError;
   errors[status] = StatusCodeError;
 });
-},{"./utils":40}],27:[function(require,module,exports){
+},{"./utils":41}],28:[function(require,module,exports){
 /**
  * Class to wrap URLS, formatting them and maintaining their separate details
  * @type {[type]}
@@ -37702,7 +37691,7 @@ Host.prototype.toString = function () {
   return this.makeUrl();
 };
 
-},{"./utils":40,"querystring":6,"url":7}],28:[function(require,module,exports){
+},{"./utils":41,"querystring":6,"url":7}],29:[function(require,module,exports){
 var process=require("__browserify_process");var _ = require('./utils');
 var url = require('url');
 var EventEmitter = require('events').EventEmitter;
@@ -38004,7 +37993,7 @@ Log.normalizeTraceArgs = function (method, requestUrl, body, responseBody, respo
 
 module.exports = Log;
 
-},{"./loggers":30,"./utils":40,"__browserify_process":13,"events":4,"url":7}],29:[function(require,module,exports){
+},{"./loggers":31,"./utils":41,"__browserify_process":13,"events":4,"url":7}],30:[function(require,module,exports){
 var _ = require('./utils');
 
 /**
@@ -38186,12 +38175,12 @@ LoggerAbstract.prototype._prettyJson = function (body) {
 
 module.exports = LoggerAbstract;
 
-},{"./utils":40}],30:[function(require,module,exports){
+},{"./utils":41}],31:[function(require,module,exports){
 module.exports = {
   console: require('./console')
 };
 
-},{"./console":31}],31:[function(require,module,exports){
+},{"./console":32}],32:[function(require,module,exports){
 /**
  * Special version of the Stream logger, which logs errors and warnings to stderr and all other
  * levels to stdout.
@@ -38292,7 +38281,7 @@ Console.prototype.onTrace = _.handler(function (msg) {
   this.write('TRACE', this._formatTraceMessage(msg), 'log');
 });
 
-},{"../logger":29,"../utils":40}],32:[function(require,module,exports){
+},{"../logger":30,"../utils":41}],33:[function(require,module,exports){
 var _ = require('./utils');
 var extractHostPartsRE = /\[\/*([^:]+):(\d+)\]/;
 
@@ -38326,13 +38315,13 @@ function makeNodeParser(hostProp) {
 module.exports = makeNodeParser('http_address');
 module.exports.thrift = makeNodeParser('transport_address');
 
-},{"./utils":40}],33:[function(require,module,exports){
+},{"./utils":41}],34:[function(require,module,exports){
 module.exports = {
   random: require('./random'),
   roundRobin: require('./round_robin')
 };
 
-},{"./random":34,"./round_robin":35}],34:[function(require,module,exports){
+},{"./random":35,"./round_robin":36}],35:[function(require,module,exports){
 /**
  * Selects a connection randomly
  *
@@ -38345,7 +38334,7 @@ module.exports = function RandomSelector(connections) {
   return connections[Math.floor(Math.random() * connections.length)];
 };
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /**
  * Selects a connection the simplest way possible, Round Robin
  *
@@ -38360,7 +38349,7 @@ module.exports = function (connections) {
   return connection;
 };
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /* global angular */
 var _ = require('../utils');
 var JsonSerializer = require('../serializers/json');
@@ -38382,7 +38371,7 @@ AngularSerializer.prototype.encode = function (val) {
 };
 
 module.exports = AngularSerializer;
-},{"../serializers/json":37,"../utils":40}],37:[function(require,module,exports){
+},{"../serializers/json":38,"../utils":41}],38:[function(require,module,exports){
 /**
  * Simple JSON serializer
  * @type {[type]}
@@ -38443,7 +38432,7 @@ Json.prototype.bulkBody = function (val) {
   return body;
 };
 
-},{"../utils":40}],38:[function(require,module,exports){
+},{"../utils":41}],39:[function(require,module,exports){
 /**
  * Class that manages making request, called by all of the API methods.
  * @type {[type]}
@@ -38825,7 +38814,7 @@ Transport.prototype.close = function () {
   this.connectionPool.close();
 };
 
-},{"./connection_pool":23,"./errors":26,"./host":27,"./log":28,"./nodes_to_host":32,"./serializers/angular":36,"./serializers/json":37,"./transport/sniff_on_connection_fault":39,"./utils":40,"bluebird":1}],39:[function(require,module,exports){
+},{"./connection_pool":24,"./errors":27,"./host":28,"./log":29,"./nodes_to_host":33,"./serializers/angular":37,"./serializers/json":38,"./transport/sniff_on_connection_fault":40,"./utils":41,"bluebird":1}],40:[function(require,module,exports){
 var _ = require('../utils');
 
 
@@ -38885,7 +38874,7 @@ module.exports = function setupSniffOnConnectionFault(transport) {
     pool._onConnectionDied = originalOnDied;
   };
 };
-},{"../utils":40}],40:[function(require,module,exports){
+},{"../utils":41}],41:[function(require,module,exports){
 var process=require("__browserify_process"),Buffer=require("__browserify_Buffer").Buffer;var path = require('path');
 var _ = require('lodash');
 var nodeUtils = require('util');

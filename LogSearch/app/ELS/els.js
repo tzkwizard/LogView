@@ -4,61 +4,62 @@
     var controllerId = 'els';
 
     angular.module('app')
-        .controller(controllerId, function ($timeout, bsDialog, $rootScope, $routeParams,
-        $filter, $injector, $log, $scope, $location, $modal, common, client, datasearch, dataconfig, $cookieStore) {
+        .controller(controllerId, function($timeout, bsDialog, $rootScope, $routeParams,
+        $filter, $injector, $log, $scope, $location, $modal,client, common, datasearch, dataconfig, $cookieStore) {
 
 
-            var vm = this;
-            vm.title = "Elasticsearch";
-            var getLogFn = common.logger.getLogFn;
-            var log = getLogFn(controllerId);
-            $scope.predicate = '_source.timestamp';
-            $scope.count = 0;
-            //variable
+        var vm = this;
+        vm.title = "Elasticsearch";
+        var getLogFn = common.logger.getLogFn;
+        var log = getLogFn(controllerId);
+        $scope.predicate = '_source.timestamp';
+        $scope.count = 0;
+        //variable
 
-            vm.fi = "";
-            vm.searchText = $routeParams.search || '';
-            vm.hitSearch = "";
-            vm.acount = 4;
-            vm.hits = "2";
-            vm.total = 0;
-            vm.mystyle = { 'color': 'blue' };
-            vm.field = "";
-            vm.index = $routeParams.index || "";
-            vm.type = "";
-            vm.filterAggName = "";
-            vm.pagecount = 1000;
-            vm.fieldsName = [];
-            vm.typesName = [];
-            vm.indicesName = [];
-            vm.t = [];
-            vm.tt = 0;
+        vm.fi = "";
+        vm.searchText = $routeParams.search || '';
+        vm.hitSearch = "";
+        vm.acount = 4;
+        vm.hits = "2";
+        vm.total = 0;
+        vm.mystyle = { 'color': 'blue' };
+        vm.field = "";
+        vm.index = $routeParams.index || "";
+        vm.type = "";
+        vm.filterAggName = "";
+        vm.pagecount = 1000;
+        vm.fieldsName = [];
+        vm.typesName = [];
+        vm.indicesName = [];
+        vm.t = [];
+        vm.tt = 0;
 
-            vm.showSplash = true;
+        vm.showSplash = true;
 
-            vm.Syntax = {
-                title: 'Help',
-                Description: "Terms Fields Escaping Special Characters"
-            };
+        vm.Syntax = {
+            title: 'Help',
+            Description: "Terms Fields Escaping Special Characters"
+        };
 
 
-            //function
-            vm.search = search;
-            vm.mSearch = mSearch;
-            vm.filtertemp = filtertemp;
-            vm.init = init;
-            vm.test = test;
-            activate();
-            vm.today = today;
-            vm.pageChanged = pageChanged;
-            vm.getCurrentPageData = getCurrentPageData;
-            vm.getFieldName = getFieldName;
-            vm.getIndexName = getIndexName;
-            vm.getTypeName = getTypeName;
-            vm.filltext = filltext;
-            vm.addfilter = addfilter;
-            vm.removefilter = removefilter;
-            vm.filterst = filterst;
+        //function
+        vm.search = search;
+        vm.mSearch = mSearch;
+        vm.filtertemp = filtertemp;
+        vm.init = init;
+        vm.test = test;
+        activate();
+        vm.today = today;
+        vm.pageChanged = pageChanged;
+        vm.getCurrentPageData = getCurrentPageData;
+        vm.getFieldName = getFieldName;
+        vm.getIndexName = getIndexName;
+        vm.getTypeName = getTypeName;
+        vm.filltext = filltext;
+        vm.addfilter = addfilter;
+        vm.removefilter = removefilter;
+        vm.filterst = filterst;
+
 
 
 
@@ -242,8 +243,8 @@
                 vm.popdata.data = doc;
                 vm.popdata.field = vm.fieldsName;
                 var modalInstance = $modal.open({
-                    templateUrl: 'myModalContent.html',
-                    controller: 'ModalInstanceCtrl',
+                    templateUrl: 'resultModal.html',
+                    controller: 'resultModal',
                     //size: 'lg',
                     resolve: {
                         items: function () {
@@ -352,7 +353,7 @@
 
 
 
-
+  
             //        Page load         
 
             vm.im = 1;
@@ -657,7 +658,7 @@
 (function () {
     'use strict';
 
-    var controllerId = 'ModalInstanceCtrl';
+    var controllerId = 'resultModal';
 
     angular.module('app')
         .controller(controllerId, function ($scope, $modalInstance, $location, common, items) {
@@ -805,20 +806,3 @@
         });
 })();
 
-
-
-/*  function temp1() {
-           gett();
-           geti();
-
-           function gett() {
-               vm.j = 0;
-               vm.x = 'logstash-';
-               for (vm.i = 0; vm.i < 144; vm.i++) {
-                   vm.y = new Date(2015, 2, 10 + vm.i);
-                   vm.t[vm.j] = vm.x + vm.y.getFullYear() + "." + ('0' + vm.y.getMonth()).slice(-2) + "." + ('0' + vm.y.getDate()).slice(-2);
-                   vm.j++;
-               }
-           }
-         
-       }*/

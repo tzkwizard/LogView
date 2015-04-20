@@ -40,27 +40,28 @@
             $rootScope.index = dataconfig.initIndex();
             $rootScope.logtype = "logs";
             $timeout(xx, 500);
+            $rootScope.st = moment(new Date()).subtract(2, 'month');
+            $rootScope.ft = new Date();
             $rootScope.ip = [];
             function xx() {
                 $rootScope.logfield = dataconfig.getFieldName($rootScope.index[0], $rootScope.logtype);
-                $rootScope.st = moment(new Date()).subtract(2, 'month');
-                $rootScope.ft = new Date();
+             
              
             }
 
-           
 
 
-            client.ping({
+           /* client.ping({
                 requestTimeout: 1000,
                 hello: "elasticsearch!"
             }, function (error) {
                 if (error) {
+                    
                     toastr.info('elasticsearch cluster is down!');
                 } else {
                     toastr.info('elasticsearch cluster is connected');
                 }
-            });
+            });*/
 
 
 

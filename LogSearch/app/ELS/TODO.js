@@ -3,16 +3,15 @@
 
     var controllerId = 'TODO';
     angular.module('app').controller(controllerId,
-        ['$rootScope', 'common', TODO]);
+        ['$cookieStore', 'common', TODO]);
 
-    function TODO($rootScope, common) {
+    function TODO($cookieStore, common) {
         var vm = this;
-        vm.title = 44;
         activate();
         
         function activate() {
             common.activateController([], controllerId).then(function () {
-                vm.xx = $rootScope.index;
+                vm.xx = $cookieStore.get('index');
             });
             
         }

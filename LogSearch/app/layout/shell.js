@@ -3,9 +3,9 @@
 
     var controllerId = 'shell';
     angular.module('app').controller(controllerId,
-        ['$rootScope', 'common', 'config', shell]);
+        ['$rootScope', '$modal', 'common', 'config','client', shell]);
 
-    function shell($rootScope, common, config) {
+    function shell($rootScope,$modal, common, config,client) {
         var vm = this;
         var logSuccess = common.logger.getLogFn(controllerId, 'success');
         var events = config.events;
@@ -24,6 +24,44 @@
         vm.showSplash = true;
         activate();
 
+
+     
+
+      
+        vm.items = ['item1', 'item2', 'item3'];
+
+        vm.open = function () {
+            var modalInstance = $modal.open({
+                templateUrl: 'loginModal.html',
+                controller: 'loginModal',
+                size: 'sm',
+                keyboard: false,
+                resolve: {
+                    items: function () {
+                        return "";
+                    }
+                }
+            });
+          
+        };
+
+        vm.login = login;
+
+            function login () {
+            client.ping({
+                requestTimeout: 1000,
+                hello: "elasticsearch!"
+            }, function (error) {
+                if (error) {
+                    vm.open();
+                }
+                else {
+                    toastr.info('elasticsearch cluster is connected');
+                }
+            });
+        }
+      
+        
         /*   $rootScope.$on('$locationChangeStart',
       function(event, current, previous)
       {
@@ -39,7 +77,7 @@
 
         function activate() {
             // logSuccess('Breezezz Angular loaded!', null, true);
-            common.activateController([], controllerId).then(function () {
+            common.activateController([login()], controllerId).then(function () {
                 vm.showSplash = false;
             });
         }
@@ -59,4 +97,42 @@
             function (data) { toggleSpinner(data.show); }
         );
     };
+})();
+
+
+(function () {
+    'use strict';
+
+    var controllerId = 'loginModal';
+
+    angular.module('app')
+        .controller(controllerId, function ($cookieStore,$rootScope, $scope, $modalInstance, $location, common, items, esFactory) {
+
+            $scope.title = "Elasticsarch Login";
+            $scope.items = items.data;
+            $scope.field = items.field;
+
+            $scope.selected = {
+                item: ""
+            };
+
+            $scope.mySelections = [];
+            $scope.myData = [];
+
+            $scope.username = "";
+            $scope.password = "";
+
+
+
+            $scope.ok = function () {
+                $cookieStore.put('username', $scope.username);
+                $cookieStore.put('password', $scope.password);
+                window.location.reload();
+                $modalInstance.close($scope.selected.item);
+            };
+
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+        });
 })();

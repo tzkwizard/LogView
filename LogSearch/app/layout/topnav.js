@@ -3,12 +3,13 @@
 
     var controllerId = 'topnav';
     angular.module('app').controller(controllerId,
-        ['$timeout', '$rootScope', '$http', '$window', '$route', '$scope', '$location', 'dataconfig', 'datasearch', 'config', topnav]);
+        ['$cookieStore', '$timeout', '$rootScope', '$http', '$window', '$route', '$scope', '$location', 'dataconfig', 'datasearch', 'config', topnav]);
 
-    function topnav($timeout, $rootScope, $http, $window, $route, $scope, $location, dataconfig, datasearch, config) {
+    function topnav($cookieStore,$timeout, $rootScope, $http, $window, $route, $scope, $location, dataconfig, datasearch, config) {
         var vm = this;
         vm.search = search;
         vm.refresh = refresh;
+        vm.logout = logout;
         vm.searchText = '';
         // var keyCodes = config.keyCodes;
         activate();
@@ -144,6 +145,8 @@
                 return;
             }
 
+
+
             if ($event.type === 'click' || $event.keyCode === config.keyCodes.enter) {
                 var route = '/els/';
                 $location.search.text = vm.searchText;
@@ -163,6 +166,11 @@
             toastr.info("Refresh" + $location.path());
         }
 
+        function logout() {
+            $cookieStore.remove("ueranme");
+            $cookieStore.remove("password");
+            window.location.reload();
+        }
 
     };
 })();
