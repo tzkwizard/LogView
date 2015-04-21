@@ -5,13 +5,6 @@
 
    
 
-    app.directive("addbuttonsbutton", function () {
-        return {
-            restrict: "E",
-            template: "<button addbuttons>Click to add buttons</button>"
-        }
-    });
-
     //Directive for adding buttons on click that show an alert on click
     app.directive("addbuttons", function ($compile) {
         return function (scope, element, attrs) {

@@ -10,7 +10,11 @@
 
             var vm = this;
             vm.title = "Aggragations";
+            var getLogFn = common.logger.getLogFn;
+            var log = getLogFn(controllerId);
 
+
+            //#region variable
             vm.isBusy = true;
             vm.busyMessage = "wait";
             vm.spinnerOptions = {
@@ -23,10 +27,6 @@
                 trail: 100,
                 color: 'Blue'
             };
-
-            //#region variable
-            var getLogFn = common.logger.getLogFn;
-            var log = getLogFn(controllerId);
 
 
             vm.size = 20;
@@ -44,7 +44,7 @@
             vm.typesName = [];
             vm.indicesName = [];
             vm.index = '';
-            vm.type = 'logs';
+            vm.type = '';
 
 
             vm.dashboard = "dash";
@@ -68,6 +68,8 @@
             vm.clear = clear;
             //#endregion
 
+
+            //#region Test
             vm.tes = "ab";
             vm.test = function test(doc) {
                 /* var route = '/';
@@ -78,7 +80,7 @@
                  $location.search('log', "log");
                  $location.search('field', field);*/
             }
-
+            //#endregion
 
 
             //#region button
@@ -115,7 +117,7 @@
             vm.treestatus = true;
             function treeMap(index, aggName, datatree) {
 
-                datasearch.termAggragation(index, 'logs', aggName, vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
+                datasearch.termAggragation(index, vm.type, aggName, vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
 
                     var tt = resp.aggregations.ag.agg.buckets;
 
@@ -226,7 +228,7 @@
                         { key: 'Time', value: new Date() },
                         { key: 'School', value: 'TCU' }
                         ];
-                        log(vm.searchText);
+                        //log(vm.searchText);
                         log('Activated Aggs search View');
                         google.setOnLoadCallback(drawDashboard);
                         google.setOnLoadCallback(drawDashboard2);
@@ -237,28 +239,33 @@
             }
 
             function getIndexName() {
-                if ($cookieStore.get('index') !== undefined) {
-                    if ($rootScope.index.length !== $cookieStore.get('index').length && $rootScope.index.length > 1) {
-                        $cookieStore.remove('index');
+                try {
+                    if ($cookieStore.get('index') !== undefined) {
+                        if ($rootScope.index.length !== $cookieStore.get('index').length && $rootScope.index.length > 1) {
+                            $cookieStore.remove('index');
+                        }
+
+                    }
+                    vm.indicesName = $cookieStore.get('index');
+                    if ($cookieStore.get('index') === undefined || $cookieStore.get('index').length <= 1) {
+                        if ($rootScope.index !== undefined && $rootScope.index.length >= 1) {
+                            $cookieStore.put('index', $rootScope.index);
+                            vm.indicesName = $cookieStore.get('index');
+                        } else {
+
+                            vm.indicesName = dataconfig.initIndex();
+                        }
                     }
 
+                    vm.type = $rootScope.logtype;
+                    // log(vm.indicesName.length);
+                    // $timeout(renew, 500);           
+                    // vm.indicesName = $cookieStore.get('index');
+                    vm.treestatus = true;
+
+                } catch (ex) {
+                    log("Fail to Load Index");
                 }
-                vm.indicesName = $cookieStore.get('index');
-                if ($cookieStore.get('index') === undefined || $cookieStore.get('index').length <= 1) {
-                    if ($rootScope.index !== undefined && $rootScope.index.length >= 1) {
-                        $cookieStore.put('index', $rootScope.index);
-                        vm.indicesName = $cookieStore.get('index');
-                    } else {
-
-                        vm.indicesName = dataconfig.initIndex();
-                    }
-                }
-
-
-                // log(vm.indicesName.length);
-                // $timeout(renew, 500);           
-                // vm.indicesName = $cookieStore.get('index');
-                vm.treestatus = true;
                 // vm.indicesName = $rootScope.index;
                 //vm.index = vm.indicesName[0];
                 //vm.index = "logstash-2015.04.01";
@@ -272,26 +279,28 @@
 
             function getFieldName() {
 
-
-                if ($cookieStore.get('logfield') !== undefined) {
-                    if ($rootScope.logfield.length !== $cookieStore.get('logfield').length && $rootScope.logfield.length > 1) {
-                        $cookieStore.remove('logfield');
-                    }
-
-                }
-                vm.fieldsName = $cookieStore.get('logfield');
-
-                if ($cookieStore.get('logfield') === undefined || $cookieStore.get('logfield').length <= 1) {
-                    if ($rootScope.logfield !== undefined && $rootScope.logfield.length >= 1) {
-                        $cookieStore.put('logfield', $rootScope.logfield);
-                        vm.fieldsName = $cookieStore.get('logfield');
-                    } else {
-
-                        vm.fieldsName = dataconfig.getFieldName(vm.indicesName[0], $rootScope.logtype);
+                try {
+                    if ($cookieStore.get('logfield') !== undefined) {
+                        if ($rootScope.logfield.length !== $cookieStore.get('logfield').length && $rootScope.logfield.length > 1) {
+                            $cookieStore.remove('logfield');
+                        }
 
                     }
-                }
+                    vm.fieldsName = $cookieStore.get('logfield');
 
+                    if ($cookieStore.get('logfield') === undefined || $cookieStore.get('logfield').length <= 1) {
+                        if ($rootScope.logfield !== undefined && $rootScope.logfield.length >= 1) {
+                            $cookieStore.put('logfield', $rootScope.logfield);
+                            vm.fieldsName = $cookieStore.get('logfield');
+                        } else {
+
+                            vm.fieldsName = dataconfig.getFieldName(vm.indicesName[0], $rootScope.logtype);
+
+                        }
+                    }
+                } catch (ex) {
+                    log("Fail to Load Field");
+                }
 
 
                 // vm.fieldsName = dataconfig.checkCookie('logfield', vm.indicesName[0]);
@@ -354,7 +363,7 @@
 
                     } else {
 
-                        datasearch.termAggragationwithQuery(vm.indicesName, 'logs', aggName, vm.size, vm.searchText, $rootScope.st, $rootScope.ft).then(function (resp) {
+                        datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, $rootScope.st, $rootScope.ft).then(function (resp) {
                             vm.total = resp.hits.total;
                             vm.hitSearch = resp.aggregations.ag.agg.buckets;
                             drawDashboard(resp.aggregations.ag.agg, aggName);
@@ -378,7 +387,7 @@
                 vm.barchart = "bar";
                 vm.tablechart = "table";
 
-                datasearch.termAggragationwithQuery(vm.indicesName, 'logs', aggName, vm.size, vm.searchText, $rootScope.st, $rootScope.ft).then(function (resp) {
+                datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, $rootScope.st, $rootScope.ft).then(function (resp) {
                     vm.dashboard = vm.dashboard + aggName;
                     vm.range = vm.range + aggName;
                     vm.barchart = vm.barchart + aggName;

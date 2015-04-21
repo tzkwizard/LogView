@@ -1,20 +1,21 @@
-﻿<div data-cc-sidebar data-ng-controller="sidebar as vm" >
+﻿<div data-cc-sidebar data-ng-controller="sidebar as vm">
     <div class="sidebar-filler"></div>
 
-    <div class="sidebar-dropdown"><a href="#">Menu</a>
+    <div class="sidebar-dropdown">
+        <a href="#">Menu</a>
     </div>
 
     <div class="sidebar-inner">
-        <div class="sidebar-widget">          
+        <div class="sidebar-widget">
         </div>
-        <ul class="navi">   
+        <ul class="navi">
             <li class="nlightblue fade-selection-animation" data-ng-class="vm.isCurrent(r)"
                 data-ng-repeat="r in vm.navRoutes">
                 <a href="#{{r.url}}" data-ng-bind-html="r.config.settings.content"></a>
             </li>
 
             <li class="nlightblue fade-selection-animation" data-ng-repeat="r in vm.agg ">
-                <a><i class="fa fa-cloud"></i> {{r}}</a>              
+                <a><i class="fa fa-cloud"></i> {{r}}</a>
             </li>
 
 
@@ -68,9 +69,6 @@
             </ul>
 
 
-            
-
-
             <accordion close-others="oneAtATime">
                 <accordion-group is-open="status.open" style="background-color: transparent; color: white">
                     <accordion-heading>
@@ -81,7 +79,7 @@
                             </a>
                             <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
                         </li>
-                    </accordion-heading>                  
+                    </accordion-heading>
                     <li ng-repeat="item in vm.content">{{item}}</li>
 
                 </accordion-group>
@@ -89,11 +87,7 @@
             </accordion>
 
         </ul>
-  
-           
-            <hr>
-
-
+        <hr>
     </div>
 
 </div>

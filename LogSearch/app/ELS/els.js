@@ -13,6 +13,9 @@
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
             $scope.predicate = '_source.timestamp';
+            $scope.trend = 'true';
+            $scope.trend1 = 'true';
+            $scope.trend2 = 'true';
             $scope.count = 0;
 
             //#region variable
@@ -74,25 +77,6 @@
             function test() {
                 //  bsDialog.deleteDialog('Session');
                 //  bsDialog.confirmationDialog('Session');
-
-                /*   if (vm.ft === "" || vm.ft === undefined) {
-                        log("1");
-                        
-                        vm.ft = new Date();
-                        return;
-                    }
-                    if (vm.st === "" || vm.st === undefined) {
-                        log("2");
-                        return;
-                    }
-                    if (vm.ft < vm.st) {
-                        log("3");
-                        vm.st = "";
-                        return;
-                    }
-                    
-    */
-
                 var x = ejs.RangeQuery("bytes").gte(17);
                 var y = ejs.TermQuery("verb.raw", "GET");
                 client.search({
@@ -118,16 +102,12 @@
                 });
 
 
-                var t1 = document.getElementById('jselect1');
-                var t2 = document.getElementById('fselect1');
-                var t3 = document.getElementById('input1');
-
-
-
-                // toastr.info(t1.value + t2.value + t3.value + vm.fi1);
-
-
-
+                /* var t1 = document.getElementById('jselect1');
+                 var t2 = document.getElementById('fselect1');
+                 var t3 = document.getElementById('input1');
+ 
+ 
+                 toastr.info(t1.value + t2.value + t3.value + vm.fi1);*/
 
             }
             //#endregion
@@ -544,7 +524,7 @@
             }
 
 
-            function filtertemp(searchText) {
+            function filtertemp() {
                 client.search({
                     index: 'mytest',
                     type: 'post',
@@ -575,17 +555,7 @@
                     log(err.message);
                 });
 
-                client.search({
-                    index: 'logsd',
-                    type: 'log',
-                    size: vm.pagecount,
-                    body: ejs.Request().
-                         filter(ejs.NumericRangeFilter("response").gt(202).lt(205))
-                }).then(function (resp) {
-                    vm.hitSearch = resp.hits.hits;
-                }, function (err) {
-                    log(err.message);
-                });
+
             }
 
 
@@ -697,12 +667,12 @@
             ];
             var x = $scope.items._source;
             if (x.hasOwnProperty('geoip')) {
-                toastr.info($scope.items._source['geoip']);
-                $scope.myData2.push({ Field: "Country", Value: $scope.items._source.geoip['country_name'] });
-                $scope.myData2.push({ Field: "City", Value: $scope.items._source['geoip']['city_name'] });
-                $scope.myData2.push({ Field: "Region", Value: $scope.items._source['geoip']['real_region_name'] });
-                $scope.myData2.push({ Field: "postal_code", Value: $scope.items._source['geoip']['postal_code'] });
-                $scope.myData2.push({ Field: "Coordinate ", Value: $scope.items._source['geoip']['coordinates'] });
+                //toastr.info($scope.items._source['geoip']);
+                $scope.myData2.push({ Field: "Country_Name", Value: $scope.items._source.geoip['country_name'] });
+                $scope.myData2.push({ Field: "City_Name", Value: $scope.items._source['geoip']['city_name'] });
+                $scope.myData2.push({ Field: "Real_Region_Name", Value: $scope.items._source['geoip']['real_region_name'] });
+                $scope.myData2.push({ Field: "Postal_code", Value: $scope.items._source['geoip']['postal_code'] });
+                $scope.myData2.push({ Field: "Coordinates ", Value: $scope.items._source['geoip']['coordinates'] });
                 $scope.myData2.push({ Field: "Timezone", Value: $scope.items._source['geoip']['timezone'] });
 
             }
@@ -723,7 +693,7 @@
                     //  toastr.info($scope.mySelections.pop());
                     angular.forEach($scope.mySelections, function (item) {
                         // toastr.info(item.Value);
-                        $scope.selected.item = item["Field"] + " : " + item["Value"];
+                        $scope.selected.item = item["Field"].toLowerCase() + " : " + item["Value"];
                     });
                 }
             };
@@ -732,15 +702,15 @@
 
 
             //#region Form3
-            $scope.myData3 = [{ Field: "UserIP", Value: $scope.items._source['clientip'] },
-                   { Field: "HTTPmethod ", Value: $scope.items._source['verb'] },
-                   { Field: "ResquestApi", Value: $scope.items._source['request'] },
+            $scope.myData3 = [{ Field: "ClientIP", Value: $scope.items._source['clientip'] },
+                   { Field: "HTTPmethod", Value: $scope.items._source['verb'] },
+                   { Field: "Resquest", Value: $scope.items._source['request'] },
                    { Field: "Response", Value: $scope.items._source['response'] },
-                   { Field: "ApiResponse", Value: $scope.items._source['APIresponse'] },
+                   { Field: "APIresponse", Value: $scope.items._source['APIresponse'] },
                    { Field: "RuquestTime", Value: $scope.items._source['@timestamp'] },
                    { Field: "Referrer", Value: $scope.items._source['referrer'] },
-                   { Field: "ActualAction", Value: $scope.items._source['action'] },
-                   { Field: "Brsower", Value: $scope.items._source['agent'] }
+                   { Field: "Action", Value: $scope.items._source['action'] },
+                   { Field: "Agent", Value: $scope.items._source['agent'] }
 
             ];
 
@@ -760,7 +730,13 @@
                     //  toastr.info($scope.mySelections.pop());
                     angular.forEach($scope.mySelections, function (item) {
                         // toastr.info(item.Value);
-                        $scope.selected.item = item["Field"] + " : " + item["Value"];
+                        if (item["Field"] === "HTTPmethod")
+                        { $scope.selected.item = "verb" + " : " + item["Value"]; }
+                        else if (item["Field"] === "RuquestTime") {
+                            $scope.selected.item = "@timestamp" + " : " + item["Value"];
+                        } else {
+                            $scope.selected.item = item["Field"].toLowerCase() + " : " + item["Value"];
+                        }
                     });
                 }
             };

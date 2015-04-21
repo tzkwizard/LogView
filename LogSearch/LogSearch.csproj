@@ -87,9 +87,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Http.OData, Version=5.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="System.Web.Http.OData, Version=5.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.OData.5.4.0\lib\net45\System.Web.Http.OData.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.OData.5.5.1\lib\net45\System.Web.Http.OData.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -119,7 +119,6 @@
     <Content Include="app\ELS\TODO.html" />
     <Content Include="app\ELS\TODO.js" />
     <Content Include="app\layout\topnav.js" />
-    <Content Include="app\services\model.js" />
     <Content Include="app\services\routeMediator.js" />
     <Content Include="battlefield.jpg" />
     <Content Include="ccfavicon.ico" />
@@ -958,6 +957,10 @@
     <Content Include="Scripts\jquery-2.1.3.js" />
     <Content Include="Scripts\jquery-2.1.3.min.js" />
     <Content Include="Scripts\jquery-2.1.3.min.map" />
+    <Content Include="Scripts\moment-with-locales.js" />
+    <Content Include="Scripts\moment-with-locales.min.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\version.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -1031,10 +1034,6 @@
     <Content Include="content\images\photos\ward_bell.jpg" />
     <Content Include="content\styles.css" />
     <Content Include="index.html" />
-    <Content Include="Scripts\moment-with-locales.js" />
-    <Content Include="Scripts\moment-with-locales.min.js" />
-    <Content Include="Scripts\moment.js" />
-    <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\ng-grid.debug.js" />
     <Content Include="Scripts\npm.js" />
     <Content Include="Scripts\q.js" />

@@ -147,8 +147,7 @@
             else { vm.isCollapsed5 = !vm.isCollapsed5; }
         }
 
-        function sidebarNav(r, f) {
-            toastr.info(r.key.toString());
+        function sidebarNav(r, f) {           
             //$location.search();
             $location.search.field = "";
             $location.search('field', f);
