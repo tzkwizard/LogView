@@ -7,11 +7,10 @@
             var username = $cookieStore.get('username');
             var password = $cookieStore.get('password');
             var h = "http://" + username + ":" + password + "@localhost:9200";
-
+           // var vm = "http://" + username + ":" + password + "@23.101.177.252:9200";
 
             return esFactory({
-                //  host: 'http://172.16.0.6:9200',
-                // host: 'http://23.102.191.108:9200', 
+               // host:vm,
                 host: h,
 
                 /* host: [

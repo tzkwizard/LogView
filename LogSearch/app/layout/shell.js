@@ -3,12 +3,14 @@
 
     var controllerId = 'shell';
     angular.module('app').controller(controllerId,
-        ['$rootScope', '$modal', 'common', 'config','client', shell]);
+        ['$rootScope', '$modal', 'common', 'config', 'client', shell]);
 
-    function shell($rootScope,$modal, common, config,client) {
+    function shell($rootScope, $modal, common, config, client) {
         var vm = this;
         var logSuccess = common.logger.getLogFn(controllerId, 'success');
         var events = config.events;
+
+        //#region variable
         vm.busyMessage = 'Please wait ...';
         vm.isBusy = true;
         vm.spinnerOptions = {
@@ -23,13 +25,11 @@
         };
         vm.showSplash = true;
         activate();
+        //#endregion
 
 
-     
-
-      
-        vm.items = ['item1', 'item2', 'item3'];
-
+        //#region Login
+        vm.items = "";
         vm.open = function () {
             var modalInstance = $modal.open({
                 templateUrl: 'loginModal.html',
@@ -42,12 +42,12 @@
                     }
                 }
             });
-          
+
         };
 
         vm.login = login;
 
-            function login () {
+        function login() {
             client.ping({
                 requestTimeout: 1000,
                 hello: "elasticsearch!"
@@ -60,28 +60,21 @@
                 }
             });
         }
-      
-        
-        /*   $rootScope.$on('$locationChangeStart',
-      function(event, current, previous)
-      {
-          var answer = $window.confirm('Leave?');
-   
-          if(!answer)
-          {
-             event.preventDefault();
-              return;
-         }
-      });*/
+
+        //#endregion
 
 
+        //#region Shell Load
         function activate() {
             // logSuccess('Breezezz Angular loaded!', null, true);
             common.activateController([login()], controllerId).then(function () {
                 vm.showSplash = false;
             });
         }
+        //#endregion
 
+
+        //#region spinner
         function toggleSpinner(on)
         { vm.isBusy = on; }
 
@@ -97,6 +90,20 @@
             function (data) { toggleSpinner(data.show); }
         );
     };
+    //#endregion
+
+    /*   $rootScope.$on('$locationChangeStart',
+    function(event, current, previous)
+    {
+        var answer = $window.confirm('Leave?');
+ 
+        if(!answer)
+        {
+           event.preventDefault();
+            return;
+       }
+    });*/
+
 })();
 
 
@@ -106,19 +113,12 @@
     var controllerId = 'loginModal';
 
     angular.module('app')
-        .controller(controllerId, function ($cookieStore,$rootScope, $scope, $modalInstance, $location, common, items, esFactory) {
+        .controller(controllerId, function ($cookieStore, $rootScope, $scope, $modalInstance, $location, common, items, esFactory) {
 
-            $scope.title = "Elasticsarch Login";
-            $scope.items = items.data;
-            $scope.field = items.field;
-
+            $scope.title = "Elasticsarch Login";      
             $scope.selected = {
                 item: ""
             };
-
-            $scope.mySelections = [];
-            $scope.myData = [];
-
             $scope.username = "";
             $scope.password = "";
 

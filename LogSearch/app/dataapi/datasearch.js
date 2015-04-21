@@ -7,9 +7,10 @@
     function datasearch(common, client) {
 
         var vm = this;
-
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(serviceId);
+
+        //#region service
         var service = {
             getSampledata: getSampledata,
             stringSearch: stringSearch,
@@ -23,9 +24,10 @@
             dateHistogramAggregation: dateHistogramAggregation
         }
         return service;
+        //#endregion
 
 
-        // Aggragation
+        //#region Aggragation
         function dateHistogramAggregation(index, type, aggfield, span, start, end) {
             return client.search({
                 index: index,
@@ -65,10 +67,10 @@
 
             });
         }
+        //#endregion
 
 
-        // Filter
-
+        //#region Filter
         function stringquery(indices, type, pagecount, field, searchText, filterField, filter, condition, choice) {
 
             var stringQ = ejs.QueryStringQuery(searchText);
@@ -126,7 +128,6 @@
             });
         }
 
-
         function getSampledata(indices, type, pagecount, start, end) {
             return client.search({
                 index: indices,
@@ -176,7 +177,6 @@
             });
         }
 
-
         function termqueryandfilter(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end) {
             /*  if (field === "" || field === "all") {
                 // mSearch(searchText); 
@@ -223,10 +223,10 @@
                     .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
             });
         }
+        //#endregion
 
 
-        // Main search 
-
+        //#region Main search 
         function basicSearch(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end) {
 
             if (filter === "" || filter === undefined) {
@@ -263,7 +263,7 @@
             }
         }
 
-
+        //#endregion
     }
 
 })();

@@ -9,8 +9,8 @@
         var vm = this;
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
-        var log = getLogFn(controllerId);
 
+        //#region variable
         vm.isCurrent = isCurrent;
         vm.search = search;
         vm.searchText = '';
@@ -33,12 +33,16 @@
         vm.content = [];
         vm.content[0] = 4;
         vm.content[1] = 5;
-        vm.getFieldName = getFieldName;
-
         vm.agg = ["Ace"];
+        //#endregion
 
+        //#region function
+        vm.getFieldName = getFieldName;
         vm.sidebarNav = sidebarNav;
+        //#endregion
 
+
+        //#region Sidebar Load
         function activate() {
             //getFieldName();
 
@@ -46,17 +50,6 @@
                 .then(function () {
                 });
         }
-
-        function sidebarNav(r, f) {
-            toastr.info(r.key.toString());
-            //$location.search();
-            $location.search.field = "";
-            $location.search('field', f);
-            $location.search.text = r.key.toString();
-            $location.path('/els/')
-            //$location.path('/els/' + r.key.toString());
-        }
-
 
         function getFieldName() {
             if (vm.fieldsName.length === 0) {
@@ -66,8 +59,26 @@
             vm.isCollapsed = !vm.isCollapsed;
         }
 
+        function getNavRoutes() {
+            vm.navRoutes = routes.filter(function (r) {
+                return r.config.settings && r.config.settings.nav;
+            }).sort(function (r1, r2) {
+                return r1.config.settings.nav - r2.config.settings.nav;
+            });
+        }
+
+        function isCurrent(route) {
+            if (!route.config.title || !$route.current || !$route.current.title) {
+                return '';
+            }
+            var menuName = route.config.title;
+            return $route.current.title.substr(0, menuName.length) === menuName ? 'current' : '';
+        }
+
+        //#endregion
 
 
+        //#region Siderbar Facet
         vm.showLocation = function () {
             if (vm.location === "" || vm.location === undefined || $location.search.refresh) {
 
@@ -97,7 +108,6 @@
             }
         }
 
-
         vm.showRequestMethod = function () {
             if (vm.httpmethod === "" || vm.httpmethod === undefined || $location.search.refresh) {
                 datasearch.termAggragation($rootScope.index, 'logs', "verb.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
@@ -110,7 +120,6 @@
             }
             else { vm.isCollapsed3 = !vm.isCollapsed3; }
         }
-
 
         vm.showUser = function () {
             if (vm.user === "" || vm.user === undefined || $location.search.refresh) {
@@ -138,24 +147,18 @@
             else { vm.isCollapsed5 = !vm.isCollapsed5; }
         }
 
-
-
-
-        function getNavRoutes() {
-            vm.navRoutes = routes.filter(function (r) {
-                return r.config.settings && r.config.settings.nav;
-            }).sort(function (r1, r2) {
-                return r1.config.settings.nav - r2.config.settings.nav;
-            });
+        function sidebarNav(r, f) {
+            toastr.info(r.key.toString());
+            //$location.search();
+            $location.search.field = "";
+            $location.search('field', f);
+            $location.search.text = r.key.toString();
+            $location.path('/els/')
+            //$location.path('/els/' + r.key.toString());
         }
+        //#endregion
 
-        function isCurrent(route) {
-            if (!route.config.title || !$route.current || !$route.current.title) {
-                return '';
-            }
-            var menuName = route.config.title;
-            return $route.current.title.substr(0, menuName.length) === menuName ? 'current' : '';
-        }
+
 
         function search($event) {
             if ($event.keyCode === config.keyCodes.esc) {
@@ -170,6 +173,7 @@
                 $location.path(route + vm.searchText);
             }
         }
+
 
     };
 })();

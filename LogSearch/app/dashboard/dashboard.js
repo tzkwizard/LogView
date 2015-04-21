@@ -6,8 +6,10 @@
     function dashboard($timeout, $cookieStore, $rootScope, common, dataconfig, datasearch, client) {
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
-
         var vm = this;
+
+
+        //#region variable
         vm.size = 15;
         vm.isBusy = true;
         vm.busyMessage = "wait";
@@ -24,7 +26,9 @@
         // vm.people = [];
         vm.title = 'Dashboard';
         vm.indicesName = [];
+        //#endregion
 
+        //#region function
         //  vm.getFieldName = getFieldName;
         vm.getIndexName = getIndexName;
         //   vm.getTypeName = getTypeName;
@@ -32,7 +36,7 @@
         vm.histGram = histGram;
         vm.init = init;
         vm.timeLineGram = timeLineGram;
-
+        //#endregion
 
 
         vm.test = test;
@@ -41,12 +45,7 @@
         }
 
 
-
-
-
-
-
-        //  Load
+        //#region View Load
         vm.st = "";
         vm.ft = "";
         activate();
@@ -101,9 +100,9 @@
 
 
         }
+        //#endregion
 
-
-        //   Draw Map
+        //#region Draw Map
         vm.location = [];
         function geoMap() {
             datasearch.termAggragation(vm.indicesName, 'logs', "geoip.city_name.raw", vm.size, vm.st, vm.ft).then(function (resp) {
@@ -172,10 +171,9 @@
 
             vm.isBusy = false;
         }
+        //#endregion
 
-
-        //   Draw Pie      
-
+        //#region Draw Pie 
         function pieChart() {
             client.search({
                 index: vm.indicesName,
@@ -254,9 +252,9 @@
 
 
         }
+        //#endregion
 
-
-        //   Time Chart
+        //#region Time Chart
 
         function timeLineGram() {
 
@@ -350,7 +348,7 @@
                      chart.draw(data, options);*/
 
         }
-
+        //#endregion
 
 
 

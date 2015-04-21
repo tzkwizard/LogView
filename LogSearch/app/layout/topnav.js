@@ -5,13 +5,15 @@
     angular.module('app').controller(controllerId,
         ['$cookieStore', '$timeout', '$rootScope', '$http', '$window', '$route', '$scope', '$location', 'dataconfig', 'datasearch', 'config', topnav]);
 
-    function topnav($cookieStore,$timeout, $rootScope, $http, $window, $route, $scope, $location, dataconfig, datasearch, config) {
+    function topnav($cookieStore, $timeout, $rootScope, $http, $window, $route, $scope, $location, dataconfig, datasearch, config) {
         var vm = this;
+        // var keyCodes = config.keyCodes;
+
         vm.search = search;
         vm.refresh = refresh;
         vm.logout = logout;
         vm.searchText = '';
-        // var keyCodes = config.keyCodes;
+
         activate();
         vm.path = path;
         vm.ip = [];
@@ -21,7 +23,7 @@
 
 
 
-        // time
+        //#region Time
         vm.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'yyyy.MM.dd'];
         vm.format = vm.formats[4];
         vm.it = ["Last three months", "Last Month", "Last four weeks", "Last three weeks", "Last two weeks", "Last week", "Last five days", "Last three days", "Last day"];
@@ -70,15 +72,10 @@
             $route.reload();
 
         }
+        //#endregion
 
 
-
-
-       
-
-
-
-
+        //#region Auto-Fill
         function init() {
             var word = [];
             vm.pfx = ["ident.raw", "auth.raw", "geoip.city_name.raw", "request.raw", "geoip.country_name.raw", "geoip.region_name.raw", "geoip.postal_code.raw"];
@@ -116,10 +113,11 @@
                 });
             });
         };
+        //#endregion
 
 
 
-
+        //#region View
         function path(n) {
 
             switch (n) {
@@ -132,11 +130,9 @@
 
         }
 
-
         function activate() {
             $timeout(init, 500);
         }
-
 
         function search($event) {
             if ($event.keyCode === config.keyCodes.esc) {
@@ -171,6 +167,7 @@
             $cookieStore.remove("password");
             window.location.reload();
         }
+        //#endregion
 
     };
 })();

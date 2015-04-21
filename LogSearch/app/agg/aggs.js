@@ -23,7 +23,8 @@
                 trail: 100,
                 color: 'Blue'
             };
-            //variable
+
+            //#region variable
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
 
@@ -50,9 +51,10 @@
             vm.range = "range";
             vm.barchart = "bar";
             vm.tablechart = "table";
+            //#endregion
 
-            //function
 
+            //#region function
             vm.treMap = treeMap;
             vm.aggShow = aggShow;
             vm.aggshows = aggshows;
@@ -64,7 +66,7 @@
             vm.refresh = refresh;
             vm.go = go;
             vm.clear = clear;
-
+            //#endregion
 
             vm.tes = "ab";
             vm.test = function test(doc) {
@@ -79,11 +81,7 @@
 
 
 
-
-
-            //    button           
-
-
+            //#region button
             function refresh($event) {
                 $route.reload();
                 /* vm.searchText = '*';
@@ -107,18 +105,15 @@
                        { key: 'School', value: 'TCU' }
                 ];
                 getFieldName();
-                $timeout(aggShow,1200);
+                $timeout(aggShow, 1200);
             }
+            //#endregion
 
 
-
-
-
-            //   Draw tree
-           
+            //#region Draw-tree
             vm.fieldstree = [];
             vm.treestatus = true;
-            function treeMap(index, aggName,datatree) {
+            function treeMap(index, aggName, datatree) {
 
                 datasearch.termAggragation(index, 'logs', aggName, vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
 
@@ -157,10 +152,10 @@
 
                     //vm.fieldstree = ["a", "b", "c", "d"];
                     datatree.addRow(["Elasticsearch", null, 0, 0]);
-                    angular.forEach(vm.indicesName, function(n) {
+                    angular.forEach(vm.indicesName, function (n) {
 
                         datatree.addRow([n, "Elasticsearch", 0, 0]);
-                        angular.forEach(vm.fieldstree, function(m) {
+                        angular.forEach(vm.fieldstree, function (m) {
 
                             var x = Math.random() * 100 - 50;
                             datatree.addRow([m + "\n" + n, n, 0, 0]);
@@ -204,7 +199,7 @@
 
 
                         google.visualization.events.addListener(tree, 'select',
-                            function() {
+                            function () {
                                 tree.goUpAndDraw();
                             });
 
@@ -212,24 +207,21 @@
 
                     }
                 } catch (ex) {
-                    log("Loading Map error"+ex);
-                } 
+                    log("Loading Map error" + ex);
+                }
 
 
             }
+            //#endregion
 
 
-
-
-            //   Load
-
-          // var datatree;
+            //#region View Load
             activate();
             function activate() {
                 common.activateController([getIndexName()], controllerId)
                     .then(function () {
                         // aggShow("");
-                       // datatree = new google.visualization.DataTable();
+                        // datatree = new google.visualization.DataTable();
                         vm.refinedsearch = [
                         { key: 'Time', value: new Date() },
                         { key: 'School', value: 'TCU' }
@@ -305,77 +297,76 @@
                 // vm.fieldsName = dataconfig.checkCookie('logfield', vm.indicesName[0]);
 
                 vm.aggName = "";
-                if (vm.treestatus) {                   
-                        $timeout(drawtreemap, 800);
-                    
+                if (vm.treestatus) {
+                    $timeout(drawtreemap, 800);
+
                 }
 
             }
+            //#endregion
 
 
+            //#region Draw chart
+            function aggShow(aggName) {
 
-            //   Draw chart
-
-        function aggShow(aggName) {
-
-            var main = document.getElementById('div2');
-            var contain = document.getElementById('contain');
-            if (contain !== null) {
-                main.removeChild(contain);
-            }
-            try {
-                if (vm.aggName === "" || vm.aggName === "all") {
-                    // vm.fieldsName = $rootScope.logfield;
-
-                    var index = vm.fieldsName.indexOf("@timestamp");
-                    vm.fieldsName.splice(index, 1);
-                    index = vm.fieldsName.indexOf("referrer");
-                    vm.fieldsName.splice(index, 1);
-                    index = vm.fieldsName.indexOf("referrer.raw");
-                    vm.fieldsName.splice(index, 1);
-                    index = vm.fieldsName.indexOf("timestamp");
-                    vm.fieldsName.splice(index, 1);
-                    index = vm.fieldsName.indexOf("request");
-                    vm.fieldsName.splice(index, 1);
-                    index = vm.fieldsName.indexOf("edata");
-                    vm.fieldsName.splice(index, 1);
-                    index = vm.fieldsName.indexOf("action");
-                    vm.fieldsName.splice(index, 1);
-                    index = vm.fieldsName.indexOf("host");
-                    vm.fieldsName.splice(index, 1);
-                    index = vm.fieldsName.indexOf("action");
-                    vm.fieldsName.splice(index, 1);
-                    index = vm.fieldsName.indexOf("agent");
-                    vm.fieldsName.splice(index, 1);
-                    index = vm.fieldsName.indexOf("action");
-                    vm.fieldsName.splice(index, 1);
-
-
-                    var flag;
-                    angular.forEach(vm.fieldsName, function(name) {
-                        if (vm.fieldsName.length <= 2) {
-                            flag = true;
-                        } else {
-                            flag = false;
-                        }
-                        aggshows(name, flag);
-                    });
-
-                } else {
-
-                    datasearch.termAggragationwithQuery(vm.indicesName, 'logs', aggName, vm.size, vm.searchText, $rootScope.st, $rootScope.ft).then(function(resp) {
-                        vm.total = resp.hits.total;
-                        vm.hitSearch = resp.aggregations.ag.agg.buckets;
-                        drawDashboard(resp.aggregations.ag.agg, aggName);
-                    }, function(err) {
-                        // log(err.message);
-                    });
+                var main = document.getElementById('div2');
+                var contain = document.getElementById('contain');
+                if (contain !== null) {
+                    main.removeChild(contain);
                 }
-            } catch (ex) {
-                log("Loading pie Error"+ex);
-            }
+                try {
+                    if (vm.aggName === "" || vm.aggName === "all") {
+                        // vm.fieldsName = $rootScope.logfield;
 
-        vm.isBusy = false;
+                        var index = vm.fieldsName.indexOf("@timestamp");
+                        vm.fieldsName.splice(index, 1);
+                        index = vm.fieldsName.indexOf("referrer");
+                        vm.fieldsName.splice(index, 1);
+                        index = vm.fieldsName.indexOf("referrer.raw");
+                        vm.fieldsName.splice(index, 1);
+                        index = vm.fieldsName.indexOf("timestamp");
+                        vm.fieldsName.splice(index, 1);
+                        index = vm.fieldsName.indexOf("request");
+                        vm.fieldsName.splice(index, 1);
+                        index = vm.fieldsName.indexOf("edata");
+                        vm.fieldsName.splice(index, 1);
+                        index = vm.fieldsName.indexOf("action");
+                        vm.fieldsName.splice(index, 1);
+                        index = vm.fieldsName.indexOf("host");
+                        vm.fieldsName.splice(index, 1);
+                        index = vm.fieldsName.indexOf("action");
+                        vm.fieldsName.splice(index, 1);
+                        index = vm.fieldsName.indexOf("agent");
+                        vm.fieldsName.splice(index, 1);
+                        index = vm.fieldsName.indexOf("action");
+                        vm.fieldsName.splice(index, 1);
+
+
+                        var flag;
+                        angular.forEach(vm.fieldsName, function (name) {
+                            if (vm.fieldsName.length <= 2) {
+                                flag = true;
+                            } else {
+                                flag = false;
+                            }
+                            aggshows(name, flag);
+                        });
+
+                    } else {
+
+                        datasearch.termAggragationwithQuery(vm.indicesName, 'logs', aggName, vm.size, vm.searchText, $rootScope.st, $rootScope.ft).then(function (resp) {
+                            vm.total = resp.hits.total;
+                            vm.hitSearch = resp.aggregations.ag.agg.buckets;
+                            drawDashboard(resp.aggregations.ag.agg, aggName);
+                        }, function (err) {
+                            // log(err.message);
+                        });
+                    }
+                } catch (ex) {
+                    log("Loading pie Error" + ex);
+                }
+
+                vm.isBusy = false;
             }
 
             function aggshows(aggName, flag) {
@@ -654,7 +645,7 @@
                 });
 
             }
-
+            //#endregion
 
 
 

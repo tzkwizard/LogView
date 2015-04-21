@@ -1,0 +1,6 @@
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\bin\Release\LogView.exe.config
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\bin\Release\LogView.exe
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\bin\Release\LogView.pdb
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\obj\Release\LogView.csprojResolveAssemblyReference.cache
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\obj\Release\LogView.exe
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\obj\Release\LogView.pdb

@@ -4,72 +4,70 @@
     var controllerId = 'els';
 
     angular.module('app')
-        .controller(controllerId, function($timeout, bsDialog, $rootScope, $routeParams,
-        $filter, $injector, $log, $scope, $location, $modal,client, common, datasearch, dataconfig, $cookieStore) {
+        .controller(controllerId, function ($timeout, bsDialog, $rootScope, $routeParams,
+        $filter, $injector, $log, $scope, $location, $modal, client, common, datasearch, dataconfig, $cookieStore) {
 
 
-        var vm = this;
-        vm.title = "Elasticsearch";
-        var getLogFn = common.logger.getLogFn;
-        var log = getLogFn(controllerId);
-        $scope.predicate = '_source.timestamp';
-        $scope.count = 0;
-        //variable
+            var vm = this;
+            vm.title = "Elasticsearch";
+            var getLogFn = common.logger.getLogFn;
+            var log = getLogFn(controllerId);
+            $scope.predicate = '_source.timestamp';
+            $scope.count = 0;
 
-        vm.fi = "";
-        vm.searchText = $routeParams.search || '';
-        vm.hitSearch = "";
-        vm.acount = 4;
-        vm.hits = "2";
-        vm.total = 0;
-        vm.mystyle = { 'color': 'blue' };
-        vm.field = "";
-        vm.index = $routeParams.index || "";
-        vm.type = "";
-        vm.filterAggName = "";
-        vm.pagecount = 1000;
-        vm.fieldsName = [];
-        vm.typesName = [];
-        vm.indicesName = [];
-        vm.t = [];
-        vm.tt = 0;
+            //#region variable
+            vm.fi = "";
+            vm.searchText = $routeParams.search || '';
+            vm.hitSearch = "";
+            vm.acount = 4;
+            vm.hits = "2";
+            vm.total = 0;
+            vm.mystyle = { 'color': 'blue' };
+            vm.field = "";
+            vm.index = $routeParams.index || "";
+            vm.type = "";
+            vm.filterAggName = "";
+            vm.pagecount = 1000;
+            vm.fieldsName = [];
+            vm.typesName = [];
+            vm.indicesName = [];
+            vm.t = [];
+            vm.tt = 0;
 
-        vm.showSplash = true;
+            vm.showSplash = true;
 
-        vm.Syntax = {
-            title: 'Help',
-            Description: "Terms Fields Escaping Special Characters"
-        };
+            vm.Syntax = {
+                title: 'Help',
+                Description: "Terms Fields Escaping Special Characters"
+            };
+            //#endregion
+
+            //#region function
+            vm.search = search;
+            vm.mSearch = mSearch;
+            vm.filtertemp = filtertemp;
+            vm.init = init;
+            vm.test = test;
+            activate();
+            vm.today = today;
+            vm.pageChanged = pageChanged;
+            vm.getCurrentPageData = getCurrentPageData;
+            vm.getFieldName = getFieldName;
+            vm.getIndexName = getIndexName;
+            vm.getTypeName = getTypeName;
+            vm.filltext = filltext;
+            vm.addfilter = addfilter;
+            vm.removefilter = removefilter;
+            vm.filterst = filterst;
+            //#endregion
 
 
-        //function
-        vm.search = search;
-        vm.mSearch = mSearch;
-        vm.filtertemp = filtertemp;
-        vm.init = init;
-        vm.test = test;
-        activate();
-        vm.today = today;
-        vm.pageChanged = pageChanged;
-        vm.getCurrentPageData = getCurrentPageData;
-        vm.getFieldName = getFieldName;
-        vm.getIndexName = getIndexName;
-        vm.getTypeName = getTypeName;
-        vm.filltext = filltext;
-        vm.addfilter = addfilter;
-        vm.removefilter = removefilter;
-        vm.filterst = filterst;
-
-
-
-
+            //#region Test
             vm.tests = tests;
 
             function tests(x) {
-
+                log("1");
             }
-
-            vm.fi1 = "";
 
 
 
@@ -124,29 +122,18 @@
                 var t2 = document.getElementById('fselect1');
                 var t3 = document.getElementById('input1');
 
-               
 
-               // toastr.info(t1.value + t2.value + t3.value + vm.fi1);
 
-               
+                // toastr.info(t1.value + t2.value + t3.value + vm.fi1);
+
+
 
 
             }
+            //#endregion
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-            //         result showing
+            //#region Paging 
             vm.paging = {
                 currentPage: 1,
                 maxPagesToShow: 5,
@@ -188,13 +175,10 @@
                 vm.getCurrentPageData(vm.hitSearch);
                 random();
             }
+            //#endregion
 
 
-
-
-
-
-            //          processorbar
+            //#region Processorbar
 
             vm.showWarning = "";
             vm.dynamic = "";
@@ -223,12 +207,10 @@
                 vm.ptype = ptype;
             };
 
+            //#endregion
 
 
-
-
-
-            //   popup
+            //#region ResultModal
 
             vm.showModal = false;
 
@@ -259,13 +241,10 @@
                     $log.info('Modal dismissed at: ' + new Date());
                 });
             };
+            //#endregion
 
 
-
-
-
-
-            //          date pick
+            //#region Date-pick
 
             vm.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'yyyy.MM.dd'];
             vm.format = vm.formats[4];
@@ -339,25 +318,24 @@
             vm.timeopen = function ($event) {
                 $event.preventDefault();
                 $event.stopPropagation();
-
+                $rootScope.st = vm.st;
                 vm.timeopened = true;
             };
 
             vm.ftimeopen = function ($event) {
                 $event.preventDefault();
                 $event.stopPropagation();
-
+                $rootScope.ft = vm.ft;
                 vm.ftimeopened = true;
             };
 
+            //#endregion
 
 
-
-  
-            //        Page load         
+            //#region View Load
 
             vm.im = 1;
-            
+
             vm.refresh = function () {
 
                 BootstrapDialog.confirm({
@@ -378,12 +356,12 @@
                         }
                     }
                 });
-                 
 
-             /*   vm.searchText = "";
-                search();
-                log("refresh");*/
-               
+
+                /*   vm.searchText = "";
+                   search();
+                   log("refresh");*/
+
 
             }
 
@@ -532,14 +510,10 @@
                     log('Loaded sample document');
                 });
             }
+            //#endregion
 
 
-
-
-
-            //         Search and filter
-
-
+            //#region Search and Filter 
             vm.condition = "";
 
             function search() {
@@ -643,7 +617,7 @@
                 });
 
             }
-
+            //#endregion
 
 
 
@@ -663,6 +637,7 @@
     angular.module('app')
         .controller(controllerId, function ($scope, $modalInstance, $location, common, items) {
 
+            //#region variable
             $scope.title = "Detailed search result";
             $scope.items = items.data;
             $scope.field = items.field;
@@ -673,7 +648,10 @@
 
             $scope.mySelections = [];
             $scope.myData = [];
+            //#endregion
 
+
+            //#region Form1
             angular.forEach(Object.keys($scope.items._source), function (item) {
                 $scope.myData.push({
                     Field: item, Value: $scope.items._source[item]
@@ -710,8 +688,10 @@
                     });
                 }
             };
+            //#endregion
 
 
+            //#region Form2
             $scope.myData2 = [
                 { Field: "UserIP", Value: $scope.items._source['clientip'] }
             ];
@@ -748,11 +728,10 @@
                 }
             };
 
+            //#endregion
 
 
-
-
-
+            //#region Form3
             $scope.myData3 = [{ Field: "UserIP", Value: $scope.items._source['clientip'] },
                    { Field: "HTTPmethod ", Value: $scope.items._source['verb'] },
                    { Field: "ResquestApi", Value: $scope.items._source['request'] },
@@ -785,7 +764,7 @@
                     });
                 }
             };
-
+            //#endregion
 
 
 
