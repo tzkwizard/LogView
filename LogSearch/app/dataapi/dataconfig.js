@@ -26,7 +26,7 @@
         return service;
         //#endregion
 
-
+        //#region Test
         function xx() {
             $rootScope.logfield = getFieldName($rootScope.index[0], $rootScope.logtype);
             $rootScope.st = moment(new Date()).subtract(2, 'month');
@@ -63,7 +63,7 @@
             // log("1");
 
         }
-
+        //#endregion
 
         //#region Layout
         function createContainer(aggName) {

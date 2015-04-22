@@ -39,7 +39,7 @@
 
             $rootScope.index = dataconfig.initIndex();
             $rootScope.logtype = "logs";
-            $timeout(xx, 500);
+            $timeout(xx, 200);
             $rootScope.st = moment(new Date()).subtract(2, 'month');
             $rootScope.ft = new Date();
             $rootScope.ip = [];

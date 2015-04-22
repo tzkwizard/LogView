@@ -1,12 +1,14 @@
 ﻿<section class="mainbar" data-ng-controller="aggs as vm">
     <section class="matter">
         <div class="container-fluid">
-
-            <div data-ng-show="vm.isBusy" class="page-splash dissolve-animation">
-                <div data-cc-spinner="vm.spinnerOptions"></div>
-                <div class="page-splash-message page-splash-message-subtle">{{vm.busyMessage}}</div>
+            <div id="spinner">
+                <div data-ng-show="vm.isBusy" class="page-splash dissolve-animation">
+                    <div data-cc-spinner="vm.spinnerOptions"></div>
+                    <div class="page-splash-message page-splash-message-subtle">{{vm.busyMessage}}</div>
+                </div>
             </div>
-            <div class="row-fluid">
+
+            <div id="Header" class="row-fluid">
                 <button data-ng-click="vm.aggShow(vm.aggName)" class="btn btn-info btn-notext" type="button">
                     <i class="fa fa-pie-chart">Show</i>
                 </button>
@@ -32,7 +34,7 @@
                 </button>
             </div>
 
-            <div class="row-fluid">
+            <div id="Content1" class="row-fluid">
                 {{vm.searchText}}
                 <button class="btn btn-large btn-info btn-notext pull-right" type="button" data-ng-click="vm.clear()">
                     <i class="fa fa-trash-o"> Clear </i>
@@ -58,38 +60,51 @@
                 </table>
 
                 <div class="widget wblue">
-                    <div data-cc-widget-header title="{{vm.title}}" subtitle="{{vm.total}} / {{vm.total}}"
+                    <div data-cc-widget-header title="{{vm.title}}" subtitle="{{vm.total}}"
                          allow-collapse="true"></div>
                     <div class="widget-content">
                         <div id="treemap_div" style="height: 600px;" ng-show="vm.treestatus"></div>
                     </div>
                 </div>
-                <div id="div2"></div>
+
             </div>
 
+            <div id="Content2" class="widget wlightblue">
+                <div data-cc-widget-header title="{{vm.title2}}"
+                     allow-collapse="true"></div>
+                <div class="widget-content">
+                    <div id="div2"></div>
+                    <div id="dashboard">
+                        <table class="columns">
+                            <tr>
+                                <td>
+                                    <div id="filter_div"></div>
+                                    <div id="chart_div" data-ng-click="vm.test()"></div>
+                                </td>
+                                <td>
+                                    <div id="table_div"></div>
 
 
-            <div id="dashboard">
-                <table class="columns">
-                    <tr>
-                        <td>
-                            <div id="filter_div"></div>
-                            <div id="chart_div" data-ng-click="vm.test()"></div>
-                        </td>
-                        <td>
-                            <div id="table_div"></div>
-                            <div id="map_div" style="width: 400px; height: 300px;"></div>
-                            <div id="table"></div>
-                        </td>
+                                    <div id="map_div" style="width: 400px; height: 300px;"></div>
+                                    <div id="table"></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="table2_div"></div>
+                </div>
 
-                    </tr>
-                </table>
+
             </div>
-            <div id="table2_div"></div>
+
 
         </div>
     </section>
+  
 </section>
+
+
+
 
 
 <!-- <div data-ng-attr-id={{vm.dashboard}}>

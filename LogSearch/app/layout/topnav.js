@@ -19,6 +19,12 @@
         vm.ip = [];
 
         vm.init = init;
+
+
+
+
+
+
         vm.loading = true;
 
 

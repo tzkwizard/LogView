@@ -5,11 +5,12 @@
 
     angular.module('app')
         .controller(controllerId, function ($timeout, bsDialog, $rootScope, $routeParams,
-        $filter, $injector, $log, $scope, $location, $modal, client, common, datasearch, dataconfig, $cookieStore) {
+        $filter, $injector, $log, $scope, $location, $modal, client, common, datasearch, dataconfig, $cookieStore,config) {
 
 
             var vm = this;
             vm.title = "Elasticsearch";
+            vm.title2 = "Function";
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
             $scope.predicate = '_source.timestamp';
@@ -429,7 +430,7 @@
 
                 // log(vm.indicesName.length);
                 // $timeout(renew, 500);
-                $timeout(getFieldName, 500);
+                $timeout(getFieldName, 200);
                 // getFieldName();
             }
 
@@ -459,6 +460,7 @@
                         $location.search();
                         vm.ft = $rootScope.ft;
                         vm.st = $rootScope.st;
+
                         if ($location.search.text !== "") {
                             vm.searchText = $location.search.text;
                         }
@@ -487,7 +489,7 @@
                     vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
                     vm.getCurrentPageData(vm.hitSearch);
                     vm.type = "";
-                    log('Loaded sample document');
+                    //log('Loaded sample document');
                 });
             }
             //#endregion
@@ -496,32 +498,32 @@
             //#region Search and Filter 
             vm.condition = "";
 
-            function search() {
-                vm.hitSearch = "";
-                if (vm.searchText == undefined || vm.searchText === "") {
-                    init();
-                    $timeout(random, 500);
+            function search() {          
+                    vm.hitSearch = "";
+                    if (vm.searchText == undefined || vm.searchText === "") {
+                        init();
+                        $timeout(random, 200);
 
-                } else {
+                    } else {
 
-                    datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, vm.filterAggName, vm.fi, vm.condition, vm.st, vm.ft)
-                .then(function (resp) {
-                    vm.hitSearch = resp.hits.hits;
-                    vm.total = resp.hits.total;
-                    if (vm.total === 0) {
-                        log("None Result");
+                        datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, vm.filterAggName, vm.fi, vm.condition, vm.st, vm.ft)
+                            .then(function (resp) {
+                                vm.hitSearch = resp.hits.hits;
+                                vm.total = resp.hits.total;
+                                if (vm.total === 0) {
+                                    log("None Result");
+                                }
+                                vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
+                                vm.getCurrentPageData(vm.hitSearch);
+                                $timeout(random, 200);
+                            }, function (err) {
+                                log(err.message);
+                            });
                     }
-                    vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
-                    vm.getCurrentPageData(vm.hitSearch);
-                    $timeout(random, 500);
-                }, function (err) {
-                    log(err.message);
-                });
+
                 }
 
-
-
-            }
+            
 
 
             function filtertemp() {

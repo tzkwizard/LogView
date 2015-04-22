@@ -67,10 +67,10 @@
         function init() {
             getIndexName();
 
-            $timeout(timeLineGram, 1200);
-            $timeout(pieChart, 1200);
-            $timeout(geoMap, 1200);
-            $timeout(histGram, 1200);
+            $timeout(timeLineGram, 200);
+            $timeout(pieChart, 200);
+            $timeout(geoMap, 200);
+            $timeout(histGram, 200);
             //$timeout(renew, 800);
         }
 

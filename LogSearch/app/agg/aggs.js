@@ -10,6 +10,7 @@
 
             var vm = this;
             vm.title = "Aggragations";
+            vm.title2 = "PieChart";
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
 
@@ -145,14 +146,22 @@
                 try {
                     var datatree = new google.visualization.DataTable();
                     vm.fieldstree = [];
-                    vm.fieldstree = vm.fieldsName;
+
+                    angular.forEach(vm.fieldsName, function (x) {
+                        if (x.substring(x.length - 3, x.length) === "raw") {
+                            vm.fieldstree.push(x);
+                        }
+                    });
+                    var field = vm.fieldstree.indexOf("timestamp.raw");
+                    vm.fieldstree.splice(field, 1);
+
+
                     datatree.addColumn('string', 'Name');
                     datatree.addColumn('string', 'Parent');
                     datatree.addColumn('number', 'count');
                     datatree.addColumn('number', 'color');
 
 
-                    //vm.fieldstree = ["a", "b", "c", "d"];
                     datatree.addRow(["Elasticsearch", null, 0, 0]);
                     angular.forEach(vm.indicesName, function (n) {
 
@@ -179,7 +188,7 @@
                     vm.dd = dd;
 
                     $timeout(dd, 1500);
-
+                    aggShow();
                     function dd() {
 
 
@@ -205,11 +214,12 @@
                                 tree.goUpAndDraw();
                             });
 
-                        aggShow();
-
+                        //  aggShow();
+                        vm.isBusy = false;
                     }
                 } catch (ex) {
                     log("Loading Map error" + ex);
+                    vm.isBusy = false;
                 }
 
 
@@ -269,7 +279,7 @@
                 // vm.indicesName = $rootScope.index;
                 //vm.index = vm.indicesName[0];
                 //vm.index = "logstash-2015.04.01";
-                $timeout(getFieldName, 500);
+                $timeout(getFieldName, 200);
 
             }
 
@@ -307,7 +317,7 @@
 
                 vm.aggName = "";
                 if (vm.treestatus) {
-                    $timeout(drawtreemap, 800);
+                    $timeout(drawtreemap, 200);
 
                 }
 
@@ -375,7 +385,7 @@
                     log("Loading pie Error" + ex);
                 }
 
-                vm.isBusy = false;
+                // vm.isBusy = false;
             }
 
             function aggshows(aggName, flag) {
@@ -561,7 +571,7 @@
                 // Draw the dashboard.
                 dashboard.draw(data);
                 vm.ft = new Date();
-                datasearch.getSampledata(vm.index, vm.type, 1500, "2000-10-02", vm.ft).then(function (resp) {
+                datasearch.getSampledata(vm.indicesName, $rootScope.logtype, 15, $rootScope.st, $rootScope.ft).then(function (resp) {
                     vm.hit = resp.hits.hits;
                     drawMap(vm.hit);
                 }, function (err) {
