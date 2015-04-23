@@ -413,7 +413,7 @@
 
 
 
-                if ($cookieStore.get('index') !== undefined) {
+                if ($cookieStore.get('index') !== undefined&&$rootScope.index!==undefined) {
                     if ($rootScope.index.length !== $cookieStore.get('index').length && $rootScope.index.length > 1) {
                         $cookieStore.remove('index');
                     }
