@@ -4,7 +4,7 @@
     var controllerId = 'aggs';
 
     angular.module('app')
-        .controller(controllerId, function ($route, $timeout, $cookieStore, $rootScope, $scope, $location,
+        .controller(controllerId, function ($interval, $q, $route, $timeout, $cookieStore, $rootScope, $scope, $location,
             common, bsDialog, client, datasearch, dataconfig) {
 
 
@@ -108,7 +108,14 @@
                        { key: 'School', value: 'TCU' }
                 ];
                 getFieldName();
-                $timeout(aggShow, 1200);
+                if (fp === undefined) {
+                    aggShow("");
+                } else {
+                    fp.then(function (data) {
+                        vm.fieldsName = data;
+                        aggShow("");
+                    });
+                }
             }
             //#endregion
 
@@ -117,20 +124,19 @@
             vm.fieldstree = [];
             vm.treestatus = true;
             function treeMap(index, aggName, datatree) {
-
-                datasearch.termAggragation(index, vm.type, aggName, vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
-
-                    var tt = resp.aggregations.ag.agg.buckets;
-
-
-                    angular.forEach(tt, function (y) {
-                        var x = Math.random() * y.doc_count - 50;
-                        datatree.addRow([y.key + "\n" + aggName + "\n" + index, aggName + "\n" + index, y.doc_count, x]);
-
-                    });
-                }, function (err) {
-                    // log(err.message);
-                });
+                // var promises = [];
+                return datasearch.termAggragation(index, vm.type, aggName, vm.size, $rootScope.st, $rootScope.ft)
+                        .then(function (resp) {
+                            var tt = resp.aggregations.ag.agg.buckets;
+                            tt.map(function (y) {
+                                var x = Math.random() * y.doc_count - 50;
+                                // datatree.addRow([y.key + "\n" + aggName + "\n" + index, aggName + "\n" + index, y.doc_count, x]);
+                                datatree.addRow([y.key + "\n" + aggName, aggName, y.doc_count, x]);
+                            });
+                            //return $q.all(promises);
+                        }, function (err) {
+                            // log(err.message);
+                        });
 
             }
 
@@ -162,35 +168,57 @@
                     datatree.addColumn('number', 'color');
 
 
-                    datatree.addRow(["Elasticsearch", null, 0, 0]);
-                    angular.forEach(vm.indicesName, function (n) {
+                    vm.cc = cc;
+                    var promise = [];
+                    function cc() {
 
-                        datatree.addRow([n, "Elasticsearch", 0, 0]);
-                        angular.forEach(vm.fieldstree, function (m) {
+                        /* datatree.addRow(["Elasticsearch", null, 0, 0]);
+                        angular.forEach(vm.indicesName, function (n) {
+                         
+                           datatree.addRow([n, "Elasticsearch", 0, 0]);
+                           angular.forEach(vm.fieldstree, function (m) {
+   
+                               var x = Math.random() * 100 - 50;
+                               datatree.addRow([m + "\n" + n, n, 0, 0]);
+   
+                               treeMap(n, m, datatree);
+   
+                           });
+                        });*/
+
+
+                        datatree.addRow(["Elasticsearch", null, 0, 0]);
+
+                        vm.fieldstree.map(function (m) {
 
                             var x = Math.random() * 100 - 50;
-                            datatree.addRow([m + "\n" + n, n, 0, 0]);
+                            datatree.addRow([m, "Elasticsearch", 0, 0]);
 
-                            /*angular.forEach(vm.fieldstree, function(zz) {
-                            var y = Math.random() * 100 - 50;
-                            data.addRow([y.toString() + m, m + "--" + n, 1, y]);
-                        });*/
-                            treeMap(n, m, datatree);
+                            promise.push(treeMap(vm.indicesName, m, datatree));
 
                         });
+                        return $q.all(promise);
+                    }
 
-
-                    });
-
+                    cc();
 
                     var tree = new google.visualization.TreeMap(document.getElementById('treemap_div'));
 
+
+
                     vm.dd = dd;
 
-                    $timeout(dd, 1500);
+                    //var deferred = $q.defer();
+                    // var promise = deferred.promise;
+
+
+                    $q.all(promise).then(function () {
+                        dd();
+                    }, function () { log("2"); });
+
+
                     aggShow();
                     function dd() {
-
 
                         tree.draw(datatree, {
                             minColor: '#FFFFFF',
@@ -236,7 +264,7 @@
                         // datatree = new google.visualization.DataTable();
                         vm.refinedsearch = [
                         { key: 'Time', value: new Date() },
-                        { key: 'School', value: 'TCU' }
+                        { key: 'School', value: $rootScope.school }
                         ];
                         //log(vm.searchText);
                         log('Activated Aggs search View');
@@ -248,9 +276,13 @@
                     });
             }
 
+
+            var ip;
+            var fp;
             function getIndexName() {
+
                 try {
-                    if ($cookieStore.get('index') !== undefined) {
+                    if ($cookieStore.get('index') !== undefined&&$rootScope.index!== undefined) {
                         if ($rootScope.index.length !== $cookieStore.get('index').length && $rootScope.index.length > 1) {
                             $cookieStore.remove('index');
                         }
@@ -263,23 +295,33 @@
                             vm.indicesName = $cookieStore.get('index');
                         } else {
 
-                            vm.indicesName = dataconfig.initIndex();
+                            // vm.indicesName = dataconfig.initIndex();
+                            ip = dataconfig.initIndex();
                         }
                     }
 
                     vm.type = $rootScope.logtype;
-                    // log(vm.indicesName.length);
-                    // $timeout(renew, 500);           
                     // vm.indicesName = $cookieStore.get('index');
                     vm.treestatus = true;
 
                 } catch (ex) {
                     log("Fail to Load Index");
                 }
+
+
+
+
                 // vm.indicesName = $rootScope.index;
                 //vm.index = vm.indicesName[0];
                 //vm.index = "logstash-2015.04.01";
-                $timeout(getFieldName, 200);
+                if (ip === undefined) {
+                    getFieldName();
+                } else {
+                    ip.then(function (data) {
+                        vm.indicesName = data;
+                        getFieldName();
+                    });
+                }
 
             }
 
@@ -290,7 +332,7 @@
             function getFieldName() {
 
                 try {
-                    if ($cookieStore.get('logfield') !== undefined) {
+                    if ($cookieStore.get('logfield') !== undefined && $rootScope.logfield !== undefined) {
                         if ($rootScope.logfield.length !== $cookieStore.get('logfield').length && $rootScope.logfield.length > 1) {
                             $cookieStore.remove('logfield');
                         }
@@ -304,8 +346,8 @@
                             vm.fieldsName = $cookieStore.get('logfield');
                         } else {
 
-                            vm.fieldsName = dataconfig.getFieldName(vm.indicesName[0], $rootScope.logtype);
-
+                            //vm.fieldsName = dataconfig.getFieldName(vm.indicesName[0], $rootScope.logtype);
+                            fp = dataconfig.getFieldName(vm.indicesName[0], $rootScope.logtype);
                         }
                     }
                 } catch (ex) {
@@ -313,12 +355,21 @@
                 }
 
 
-                // vm.fieldsName = dataconfig.checkCookie('logfield', vm.indicesName[0]);
+
 
                 vm.aggName = "";
-                if (vm.treestatus) {
-                    $timeout(drawtreemap, 200);
 
+                if (fp === undefined) {
+                    if (vm.treestatus === true) {
+                        drawtreemap();
+                    }
+                } else {
+                    fp.then(function (data) {
+                        vm.fieldsName = data;
+                        if (vm.treestatus === true) {
+                            drawtreemap();
+                        }
+                    });
                 }
 
             }
@@ -337,33 +388,36 @@
                     if (vm.aggName === "" || vm.aggName === "all") {
                         // vm.fieldsName = $rootScope.logfield;
 
-                        var index = vm.fieldsName.indexOf("@timestamp");
-                        vm.fieldsName.splice(index, 1);
-                        index = vm.fieldsName.indexOf("referrer");
-                        vm.fieldsName.splice(index, 1);
-                        index = vm.fieldsName.indexOf("referrer.raw");
-                        vm.fieldsName.splice(index, 1);
-                        index = vm.fieldsName.indexOf("timestamp");
-                        vm.fieldsName.splice(index, 1);
-                        index = vm.fieldsName.indexOf("request");
-                        vm.fieldsName.splice(index, 1);
-                        index = vm.fieldsName.indexOf("edata");
-                        vm.fieldsName.splice(index, 1);
-                        index = vm.fieldsName.indexOf("action");
-                        vm.fieldsName.splice(index, 1);
-                        index = vm.fieldsName.indexOf("host");
-                        vm.fieldsName.splice(index, 1);
-                        index = vm.fieldsName.indexOf("action");
-                        vm.fieldsName.splice(index, 1);
-                        index = vm.fieldsName.indexOf("agent");
-                        vm.fieldsName.splice(index, 1);
-                        index = vm.fieldsName.indexOf("action");
-                        vm.fieldsName.splice(index, 1);
+                        vm.aggfield = [];
+                        vm.aggfield = vm.fieldsName;
+
+                        var index = vm.aggfield.indexOf("@timestamp");
+                        vm.aggfield.splice(index, 1);
+                        index = vm.aggfield.indexOf("referrer");
+                        vm.aggfield.splice(index, 1);
+                        index = vm.aggfield.indexOf("referrer.raw");
+                        vm.aggfield.splice(index, 1);
+                        index = vm.aggfield.indexOf("timestamp");
+                        vm.aggfield.splice(index, 1);
+                        index = vm.aggfield.indexOf("request");
+                        vm.aggfield.splice(index, 1);
+                        index = vm.aggfield.indexOf("edata");
+                        vm.aggfield.splice(index, 1);
+                        index = vm.aggfield.indexOf("action");
+                        vm.aggfield.splice(index, 1);
+                        index = vm.aggfield.indexOf("host");
+                        vm.aggfield.splice(index, 1);
+                        index = vm.aggfield.indexOf("action");
+                        vm.aggfield.splice(index, 1);
+                        index = vm.aggfield.indexOf("agent");
+                        vm.aggfield.splice(index, 1);
+                        index = vm.aggfield.indexOf("action");
+                        vm.aggfield.splice(index, 1);
 
 
                         var flag;
-                        angular.forEach(vm.fieldsName, function (name) {
-                            if (vm.fieldsName.length <= 2) {
+                        angular.forEach(vm.aggfield, function (name) {
+                            if (vm.aggfield.length <= 2) {
                                 flag = true;
                             } else {
                                 flag = false;

@@ -19,6 +19,8 @@
             $scope.trend2 = 'true';
             $scope.count = 0;
 
+            
+
             //#region variable
             vm.fi = "";
             vm.searchText = $routeParams.search || '';
@@ -298,9 +300,9 @@
 
             vm.timeopen = function ($event) {
                 $event.preventDefault();
-                $event.stopPropagation();
-                $rootScope.st = vm.st;
+                $event.stopPropagation();               
                 vm.timeopened = true;
+                $rootScope.st = vm.st;
             };
 
             vm.ftimeopen = function ($event) {
@@ -405,7 +407,8 @@
                 }
             }
 
-
+            var ip;
+            var fp;
             function getIndexName() {
 
 
@@ -423,15 +426,22 @@
                         vm.indicesName = $cookieStore.get('index');
                     } else {
 
-                        vm.indicesName = dataconfig.initIndex();
+                        //vm.indicesName = dataconfig.initIndex();
+                        ip = dataconfig.initIndex();
                     }
                 }
 
-
-                // log(vm.indicesName.length);
-                // $timeout(renew, 500);
-                $timeout(getFieldName, 200);
-                // getFieldName();
+                //$timeout(getFieldName, 200);
+                if (ip === undefined) {
+                    getFieldName();
+                }else{
+                ip.then(function(data) {
+                    vm.indicesName = data;
+                    getFieldName();
+                });
+                }
+               
+                
             }
 
 
@@ -447,14 +457,18 @@
                     vm.index = vm.indicesName[0];
                 }
                 if (vm.index !== "" && vm.index !== undefined) {
-                    vm.fieldsName = dataconfig.getFieldName(vm.index, $rootScope.logtype);
+                   fp = dataconfig.getFieldName(vm.index, $rootScope.logtype);
                     // log(vm.fieldsName.length);
                 }
+
+                fp.then(function(data) {
+                    vm.fieldsName = data;
+                });
 
             }
 
 
-            function activate() {
+            function activate() {                
                 common.activateController([getIndexName()], controllerId)
                     .then(function () {
                         $location.search();
@@ -476,9 +490,8 @@
                         //init();
                         vm.showSplash = false;
                         log('Activated ELS search View');
-
-
-                    });
+                        
+                });
             }
 
             function init() {
@@ -510,14 +523,14 @@
                             .then(function (resp) {
                                 vm.hitSearch = resp.hits.hits;
                                 vm.total = resp.hits.total;
-                                if (vm.total === 0) {
+                                /*if (vm.total === 0) {
                                     log("None Result");
-                                }
+                                }*/
                                 vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
                                 vm.getCurrentPageData(vm.hitSearch);
                                 $timeout(random, 200);
                             }, function (err) {
-                                log(err.message);
+                                // log(err.message);                                
                             });
                     }
 
@@ -716,6 +729,8 @@
 
             ];
 
+          
+        
 
             $scope.gridOptions3 = {
                 columnDefs: [

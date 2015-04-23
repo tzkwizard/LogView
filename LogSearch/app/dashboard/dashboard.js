@@ -1,9 +1,9 @@
 ﻿(function () {
     'use strict';
     var controllerId = 'dashboard';
-    angular.module('app').controller(controllerId, ['$timeout', '$cookieStore', '$rootScope', 'common', 'dataconfig', 'datasearch', 'client', dashboard]);
+    angular.module('app').controller(controllerId, ['$interval', '$scope', '$q', '$timeout', '$cookieStore', '$rootScope', 'common', 'dataconfig', 'datasearch', 'client', dashboard]);
 
-    function dashboard($timeout, $cookieStore, $rootScope, common, dataconfig, datasearch, client) {
+    function dashboard($interval, $scope, $q, $timeout, $cookieStore, $rootScope, common, dataconfig, datasearch, client) {
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
         var vm = this;
@@ -52,8 +52,7 @@
         function activate() {
             common.activateController([init()], controllerId)
                 .then(function () {
-                    vm.ft = $rootScope.ft;
-                    vm.st = $rootScope.st;
+
 
                     google.setOnLoadCallback(drawMap);
                     google.setOnLoadCallback(drawHist);
@@ -65,38 +64,57 @@
         }
 
         function init() {
-            getIndexName();
 
-            $timeout(timeLineGram, 200);
-            $timeout(pieChart, 200);
-            $timeout(geoMap, 200);
-            $timeout(histGram, 200);
-            //$timeout(renew, 800);
+
+            getIndexName();
+            vm.ft = $rootScope.ft;
+            vm.st = $rootScope.st;
+
+            if (typeof pp === 'Promise') {
+                pp.then(function (data) {
+                    vm.indicesName = data
+                    timeLineGram();
+                    pieChart();
+                    geoMap();
+                    histGram();
+                });
+            } else {
+                timeLineGram();
+                pieChart();
+                geoMap();
+                histGram();
+            }
+
+
+            /*  getIndexName();
+             $timeout(timeLineGram, 200);
+             $timeout(pieChart, 200);
+             $timeout(geoMap, 200);
+             $timeout(histGram, 200);*/
+
         }
 
-
+        var pp;
 
         function getIndexName() {
 
-            if ($cookieStore.get('index') !== undefined) {
+            if ($cookieStore.get('index') !== undefined&&$rootScope.index!==undefined) {
                 if ($rootScope.index.length !== $cookieStore.get('index').length && $rootScope.index.length > 1) {
                     $cookieStore.remove('index');
                 }
-
             }
             vm.indicesName = $cookieStore.get('index');
 
             if ($cookieStore.get('index') === undefined || $cookieStore.get('index').length <= 1) {
+
                 if ($rootScope.index !== undefined && $rootScope.index.length >= 1) {
                     $cookieStore.put('index', $rootScope.index);
                     vm.indicesName = $cookieStore.get('index');
                 } else {
 
-                    vm.indicesName = dataconfig.filterIndex();
+                    pp = dataconfig.initIndex();
                 }
             }
-
-
 
 
         }

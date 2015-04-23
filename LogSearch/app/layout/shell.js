@@ -125,8 +125,12 @@
 
 
             $scope.ok = function () {
+
+                var x = sjcl.encrypt("tzk", $scope.password);
+               
+
                 $cookieStore.put('username', $scope.username);
-                $cookieStore.put('password', $scope.password);
+                $cookieStore.put('password', x);
                 window.location.reload();
                 $modalInstance.close($scope.selected.item);
             };

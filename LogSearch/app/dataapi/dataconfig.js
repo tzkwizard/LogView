@@ -2,9 +2,9 @@
     'use strict';
 
     var serviceId = 'dataconfig';
-    angular.module('app').factory(serviceId, ['$timeout', '$rootScope', '$cookieStore', 'common', 'client', 'datasearch', dataconfig]);
+    angular.module('app').factory(serviceId, ['$q', '$timeout', '$rootScope', '$cookieStore', 'common', 'client', 'datasearch', dataconfig]);
 
-    function dataconfig($timeout, $rootScope, $cookieStore, common, client, datasearch) {
+    function dataconfig($q, $timeout, $rootScope, $cookieStore, common, client, datasearch) {
 
         var vm = this;
         var getLogFn = common.logger.getLogFn;
@@ -187,7 +187,7 @@
         function initIndex() {
             var indicesName = [];
 
-            client.cluster.state({
+            var ipromise = client.cluster.state({
                 flatSettings: true
 
             }).then(function (resp) {
@@ -213,9 +213,12 @@
 
                 }
             }, function (err) {
-                log(err.message);
+                // log(err.message);
             });
-            return indicesName;
+            //return indicesName;
+            return ipromise.then(function () {
+                return indicesName;
+            });
         }
 
         function getIndexName() {
@@ -283,7 +286,7 @@
                 //|| vm.typesName.indexOf(type) === -1
                 return "";
             var fieldsName = [];
-            client.indices.getFieldMapping({
+            var fpromise = client.indices.getFieldMapping({
                 index: index,
                 type: type,
                 field: '*'
@@ -303,10 +306,16 @@
                         );
                     });
                 });
+
             }, function (err) {
                 //  log(err.message);
             });
-            return fieldsName;
+
+
+            return fpromise.then(function () {
+                return fieldsName;
+            });
+            //return fieldsName;
         }
         //#endregion
 

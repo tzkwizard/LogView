@@ -9,24 +9,22 @@
         var vm = this;
         // var keyCodes = config.keyCodes;
 
+
+        //#region variable   
+        vm.searchText = '';             
+        vm.ip = [];
+        vm.init = init;
+        vm.loading = true;
+        //#endregion
+
+
+        //#region function
+        vm.path = path;
         vm.search = search;
         vm.refresh = refresh;
         vm.logout = logout;
-        vm.searchText = '';
-
         activate();
-        vm.path = path;
-        vm.ip = [];
-
-        vm.init = init;
-
-
-
-
-
-
-        vm.loading = true;
-
+        //#endregion
 
 
         //#region Time
