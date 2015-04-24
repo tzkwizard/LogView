@@ -31,8 +31,8 @@
     ]);
 
     // Handle routing errors and success events
-    app.run(['$q', '$timeout', '$cookieStore', '$rootScope', '$route', 'breeze', 'dataconfig', 'routeMediator', 'client', 'datasearch',
-        function ($q, $timeout, $cookieStore, $rootScope, $route, breeze, dataconfig, routeMediator, client, datasearch) {
+    app.run(['$modal','$q', '$timeout', '$cookieStore', '$rootScope', '$route', 'breeze', 'dataconfig', 'routeMediator', 'client', 'datasearch',
+        function ($modal,$q, $timeout, $cookieStore, $rootScope, $route, breeze, dataconfig, routeMediator, client, datasearch) {
             // Include $route to kick start the router.
             // datacontext.prime();
             routeMediator.setRoutingHandlers();
@@ -49,6 +49,10 @@
             $rootScope.ip = [];
 
             var field;
+
+
+            login();
+
             index.then(function (data) {
                 $rootScope.index = data;
                 field = dataconfig.getFieldName($rootScope.index[0], $rootScope.logtype);
@@ -59,14 +63,45 @@
             });
 
 
-            /* function xx() {
+            var items ;
+             function open () {
+                var modalInstance = $modal.open({
+                    templateUrl: 'loginModal.html',
+                    controller: 'loginModal',
+                    size: 'sm',
+                    keyboard: false,
+                    resolve: {
+                        items: function () {
+                            return "";
+                        }
+                    }
+                });
+
+            };
+
+            function login() {
+                 client.ping({
+                    requestTimeout: 1000,
+                    hello: "elasticsearch!"
+                }, function(error) {
+                    if (error) {
+                        toastr.info("Username or Password Error!");
+                        open();
+                    } else {
+                        toastr.info('elasticsearch cluster is connected');
+
+                    }
+                });
+            }
+
+            
+                /* function xx() {
                  $rootScope.logfield = dataconfig.getFieldName($rootScope.index[0], $rootScope.logtype);
                           
              }*/
 
 
-
-            /* client.ping({
+/* client.ping({
                  requestTimeout: 1000,
                  hello: "elasticsearch!"
              }, function (error) {
@@ -79,6 +114,5 @@
              });*/
 
 
-
-        }]);
+            }]);
 })();

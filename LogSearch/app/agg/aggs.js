@@ -46,7 +46,8 @@
             vm.indicesName = [];
             vm.index = '';
             vm.type = '';
-
+            vm.ft = "";
+            vm.st = "";
 
             vm.dashboard = "dash";
             vm.range = "range";
@@ -58,7 +59,7 @@
             //#region function
             vm.treMap = treeMap;
             vm.aggShow = aggShow;
-            vm.aggshows = aggshows;
+            vm.aggShows = aggShows;
             vm.drawTable = drawTable;
             vm.drawMap = drawMap;
             vm.getFieldName = getFieldName;
@@ -92,7 +93,7 @@
                  activate();
                  // aggShow("");*/
                 $location.search.refresh = true;
-                toastr.info("Refreshed");
+                log("Refreshed");
             }
 
             function go() {
@@ -108,6 +109,7 @@
                        { key: 'School', value: 'TCU' }
                 ];
                 getFieldName();
+
                 if (fp === undefined) {
                     aggShow("");
                 } else {
@@ -133,7 +135,6 @@
                                 // datatree.addRow([y.key + "\n" + aggName + "\n" + index, aggName + "\n" + index, y.doc_count, x]);
                                 datatree.addRow([y.key + "\n" + aggName, aggName, y.doc_count, x]);
                             });
-                            //return $q.all(promises);
                         }, function (err) {
                             // log(err.message);
                         });
@@ -141,14 +142,8 @@
             }
 
 
-            function drawtreemap() {
-                /*var data = google.visualization.arrayToDataTable([
-              ['Location', 'Parent', 'Market trade volume (size)', 'Market increase/decrease (color)'],
-              ['Global', null, 0, 0],
-              ['America', 'Global', 0, 0],
-              ['S. Africa', 'Africa', 30, 43],          
-              ['Beijing','China',23,22]
-                    ]);*/
+
+            function drawtreemap() {               
                 try {
                     var datatree = new google.visualization.DataTable();
                     vm.fieldstree = [];
@@ -168,23 +163,9 @@
                     datatree.addColumn('number', 'color');
 
 
-                    vm.cc = cc;
-                    var promise = [];
-                    function cc() {
-
-                        /* datatree.addRow(["Elasticsearch", null, 0, 0]);
-                        angular.forEach(vm.indicesName, function (n) {
-                         
-                           datatree.addRow([n, "Elasticsearch", 0, 0]);
-                           angular.forEach(vm.fieldstree, function (m) {
-   
-                               var x = Math.random() * 100 - 50;
-                               datatree.addRow([m + "\n" + n, n, 0, 0]);
-   
-                               treeMap(n, m, datatree);
-   
-                           });
-                        });*/
+                    vm.treeAddData = treeAddData;
+                    var tpromise = [];
+                    function treeAddData() {
 
 
                         datatree.addRow(["Elasticsearch", null, 0, 0]);
@@ -194,32 +175,31 @@
                             var x = Math.random() * 100 - 50;
                             datatree.addRow([m, "Elasticsearch", 0, 0]);
 
-                            promise.push(treeMap(vm.indicesName, m, datatree));
+                            tpromise.push(treeMap(vm.indicesName, m, datatree));
 
                         });
-                        return $q.all(promise);
+                       // return $q.all(promise);
                     }
 
-                    cc();
+                    treeAddData();
 
                     var tree = new google.visualization.TreeMap(document.getElementById('treemap_div'));
 
 
 
-                    vm.dd = dd;
+                    vm.startDrawTree = startDrawTree;
 
                     //var deferred = $q.defer();
                     // var promise = deferred.promise;
 
 
-                    $q.all(promise).then(function () {
-                        dd();
-                    }, function () { log("2"); });
+                    $q.all(tpromise).then(function () {
+                        startDrawTree();
+                    }, function () { log("TreeMap Promise Error"); });
 
 
                     aggShow();
-                    function dd() {
-
+                    function startDrawTree() {
                         tree.draw(datatree, {
                             minColor: '#FFFFFF',
                             midColor: '#2EFEF7',
@@ -280,17 +260,19 @@
             var ip;
             var fp;
             function getIndexName() {
-
+                vm.ft = $rootScope.ft;
+                vm.st = $rootScope.st;
+                vm.type = $rootScope.logtype;
                 try {
                     if ($cookieStore.get('index') !== undefined&&$rootScope.index!== undefined) {
-                        if ($rootScope.index.length !== $cookieStore.get('index').length && $rootScope.index.length > 1) {
+                        if ($rootScope.index.length !== $cookieStore.get('index').length) {
                             $cookieStore.remove('index');
                         }
 
                     }
                     vm.indicesName = $cookieStore.get('index');
-                    if ($cookieStore.get('index') === undefined || $cookieStore.get('index').length <= 1) {
-                        if ($rootScope.index !== undefined && $rootScope.index.length >= 1) {
+                    if ($cookieStore.get('index') === undefined) {
+                        if ($rootScope.index !== undefined) {
                             $cookieStore.put('index', $rootScope.index);
                             vm.indicesName = $cookieStore.get('index');
                         } else {
@@ -300,7 +282,7 @@
                         }
                     }
 
-                    vm.type = $rootScope.logtype;
+                   
                     // vm.indicesName = $cookieStore.get('index');
                     vm.treestatus = true;
 
@@ -331,17 +313,18 @@
 
             function getFieldName() {
 
+               
                 try {
                     if ($cookieStore.get('logfield') !== undefined && $rootScope.logfield !== undefined) {
-                        if ($rootScope.logfield.length !== $cookieStore.get('logfield').length && $rootScope.logfield.length > 1) {
+                        if ($rootScope.logfield.length !== $cookieStore.get('logfield').length) {
                             $cookieStore.remove('logfield');
                         }
 
                     }
                     vm.fieldsName = $cookieStore.get('logfield');
 
-                    if ($cookieStore.get('logfield') === undefined || $cookieStore.get('logfield').length <= 1) {
-                        if ($rootScope.logfield !== undefined && $rootScope.logfield.length >= 1) {
+                    if ($cookieStore.get('logfield') === undefined ) {
+                        if ($rootScope.logfield !== undefined ) {
                             $cookieStore.put('logfield', $rootScope.logfield);
                             vm.fieldsName = $cookieStore.get('logfield');
                         } else {
@@ -391,29 +374,16 @@
                         vm.aggfield = [];
                         vm.aggfield = vm.fieldsName;
 
-                        var index = vm.aggfield.indexOf("@timestamp");
-                        vm.aggfield.splice(index, 1);
-                        index = vm.aggfield.indexOf("referrer");
-                        vm.aggfield.splice(index, 1);
-                        index = vm.aggfield.indexOf("referrer.raw");
-                        vm.aggfield.splice(index, 1);
-                        index = vm.aggfield.indexOf("timestamp");
-                        vm.aggfield.splice(index, 1);
-                        index = vm.aggfield.indexOf("request");
-                        vm.aggfield.splice(index, 1);
-                        index = vm.aggfield.indexOf("edata");
-                        vm.aggfield.splice(index, 1);
-                        index = vm.aggfield.indexOf("action");
-                        vm.aggfield.splice(index, 1);
-                        index = vm.aggfield.indexOf("host");
-                        vm.aggfield.splice(index, 1);
-                        index = vm.aggfield.indexOf("action");
-                        vm.aggfield.splice(index, 1);
-                        index = vm.aggfield.indexOf("agent");
-                        vm.aggfield.splice(index, 1);
-                        index = vm.aggfield.indexOf("action");
-                        vm.aggfield.splice(index, 1);
 
+                        var fieldFilter = ["@timestamp", "referrer", "referrer.raw", "timestamp", "request", "edata", "host", "action", "agent"];
+
+                        fieldFilter.map(function(f) {
+
+                            var index = vm.aggfield.indexOf(f);
+                            vm.aggfield.splice(index, 1);
+                        });
+
+   
 
                         var flag;
                         angular.forEach(vm.aggfield, function (name) {
@@ -422,12 +392,12 @@
                             } else {
                                 flag = false;
                             }
-                            aggshows(name, flag);
+                            aggShows(name, flag);
                         });
 
                     } else {
 
-                        datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, $rootScope.st, $rootScope.ft).then(function (resp) {
+                        datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft).then(function (resp) {
                             vm.total = resp.hits.total;
                             vm.hitSearch = resp.aggregations.ag.agg.buckets;
                             drawDashboard(resp.aggregations.ag.agg, aggName);
@@ -442,7 +412,7 @@
                 // vm.isBusy = false;
             }
 
-            function aggshows(aggName, flag) {
+            function aggShows(aggName, flag) {
 
                 dataconfig.createContainer(aggName);
 
@@ -451,7 +421,7 @@
                 vm.barchart = "bar";
                 vm.tablechart = "table";
 
-                datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, $rootScope.st, $rootScope.ft).then(function (resp) {
+                datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft).then(function (resp) {
                     vm.dashboard = vm.dashboard + aggName;
                     vm.range = vm.range + aggName;
                     vm.barchart = vm.barchart + aggName;
@@ -625,7 +595,7 @@
                 // Draw the dashboard.
                 dashboard.draw(data);
                 vm.ft = new Date();
-                datasearch.getSampledata(vm.indicesName, $rootScope.logtype, 15, $rootScope.st, $rootScope.ft).then(function (resp) {
+                datasearch.getSampledata(vm.indicesName, vm.type, 15, vm.st, vm.ft).then(function (resp) {
                     vm.hit = resp.hits.hits;
                     drawMap(vm.hit);
                 }, function (err) {

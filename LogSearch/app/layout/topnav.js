@@ -22,8 +22,7 @@
         vm.path = path;
         vm.search = search;
         vm.refresh = refresh;
-        vm.logout = logout;
-        activate();
+        vm.logout = logout;     
         //#endregion
 
 
@@ -134,6 +133,7 @@
 
         }
 
+        activate();
         function activate() {
             $timeout(init, 500);
         }

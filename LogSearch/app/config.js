@@ -38,7 +38,7 @@
     };
 
     var config = {
-        appErrorPrefix: '[CC Error] ', //Configure the exceptionHandler decorator
+        appErrorPrefix: '[ES Error] ', //Configure the exceptionHandler decorator
         docTitle: 'Elasticsearch:',
         events: events,
         imageSettings:imageSettings,

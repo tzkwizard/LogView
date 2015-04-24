@@ -20,7 +20,6 @@
         vm.isCollapsed3 = false;
         vm.isCollapsed4 = false;
         vm.isCollapsed5 = false;
-        activate();
         vm.fieldsName = [];
         vm.size = 10;
 
@@ -41,8 +40,9 @@
         vm.sidebarNav = sidebarNav;
         //#endregion
 
-
+       
         //#region Sidebar Load
+        activate();
         function activate() {
             //getFieldName();
 
@@ -82,7 +82,7 @@
         vm.showLocation = function () {
             if (vm.location === "" || vm.location === undefined || $location.search.refresh) {
 
-                datasearch.termAggragation($rootScope.index, 'logs', "geoip.city_name.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
+                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "geoip.city_name.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
                     vm.location = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
                     // log("re");
@@ -96,7 +96,7 @@
 
         vm.showRequestAPI = function () {
             if (vm.apiaddress === "" || vm.apiaddress === undefined || $location.search.refresh) {
-                datasearch.termAggragation($rootScope.index, 'logs', "request.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
+                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "request.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
                     vm.apiaddress = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
                     //log("re");
@@ -110,7 +110,7 @@
 
         vm.showRequestMethod = function () {
             if (vm.httpmethod === "" || vm.httpmethod === undefined || $location.search.refresh) {
-                datasearch.termAggragation($rootScope.index, 'logs', "verb.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
+                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "verb.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
                     vm.httpmethod = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
                     //log("re");
@@ -123,7 +123,7 @@
 
         vm.showUser = function () {
             if (vm.user === "" || vm.user === undefined || $location.search.refresh) {
-                datasearch.termAggragation($rootScope.index, 'logs', "ident.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
+                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "ident.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
                     vm.user = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
                     //  log("re");
@@ -136,7 +136,7 @@
 
         vm.showUserAction = function () {
             if (vm.useraction === "" || vm.useraction === undefined || $location.search.refresh) {
-                datasearch.termAggragation($rootScope.index, 'logs', "action.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
+                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "action.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
                     vm.useraction = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
                     //  log("re");

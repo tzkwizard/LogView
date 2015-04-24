@@ -26,6 +26,7 @@
         // vm.people = [];
         vm.title = 'Dashboard';
         vm.indicesName = [];
+        vm.type = "";
         //#endregion
 
         //#region function
@@ -67,6 +68,7 @@
 
 
             getIndexName();
+            vm.type = $rootScope.logtype;
             vm.ft = $rootScope.ft;
             vm.st = $rootScope.st;
 
@@ -99,15 +101,14 @@
         function getIndexName() {
 
             if ($cookieStore.get('index') !== undefined&&$rootScope.index!==undefined) {
-                if ($rootScope.index.length !== $cookieStore.get('index').length && $rootScope.index.length > 1) {
+                if ($rootScope.index.length !== $cookieStore.get('index').length) {
                     $cookieStore.remove('index');
                 }
             }
             vm.indicesName = $cookieStore.get('index');
 
-            if ($cookieStore.get('index') === undefined || $cookieStore.get('index').length <= 1) {
-
-                if ($rootScope.index !== undefined && $rootScope.index.length >= 1) {
+            if ($cookieStore.get('index') === undefined) {
+                if ($rootScope.index !== undefined) {
                     $cookieStore.put('index', $rootScope.index);
                     vm.indicesName = $cookieStore.get('index');
                 } else {
@@ -123,7 +124,7 @@
         //#region Draw Map
         vm.location = [];
         function geoMap() {
-            datasearch.termAggragation(vm.indicesName, 'logs', "geoip.city_name.raw", vm.size, vm.st, vm.ft).then(function (resp) {
+            datasearch.termAggragation(vm.indicesName, vm.type, "geoip.city_name.raw", vm.size, vm.st, vm.ft).then(function (resp) {
                 vm.tt = resp.hits.total;
                 drawMap(resp.aggregations.ag.agg.buckets, vm.tt);
             }, function (err) {
@@ -195,7 +196,7 @@
         function pieChart() {
             client.search({
                 index: vm.indicesName,
-                type: 'logs',
+                type: vm.type,
                 body: ejs.Request()
                      .aggregation(ejs.FilterAggregation("ag1").filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st)).agg(ejs.TermsAggregation("agg1").field("verb")))
                     .aggregation(ejs.FilterAggregation("ag2").filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st)).agg(ejs.TermsAggregation("agg2").field("geoip.city_name.raw")))
@@ -276,7 +277,7 @@
 
         function timeLineGram() {
 
-            datasearch.dateHistogramAggregation(vm.indicesName, 'logs', "@timestamp", "day", vm.st, vm.ft).then(function (resp) {
+            datasearch.dateHistogramAggregation(vm.indicesName, vm.type, "@timestamp", "day", vm.st, vm.ft).then(function (resp) {
                 vm.total = resp.aggregations;
                 vm.hitSearch = resp.aggregations.ag.agg.buckets;
                 drawTimwLine(resp.aggregations.ag.agg.buckets);
@@ -303,7 +304,7 @@
 
         function histGram() {
 
-            datasearch.dateHistogramAggregation(vm.indicesName, 'logs', "@timestamp", "day", vm.st, vm.ft).then(function (resp) {
+            datasearch.dateHistogramAggregation(vm.indicesName, vm.type, "@timestamp", "day", vm.st, vm.ft).then(function (resp) {
                 vm.total = resp.aggregations;
                 vm.hitSearch = resp.aggregations.ag.agg.buckets;
                 drawHist(resp.aggregations.ag.agg.buckets);

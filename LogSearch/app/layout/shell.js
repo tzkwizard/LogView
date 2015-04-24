@@ -24,7 +24,7 @@
             color: 'Blue'
         };
         vm.showSplash = true;
-        activate();
+        
         //#endregion
 
 
@@ -45,29 +45,31 @@
 
         };
 
-        vm.login = login;
+       /* vm.login = login;
 
         function login() {
-            client.ping({
+            return client.ping({
                 requestTimeout: 1000,
                 hello: "elasticsearch!"
             }, function (error) {
                 if (error) {
+                    toastr.info("Username or Password Error!");
                     vm.open();
                 }
                 else {
                     toastr.info('elasticsearch cluster is connected');
                 }
             });
-        }
+        }*/
 
         //#endregion
 
 
         //#region Shell Load
+        activate();
         function activate() {
             // logSuccess('Breezezz Angular loaded!', null, true);
-            common.activateController([login()], controllerId).then(function () {
+            common.activateController([], controllerId).then(function () {
                 vm.showSplash = false;
             });
         }
@@ -133,6 +135,7 @@
                 $cookieStore.put('username', x);
                 $cookieStore.put('password', y);
                 window.location.reload();
+               
                 $modalInstance.close($scope.selected.item);
             };
 

@@ -5,7 +5,7 @@
 
     angular.module('app')
         .controller(controllerId, function ($timeout, bsDialog, $rootScope, $routeParams,
-        $filter, $injector, $log, $scope, $location, $modal, client, common, datasearch, dataconfig, $cookieStore,config) {
+         $injector, $log, $scope, $location, $modal, client, common, datasearch, dataconfig, $cookieStore) {
 
 
             var vm = this;
@@ -39,6 +39,8 @@
             vm.indicesName = [];
             vm.t = [];
             vm.tt = 0;
+            vm.ft = "";
+            vm.st = "";
 
             vm.showSplash = true;
 
@@ -54,7 +56,7 @@
             vm.filtertemp = filtertemp;
             vm.init = init;
             vm.test = test;
-            activate();
+            
             vm.today = today;
             vm.pageChanged = pageChanged;
             vm.getCurrentPageData = getCurrentPageData;
@@ -237,8 +239,7 @@
                 startingDay: 1
             };
 
-            vm.ft = "";
-            vm.st = "";
+            
             //today();
 
 
@@ -411,17 +412,18 @@
             var fp;
             function getIndexName() {
 
-
+                vm.ft = $rootScope.ft;
+                vm.st = $rootScope.st;
 
                 if ($cookieStore.get('index') !== undefined&&$rootScope.index!==undefined) {
-                    if ($rootScope.index.length !== $cookieStore.get('index').length && $rootScope.index.length > 1) {
+                    if ($rootScope.index.length !== $cookieStore.get('index').length) {
                         $cookieStore.remove('index');
                     }
 
                 }
                 vm.indicesName = $cookieStore.get('index');
-                if ($cookieStore.get('index') === undefined || $cookieStore.get('index').length <= 1) {
-                    if ($rootScope.index !== undefined && $rootScope.index.length >= 1) {
+                if ($cookieStore.get('index') === undefined) {
+                    if ($rootScope.index !== undefined) {
                         $cookieStore.put('index', $rootScope.index);
                         vm.indicesName = $cookieStore.get('index');
                     } else {
@@ -467,13 +469,12 @@
 
             }
 
-
+            activate();
             function activate() {                
                 common.activateController([getIndexName()], controllerId)
                     .then(function () {
                         $location.search();
-                        vm.ft = $rootScope.ft;
-                        vm.st = $rootScope.st;
+                      
 
                         if ($location.search.text !== "") {
                             vm.searchText = $location.search.text;

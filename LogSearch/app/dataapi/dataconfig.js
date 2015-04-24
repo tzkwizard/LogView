@@ -213,7 +213,7 @@
 
                 }
             }, function (err) {
-                // log(err.message);
+                 log("get Logstash Index"+err.message);
             });
             //return indicesName;
             return ipromise.then(function () {
@@ -234,7 +234,7 @@
                 var tempindices = [];
                 angular.forEach(hit, function (name) {
 
-                    vm.temp[vm.j] = name.shards;
+                    temp[vm.j] = name.shards;
                     angular.forEach(vm.temp[vm.j], function (shard) {
                         vm.tempindices[vm.j] = shard[0].index;
 
@@ -250,7 +250,7 @@
 
                 }
             }, function (err) {
-                // log(err.message);
+                 log("get Index Name"+err.message);
             });
             return indicesName;
         }
@@ -308,7 +308,7 @@
                 });
 
             }, function (err) {
-                //  log(err.message);
+                 log("get Field Name"+err.message);
             });
 
 

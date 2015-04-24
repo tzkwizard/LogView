@@ -702,7 +702,7 @@ form {
 
 /* Sidebar dropdown */
 
-    .sidebar .sidebar-dropdown* {
+    .sidebar .sidebar-dropdown {
         text-decoration: none;
     }
 
