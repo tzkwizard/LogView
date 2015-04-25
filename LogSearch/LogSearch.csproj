@@ -120,6 +120,9 @@
     <Content Include="app\ELS\TODO.js" />
     <Content Include="app\layout\topnav.js" />
     <Content Include="app\services\routeMediator.js" />
+    <Content Include="content\breeze.directives.css" />
+    <Content Include="Scripts\breeze.bridge.angular.js" />
+    <Content Include="Scripts\breeze.directives.js" />
     <Content Include="Scripts\sjcl.js" />
     <Content Include="battlefield.jpg" />
     <Content Include="ccfavicon.ico" />
@@ -128,7 +131,6 @@
     <Content Include="content\bootstrap-theme.min.css" />
     <Content Include="content\bootstrap.css" />
     <Content Include="content\bootstrap.min.css" />
-    <Content Include="content\breeze.directives.css" />
     <Content Include="content\font-awesome.css" />
     <Content Include="content\font-awesome.min.css" />
     <Content Include="content\images\photos\icon.png" />
@@ -203,9 +205,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\breeze.angular.js" />
-    <Content Include="Scripts\breeze.bridge.angular.js" />
     <Content Include="Scripts\breeze.debug.js" />
-    <Content Include="Scripts\breeze.directives.js" />
     <Content Include="Scripts\breeze.min.js" />
     <Content Include="Scripts\elastic.js" />
     <Content Include="Scripts\elastic.min.js" />

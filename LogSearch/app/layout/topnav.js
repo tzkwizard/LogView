@@ -84,7 +84,7 @@
             vm.pfx = ["ident.raw", "auth.raw", "geoip.city_name.raw", "request.raw", "geoip.country_name.raw", "geoip.region_name.raw", "geoip.postal_code.raw"];
             angular.forEach(vm.pfx, function (agg) {
 
-                datasearch.termAggragation($rootScope.index, 'logs', agg, 40, $rootScope.st, $rootScope.ft)
+                datasearch.termAggragation($rootScope.index, 'logs', agg, 100, $rootScope.st, $rootScope.ft)
                 .then(function (resp) {
                     var tt = resp.aggregations.ag.agg.buckets;
 

@@ -334,17 +334,13 @@
                         if (result) {
                             vm.searchText = "";
                             search();
-                            log("refresh");
+                            log("Refresh");
                         } else {
                             log('Nope.');
                         }
                     }
                 });
 
-
-                /*   vm.searchText = "";
-                   search();
-                   log("refresh");*/
 
 
             }
@@ -497,7 +493,8 @@
 
             function init() {
 
-                datasearch.getSampledata(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.st, vm.ft).then(function (resp) {
+                datasearch.getSampledata(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.st, vm.ft)
+                    .then(function (resp) {
                     vm.hitSearch = resp.hits.hits;
                     vm.total = resp.hits.total;
                     vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
@@ -531,7 +528,7 @@
                                 vm.getCurrentPageData(vm.hitSearch);
                                 $timeout(random, 200);
                             }, function (err) {
-                                // log(err.message);                                
+                                log("search data error "+err.message);                                
                             });
                     }
 

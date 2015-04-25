@@ -87,11 +87,7 @@
 
             //#region button
             function refresh($event) {
-                $route.reload();
-                /* vm.searchText = '*';
-                 vm.isBusy = true;
-                 activate();
-                 // aggShow("");*/
+                $route.reload();         
                 $location.search.refresh = true;
                 log("Refreshed");
             }
@@ -126,7 +122,6 @@
             vm.fieldstree = [];
             vm.treestatus = true;
             function treeMap(index, aggName, datatree) {
-                // var promises = [];
                 return datasearch.termAggragation(index, vm.type, aggName, vm.size, $rootScope.st, $rootScope.ft)
                         .then(function (resp) {
                             var tt = resp.aggregations.ag.agg.buckets;
@@ -136,14 +131,15 @@
                                 datatree.addRow([y.key + "\n" + aggName, aggName, y.doc_count, x]);
                             });
                         }, function (err) {
-                            // log(err.message);
+                             log("Tree data Load "+err.message);
                         });
 
             }
 
 
 
-            function drawtreemap() {               
+            function drawTreemap() {
+                google.setOnLoadCallback(drawTreemap);
                 try {
                     var datatree = new google.visualization.DataTable();
                     vm.fieldstree = [];
@@ -178,7 +174,7 @@
                             tpromise.push(treeMap(vm.indicesName, m, datatree));
 
                         });
-                       // return $q.all(promise);
+                        // return $q.all(promise);
                     }
 
                     treeAddData();
@@ -195,7 +191,7 @@
 
                     $q.all(tpromise).then(function () {
                         startDrawTree();
-                    }, function () { log("TreeMap Promise Error"); });
+                    }, function (e) { log("TreeMap Promise Error"+e); });
 
 
                     aggShow();
@@ -226,7 +222,7 @@
                         vm.isBusy = false;
                     }
                 } catch (ex) {
-                    log("Loading Map error" + ex);
+                    log("Loading Map error " + ex);
                     vm.isBusy = false;
                 }
 
@@ -241,21 +237,15 @@
                 common.activateController([getIndexName()], controllerId)
                     .then(function () {
                         // aggShow("");
-                        // datatree = new google.visualization.DataTable();
                         vm.refinedsearch = [
                         { key: 'Time', value: new Date() },
                         { key: 'School', value: $rootScope.school }
                         ];
                         //log(vm.searchText);
                         log('Activated Aggs search View');
-                        google.setOnLoadCallback(drawDashboard);
-                        google.setOnLoadCallback(drawDashboard2);
-                        google.setOnLoadCallback(drawTable);
-                        google.setOnLoadCallback(drawMap);
-                        google.setOnLoadCallback(drawtreemap);
+
                     });
             }
-
 
             var ip;
             var fp;
@@ -264,7 +254,7 @@
                 vm.st = $rootScope.st;
                 vm.type = $rootScope.logtype;
                 try {
-                    if ($cookieStore.get('index') !== undefined&&$rootScope.index!== undefined) {
+                    if ($cookieStore.get('index') !== undefined && $rootScope.index !== undefined) {
                         if ($rootScope.index.length !== $cookieStore.get('index').length) {
                             $cookieStore.remove('index');
                         }
@@ -282,12 +272,12 @@
                         }
                     }
 
-                   
+
                     // vm.indicesName = $cookieStore.get('index');
                     vm.treestatus = true;
 
                 } catch (ex) {
-                    log("Fail to Load Index");
+                    log("Fail to Load Index "+ex);
                 }
 
 
@@ -313,7 +303,7 @@
 
             function getFieldName() {
 
-               
+
                 try {
                     if ($cookieStore.get('logfield') !== undefined && $rootScope.logfield !== undefined) {
                         if ($rootScope.logfield.length !== $cookieStore.get('logfield').length) {
@@ -323,8 +313,8 @@
                     }
                     vm.fieldsName = $cookieStore.get('logfield');
 
-                    if ($cookieStore.get('logfield') === undefined ) {
-                        if ($rootScope.logfield !== undefined ) {
+                    if ($cookieStore.get('logfield') === undefined) {
+                        if ($rootScope.logfield !== undefined) {
                             $cookieStore.put('logfield', $rootScope.logfield);
                             vm.fieldsName = $cookieStore.get('logfield');
                         } else {
@@ -334,7 +324,7 @@
                         }
                     }
                 } catch (ex) {
-                    log("Fail to Load Field");
+                    log("Fail to Load Field "+ex);
                 }
 
 
@@ -344,13 +334,13 @@
 
                 if (fp === undefined) {
                     if (vm.treestatus === true) {
-                        drawtreemap();
+                        drawTreemap();
                     }
                 } else {
                     fp.then(function (data) {
                         vm.fieldsName = data;
                         if (vm.treestatus === true) {
-                            drawtreemap();
+                            drawTreemap();
                         }
                     });
                 }
@@ -369,21 +359,19 @@
                 }
                 try {
                     if (vm.aggName === "" || vm.aggName === "all") {
-                        // vm.fieldsName = $rootScope.logfield;
-
                         vm.aggfield = [];
                         vm.aggfield = vm.fieldsName;
 
 
-                        var fieldFilter = ["@timestamp", "referrer", "referrer.raw", "timestamp", "request", "edata", "host", "action", "agent"];
+                        var fieldFilter = ["@timestamp", "referrer", "referrer.raw", "timestamp", "request", "edata", "host", "action", "agent","geoip.location"];
 
-                        fieldFilter.map(function(f) {
+                        fieldFilter.map(function (f) {
 
                             var index = vm.aggfield.indexOf(f);
                             vm.aggfield.splice(index, 1);
                         });
 
-   
+
 
                         var flag;
                         angular.forEach(vm.aggfield, function (name) {
@@ -397,16 +385,17 @@
 
                     } else {
 
-                        datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft).then(function (resp) {
+                        datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft)
+                            .then(function (resp) {
                             vm.total = resp.hits.total;
                             vm.hitSearch = resp.aggregations.ag.agg.buckets;
                             drawDashboard(resp.aggregations.ag.agg, aggName);
                         }, function (err) {
-                            // log(err.message);
+                             log(err.message);
                         });
                     }
                 } catch (ex) {
-                    log("Loading pie Error" + ex);
+                    log("Loading pie Error " + ex);
                 }
 
                 // vm.isBusy = false;
@@ -421,7 +410,8 @@
                 vm.barchart = "bar";
                 vm.tablechart = "table";
 
-                datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft).then(function (resp) {
+                datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft)
+                    .then(function (resp) {
                     vm.dashboard = vm.dashboard + aggName;
                     vm.range = vm.range + aggName;
                     vm.barchart = vm.barchart + aggName;
@@ -436,17 +426,15 @@
                         drawDashboard2(resp.aggregations.ag.agg, aggName);
                     }
 
-
-
                 }, function (err) {
-                    // log(err.message);
+                    // log("aggshows err "+err.message);
                 });
 
             }
 
             function drawDashboard2(agg, y) {
 
-
+                google.setOnLoadCallback(drawDashboard2);
                 var data = new google.visualization.DataTable();
                 data.addColumn('string', 'key');
                 data.addColumn('number', 'Count Range');
@@ -533,9 +521,7 @@
             }
 
             function drawDashboard(agg, aggName) {
-
-                // Create our data table.
-
+                google.setOnLoadCallback(drawDashboard);
 
                 /*if (vm.typesName.indexOf(vm.type) === -1 || vm.fieldsName.indexOf(vm.aggName) === -1) {
                     return;
@@ -599,13 +585,13 @@
                     vm.hit = resp.hits.hits;
                     drawMap(vm.hit);
                 }, function (err) {
-                    // log(err.message);
+                    log("sample data error "+err.message);
                 });
 
             }
 
             function drawMap(r) {
-
+                google.setOnLoadCallback(drawMap);
                 var geoData = new google.visualization.DataTable();
                 geoData.addColumn('number', 'Lat');
                 geoData.addColumn('number', 'Lon');
@@ -645,7 +631,7 @@
 
             function drawTable(data, name, field) {
 
-
+                google.setOnLoadCallback(drawTable);
                 var table = new google.visualization.Table(document.getElementById(name));
 
                 table.draw(data, { showRowNumber: true });

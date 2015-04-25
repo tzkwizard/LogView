@@ -23,7 +23,6 @@
             trail: 100,
             color: 'Blue'
         };
-        // vm.people = [];
         vm.title = 'Dashboard';
         vm.indicesName = [];
         vm.type = "";
@@ -32,18 +31,20 @@
         //#region function
         //  vm.getFieldName = getFieldName;
         vm.getIndexName = getIndexName;
-        //   vm.getTypeName = getTypeName;
         vm.geoMap = geoMap;
         vm.histGram = histGram;
         vm.init = init;
         vm.timeLineGram = timeLineGram;
+        vm.geoMap2 = geoMap2;
         //#endregion
 
 
+        //#region test
         vm.test = test;
         function test() {
 
         }
+        //#endregion
 
 
         //#region View Load
@@ -53,12 +54,6 @@
         function activate() {
             common.activateController([init()], controllerId)
                 .then(function () {
-
-
-                    google.setOnLoadCallback(drawMap);
-                    google.setOnLoadCallback(drawHist);
-                    google.setOnLoadCallback(drawpie);
-                    google.setOnLoadCallback(drawTimwLine);
                     log('Activated Dashboard View');
 
                 });
@@ -79,12 +74,14 @@
                     pieChart();
                     geoMap();
                     histGram();
+                    geoMap2();
                 });
             } else {
                 timeLineGram();
                 pieChart();
                 geoMap();
                 histGram();
+                geoMap2();
             }
 
 
@@ -100,7 +97,7 @@
 
         function getIndexName() {
 
-            if ($cookieStore.get('index') !== undefined&&$rootScope.index!==undefined) {
+            if ($cookieStore.get('index') !== undefined && $rootScope.index !== undefined) {
                 if ($rootScope.index.length !== $cookieStore.get('index').length) {
                     $cookieStore.remove('index');
                 }
@@ -121,15 +118,17 @@
         }
         //#endregion
 
+
         //#region Draw Map
         vm.location = [];
         function geoMap() {
-            datasearch.termAggragation(vm.indicesName, vm.type, "geoip.city_name.raw", vm.size, vm.st, vm.ft).then(function (resp) {
-                vm.tt = resp.hits.total;
-                drawMap(resp.aggregations.ag.agg.buckets, vm.tt);
-            }, function (err) {
-                log(err.message);
-            });
+            datasearch.termAggragation(vm.indicesName, vm.type, "geoip.city_name.raw", vm.size, vm.st, vm.ft).
+                then(function (resp) {
+                    vm.tt = resp.hits.total;
+                    drawMap(resp.aggregations.ag.agg.buckets, vm.tt);
+                }, function (err) {
+                    log("geoMap data error "+err.message);
+                });
 
         }
         function drawMap(r, tt) {
@@ -144,19 +143,10 @@
             //geoData.addRow([n._source.geoip.city_name, 1, n._source.geoip.latitude, n._source.geoip.longitude]);
             vm.j = -1;
             angular.forEach(r, function (n) {
-
-
-                /* if (vm.location.indexOf(n._source.clientip) === -1 && n._source.geoip.city_name!==undefined) {
-                     vm.location.push(n._source.clientip);                   
-                     geoData.addRow([n._source.geoip.city_name, n._source.clientip, n._source.geoip.latitude, n._source.geoip.longitude, 1]);
-                 }*/
-
+ 
                 if (n.doc_count > 10) {
                     geoData.addRow([n.key.toString(), n.doc_count]);
                 }
-
-
-
             });
 
             var geoView = new google.visualization.DataView(geoData);
@@ -192,6 +182,7 @@
         }
         //#endregion
 
+
         //#region Draw Pie 
         function pieChart() {
             client.search({
@@ -202,17 +193,16 @@
                     .aggregation(ejs.FilterAggregation("ag2").filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st)).agg(ejs.TermsAggregation("agg2").field("geoip.city_name.raw")))
                     .aggregation(ejs.FilterAggregation("ag3").filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st)).agg(ejs.TermsAggregation("agg3").field("request.raw")))
 
-
             }).then(function (resp) {
                 //vm.pietitle = ["verb","clientip.raw","request.raw"];
                 drawpie(resp.aggregations);
-                //log("1");
             }, function (err) {
-                log(err.message);
+                log("pieChart data error "+err.message);
             });
         }
 
         function drawpie(agg) {
+            google.setOnLoadCallback(drawpie);
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'key');
             data.addColumn('number', 'Number');
@@ -264,7 +254,6 @@
             google.visualization.events.addListener(piechart, 'select',
                function () {
                    var row = piechart.getSelection()[0].row;
-
                    log(data.getValue(row, 0) + data.getValue(row, 1))
 
                });
@@ -272,6 +261,7 @@
 
         }
         //#endregion
+
 
         //#region Time Chart
 
@@ -282,11 +272,12 @@
                 vm.hitSearch = resp.aggregations.ag.agg.buckets;
                 drawTimwLine(resp.aggregations.ag.agg.buckets);
             }, function (err) {
-                log(err.message);
+                log("timelineGram data error "+err.message);
             });
         }
 
         function drawTimwLine(agg) {
+            google.setOnLoadCallback(drawTimwLine);
             var data = new google.visualization.DataTable();
             data.addColumn('date', 'Date');
             data.addColumn('number', 'Count');
@@ -309,13 +300,13 @@
                 vm.hitSearch = resp.aggregations.ag.agg.buckets;
                 drawHist(resp.aggregations.ag.agg.buckets);
             }, function (err) {
-                log(err.message);
+                log("histGram data error "+err.message);
             });
         }
 
         function drawHist(agg) {
 
-
+            google.setOnLoadCallback(drawHist);
             /*  var Data = new google.visualization.DataTable();
              Data.addColumn('date', 'Date');
               Data.addColumn('number', 'Number');
@@ -370,7 +361,39 @@
         //#endregion
 
 
+        //#region Draw Map2
+        function geoMap2() {
+            datasearch.termAggragation(vm.indicesName, vm.type, "geoip.country_name.raw", 100, vm.st, vm.ft).
+                then(function (resp) {
+                    //vm.tt = resp.hits.total;
+                    drawMap2(resp.aggregations.ag.agg.buckets);
+                }, function (err) {
+                    log("geoMap2 data error"+err.message);
+                });
+        }
 
+        function drawMap2(r) {
+
+            google.setOnLoadCallback(drawMap2);
+
+            var geoData2 = new google.visualization.DataTable();
+            geoData2.addColumn('string', 'Country');
+            geoData2.addColumn('number', 'Count');
+
+            angular.forEach(r, function (n) {
+                geoData2.addRow([n.key.toString(), n.doc_count]);
+            });
+            var options = {
+                colorAxis: { colors: ['#B2B2FF', '#0000FF', '#00004C'] },
+                backgroundColor: '#FFF0F5'
+            };
+
+            var chart = new google.visualization.GeoChart(document.getElementById('gmap_div'));
+
+            chart.draw(geoData2, options);
+
+        }
+        //#endregion
     }
 
 

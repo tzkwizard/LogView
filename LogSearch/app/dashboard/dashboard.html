@@ -5,11 +5,23 @@
                 <div data-cc-spinner="vm.spinnerOptions"></div>
                 <div class="page-splash-message page-splash-message-subtle">{{vm.busyMessage}}</div>
             </div>
-            <div class="widget wlightblue" >
-                <div data-cc-widget-header title=" map" allow-collapse="true"></div>
+
+            <div class="widget wlightblue">
+                <div data-cc-widget-header title=" Region Map" allow-collapse="true"></div>
                 <div class="widget-content">
-                    <div id="dmap_div" style="height: 65%; width: 100%"></div>
-                    <table class="columns" style="height: 35%; width: 100%">
+                    <div id="gmap_div" style="height: 75%; width: 100%"></div>
+                </div>
+            </div>
+            <div class="widget waqua">
+                <div data-cc-widget-header title=" City Map" allow-collapse="true"></div>
+                <div class="widget-content">
+                    <div id="dmap_div" style="height: 70%; width: 100%"></div>
+                </div>
+            </div>
+            <div class="widget wgreen">
+                <div data-cc-widget-header title=" Chart" allow-collapse="true"></div>
+                <div class="widget-content">
+                    <table class="columns" style="height: 22%; width: 100%">
                         <tr>
                             <td width="33%">
                                 <div id="pie_div1" ng-click="vm.test()"></div>
@@ -22,13 +34,8 @@
                             </td>
                         </tr>
                     </table>
-                </div>
-            </div>
-            <div class="widget wgreen">
-                <div data-cc-widget-header title="Date" allow-collapse="true"></div>
-                <div class="widget-content">
-                    <div id='DateHist_div' style='width: 100%; height: 240px;'></div>
-                    <div id='TimeLine_div' style='width: 100%; height: 240px;'></div>
+                    <div id='DateHist_div' style='width: 100%; height: 22%;'></div>
+                    <div id='TimeLine_div' style='width: 100%; height: 22%;'></div>
                     <div id="dtable_div"></div>
                 </div>
             </div>

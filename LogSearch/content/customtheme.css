@@ -913,6 +913,7 @@ form {
 
     /* Widget colors */
 
+
     .widget.wred .widget-head {
         background-color: #fa3031;
         border: 1px solid #fa3031;
@@ -949,12 +950,27 @@ form {
         color: #fff;
     }
 
+    .widget.wgold .widget-head {
+        background-color: #FFD700;
+        border: 1px solid #FFD700;
+        color: #fff;
+    }
+
+    .widget.waqua .widget-head {
+        background-color: #00FFFF;
+        border: 1px solid #00FFFF;
+        color: #fff;
+    }
+    
         .widget.wred .widget-head .widget-icons a,
         .widget.wblue .widget-head .widget-icons a,
         .widget.wlightblue .widget-head .widget-icons a,
         .widget.worange .widget-head .widget-icons a,
         .widget.wgreen .widget-head .widget-icons a,
-        .widget.wviolet .widget-head .widget-icons a {
+        .widget.wviolet .widget-head .widget-icons a ,
+        .widget.wgold .widget-head .widget-icons a ,
+        .widget.waqua .widget-head .widget-icons a
+        {
             color: #fff;
         }
 
@@ -963,7 +979,10 @@ form {
             .widget.wlightblue .widget-head .widget-icons a:hover,
             .widget.worange .widget-head .widget-icons a:hover,
             .widget.wgreen .widget-head .widget-icons a:hover,
-            .widget.wviolet .widget-head .widget-icons a:hover {
+            .widget.wviolet .widget-head .widget-icons a:hover,
+            .widget.wgold .widget-head .widget-icons a:hover,
+            .widget.waqua .widget-head .widget-icons a:hover
+             {
                 color: #eee;
             }
 

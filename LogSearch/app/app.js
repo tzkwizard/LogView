@@ -5,7 +5,7 @@
      });*/
 
     'use strict';
-    google.load('visualization', '1', { packages: ['bar', 'corechart', 'controls', 'table', 'map', 'annotatedtimeline', 'treemap'] });
+    google.load('visualization', '1', { packages: ['geochart','bar', 'corechart', 'controls', 'table', 'map', 'annotatedtimeline', 'treemap'] });
     var app = angular.module('app', [
         // Angular modules 
         'ngAnimate',        // animations
@@ -51,7 +51,6 @@
             var field;
 
 
-            login();
 
             index.then(function (data) {
                 $rootScope.index = data;
@@ -63,36 +62,6 @@
             });
 
 
-            var items ;
-             function open () {
-                var modalInstance = $modal.open({
-                    templateUrl: 'loginModal.html',
-                    controller: 'loginModal',
-                    size: 'sm',
-                    keyboard: false,
-                    resolve: {
-                        items: function () {
-                            return "";
-                        }
-                    }
-                });
-
-            };
-
-            function login() {
-                 client.ping({
-                    requestTimeout: 1000,
-                    hello: "elasticsearch!"
-                }, function(error) {
-                    if (error) {
-                        toastr.info("Username or Password Error!");
-                        open();
-                    } else {
-                        toastr.info('elasticsearch cluster is connected');
-
-                    }
-                });
-            }
 
             
                 /* function xx() {

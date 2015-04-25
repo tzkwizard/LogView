@@ -45,7 +45,7 @@
 
         };
 
-       /* vm.login = login;
+        vm.login = login;
 
         function login() {
             return client.ping({
@@ -60,7 +60,7 @@
                     toastr.info('elasticsearch cluster is connected');
                 }
             });
-        }*/
+        }
 
         //#endregion
 
@@ -69,7 +69,7 @@
         activate();
         function activate() {
             // logSuccess('Breezezz Angular loaded!', null, true);
-            common.activateController([], controllerId).then(function () {
+            common.activateController([login()], controllerId).then(function () {
                 vm.showSplash = false;
             });
         }
