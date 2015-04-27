@@ -9,7 +9,6 @@
         var vm = this;
         // var keyCodes = config.keyCodes;
 
-
         //#region variable   
         vm.searchText = '';
         vm.ip = [];
@@ -73,7 +72,7 @@
                     // log(x);
                     break;
             }
-           
+
             $rootScope.reload = true;
             $route.reload();
             // window.location.reload();
@@ -96,7 +95,7 @@
                        });
 
                    }, function (err) {
-                       toastr.info("Auto Fill Load error" + err.message);
+                       // toastr.info("Auto Fill Load error" + err.message);
                    });
                 apromise.push(aSubp);
             });
@@ -106,7 +105,6 @@
             });
             //$rootScope.ip = word;
         }
-
 
         vm.getLocation = getLocation;
 
@@ -168,19 +166,18 @@
         function refresh($event) {
             if ($event.keyCode === config.keyCodes.esc) {
                 vm.searchText = '';
-
                 return;
             }
             $location.search.refresh = true;
-            //$window.location.reload();
-            // $route.reload();
             window.location.reload();
             toastr.info("Refresh" + $location.path());
         }
 
         function logout() {
+
             $cookieStore.remove("ueranme");
             $cookieStore.remove("password");
+            $location.path("/");
             window.location.reload();
         }
         //#endregion

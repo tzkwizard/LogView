@@ -41,23 +41,7 @@
                 </button>
                 <div class="fader-animation" data-ng-repeat="doc in vm.refinedsearch">
                     <li>{{doc.key}} : {{doc.value}}</li>
-                </div>
-                <table class=" table table-striped table-condensed table-hover">
-                    <thead>
-
-                        <tr>
-                            <th class="Token" data-ng-click="predicate = '_source.ip'; reverse=!reverse">Token&nbsp;</th>
-                            <th class="Number" data-ng-click="predicate = '_source.username'; reverse=!reverse">Number&nbsp;</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr class="fader-animation" data-ng-repeat="doc in vm.hitSearch| orderBy:predicate:reverse" data-ng-click="vm.test()">
-                            <td>{{doc.key}}</td>
-                            <td>{{doc.doc_count}}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                </div>       
 
                 <div class="widget wblue">
                     <div data-cc-widget-header title="{{vm.title}}" subtitle="{{vm.total}}"
@@ -74,6 +58,22 @@
                      allow-collapse="true"></div>
                 <div class="widget-content">
                     <div id="div2"></div>
+                    <table class=" table table-striped table-condensed table-hover" ng-show="vm.token">
+                        <thead>
+
+                            <tr>
+                                <th class="Token" data-ng-click="predicate = '_source.ip'; reverse=!reverse">Token&nbsp;</th>
+                                <th class="Number" data-ng-click="predicate = '_source.username'; reverse=!reverse">Number&nbsp;</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr class="fader-animation" data-ng-repeat="doc in vm.hitSearch| orderBy:predicate:reverse" data-ng-click="vm.test()">
+                                <td>{{doc.key}}</td>
+                                <td>{{doc.doc_count}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <div id="dashboard">
                         <table class="columns">
                             <tr>

@@ -62,7 +62,7 @@
                         init();
                     }
                     log('Activated Dashboard View');
-                   
+
                 });
         }
 
@@ -77,8 +77,8 @@
                 vm.ft = new Date();
             }
 
-            if (typeof pp === 'Promise') {
-                pp.then(function (data) {
+            if (typeof ip === 'Promise') {
+                ip.then(function (data) {
                     vm.indicesName = data
                     timeLineGram();
                     pieChart();
@@ -93,20 +93,11 @@
                 histGram();
                 geoMap2();
             }
-
-           /* vm.indicesName = $cookieStore.get('index');
-             $timeout(timeLineGram, 200);
-             $timeout(pieChart, 200);
-             $timeout(geoMap, 200);
-             $timeout(histGram, 200);
-             $timeout(geoMap2, 200);*/
-
         }
 
-        var pp;
+        var ip;
 
         function getIndexName() {
-
             if ($cookieStore.get('index') !== undefined && $rootScope.index !== undefined) {
                 if ($rootScope.index.length !== $cookieStore.get('index').length) {
                     log("Index Changed");
@@ -121,10 +112,9 @@
                     vm.indicesName = $cookieStore.get('index');
                 } else {
 
-                    pp = dataconfig.initIndex();
+                    ip = dataconfig.initIndex();
                 }
             }
-
 
         }
         //#endregion
@@ -175,16 +165,19 @@
 
             var map =
                 new google.visualization.Map(document.getElementById('dmap_div'));
-            map.draw(geoView, { showTip: true, enableScrollWheel: true, useMapTypeControl: true, zoomLevel: 3 });
-            // map.setSelection({ row: null, column: 1 });
-            // Set a 'select' event listener for the table.
+            map.draw(geoView, {
+                showTip: true,
+                //enableScrollWheel: true,
+                useMapTypeControl: true,
+                zoomLevel: 3
+            });
+
             // When the table is selected, we set the selection on the map.
             google.visualization.events.addListener(table, 'select',
                 function () {
                     map.setSelection(table.getSelection());
                 });
 
-            // Set a 'select' event listener for the map.
             // When the map is selected, we set the selection on the table.
             google.visualization.events.addListener(map, 'select',
                 function () {
@@ -206,7 +199,6 @@
                     .aggregation(ejs.FilterAggregation("ag3").filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st)).agg(ejs.TermsAggregation("agg3").field("request.raw")))
 
             }).then(function (resp) {
-                //vm.pietitle = ["verb","clientip.raw","request.raw"];
                 drawpie(resp.aggregations);
             }, function (err) {
                 //log("pieChart data error " + err.message);
@@ -283,14 +275,14 @@
 
             datasearch.dateHistogramAggregation(vm.indicesName, vm.type, "@timestamp", "day", vm.st, vm.ft)
                 .then(function (resp) {
-                vm.total = resp.aggregations;
-                vm.hitSearch = resp.aggregations.ag.agg.buckets;
-                drawTimwLine(resp.aggregations.ag.agg.buckets);
-            }, function (err) {
-                //log("timelineGram data error " + err.message);
-                vm.indicesName = $rootScope.index;
-                $timeout(timeLineGram, 1000);
-            });
+                    vm.total = resp.aggregations;
+                    vm.hitSearch = resp.aggregations.ag.agg.buckets;
+                    drawTimwLine(resp.aggregations.ag.agg.buckets);
+                }, function (err) {
+                    //log("timelineGram data error " + err.message);
+                    vm.indicesName = $rootScope.index;
+                    $timeout(timeLineGram, 1000);
+                });
         }
 
         function drawTimwLine(agg) {
@@ -385,15 +377,15 @@
                     //vm.tt = resp.hits.total;
                     drawMap2(resp.aggregations.ag.agg.buckets);
                 }, function (err) {
-                    log("geoMap2 data error" + err.message);
-                    //vm.indicesName = $rootScope.index;
-                    //$timeout(geoMap2, 1000);
+                    //log("geoMap2 data error" + err.message);
+                    vm.indicesName = $rootScope.index;
+                    $timeout(geoMap2, 1000);
                 });
         }
 
         function drawMap2(r) {
 
-           google.setOnLoadCallback(drawMap2);
+            google.setOnLoadCallback(drawMap2);
 
             var geoData2 = new google.visualization.DataTable();
             geoData2.addColumn('string', 'Country');
@@ -407,19 +399,17 @@
                 backgroundColor: '#FFF0F5'
             };
 
-            if (document.getElementById('gmap_div')==undefined) {
+            if (document.getElementById('gmap_div') == undefined) {
                 log("1");
             }
             var chart = new google.visualization.GeoChart(document.getElementById('gmap_div'));
-    
+
             chart.draw(geoData2, options);
-           
+
             vm.isBusy = false;
         }
         //#endregion
     }
-
-
 
 
 })();

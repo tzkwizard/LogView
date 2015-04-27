@@ -19,7 +19,7 @@
             $scope.trend2 = 'true';
             $scope.count = 0;
 
-            
+
 
             //#region variable
             vm.fi = "";
@@ -56,7 +56,7 @@
             vm.filtertemp = filtertemp;
             vm.init = init;
             vm.test = test;
-            
+
             vm.today = today;
             vm.pageChanged = pageChanged;
             vm.getCurrentPageData = getCurrentPageData;
@@ -239,7 +239,7 @@
                 startingDay: 1
             };
 
-            
+
             //today();
 
 
@@ -301,7 +301,7 @@
 
             vm.timeopen = function ($event) {
                 $event.preventDefault();
-                $event.stopPropagation();               
+                $event.stopPropagation();
                 vm.timeopened = true;
                 $rootScope.st = vm.st;
             };
@@ -340,8 +340,6 @@
                         }
                     }
                 });
-
-
 
             }
 
@@ -387,13 +385,10 @@
                 }
             }
 
-
-
             function addfilter() {
                 dataconfig.addFilter(vm.im, vm.fieldsName);
                 vm.im++;
             }
-
 
             function removefilter() {
 
@@ -415,7 +410,7 @@
                     vm.ft = new Date();
                 }
 
-                if ($cookieStore.get('index') !== undefined&&$rootScope.index!==undefined) {
+                if ($cookieStore.get('index') !== undefined && $rootScope.index !== undefined) {
                     if ($rootScope.index.length !== $cookieStore.get('index').length) {
                         log("Index Changed");
                         $cookieStore.remove('index');
@@ -437,17 +432,15 @@
                 //$timeout(getFieldName, 200);
                 if (ip === undefined) {
                     getFieldName();
-                }else{
-                ip.then(function(data) {
-                    vm.indicesName = data;
-                    getFieldName();
-                });
+                } else {
+                    ip.then(function (data) {
+                        vm.indicesName = data;
+                        getFieldName();
+                    });
                 }
-               
-                
+
+
             }
-
-
 
             function getTypeName() {
                 vm.typesName = dataconfig.getTypeName(vm.index, vm.pagecount);
@@ -460,22 +453,22 @@
                     vm.index = vm.indicesName[0];
                 }
                 if (vm.index !== "" && vm.index !== undefined) {
-                   fp = dataconfig.getFieldName(vm.index, $rootScope.logtype);
+                    fp = dataconfig.getFieldName(vm.index, $rootScope.logtype);
                     // log(vm.fieldsName.length);
                 }
 
-                fp.then(function(data) {
+                fp.then(function (data) {
                     vm.fieldsName = data;
                 });
 
             }
 
             activate();
-            function activate() {                
+            function activate() {
                 common.activateController([getIndexName()], controllerId)
                     .then(function () {
                         $location.search();
-                      
+
 
                         if ($location.search.text !== "") {
                             vm.searchText = $location.search.text;
@@ -492,21 +485,21 @@
                         //init();
                         vm.showSplash = false;
                         log('Activated ELS search View');
-                        
-                });
+
+                    });
             }
 
             function init() {
 
                 datasearch.getSampledata(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.st, vm.ft)
                     .then(function (resp) {
-                    vm.hitSearch = resp.hits.hits;
-                    vm.total = resp.hits.total;
-                    vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
-                    vm.getCurrentPageData(vm.hitSearch);
-                    vm.type = "";
-                    //log('Loaded sample document');
-                });
+                        vm.hitSearch = resp.hits.hits;
+                        vm.total = resp.hits.total;
+                        vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
+                        vm.getCurrentPageData(vm.hitSearch);
+                        vm.type = "";
+                        //log('Loaded sample document');
+                    });
             }
             //#endregion
 
@@ -514,32 +507,30 @@
             //#region Search and Filter 
             vm.condition = "";
 
-            function search() {          
-                    vm.hitSearch = "";
-                    if (vm.searchText == undefined || vm.searchText === "") {
-                        init();
-                        $timeout(random, 200);
+            function search() {
+                vm.hitSearch = "";
+                if (vm.searchText == undefined || vm.searchText === "") {
+                    init();
+                    $timeout(random, 200);
 
-                    } else {
+                } else {
 
-                        datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, vm.filterAggName, vm.fi, vm.condition, vm.st, vm.ft)
-                            .then(function (resp) {
-                                vm.hitSearch = resp.hits.hits;
-                                vm.total = resp.hits.total;
-                                /*if (vm.total === 0) {
-                                    log("None Result");
-                                }*/
-                                vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
-                                vm.getCurrentPageData(vm.hitSearch);
-                                $timeout(random, 200);
-                            }, function (err) {
-                                log("search data error "+err.message);                                
-                            });
-                    }
-
+                    datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, vm.filterAggName, vm.fi, vm.condition, vm.st, vm.ft)
+                        .then(function (resp) {
+                            vm.hitSearch = resp.hits.hits;
+                            vm.total = resp.hits.total;
+                            /*if (vm.total === 0) {
+                                log("None Result");
+                            }*/
+                            vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
+                            vm.getCurrentPageData(vm.hitSearch);
+                            $timeout(random, 200);
+                        }, function (err) {
+                            log("search data error " + err.message);
+                        });
                 }
 
-            
+            }
 
 
             function filtertemp() {
@@ -732,8 +723,8 @@
 
             ];
 
-          
-        
+
+
 
             $scope.gridOptions3 = {
                 columnDefs: [

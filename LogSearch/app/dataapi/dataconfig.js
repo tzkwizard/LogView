@@ -24,7 +24,7 @@
         return service;
         //#endregion
 
-        //#region Test   
+        //#region Prime 
         function prime() {
             var index = initIndex();
             //$rootScope.index = dataconfig.initIndex();
@@ -54,7 +54,7 @@
             contain.setAttribute('id', containName);
             main.appendChild(contain);
 
-            
+
 
 
             var diva = document.createElement('div');
@@ -195,7 +195,7 @@
 
                 }
             }, function (err) {
-                log("get Logstash Index" + err.message);
+                // log("get Logstash Index" + err.message);
             });
             //return indicesName;
             return ipromise.then(function () {
@@ -273,8 +273,6 @@
                 type: type,
                 field: '*'
             }).then(function (resp) {
-                //vm.map = resp.logs.mappings.logs;
-
                 angular.forEach(resp, function (m) {
                     var map = m.mappings;
                     angular.forEach(map, function (n) {
@@ -290,9 +288,8 @@
                 });
 
             }, function (err) {
-                log("get Field Name" + err.message);
+                // log("get Field Name" + err.message);
             });
-
 
             return fpromise.then(function () {
                 return fieldsName;

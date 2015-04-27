@@ -33,50 +33,44 @@
     app.run(['$modal', '$q', '$timeout', '$cookieStore', '$rootScope', '$route', 'breeze', 'dataconfig', 'routeMediator', 'client', 'datasearch',
         function ($modal, $q, $timeout, $cookieStore, $rootScope, $route, breeze, dataconfig, routeMediator, client, datasearch) {
             // Include $route to kick start the router.
-            // datacontext.prime();
             routeMediator.setRoutingHandlers();
             $rootScope.reload = false;
             $rootScope.school = "TCU";
             //$rootScope.st = moment(new Date()).subtract(2, 'month');
             //$rootScope.ft = new Date();
-           // dataconfig.prime();
+            // dataconfig.prime();
             //#region Golbal Variable
-           
-           /* var index = dataconfig.initIndex();
-            //$rootScope.index = dataconfig.initIndex();
-            $rootScope.logtype = "logs";
-            
-            $rootScope.ip = [];
 
-            var field;
-            index.then(function (data) {
-                $rootScope.index = data;
-                field = dataconfig.getFieldName($rootScope.index[0], $rootScope.logtype);
-            }).then(function () {
-                field.then(function (data2) {
-                    $rootScope.logfield = data2;
-                });
-            });*/
+            /* var index = dataconfig.initIndex();
+             //$rootScope.index = dataconfig.initIndex();
+             $rootScope.logtype = "logs";
+             
+             $rootScope.ip = [];
+ 
+             var field;
+             index.then(function (data) {
+                 $rootScope.index = data;
+                 field = dataconfig.getFieldName($rootScope.index[0], $rootScope.logtype);
+             }).then(function () {
+                 field.then(function (data2) {
+                     $rootScope.logfield = data2;
+                 });
+             });*/
             //#endregion
 
 
-            //#region Ping
-            /* $timeout(xx, 200);
-              function xx() {
-                $rootScope.logfield = dataconfig.getFieldName($rootScope.index[0], $rootScope.logtype);
-            }*/
-
-           /* client.ping({
-                requestTimeout: 1000,
-                hello: "elasticsearch!"
-            }, function (error) {
-                if (error) {
-
-                    toastr.info('elasticsearch cluster is down!');
-                } else {
-                    toastr.info('elasticsearch cluster is connected');
-                }
-            });*/
+            //#region Ping           
+            /* client.ping({
+                 requestTimeout: 1000,
+                 hello: "elasticsearch!"
+             }, function (error) {
+                 if (error) {
+ 
+                     toastr.info('elasticsearch cluster is down!');
+                 } else {
+                     toastr.info('elasticsearch cluster is connected');
+                 }
+             });*/
             //#endregion
 
         }]);

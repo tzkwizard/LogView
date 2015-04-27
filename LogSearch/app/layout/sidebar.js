@@ -48,7 +48,6 @@
         activate();
         function activate() {
             //getFieldName();
-
             common.activateController([getNavRoutes()], controllerId)
                 .then(function () {
                     if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {

@@ -30,14 +30,14 @@
 
         //#region Login
         vm.items = "";
-        vm.open = function() {
+        vm.open = function () {
             var modalInstance = $modal.open({
                 templateUrl: 'loginModal.html',
                 controller: 'loginModal',
                 size: 'sm',
                 keyboard: false,
                 resolve: {
-                    items: function() {
+                    items: function () {
                         return "";
                     }
                 }
@@ -51,7 +51,7 @@
             return client.ping({
                 requestTimeout: 1000,
                 hello: "elasticsearch!"
-            }, function(error) {
+            }, function (error) {
                 if (error) {
                     toastr.info("Username or Password Error!");
                     vm.open();
@@ -69,12 +69,12 @@
 
         function activate() {
             // logSuccess('Breezezz Angular loaded!', null, true);
-            common.activateController([login()], controllerId).then(function() {
+            common.activateController([login()], controllerId).then(function () {
                 vm.showSplash = false;
             });
         }
 
-//#endregion
+        //#endregion
 
 
         //#region spinner
@@ -83,18 +83,18 @@
         }
 
         $rootScope.$on('$routeChangeStart',
-            function(event, next, current) { toggleSpinner(true); }
+            function (event, next, current) { toggleSpinner(true); }
         );
 
         $rootScope.$on(events.controllerActivateSuccess,
-            function(data) {
+            function (data) {
                 toggleSpinner(false);
                 //toastr.info("try");
             }
         );
 
         $rootScope.$on(events.spinnerToggle,
-            function(data) { toggleSpinner(data.show); }
+            function (data) { toggleSpinner(data.show); }
         );
         /*  $rootScope.$on('$viewContentLoaded', function readyToTrick() {
             //activate();
@@ -109,11 +109,7 @@
                     event.preventDefault();
                     return;
                 }
-            });
-
-
-    };*/
-
+            });*/
 
         /* $rootScope.$on('$viewContentLoaded',
              function (event, current, previous) {
@@ -139,7 +135,7 @@
     var controllerId = 'loginModal';
 
     angular.module('app')
-        .controller(controllerId, function ($cookieStore, $rootScope, $scope, $modalInstance, $location, common, items, esFactory) {
+        .controller(controllerId, function ($cookieStore, $rootScope, $scope, $modalInstance, $location, common, items, esFactory, config) {
 
             $scope.title = "Elasticsarch Login";
             $scope.selected = {
@@ -148,7 +144,11 @@
             $scope.username = "";
             $scope.password = "";
 
-
+            $scope.try = function ($event) {
+                if ($event.keyCode === config.keyCodes.enter) {
+                    $scope.ok();
+                }
+            }
 
             $scope.ok = function () {
 

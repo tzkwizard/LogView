@@ -54,6 +54,7 @@
             });
 
         }
+
         function termAggragationwithQuery(indices, type, aggfield, size, searchText, start, end) {
             return client.search({
                 index: indices,

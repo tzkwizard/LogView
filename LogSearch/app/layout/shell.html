@@ -19,11 +19,13 @@
         &nbsp;UserName:
         <input type="text" class="form-control"
                data-ng-model="username"
+               data-ng-keyup=try($event)
                placeholder="   " />
         <br>
         &nbsp;Password:&nbsp;&nbsp;
         <input type="password" class="form-control"
                data-ng-model="password"
+               data-ng-keyup= try($event)
                placeholder="  " />
 
         <div class="modal-body">

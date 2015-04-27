@@ -17,11 +17,11 @@
             }
 
             var local = "http://" + username + ":" + password + "@localhost:9200";
-           // var azurecluster = "http://" + username + ":" + password + "@23.101.177.252:9200";
+            // var azurecluster = "http://" + username + ":" + password + "@23.101.177.252:9200";
 
             return esFactory({
                 // host:azurecluster,
-                host: local,   
+                host: local,
                 log: 'trace'
 
             });

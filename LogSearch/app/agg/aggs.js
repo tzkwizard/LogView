@@ -5,8 +5,7 @@
 
     angular.module('app')
         .controller(controllerId, function ($interval, $q, $route, $timeout, $cookieStore, $rootScope, $scope, $location,
-            common, bsDialog, client, datasearch, dataconfig,config) {
-
+            common, bsDialog, client, datasearch, dataconfig, config) {
 
             var vm = this;
             vm.title = "Aggragations";
@@ -14,7 +13,7 @@
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
             var events = config.events;
-
+           
             //#region variable
             vm.isBusy = true;
             vm.busyMessage = "wait";
@@ -48,8 +47,8 @@
             vm.type = '';
             vm.ft = "";
             vm.st = "";
-            var aerror = false;
             var terror = false;
+            vm.token = false;
 
             vm.dashboard = "dash";
             vm.range = "range";
@@ -72,7 +71,7 @@
             vm.clear = clear;
 
             //#endregion
-       
+
 
             //#region Test
             vm.tes = "ab";
@@ -86,18 +85,18 @@
                  $location.search('field', field);*/
             }
 
-           /*$rootScope.$on('$viewContentLoaded', function readyToTrick() {
+            /*$rootScope.$on('$viewContentLoaded', function readyToTrick() {
+                  activate();
+                 log("1");
+            });  */
+
+            /* $scope.$on('$routeChangeSuccess', function dd() {
+                 log("2");
                  activate();
-                log("1");
-           });  */
-          
-          /* $scope.$on('$routeChangeSuccess', function dd() {
-               log("2");
-               activate();
-           });*/
-           /*$scope.$emit('$routeChangeSuccess', function () {
-                return "haha";
-            });*/
+             });*/
+            /*$scope.$emit('$routeChangeSuccess', function () {
+                 return "haha";
+             });*/
             //#endregion
 
 
@@ -135,6 +134,7 @@
             }
             //#endregion
 
+
             //#region Draw-tree
             vm.fieldstree = [];
             vm.treestatus = true;
@@ -153,8 +153,6 @@
                         });
 
             }
-
-
 
             function drawTreemap() {
                 google.setOnLoadCallback(drawTreemap);
@@ -200,13 +198,8 @@
                 treeAddData();
 
                 var tree = new google.visualization.TreeMap(document.getElementById('treemap_div'));
-            
 
                 vm.startDrawTree = startDrawTree;
-
-                //var deferred = $q.defer();
-                // var promise = deferred.promise;
-
 
                 $q.all(tpromise).then(function () {
                     if (terror === true) {
@@ -219,7 +212,6 @@
                     }
 
                 }, function (e) { log("TreeMap Promise Error" + e); });
-
 
 
                 function startDrawTree() {
@@ -239,7 +231,6 @@
                             '<a> Tag:' + datatree.getValue(row, 0) + '<hr>' + '</b> Size:' + size + '</b> Value:' + value + '</a>.</div>';
                     }
 
-
                     google.visualization.events.addListener(tree, 'select',
                         function () {
                             tree.goUpAndDraw();
@@ -247,33 +238,29 @@
 
                     vm.isBusy = false;
                 }
-
-
-
             }
             //#endregion
 
-           
-            //#region View Load
-            activate();       
-            function activate() {
-              common.activateController([], controllerId)
-                    .then(function () {
-                        if ($rootScope.reload) {
-                            $timeout(getIndexName, 1000);
-                            $rootScope.reload = false;
-                        } else {
-                            getIndexName();
-                        }
-                        //getIndexName();
-                        vm.refinedsearch = [
-                        { key: 'Time', value: new Date() },
-                        { key: 'School', value: $rootScope.school }
-                        ];
-                        //log(vm.searchText);
-                        log('Activated Aggs search View');
 
-                    });
+            //#region View Load
+            activate();
+            function activate() {
+                common.activateController([], controllerId)
+                      .then(function () {
+                          if ($rootScope.reload) {
+                              $timeout(getIndexName, 1000);
+                              $rootScope.reload = false;
+                          } else {
+                              getIndexName();
+                          }
+                          vm.refinedsearch = [
+                          { key: 'Time', value: new Date() },
+                          { key: 'School', value: $rootScope.school }
+                          ];
+                          //log(vm.searchText);
+                          log('Activated Aggs search View');
+
+                      });
             }
 
             var ip;
@@ -302,7 +289,6 @@
                             $cookieStore.put('index', $rootScope.index);
                             vm.indicesName = $cookieStore.get('index');
                         } else {
-
                             // vm.indicesName = dataconfig.initIndex();
                             ip = dataconfig.initIndex();
                         }
@@ -316,10 +302,6 @@
                     log("Fail to Load Index " + ex);
                 }
 
-
-                // vm.indicesName = $rootScope.index;
-                //vm.index = vm.indicesName[0];
-                //vm.index = "logstash-2015.04.01";
                 if (ip === undefined) {
                     getFieldName();
                 } else {
@@ -395,9 +377,8 @@
                 }
 
                 if (vm.aggName === "" || vm.aggName === "all") {
-                    vm.aggfield = [];
                     vm.aggfield = vm.fieldsName;
-
+                    vm.token = false;
 
                     var fieldFilter = ["@timestamp", "referrer", "referrer.raw", "timestamp", "request", "edata", "host", "action", "agent", "geoip.location"];
 
@@ -426,7 +407,7 @@
                     });
 
                 } else {
-
+                    vm.token = true;
                     datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft)
                         .then(function (resp) {
                             vm.total = resp.hits.total;
@@ -448,7 +429,6 @@
             function aggShows(aggName, flag) {
 
                 //dataconfig.createContainer(aggName);
-
                 vm.dashboard = "dash";
                 vm.range = "range";
                 vm.barchart = "bar";
@@ -460,7 +440,6 @@
                         vm.range = vm.range + aggName;
                         vm.barchart = vm.barchart + aggName;
                         vm.tablechart = vm.tablechart + aggName;
-                        // vm.hitSearch = resp.hits.hits;
                         vm.total = resp.hits.total;
                         if (!flag) {
                             if (resp.aggregations.ag.agg.buckets.length > 1) {
@@ -526,51 +505,23 @@
                         'width': '300px'
                     }
                 });
-*/              
+*/
 
                 var name = "table" + y;
                 drawTable(data, name, y);
 
-                // Establish dependencies, declaring that 'filter' drives 'pieChart',
-                // so that the pie chart will only display entries that are let through
-                // given the chosen slider range.
+                // Establish dependencies, declaring that 'filter' drives 'pieChart',given the chosen slider range.
                 dashboard.bind(donutRangeSlider, [pieChart]);
 
                 // Draw the dashboard.
                 dashboard.draw(data);
                 google.visualization.events.addListener(pieChart, 'select', function () {
                     var row = getSelection(pieChart);
-                    /* if (field.substring(field.length - 3, field.length) === "raw") {
-                        log(field.substring(0, field.length - 4));
-                        y = field.substring(0, field.length - 4);
-                    }
-
-
-                    if (vm.searchText === "*") {
-                        vm.searchText = field + " : \"" + data.getValue(row, 0) + "\"";
-                        $timeout(pushrefinedata, 500);
-                    } else {
-                        vm.searchText += " AND " + field + " : \"" + data.getValue(row, 0) + "\"";
-                        $timeout(pushrefinedata, 500);
-                    }
-                    vm.pushrefinedata = pushrefinedata;
-
-                    function pushrefinedata() {
-                        vm.refinedsearch.push({ key: field, value: data.getValue(row, 0) });
-                    }
-
-                    log(vm.searchText);
-                    aggShow("");*/
-                    /* angular.forEach(row,function(x) {
-                         log(x   );
-                     });*/
-
                 });
 
             }
 
-            function drawDashboard(agg, aggName)
-          {
+            function drawDashboard(agg, aggName) {
 
                 google.setOnLoadCallback(drawDashboard);
 
@@ -665,15 +616,11 @@
                     new google.visualization.Map(document.getElementById('map_div'));
                 map.draw(geoView, { showTip: true });
 
-                // Set a 'select' event listener for the table.
-                // When the table is selected, we set the selection on the map.
                 /* google.visualization.events.addListener(table, 'select',
                      function () {
                          map.setSelection(table.getSelection());
                      });*/
 
-                // Set a 'select' event listener for the map.
-                // When the map is selected, we set the selection on the table.
                 google.visualization.events.addListener(map, 'select',
                     function () {
                         table.setSelection(map.getSelection());
@@ -727,8 +674,6 @@
 
             }
             //#endregion
-
-
 
 
         });
