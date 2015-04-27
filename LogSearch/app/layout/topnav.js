@@ -3,15 +3,15 @@
 
     var controllerId = 'topnav';
     angular.module('app').controller(controllerId,
-        ['$cookieStore', '$timeout', '$rootScope', '$http', '$window', '$route', '$scope', '$location', 'dataconfig', 'datasearch', 'config', topnav]);
+        ['$q', '$cookieStore', '$timeout', '$rootScope', '$http', '$window', '$route', '$scope', '$location', 'dataconfig', 'datasearch', 'config', topnav]);
 
-    function topnav($cookieStore, $timeout, $rootScope, $http, $window, $route, $scope, $location, dataconfig, datasearch, config) {
+    function topnav($q, $cookieStore, $timeout, $rootScope, $http, $window, $route, $scope, $location, dataconfig, datasearch, config) {
         var vm = this;
         // var keyCodes = config.keyCodes;
 
 
         //#region variable   
-        vm.searchText = '';             
+        vm.searchText = '';
         vm.ip = [];
         vm.init = init;
         vm.loading = true;
@@ -22,7 +22,7 @@
         vm.path = path;
         vm.search = search;
         vm.refresh = refresh;
-        vm.logout = logout;     
+        vm.logout = logout;
         //#endregion
 
 
@@ -38,6 +38,7 @@
 
         vm.filterst = filterst;
         function filterst(x, $event) {
+            $rootScope.ft = new Date();
 
             switch (x) {
                 case "Last three months":
@@ -72,32 +73,37 @@
                     // log(x);
                     break;
             }
+           
+            $rootScope.reload = true;
             $route.reload();
+            // window.location.reload();
 
         }
         //#endregion
 
 
         //#region Auto-Fill
+        var apromise = [];
         function init() {
             var word = [];
             vm.pfx = ["ident.raw", "auth.raw", "geoip.city_name.raw", "request.raw", "geoip.country_name.raw", "geoip.region_name.raw", "geoip.postal_code.raw"];
             angular.forEach(vm.pfx, function (agg) {
+                var aSubp = datasearch.termAggragation($rootScope.index, 'logs', agg, 1000, vm.st, vm.ft)
+                   .then(function (resp) {
+                       var tt = resp.aggregations.ag.agg.buckets;
+                       angular.forEach(tt, function (y) {
+                           word.push(y.key);
+                       });
 
-                datasearch.termAggragation($rootScope.index, 'logs', agg, 100, $rootScope.st, $rootScope.ft)
-                .then(function (resp) {
-                    var tt = resp.aggregations.ag.agg.buckets;
-
-                    angular.forEach(tt, function (y) {
-                        word.push(y.key);
-                    });
-                    // toastr.info(vm.ip);
-                }, function (err) {
-                    //log(err.message);
-                });
-
+                   }, function (err) {
+                       toastr.info("Auto Fill Load error" + err.message);
+                   });
+                apromise.push(aSubp);
             });
             vm.ip = word;
+            $q.all(apromise).then(function () {
+                toastr.info("Auto-Fill Finished");
+            });
             //$rootScope.ip = word;
         }
 
@@ -119,10 +125,8 @@
         //#endregion
 
 
-
         //#region View
         function path(n) {
-
             switch (n) {
                 case 1: $location.path("/dashboard"); break;
                 case 2: $location.path("/els"); break;
@@ -133,19 +137,25 @@
 
         }
 
+        vm.st = "";
+        vm.ft = "";
         activate();
         function activate() {
+            if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {
+                vm.ft = $rootScope.ft;
+                vm.st = $rootScope.st;
+            } else {
+                vm.st = moment(new Date()).subtract(2, 'month');
+                vm.ft = new Date();
+            }
             $timeout(init, 500);
         }
 
         function search($event) {
             if ($event.keyCode === config.keyCodes.esc) {
                 vm.searchText = '';
-
                 return;
             }
-
-
 
             if ($event.type === 'click' || $event.keyCode === config.keyCodes.enter) {
                 var route = '/els/';
@@ -154,6 +164,7 @@
                 // $location.path(route + vm.searchText);
             }
         }
+
         function refresh($event) {
             if ($event.keyCode === config.keyCodes.esc) {
                 vm.searchText = '';
@@ -162,7 +173,8 @@
             }
             $location.search.refresh = true;
             //$window.location.reload();
-            $route.reload();
+            // $route.reload();
+            window.location.reload();
             toastr.info("Refresh" + $location.path());
         }
 

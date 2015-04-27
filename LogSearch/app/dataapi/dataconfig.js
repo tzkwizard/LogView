@@ -19,60 +19,42 @@
             addFilter: addFilter,
             removeFilter: removeFilter,
             initIndex: initIndex,
-            xx: xx,
-            yy: yy,
             prime: prime
         }
         return service;
         //#endregion
 
-        //#region Test
-        function xx() {
-            $rootScope.logfield = getFieldName($rootScope.index[0], $rootScope.logtype);
-            $rootScope.st = moment(new Date()).subtract(2, 'month');
-            $rootScope.ft = new Date();
-            $timeout(yy, 500);
-        }
-
-        function yy() {
-            var word = [];
-            var pfx = ["ident.raw", "auth.raw", "geoip.city_name.raw", "request.raw", "geoip.country_name.raw", "geoip.region_name.raw", "geoip.postal_code.raw"];
-            angular.forEach(pfx, function (agg) {
-
-                datasearch.termAggragation($rootScope.index, 'logs', agg, 40, $rootScope.st, $rootScope.ft)
-                    .then(function (resp) {
-                        var tt = resp.aggregations.ag.agg.buckets;
-
-                        angular.forEach(tt, function (y) {
-                            word.push(y.key);
-                        });
-                        // toastr.info(vm.ip);
-                    }, function (err) {
-                        //log(err.message);
-                    });
-
-            });
-            $rootScope.ip = word;
-            log(word.length);
-        }
-
+        //#region Test   
         function prime() {
-            // $rootScope.index = initIndex();
-            //  $rootScope.logtype = "logs";
-            //  $timeout(xx, 500);          
-            // log("1");
+            var index = initIndex();
+            //$rootScope.index = dataconfig.initIndex();
+            $rootScope.logtype = "logs";
+            $rootScope.ip = [];
 
+            var field;
+            index.then(function (data) {
+                $rootScope.index = data;
+                log("Load Global Index");
+                field = getFieldName($rootScope.index[0], $rootScope.logtype);
+            }).then(function () {
+                field.then(function (data2) {
+                    $rootScope.logfield = data2;
+                    log("Load Global Field");
+                });
+            });
         }
         //#endregion
 
         //#region Layout
         function createContainer(aggName) {
-            var main = document.getElementById('div2');
+            var main = document.getElementById('contain');
+
             var contain = document.createElement('div');
-            contain.setAttribute('id', 'contain');
+            var containName = 'contain' + aggName;
+            contain.setAttribute('id', containName);
             main.appendChild(contain);
 
-
+            
 
 
             var diva = document.createElement('div');
@@ -213,7 +195,7 @@
 
                 }
             }, function (err) {
-                 log("get Logstash Index"+err.message);
+                log("get Logstash Index" + err.message);
             });
             //return indicesName;
             return ipromise.then(function () {
@@ -250,7 +232,7 @@
 
                 }
             }, function (err) {
-                 log("get Index Name"+err.message);
+                log("get Index Name" + err.message);
             });
             return indicesName;
         }
@@ -308,7 +290,7 @@
                 });
 
             }, function (err) {
-                 log("get Field Name"+err.message);
+                log("get Field Name" + err.message);
             });
 
 

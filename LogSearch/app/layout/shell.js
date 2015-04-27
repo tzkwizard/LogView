@@ -3,9 +3,9 @@
 
     var controllerId = 'shell';
     angular.module('app').controller(controllerId,
-        ['$rootScope', '$modal', 'common', 'config', 'client', shell]);
+        ['$window', '$rootScope', '$modal', 'common', 'config', 'client', shell]);
 
-    function shell($rootScope, $modal, common, config, client) {
+    function shell($window, $rootScope, $modal, common, config, client) {
         var vm = this;
         var logSuccess = common.logger.getLogFn(controllerId, 'success');
         var events = config.events;
@@ -24,20 +24,20 @@
             color: 'Blue'
         };
         vm.showSplash = true;
-        
+
         //#endregion
 
 
         //#region Login
         vm.items = "";
-        vm.open = function () {
+        vm.open = function() {
             var modalInstance = $modal.open({
                 templateUrl: 'loginModal.html',
                 controller: 'loginModal',
                 size: 'sm',
                 keyboard: false,
                 resolve: {
-                    items: function () {
+                    items: function() {
                         return "";
                     }
                 }
@@ -51,12 +51,11 @@
             return client.ping({
                 requestTimeout: 1000,
                 hello: "elasticsearch!"
-            }, function (error) {
+            }, function(error) {
                 if (error) {
                     toastr.info("Username or Password Error!");
                     vm.open();
-                }
-                else {
+                } else {
                     toastr.info('elasticsearch cluster is connected');
                 }
             });
@@ -67,44 +66,69 @@
 
         //#region Shell Load
         activate();
+
         function activate() {
             // logSuccess('Breezezz Angular loaded!', null, true);
-            common.activateController([login()], controllerId).then(function () {
+            common.activateController([login()], controllerId).then(function() {
                 vm.showSplash = false;
             });
         }
-        //#endregion
+
+//#endregion
 
 
         //#region spinner
-        function toggleSpinner(on)
-        { vm.isBusy = on; }
+        function toggleSpinner(on) {
+            vm.isBusy = on;
+        }
 
         $rootScope.$on('$routeChangeStart',
-            function (event, next, current) { toggleSpinner(true); }
-       );
+            function(event, next, current) { toggleSpinner(true); }
+        );
 
         $rootScope.$on(events.controllerActivateSuccess,
-             function (data) { toggleSpinner(false); }
-         );
+            function(data) {
+                toggleSpinner(false);
+                //toastr.info("try");
+            }
+        );
 
         $rootScope.$on(events.spinnerToggle,
-            function (data) { toggleSpinner(data.show); }
+            function(data) { toggleSpinner(data.show); }
         );
-    };
-    //#endregion
+        /*  $rootScope.$on('$viewContentLoaded', function readyToTrick() {
+            //activate();
+            toastr.info("1");
+        });*/
 
-    /*   $rootScope.$on('$locationChangeStart',
-    function(event, current, previous)
-    {
-        var answer = $window.confirm('Leave?');
+        /* $rootScope.$on('$locationChangeStart',
+            function (event, current, previous) {
+                var answer = $window.confirm('Leave?');
+
+                if (!answer) {
+                    event.preventDefault();
+                    return;
+                }
+            });
+
+
+    };*/
+
+
+        /* $rootScope.$on('$viewContentLoaded',
+             function (event, current, previous) {
+                 var answer = $window.confirm('Leave?');
  
-        if(!answer)
-        {
-           event.preventDefault();
-            return;
-       }
-    });*/
+                 if (!answer) {
+                     event.preventDefault();
+                     return;
+                 }
+             });
+     };*/
+
+        //#endregion
+    }
+
 
 })();
 
@@ -117,7 +141,7 @@
     angular.module('app')
         .controller(controllerId, function ($cookieStore, $rootScope, $scope, $modalInstance, $location, common, items, esFactory) {
 
-            $scope.title = "Elasticsarch Login";      
+            $scope.title = "Elasticsarch Login";
             $scope.selected = {
                 item: ""
             };
@@ -130,12 +154,12 @@
 
                 var x = sjcl.encrypt("tzk", $scope.username);
                 var y = sjcl.encrypt("tzk", $scope.password);
-               
+
 
                 $cookieStore.put('username', x);
                 $cookieStore.put('password', y);
                 window.location.reload();
-               
+
                 $modalInstance.close($scope.selected.item);
             };
 

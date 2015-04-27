@@ -407,12 +407,17 @@
             var ip;
             var fp;
             function getIndexName() {
-
-                vm.ft = $rootScope.ft;
-                vm.st = $rootScope.st;
+                if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {
+                    vm.ft = $rootScope.ft;
+                    vm.st = $rootScope.st;
+                } else {
+                    vm.st = moment(new Date()).subtract(2, 'month');
+                    vm.ft = new Date();
+                }
 
                 if ($cookieStore.get('index') !== undefined&&$rootScope.index!==undefined) {
                     if ($rootScope.index.length !== $cookieStore.get('index').length) {
+                        log("Index Changed");
                         $cookieStore.remove('index');
                     }
 

@@ -50,22 +50,32 @@
         //#region View Load
         vm.st = "";
         vm.ft = "";
+
         activate();
         function activate() {
-            common.activateController([init()], controllerId)
+            common.activateController([], controllerId)
                 .then(function () {
+                    if ($rootScope.reload) {
+                        $timeout(init, 1000);
+                        $rootScope.reload = false;
+                    } else {
+                        init();
+                    }
                     log('Activated Dashboard View');
-
+                   
                 });
         }
 
         function init() {
-
-
             getIndexName();
             vm.type = $rootScope.logtype;
-            vm.ft = $rootScope.ft;
-            vm.st = $rootScope.st;
+            if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {
+                vm.ft = $rootScope.ft;
+                vm.st = $rootScope.st;
+            } else {
+                vm.st = moment(new Date()).subtract(2, 'month');
+                vm.ft = new Date();
+            }
 
             if (typeof pp === 'Promise') {
                 pp.then(function (data) {
@@ -84,12 +94,12 @@
                 geoMap2();
             }
 
-
-            /*  getIndexName();
+           /* vm.indicesName = $cookieStore.get('index');
              $timeout(timeLineGram, 200);
              $timeout(pieChart, 200);
              $timeout(geoMap, 200);
-             $timeout(histGram, 200);*/
+             $timeout(histGram, 200);
+             $timeout(geoMap2, 200);*/
 
         }
 
@@ -99,6 +109,7 @@
 
             if ($cookieStore.get('index') !== undefined && $rootScope.index !== undefined) {
                 if ($rootScope.index.length !== $cookieStore.get('index').length) {
+                    log("Index Changed");
                     $cookieStore.remove('index');
                 }
             }
@@ -127,7 +138,9 @@
                     vm.tt = resp.hits.total;
                     drawMap(resp.aggregations.ag.agg.buckets, vm.tt);
                 }, function (err) {
-                    log("geoMap data error "+err.message);
+                    //log("geoMap data error " + err.message);
+                    vm.indicesName = $rootScope.index;
+                    $timeout(geoMap, 1000);
                 });
 
         }
@@ -143,7 +156,7 @@
             //geoData.addRow([n._source.geoip.city_name, 1, n._source.geoip.latitude, n._source.geoip.longitude]);
             vm.j = -1;
             angular.forEach(r, function (n) {
- 
+
                 if (n.doc_count > 10) {
                     geoData.addRow([n.key.toString(), n.doc_count]);
                 }
@@ -178,7 +191,6 @@
                     table.setSelection(map.getSelection());
                 });
 
-            vm.isBusy = false;
         }
         //#endregion
 
@@ -197,7 +209,9 @@
                 //vm.pietitle = ["verb","clientip.raw","request.raw"];
                 drawpie(resp.aggregations);
             }, function (err) {
-                log("pieChart data error "+err.message);
+                //log("pieChart data error " + err.message);
+                vm.indicesName = $rootScope.index;
+                $timeout(pieChart, 1000);
             });
         }
 
@@ -267,12 +281,15 @@
 
         function timeLineGram() {
 
-            datasearch.dateHistogramAggregation(vm.indicesName, vm.type, "@timestamp", "day", vm.st, vm.ft).then(function (resp) {
+            datasearch.dateHistogramAggregation(vm.indicesName, vm.type, "@timestamp", "day", vm.st, vm.ft)
+                .then(function (resp) {
                 vm.total = resp.aggregations;
                 vm.hitSearch = resp.aggregations.ag.agg.buckets;
                 drawTimwLine(resp.aggregations.ag.agg.buckets);
             }, function (err) {
-                log("timelineGram data error "+err.message);
+                //log("timelineGram data error " + err.message);
+                vm.indicesName = $rootScope.index;
+                $timeout(timeLineGram, 1000);
             });
         }
 
@@ -300,7 +317,7 @@
                 vm.hitSearch = resp.aggregations.ag.agg.buckets;
                 drawHist(resp.aggregations.ag.agg.buckets);
             }, function (err) {
-                log("histGram data error "+err.message);
+                log("histGram data error " + err.message);
             });
         }
 
@@ -368,13 +385,15 @@
                     //vm.tt = resp.hits.total;
                     drawMap2(resp.aggregations.ag.agg.buckets);
                 }, function (err) {
-                    log("geoMap2 data error"+err.message);
+                    log("geoMap2 data error" + err.message);
+                    //vm.indicesName = $rootScope.index;
+                    //$timeout(geoMap2, 1000);
                 });
         }
 
         function drawMap2(r) {
 
-            google.setOnLoadCallback(drawMap2);
+           google.setOnLoadCallback(drawMap2);
 
             var geoData2 = new google.visualization.DataTable();
             geoData2.addColumn('string', 'Country');
@@ -388,10 +407,14 @@
                 backgroundColor: '#FFF0F5'
             };
 
+            if (document.getElementById('gmap_div')==undefined) {
+                log("1");
+            }
             var chart = new google.visualization.GeoChart(document.getElementById('gmap_div'));
-
+    
             chart.draw(geoData2, options);
-
+           
+            vm.isBusy = false;
         }
         //#endregion
     }

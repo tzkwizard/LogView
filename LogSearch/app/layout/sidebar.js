@@ -28,12 +28,15 @@
         vm.apiaddress = "";
         vm.user = "";
         vm.useraction = "";
+        vm.st = "";
+        vm.ft = "";
 
         vm.content = [];
         vm.content[0] = 4;
         vm.content[1] = 5;
         vm.agg = ["Ace"];
         //#endregion
+
 
         //#region function
         vm.getFieldName = getFieldName;
@@ -48,6 +51,13 @@
 
             common.activateController([getNavRoutes()], controllerId)
                 .then(function () {
+                    if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {
+                        vm.ft = $rootScope.ft;
+                        vm.st = $rootScope.st;
+                    } else {
+                        vm.st = moment(new Date()).subtract(2, 'month');
+                        vm.ft = new Date();
+                    }
                 });
         }
 
@@ -82,7 +92,7 @@
         vm.showLocation = function () {
             if (vm.location === "" || vm.location === undefined || $location.search.refresh) {
 
-                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "geoip.city_name.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
+                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "geoip.city_name.raw", vm.size, vm.st, vm.ft).then(function (resp) {
                     vm.location = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
                     // log("re");
@@ -96,7 +106,7 @@
 
         vm.showRequestAPI = function () {
             if (vm.apiaddress === "" || vm.apiaddress === undefined || $location.search.refresh) {
-                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "request.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
+                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "request.raw", vm.size, vm.st, vm.ft).then(function (resp) {
                     vm.apiaddress = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
                     //log("re");
@@ -110,7 +120,7 @@
 
         vm.showRequestMethod = function () {
             if (vm.httpmethod === "" || vm.httpmethod === undefined || $location.search.refresh) {
-                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "verb.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
+                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "verb.raw", vm.size, vm.st, vm.ft).then(function (resp) {
                     vm.httpmethod = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
                     //log("re");
@@ -123,7 +133,7 @@
 
         vm.showUser = function () {
             if (vm.user === "" || vm.user === undefined || $location.search.refresh) {
-                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "ident.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
+                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "ident.raw", vm.size, vm.st, vm.ft).then(function (resp) {
                     vm.user = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
                     //  log("re");
@@ -136,7 +146,7 @@
 
         vm.showUserAction = function () {
             if (vm.useraction === "" || vm.useraction === undefined || $location.search.refresh) {
-                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "action.raw", vm.size, $rootScope.st, $rootScope.ft).then(function (resp) {
+                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "action.raw", vm.size, vm.st, vm.ft).then(function (resp) {
                     vm.useraction = resp.aggregations.ag.agg.buckets;
                     $location.search.refresh = false;
                     //  log("re");
@@ -158,7 +168,7 @@
         //#endregion
 
 
-
+        //#region deprecated
         function search($event) {
             if ($event.keyCode === config.keyCodes.esc) {
                 vm.searchText = '';
@@ -173,6 +183,7 @@
             }
         }
 
+        //#endregion
 
     };
 })();
