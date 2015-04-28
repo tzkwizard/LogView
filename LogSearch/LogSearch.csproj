@@ -109,8 +109,8 @@
   <ItemGroup>
     <Content Include="app\agg\aggs.html" />
     <Content Include="app\agg\aggs.js" />
-    <Content Include="app\dataapi\dataconfig.js" />
-    <Content Include="app\dataapi\datasearch.js" />
+    <Content Include="app\dataServices\dataconfig.js" />
+    <Content Include="app\dataServices\datasearch.js" />
     <Content Include="app\ELS\els.html" />
     <Content Include="app\ELS\els.js" />
     <Content Include="app\ELS\client.js" />

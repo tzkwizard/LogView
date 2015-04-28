@@ -36,8 +36,8 @@
             routeMediator.setRoutingHandlers();
             $rootScope.reload = false;
             $rootScope.school = "TCU";
-            //$rootScope.st = moment(new Date()).subtract(2, 'month');
-            //$rootScope.ft = new Date();
+            $rootScope.st = moment(new Date()).subtract(2, 'month');
+            $rootScope.ft = new Date();
             // dataconfig.prime();
             //#region Golbal Variable
 

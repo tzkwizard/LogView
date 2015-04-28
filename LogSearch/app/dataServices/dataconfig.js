@@ -10,7 +10,7 @@
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(serviceId);
 
-        //#region service
+        //#region Service
         var service = {
             getIndexName: getIndexName,
             getTypeName: getTypeName,
@@ -19,12 +19,14 @@
             addFilter: addFilter,
             removeFilter: removeFilter,
             initIndex: initIndex,
+            autoFill: autoFill,
             prime: prime
         }
         return service;
         //#endregion
 
-        //#region Prime 
+
+        //#region Startup 
         function prime() {
             var index = initIndex();
             //$rootScope.index = dataconfig.initIndex();
@@ -41,6 +43,29 @@
                     $rootScope.logfield = data2;
                     log("Load Global Field");
                 });
+            });
+        }
+
+        function autoFill() {
+            var word = [];
+            var apromise = [];
+            vm.pfx = ["geoip.timezone.raw", "ident.raw", "auth.raw", "geoip.city_name.raw", "request.raw", "geoip.country_name.raw", "geoip.region_name.raw", "geoip.postal_code.raw"];
+            angular.forEach(vm.pfx, function (agg) {
+                var aSubp = datasearch.termAggragation($rootScope.index, 'logs', agg, 1000, $rootScope.st, $rootScope.ft)
+                   .then(function (resp) {
+                       var tt = resp.aggregations.ag.agg.buckets;
+                       angular.forEach(tt, function (y) {
+                           word.push(y.key);
+                       });
+
+                   }, function (err) {
+                       // toastr.info("Auto Fill Load error" + err.message);
+                   });
+                apromise.push(aSubp);
+            });
+
+            return $q.all(apromise).then(function () {
+                return word;
             });
         }
         //#endregion

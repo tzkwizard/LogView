@@ -29,13 +29,12 @@
 
 
         //#region Login
-        vm.items = "";
         vm.open = function () {
             var modalInstance = $modal.open({
                 templateUrl: 'loginModal.html',
                 controller: 'loginModal',
                 size: 'sm',
-                keyboard: false,
+                keyboard: true,
                 resolve: {
                     items: function () {
                         return "";
@@ -135,12 +134,9 @@
     var controllerId = 'loginModal';
 
     angular.module('app')
-        .controller(controllerId, function ($cookieStore, $rootScope, $scope, $modalInstance, $location, common, items, esFactory, config) {
+        .controller(controllerId, function ($cookieStore, $scope, $modalInstance, items, config) {
 
-            $scope.title = "Elasticsarch Login";
-            $scope.selected = {
-                item: ""
-            };
+            $scope.title = "Elasticsarch Login";   
             $scope.username = "";
             $scope.password = "";
 
@@ -151,16 +147,16 @@
             }
 
             $scope.ok = function () {
-
-                var x = sjcl.encrypt("tzk", $scope.username);
-                var y = sjcl.encrypt("tzk", $scope.password);
-
+                var z = "tzk";
+                var x = sjcl.encrypt(z, $scope.username);
+                var y = sjcl.encrypt(z, $scope.password);
 
                 $cookieStore.put('username', x);
                 $cookieStore.put('password', y);
+                $cookieStore.put('key', z);
                 window.location.reload();
 
-                $modalInstance.close($scope.selected.item);
+                $modalInstance.close();
             };
 
             $scope.cancel = function () {

@@ -130,7 +130,7 @@
                 }, function (err) {
                     //log("geoMap data error " + err.message);
                     vm.indicesName = $rootScope.index;
-                    $timeout(geoMap, 1000);
+                    geoMap();
                 });
 
         }
@@ -203,7 +203,7 @@
             }, function (err) {
                 //log("pieChart data error " + err.message);
                 vm.indicesName = $rootScope.index;
-                $timeout(pieChart, 1000);
+                pieChart();
             });
         }
 
@@ -281,7 +281,7 @@
                 }, function (err) {
                     //log("timelineGram data error " + err.message);
                     vm.indicesName = $rootScope.index;
-                    $timeout(timeLineGram, 1000);
+                    timeLineGram();
                 });
         }
 
@@ -379,7 +379,7 @@
                 }, function (err) {
                     //log("geoMap2 data error" + err.message);
                     vm.indicesName = $rootScope.index;
-                    $timeout(geoMap2, 1000);
+                    geoMap2();
                 });
         }
 

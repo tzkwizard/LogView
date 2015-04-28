@@ -13,7 +13,7 @@
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
             var events = config.events;
-           
+
             //#region variable
             vm.isBusy = true;
             vm.busyMessage = "wait";
@@ -205,7 +205,7 @@
                     if (terror === true) {
                         terror = false;
                         vm.indicesName = $rootScope.index;
-                        $timeout(drawTreemap, 1000);
+                        drawTreemap();
                     }
                     else {
                         startDrawTree();
@@ -380,7 +380,7 @@
                     vm.aggfield = vm.fieldsName;
                     vm.token = false;
 
-                    var fieldFilter = ["@timestamp", "referrer", "referrer.raw", "timestamp", "request", "edata", "host", "action", "agent", "geoip.location"];
+                    var fieldFilter = ["geoip.timezone", "timestamp.raw", "@timestamp", "referrer", "referrer.raw", "timestamp", "request", "edata", "host", "action", "agent", "geoip.location"];
 
                     fieldFilter.map(function (f) {
 
@@ -416,10 +416,8 @@
                         }, function (err) {
                             log(err.message);
                             vm.indicesName = $rootScope.index;
-
-                            $timeout(function () {
                                 aggShow(aggName);
-                            }, 1000);
+                            
                         });
                 }
 
@@ -452,9 +450,7 @@
                     }, function (err) {
                         // log("aggshows err "+err.message);
                         vm.indicesName = $rootScope.index;
-                        $timeout(function () {
                             aggShows(aggName, flag);
-                        }, 1000);
                     });
 
             }
@@ -636,17 +632,7 @@
                 table.draw(data, { showRowNumber: true });
 
                 google.visualization.events.addListener(table, 'select', function () {
-                    var row = table.getSelection()[0].row;
-                    /*                
-                          $location.search('logs', "logs");
-                          $location.search('log', "log");
-                          $location.search('field', field);*/
-                    // if(field.substring(field.length-3))
-                    /* $timeout(xy,1000);
-                     vm.xy = xy;
-                         function xy () {
-                         $location.path('/els');
-                     }*/
+                    var row = table.getSelection()[0].row;         
                     if (vm.refinedsearch.length > 1)
                     { vm.treestatus = false; }
                     if (field.substring(field.length - 3, field.length) === "raw") {
@@ -657,11 +643,11 @@
 
                     if (vm.searchText === "*") {
                         vm.searchText = field + " : \"" + data.getValue(row, 0) + "\"";
-                        $timeout(pushrefinedata, 500);
+                        pushrefinedata();
                     }
                     else {
                         vm.searchText += " AND " + field + " : \"" + data.getValue(row, 0) + "\"";
-                        $timeout(pushrefinedata, 500);
+                        pushrefinedata();
                     }
                     vm.pushrefinedata = pushrefinedata;
                     function pushrefinedata() {

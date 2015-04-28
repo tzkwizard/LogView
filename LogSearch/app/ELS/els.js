@@ -429,7 +429,6 @@
                     }
                 }
 
-                //$timeout(getFieldName, 200);
                 if (ip === undefined) {
                     getFieldName();
                 } else {
@@ -491,15 +490,15 @@
 
             function init() {
 
-                datasearch.getSampledata(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.st, vm.ft)
-                    .then(function (resp) {
-                        vm.hitSearch = resp.hits.hits;
-                        vm.total = resp.hits.total;
-                        vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
-                        vm.getCurrentPageData(vm.hitSearch);
-                        vm.type = "";
-                        //log('Loaded sample document');
-                    });
+                return datasearch.getSampledata(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.st, vm.ft)
+                      .then(function (resp) {
+                          vm.hitSearch = resp.hits.hits;
+                          vm.total = resp.hits.total;
+                          vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
+                          vm.getCurrentPageData(vm.hitSearch);
+                          vm.type = "";
+                          //log('Loaded sample document');
+                      });
             }
             //#endregion
 
@@ -510,8 +509,10 @@
             function search() {
                 vm.hitSearch = "";
                 if (vm.searchText == undefined || vm.searchText === "") {
-                    init();
-                    $timeout(random, 200);
+                    init().then(function () {
+                        random();
+                    });
+
 
                 } else {
 
@@ -524,7 +525,7 @@
                             }*/
                             vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
                             vm.getCurrentPageData(vm.hitSearch);
-                            $timeout(random, 200);
+                            random();
                         }, function (err) {
                             log("search data error " + err.message);
                         });

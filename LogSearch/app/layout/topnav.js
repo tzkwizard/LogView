@@ -3,17 +3,16 @@
 
     var controllerId = 'topnav';
     angular.module('app').controller(controllerId,
-        ['$q', '$cookieStore', '$timeout', '$rootScope', '$http', '$window', '$route', '$scope', '$location', 'dataconfig', 'datasearch', 'config', topnav]);
+        ['$q', '$cookieStore', '$timeout', '$rootScope', '$http', '$window', '$route', '$scope', '$location', 'dataconfig', 'datasearch', 'config','client', topnav]);
 
-    function topnav($q, $cookieStore, $timeout, $rootScope, $http, $window, $route, $scope, $location, dataconfig, datasearch, config) {
+    function topnav($q, $cookieStore, $timeout, $rootScope, $http, $window, $route, $scope, $location, dataconfig, datasearch, config,client) {
         var vm = this;
         // var keyCodes = config.keyCodes;
 
         //#region variable   
         vm.searchText = '';
         vm.ip = [];
-        vm.init = init;
-        vm.loading = true;
+        vm.loading = true;        
         //#endregion
 
 
@@ -22,6 +21,8 @@
         vm.search = search;
         vm.refresh = refresh;
         vm.logout = logout;
+        vm.autoFill = autoFill;
+       // vm.suggest = suggest;
         //#endregion
 
 
@@ -82,28 +83,17 @@
 
 
         //#region Auto-Fill
-        var apromise = [];
-        function init() {
-            var word = [];
-            vm.pfx = ["ident.raw", "auth.raw", "geoip.city_name.raw", "request.raw", "geoip.country_name.raw", "geoip.region_name.raw", "geoip.postal_code.raw"];
-            angular.forEach(vm.pfx, function (agg) {
-                var aSubp = datasearch.termAggragation($rootScope.index, 'logs', agg, 1000, vm.st, vm.ft)
-                   .then(function (resp) {
-                       var tt = resp.aggregations.ag.agg.buckets;
-                       angular.forEach(tt, function (y) {
-                           word.push(y.key);
-                       });
+ 
+        function autoFill() {         
+             dataconfig.autoFill().then(function (word) {
+                if (vm.ip.length !== word.length) {
 
-                   }, function (err) {
-                       // toastr.info("Auto Fill Load error" + err.message);
-                   });
-                apromise.push(aSubp);
+                    vm.ip = word;
+                    toastr.info("Auto Fill Update !");
+                }
             });
-            vm.ip = word;
-            $q.all(apromise).then(function () {
-                toastr.info("Auto-Fill Finished");
-            });
-            //$rootScope.ip = word;
+
+           
         }
 
         vm.getLocation = getLocation;
@@ -146,7 +136,11 @@
                 vm.st = moment(new Date()).subtract(2, 'month');
                 vm.ft = new Date();
             }
-            $timeout(init, 500);
+
+            dataconfig.autoFill().then(function(word) {
+                vm.ip = word;
+                toastr.info("Auto Fill Load");
+            });
         }
 
         function search($event) {
@@ -175,8 +169,9 @@
 
         function logout() {
 
-            $cookieStore.remove("ueranme");
+            $cookieStore.remove("useranme");
             $cookieStore.remove("password");
+            $cookieStore.remove("key");
             $location.path("/");
             window.location.reload();
         }
