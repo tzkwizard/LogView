@@ -3,16 +3,16 @@
 
     var controllerId = 'topnav';
     angular.module('app').controller(controllerId,
-        ['$q', '$cookieStore', '$timeout', '$rootScope', '$http', '$window', '$route', '$scope', '$location', 'dataconfig', 'datasearch', 'config','client', topnav]);
+        ['$q', '$cookieStore', '$timeout', '$rootScope', '$http', '$window', '$route', '$scope', '$location', 'dataconfig', 'datasearch', 'config', 'client', topnav]);
 
-    function topnav($q, $cookieStore, $timeout, $rootScope, $http, $window, $route, $scope, $location, dataconfig, datasearch, config,client) {
+    function topnav($q, $cookieStore, $timeout, $rootScope, $http, $window, $route, $scope, $location, dataconfig, datasearch, config, client) {
         var vm = this;
         // var keyCodes = config.keyCodes;
 
         //#region variable   
         vm.searchText = '';
         vm.ip = [];
-        vm.loading = true;        
+        vm.loading = true;
         //#endregion
 
 
@@ -22,7 +22,7 @@
         vm.refresh = refresh;
         vm.logout = logout;
         vm.autoFill = autoFill;
-       // vm.suggest = suggest;
+        // vm.suggest = suggest;
         //#endregion
 
 
@@ -37,6 +37,7 @@
 
 
         vm.filterst = filterst;
+        //change time span global
         function filterst(x, $event) {
             $rootScope.ft = new Date();
 
@@ -74,8 +75,9 @@
                     break;
             }
 
-            $rootScope.reload = true;
-            $route.reload();
+            /*$rootScope.reload = true;
+            $route.reload();*/
+            $location.path($location.path() + "/");
             // window.location.reload();
 
         }
@@ -83,9 +85,9 @@
 
 
         //#region Auto-Fill
- 
-        function autoFill() {         
-             dataconfig.autoFill().then(function (word) {
+        //get auto-fill data
+        function autoFill() {
+            dataconfig.autoFill().then(function (word) {
                 if (vm.ip.length !== word.length) {
 
                     vm.ip = word;
@@ -93,7 +95,7 @@
                 }
             });
 
-           
+
         }
 
         vm.getLocation = getLocation;
@@ -114,6 +116,7 @@
 
 
         //#region View
+        //navi to other page
         function path(n) {
             switch (n) {
                 case 1: $location.path("/dashboard"); break;
@@ -137,12 +140,13 @@
                 vm.ft = new Date();
             }
 
-            dataconfig.autoFill().then(function(word) {
+            dataconfig.autoFill().then(function (word) {
                 vm.ip = word;
                 toastr.info("Auto Fill Load");
             });
         }
 
+        //search 
         function search($event) {
             if ($event.keyCode === config.keyCodes.esc) {
                 vm.searchText = '';
@@ -157,6 +161,7 @@
             }
         }
 
+        //refresh page
         function refresh($event) {
             if ($event.keyCode === config.keyCodes.esc) {
                 vm.searchText = '';
@@ -167,6 +172,7 @@
             toastr.info("Refresh" + $location.path());
         }
 
+        //log out
         function logout() {
 
             $cookieStore.remove("useranme");

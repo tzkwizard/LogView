@@ -27,6 +27,7 @@
 
 
         //#region Startup 
+        //Load index and field
         function prime() {
             var index = initIndex();
             //$rootScope.index = dataconfig.initIndex();
@@ -36,16 +37,16 @@
             var field;
             index.then(function (data) {
                 $rootScope.index = data;
-                log("Load Global Index");
+                //log("Load Global Index");
                 field = getFieldName($rootScope.index[0], $rootScope.logtype);
             }).then(function () {
                 field.then(function (data2) {
                     $rootScope.logfield = data2;
-                    log("Load Global Field");
+                    //log("Load Global Field");
                 });
             });
         }
-
+        // get auto fill data
         function autoFill() {
             var word = [];
             var apromise = [];
@@ -70,7 +71,9 @@
         }
         //#endregion
 
+
         //#region Layout
+        //create container for chart
         function createContainer(aggName) {
             var main = document.getElementById('contain');
 
@@ -118,6 +121,7 @@
             cell2.appendChild(divd);
         }
 
+        //add filter button
         function addFilter(n, fieldsName) {
             var para = document.createElement("p");
             /*  var node = document.createTextNode("filter:" + n);
@@ -182,6 +186,7 @@
             });
         }
 
+        //delete filter button
         function removeFilter(n) {
             var main = document.getElementById('filter');
             var cname = 'contain' + n;
@@ -190,7 +195,9 @@
         }
         //#endregion
 
+
         //#region Get Maping
+        //get logstash index from cluster
         function initIndex() {
             var indicesName = [];
 
@@ -228,6 +235,7 @@
             });
         }
 
+        //get index from cluster
         function getIndexName() {
             var indicesName = [];
 
@@ -262,6 +270,7 @@
             return indicesName;
         }
 
+        //get type from cluster
         function getTypeName(index, pagecount) {
             if (index === "all" || index === "")
                 return "";
@@ -288,6 +297,7 @@
             return typesName;
         }
 
+        //get field from cluster
         function getFieldName(index, type) {
             if (type === "all" || type === "")
                 //|| vm.typesName.indexOf(type) === -1
@@ -322,7 +332,6 @@
             //return fieldsName;
         }
         //#endregion
-
 
 
 

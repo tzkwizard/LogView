@@ -41,7 +41,7 @@
             vm.tt = 0;
             vm.ft = "";
             vm.st = "";
-
+            vm.at = [];
             vm.showSplash = true;
 
             vm.Syntax = {
@@ -131,6 +131,7 @@
                 }
             });
 
+            //get current page data
             function getCurrentPageData(res) {
                 vm.res = [];
                 vm.j = 0;
@@ -143,12 +144,14 @@
                 }
             }
 
+            //change page
             function pageChanged() {
                 vm.getCurrentPageData(vm.hitSearch);
             }
 
             vm.refreshPage = refreshPage;
 
+            //refresh page
             function refreshPage() {
                 // vm.tt = vm.total;
                 if (vm.tt > vm.pagecount) {
@@ -171,6 +174,7 @@
 
             vm.random = random;
 
+            //fill process bar
             function random() {
                 //var value = Math.floor((Math.random() * 100) + 1);
                 var value = vm.tt / vm.total * 100;
@@ -205,8 +209,8 @@
             };
             vm.items = ['item1', 'item2', 'item3'];
 
+            //open result page
             vm.open = function (doc) {
-
                 vm.popdata.data = doc;
                 vm.popdata.field = vm.fieldsName;
                 var modalInstance = $modal.open({
@@ -239,10 +243,13 @@
                 startingDay: 1
             };
 
+            //save time change on global
+            $scope.$on("$destroy", function () {
+                $rootScope.ft = vm.ft;
+                $rootScope.st = vm.st;
+            });
 
-            //today();
-
-
+            //change time span on scope
             function filterst(x) {
                 switch (x) {
                     case "Last three months":
@@ -267,8 +274,7 @@
                         // log(x);
                         break;
                 }
-                $rootScope.ft = vm.ft;
-                $rootScope.st = vm.st;
+
                 search();
 
             }
@@ -281,6 +287,7 @@
                 toggleMin();
             }
 
+            //disable after today
             vm.toggleMin = toggleMin;
             // vm.minDate = true;
             function toggleMin() {
@@ -299,6 +306,7 @@
                 //return (mode === 'day' && (date.getDay() === 0 || date.getDay() === 6));
             };
 
+            //open start date calendar
             vm.timeopen = function ($event) {
                 $event.preventDefault();
                 $event.stopPropagation();
@@ -306,6 +314,7 @@
                 $rootScope.st = vm.st;
             };
 
+            //open end date calendar
             vm.ftimeopen = function ($event) {
                 $event.preventDefault();
                 $event.stopPropagation();
@@ -319,7 +328,10 @@
             //#region View Load
 
             vm.im = 1;
+            var ip;
+            var fp;
 
+            //refreh page
             vm.refresh = function () {
 
                 BootstrapDialog.confirm({
@@ -343,6 +355,7 @@
 
             }
 
+            //fill searchText with filter information
             function filltext() {
 
                 if (vm.im > 1) {
@@ -356,26 +369,26 @@
                         if (s1.value === "MUST") {
                             if (s3.value !== "") {
                                 if (i === 1) {
-                                    vm.searchText += s2.value + " : " + s3.value + "^2";
+                                    vm.searchText += s2.value + " : \"" + s3.value + "\"^2";
                                 } else {
-                                    vm.searchText += " AND " + s2.value + " : " + s3.value + "^2";
+                                    vm.searchText += " AND " + s2.value + " : \"" + s3.value + "\"^2";
                                 }
                             }
                         }
                         else if (s1.value === "MUST_NOT") {
                             if (s3.value !== "") {
                                 if (i === 1) {
-                                    vm.searchText += " NOT " + s2.value + " : " + s3.value;
+                                    vm.searchText += " NOT " + s2.value + " : \"" + s3.value + "\"";
                                 } else {
-                                    vm.searchText += " NOT " + s2.value + " : " + s3.value;
+                                    vm.searchText += " NOT " + s2.value + " : \"" + s3.value + "\"";
                                 }
                             }
                         } else {
                             if (s3.value !== "") {
                                 if (i === 1) {
-                                    vm.searchText += s2.value + " : " + s3.value;
+                                    vm.searchText += s2.value + " : \"" + s3.value + "\"";
                                 } else {
-                                    vm.searchText += " AND " + s2.value + " : " + s3.value;
+                                    vm.searchText += " AND " + s2.value + " : \"" + s3.value + "\"";
                                 }
                             }
                         }
@@ -383,13 +396,16 @@
                     }
 
                 }
+                search();
             }
 
+            //add filter button
             function addfilter() {
                 dataconfig.addFilter(vm.im, vm.fieldsName);
                 vm.im++;
             }
 
+            //delete filter button
             function removefilter() {
 
                 var x = vm.im - 1;
@@ -399,8 +415,7 @@
                 }
             }
 
-            var ip;
-            var fp;
+            //Load Index
             function getIndexName() {
                 if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {
                     vm.ft = $rootScope.ft;
@@ -441,10 +456,12 @@
 
             }
 
+            //Load Type
             function getTypeName() {
                 vm.typesName = dataconfig.getTypeName(vm.index, vm.pagecount);
             }
 
+            //Load Field
             function getFieldName() {
 
 
@@ -468,26 +485,42 @@
                     .then(function () {
                         $location.search();
 
+                        if ($location.search.field === "" || $location.search.field === undefined) {
+                            if ($location.search.text !== "") {
+                                vm.searchText = $location.search.text;
+                                search();
+                            } else {
+                                search();
+                            }
 
-                        if ($location.search.text !== "") {
-                            vm.searchText = $location.search.text;
-                        }
-
-                        if ($location.search().field === "" || $location.search().field === undefined) {
-                            search();
                         } else {
-                            vm.field = $location.search().field;
+                            vm.searchText = $location.search.field + " : " + $location.search.text;
                             search();
-                            $location.search().field = "";
+
                         }
+
+
+                        /* if ($location.search.text !== "") {
+                             vm.searchText = $location.search.text;
+                         }
+ 
+                         if ($location.search().field === "" || $location.search().field === undefined) {
+                             search();
+                         } else {
+                             //vm.field = $location.search().field;
+                             vm.searchText =
+                             search();
+                             $location.search().field = "";
+                         }*/
+                        $location.search.field = "";
                         $location.search.text = "";
-                        //init();
                         vm.showSplash = false;
                         log('Activated ELS search View');
 
                     });
             }
 
+            //get sample search result
             function init() {
 
                 return datasearch.getSampledata(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.st, vm.ft)
@@ -506,7 +539,9 @@
             //#region Search and Filter 
             vm.condition = "";
 
+            //core search function
             function search() {
+
                 vm.hitSearch = "";
                 if (vm.searchText == undefined || vm.searchText === "") {
                     init().then(function () {
@@ -516,24 +551,34 @@
 
                 } else {
 
+                    dataconfig.autoFill().then(function (word) {
+                        if (vm.at.length !== word.length) {
+                            vm.at = word;
+                            toastr.info("Auto Fill Update !");
+                        }
+                    });
+
                     datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, vm.filterAggName, vm.fi, vm.condition, vm.st, vm.ft)
                         .then(function (resp) {
                             vm.hitSearch = resp.hits.hits;
                             vm.total = resp.hits.total;
-                            /*if (vm.total === 0) {
-                                log("None Result");
-                            }*/
+                            /* if (vm.total === 0) {
+                                 log("None Result");
+                             }*/
                             vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
                             vm.getCurrentPageData(vm.hitSearch);
                             random();
                         }, function (err) {
-                            log("search data error " + err.message);
+                            // log("search data error " + err.message);
                         });
                 }
 
             }
 
+            //#endregion
 
+
+            //#region Deprecated
             function filtertemp() {
                 client.search({
                     index: 'mytest',
@@ -567,8 +612,6 @@
 
 
             }
-
-
             function mSearch(searchText) {
                 client.search({
                     index: 'logs',
@@ -598,8 +641,6 @@
 
             }
             //#endregion
-
-
 
         });
 })();

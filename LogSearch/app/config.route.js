@@ -5,72 +5,72 @@
 
     // Collect the routes
     app.constant('routes', getRoutes());
-    
+
     // Configure the routes and route resolvers
     app.config(['$routeProvider', 'routes', '$locationProvider', routeConfigurator]);
     function routeConfigurator($routeProvider, routes, $locationProvider) {
-        
-     /*   $locationProvider
-      .html5Mode({
-          enabled: true,
-          requireBase: false,
-          rewriteLinks:false
-        });*/
- 
-       //TODO get rid of me 
-      /*  $routeProvider.when('/invalid', {
-            templateUrl:'/app/els/els.html'   
-            }
-            );*/
 
-         //TODO get rid of me 
-       /* $routeProvider.when('/pass', {
-            templateUrl: 'app/session/sessions.html',
-            resolve: {fake:fakeAllow}
-            }
-            );
+        /*   $locationProvider
+         .html5Mode({
+             enabled: true,
+             requireBase: false,
+             rewriteLinks:false
+           });*/
 
-        fakeAllow.$inject = ['$q'];
-        function fakeAllow($q) {
-            var data = { x: 1 };
-            var defer = $q.defer();
-            var promise = defer.promise;
-            promise.then(function () { toastr.info("get --"); });
-            defer.resolve(data);
-            promise.then(function () { toastr.info("get it"); });
-            return defer.promise;
-        }
-        $routeProvider.when('/fail', {
-            templateUrl: 'app/session/sessions.html',
-            resolve: { fake: fakeReject }
-        }
+        //TODO get rid of me 
+        /*  $routeProvider.when('/invalid', {
+              templateUrl:'/app/els/els.html'   
+              }
+              );*/
+
+        //TODO get rid of me 
+        /* $routeProvider.when('/pass', {
+             templateUrl: 'app/session/sessions.html',
+             resolve: {fake:fakeAllow}
+             }
              );
-
-        fakeReject.$inject = ['$q'];
-        function fakeReject($q) {
-            var data = { x: 1 };
-            var defer = $q.defer();
-            defer.reject({msg:'haha'});
-            return defer.promise;
-        }*/
+ 
+         fakeAllow.$inject = ['$q'];
+         function fakeAllow($q) {
+             var data = { x: 1 };
+             var defer = $q.defer();
+             var promise = defer.promise;
+             promise.then(function () { toastr.info("get --"); });
+             defer.resolve(data);
+             promise.then(function () { toastr.info("get it"); });
+             return defer.promise;
+         }
+         $routeProvider.when('/fail', {
+             templateUrl: 'app/session/sessions.html',
+             resolve: { fake: fakeReject }
+         }
+              );
+ 
+         fakeReject.$inject = ['$q'];
+         function fakeReject($q) {
+             var data = { x: 1 };
+             var defer = $q.defer();
+             defer.reject({msg:'haha'});
+             return defer.promise;
+         }*/
 
         routes.forEach(function (r) {
-           // $routeProvider.when(r.url, r.config);
+            // $routeProvider.when(r.url, r.config);
             setRoute(r.url, r.config);
         });
         $routeProvider.otherwise({ redirectTo: '/' });
         function setRoute(url, definition) {
             definition.resolve = angular.extend(definition.resolve || {}, {
-                 prime: prime
+                prime: prime
             });
             $routeProvider.when(url, definition);
         }
     }
 
-  
+
     prime.$inject = ['dataconfig'];
     function prime(d) {
-         d.prime();
+        d.prime();
     }
 
     // Define the routes 
@@ -83,7 +83,7 @@
                     templateUrl: 'app/ELS/Loading.html',
                     title: 'load',
                     settings: {
-                      
+
                     }
                 }
             },
@@ -91,7 +91,7 @@
 
             {
                 url: '/dashboard',
-                config: {  
+                config: {
                     templateUrl: 'app/dashboard/dashboard.html',
                     title: 'dashboard',
                     settings: {
@@ -110,7 +110,7 @@
                          content: '<i class="fa fa-search"></i> ELS'
                      }
                  }
-             },{
+             }, {
                  url: '/aggs',
                  config: {
                      title: 'aggs',
@@ -131,13 +131,13 @@
                          content: '<i class="fa fa-cloud"></i> TODO'
                      }
                  }
-             },
+             },           
              {
                  url: '/els/:search',
                  config: {
                      title: 'search',
                      templateUrl: 'app/ELS/els.html',
-                     settings: {                      
+                     settings: {
                      }
                  }
              }
@@ -147,9 +147,8 @@
     /*app.use(function (req, res) {
         res.sendfile(__dirname + '/Public/index.html');
     });*/
-    
+
 
 })();
 
 
-              

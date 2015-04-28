@@ -34,7 +34,6 @@
         function ($modal, $q, $timeout, $cookieStore, $rootScope, $route, breeze, dataconfig, routeMediator, client, datasearch) {
             // Include $route to kick start the router.
             routeMediator.setRoutingHandlers();
-            $rootScope.reload = false;
             $rootScope.school = "TCU";
             $rootScope.st = moment(new Date()).subtract(2, 'month');
             $rootScope.ft = new Date();

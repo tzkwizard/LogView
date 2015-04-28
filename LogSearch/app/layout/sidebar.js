@@ -43,7 +43,7 @@
         vm.sidebarNav = sidebarNav;
         //#endregion
 
-       
+
         //#region Sidebar Load
         activate();
         function activate() {
@@ -60,6 +60,7 @@
                 });
         }
 
+        //Load field
         function getFieldName() {
             if (vm.fieldsName.length === 0) {
                 vm.fieldsName = dataconfig.getFieldName("logstash-2015.04.01", "logs");
@@ -68,6 +69,7 @@
             vm.isCollapsed = !vm.isCollapsed;
         }
 
+        //get nav
         function getNavRoutes() {
             vm.navRoutes = routes.filter(function (r) {
                 return r.config.settings && r.config.settings.nav;
@@ -88,6 +90,7 @@
 
 
         //#region Siderbar Facet
+        //get and show location facet
         vm.showLocation = function () {
             if (vm.location === "" || vm.location === undefined || $location.search.refresh) {
 
@@ -103,6 +106,7 @@
             }
         }
 
+        //get and show api facet
         vm.showRequestAPI = function () {
             if (vm.apiaddress === "" || vm.apiaddress === undefined || $location.search.refresh) {
                 datasearch.termAggragation($rootScope.index, $rootScope.logtype, "request.raw", vm.size, vm.st, vm.ft).then(function (resp) {
@@ -117,6 +121,7 @@
             }
         }
 
+        //get and show verb facet
         vm.showRequestMethod = function () {
             if (vm.httpmethod === "" || vm.httpmethod === undefined || $location.search.refresh) {
                 datasearch.termAggragation($rootScope.index, $rootScope.logtype, "verb.raw", vm.size, vm.st, vm.ft).then(function (resp) {
@@ -130,6 +135,7 @@
             else { vm.isCollapsed3 = !vm.isCollapsed3; }
         }
 
+        //get and show users facet
         vm.showUser = function () {
             if (vm.user === "" || vm.user === undefined || $location.search.refresh) {
                 datasearch.termAggragation($rootScope.index, $rootScope.logtype, "ident.raw", vm.size, vm.st, vm.ft).then(function (resp) {
@@ -143,6 +149,7 @@
             else { vm.isCollapsed4 = !vm.isCollapsed4; }
         }
 
+        //get and show useraction facet
         vm.showUserAction = function () {
             if (vm.useraction === "" || vm.useraction === undefined || $location.search.refresh) {
                 datasearch.termAggragation($rootScope.index, $rootScope.logtype, "action.raw", vm.size, vm.st, vm.ft).then(function (resp) {
@@ -156,11 +163,13 @@
             else { vm.isCollapsed5 = !vm.isCollapsed5; }
         }
 
-        function sidebarNav(r, f) {           
+        //nav to els page
+        function sidebarNav(r, f) {
             //$location.search();
-            $location.search.field = "";
+            $location.search.field = f;
             $location.search('field', f);
-            $location.search.text = r.key.toString();
+            $location.search('text', r.key.toString());
+            $location.search.text = "\"" + r.key.toString() + "\"";
             $location.path('/els/')
             //$location.path('/els/' + r.key.toString());
         }

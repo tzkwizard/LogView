@@ -26,7 +26,7 @@
                     <option selected value="all">all</option>
                     <option value={{doc}} data-ng-repeat="doc in vm.fieldsName">{{doc}} </option>
                 </select>
-                <button class="btn btn-large btn-info btn-notext pull-right" type="button" data-ng-click="vm.refresh($event)">
+                <button class="btn btn-large btn-info btn-notext pull-right" type="button" data-ng-click="vm.refresh()">
                     <i class="fa fa-refresh"> Refresh </i>
                 </button>
                 <button class="btn btn-large btn-info btn-notext pull-right" type="button" data-ng-click="vm.go()">

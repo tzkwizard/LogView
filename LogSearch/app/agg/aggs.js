@@ -14,6 +14,7 @@
             var log = getLogFn(controllerId);
             var events = config.events;
 
+
             //#region variable
             vm.isBusy = true;
             vm.busyMessage = "wait";
@@ -49,6 +50,7 @@
             vm.st = "";
             var terror = false;
             vm.token = false;
+
 
             vm.dashboard = "dash";
             vm.range = "range";
@@ -101,7 +103,8 @@
 
 
             //#region button
-            function refresh($event) {
+            //refresh page
+            function refresh() {
                 //$route.reload();
                 //window.location.reload();
                 activate();
@@ -109,12 +112,14 @@
                 log("Refreshed");
             }
 
+            //go to els page get result
             function go() {
 
                 $location.search.text = vm.searchText;
                 $location.path('/els/');
             }
 
+            //clear searchtext
             function clear() {
                 vm.searchText = "*";
                 vm.refinedsearch = [
@@ -122,15 +127,6 @@
                        { key: 'School', value: 'TCU' }
                 ];
                 getFieldName();
-
-                if (fp === undefined) {
-                    aggShow("");
-                } else {
-                    fp.then(function (data) {
-                        vm.fieldsName = data;
-                        aggShow("");
-                    });
-                }
             }
             //#endregion
 
@@ -138,6 +134,7 @@
             //#region Draw-tree
             vm.fieldstree = [];
             vm.treestatus = true;
+            //get treemap data
             function treeMap(index, aggName, datatree) {
                 return datasearch.termAggragation(index, vm.type, aggName, vm.size, vm.st, vm.ft)
                         .then(function (resp) {
@@ -154,6 +151,7 @@
 
             }
 
+            //draw tree map
             function drawTreemap() {
                 google.setOnLoadCallback(drawTreemap);
 
@@ -236,23 +234,20 @@
                             tree.goUpAndDraw();
                         });
 
-                    vm.isBusy = false;
+                    //vm.isBusy = false;
                 }
             }
             //#endregion
 
 
             //#region View Load
+            var ip;
+            var fp;
+            var ap = [];
             activate();
             function activate() {
-                common.activateController([], controllerId)
+                common.activateController([getIndexName()], controllerId)
                       .then(function () {
-                          if ($rootScope.reload) {
-                              $timeout(getIndexName, 1000);
-                              $rootScope.reload = false;
-                          } else {
-                              getIndexName();
-                          }
                           vm.refinedsearch = [
                           { key: 'Time', value: new Date() },
                           { key: 'School', value: $rootScope.school }
@@ -263,8 +258,7 @@
                       });
             }
 
-            var ip;
-            var fp;
+            //Load index
             function getIndexName() {
 
                 if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {
@@ -313,10 +307,12 @@
 
             }
 
+            //Load type
             function getTypeName() {
                 vm.typesName = dataconfig.getTypeName(vm.index, vm.pagecount);
             }
 
+            //Load field
             function getFieldName() {
 
                 try {
@@ -349,15 +345,15 @@
                 if (fp === undefined) {
                     if (vm.treestatus === true) {
                         drawTreemap();
-                        aggShow();
                     }
+                    aggShow();
                 } else {
                     fp.then(function (data) {
                         vm.fieldsName = data;
                         if (vm.treestatus === true) {
                             drawTreemap();
-                            aggShow();
                         }
+                        aggShow();
                     });
                 }
 
@@ -366,14 +362,15 @@
 
 
             //#region Draw chart
-
+            //get dashboard data
             function aggShow(aggName) {
 
                 var main = document.getElementById('div2');
-
+                log(main.childNodes.length);
                 var contain = document.getElementById('contain');
-                if (contain !== null) {
+                if (contain !== null && main.childNodes.length !== 0) {
                     main.removeChild(contain);
+
                 }
 
                 if (vm.aggName === "" || vm.aggName === "all") {
@@ -388,22 +385,28 @@
                         vm.aggfield.splice(index, 1);
                     });
 
+
                     var flag;
 
-                    contain = document.createElement('div');
+                    var main2 = document.getElementById('div2');
+                    var contain2 = document.createElement('div');
 
-                    contain.setAttribute('id', 'contain');
-                    main.appendChild(contain);
+                    contain2.setAttribute('id', 'contain');
+                    main2.appendChild(contain2);
 
                     angular.forEach(vm.aggfield, function (name) {
                         dataconfig.createContainer(name);
+                    });
+
+                    angular.forEach(vm.aggfield, function (name) {
+                        //dataconfig.createContainer(name);
 
                         if (vm.aggfield.length <= 2) {
                             flag = true;
                         } else {
                             flag = false;
                         }
-                        aggShows(name, flag);
+                        ap.push(aggShows(name, flag));
                     });
 
                 } else {
@@ -416,14 +419,17 @@
                         }, function (err) {
                             log(err.message);
                             vm.indicesName = $rootScope.index;
-                                aggShow(aggName);
-                            
+                            aggShow(aggName);
+
                         });
                 }
 
-                // vm.isBusy = false;
+                $q.all(ap).then(function () {
+                    vm.isBusy = false;
+                });
             }
 
+            //get multi-field dashboard2 data
             function aggShows(aggName, flag) {
 
                 //dataconfig.createContainer(aggName);
@@ -432,29 +438,30 @@
                 vm.barchart = "bar";
                 vm.tablechart = "table";
 
-                datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft)
-                    .then(function (resp) {
-                        vm.dashboard = vm.dashboard + aggName;
-                        vm.range = vm.range + aggName;
-                        vm.barchart = vm.barchart + aggName;
-                        vm.tablechart = vm.tablechart + aggName;
-                        vm.total = resp.hits.total;
-                        if (!flag) {
-                            if (resp.aggregations.ag.agg.buckets.length > 1) {
-                                drawDashboard2(resp.aggregations.ag.agg, aggName);
-                            }
-                        } else {
-                            drawDashboard2(resp.aggregations.ag.agg, aggName);
-                        }
+                return datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft)
+                      .then(function (resp) {
+                          vm.dashboard = vm.dashboard + aggName;
+                          vm.range = vm.range + aggName;
+                          vm.barchart = vm.barchart + aggName;
+                          vm.tablechart = vm.tablechart + aggName;
+                          vm.total = resp.hits.total;
+                          if (!flag) {
+                              if (resp.aggregations.ag.agg.buckets.length > 1) {
+                                  drawDashboard2(resp.aggregations.ag.agg, aggName);
+                              }
+                          } else {
+                              drawDashboard2(resp.aggregations.ag.agg, aggName);
+                          }
 
-                    }, function (err) {
-                        // log("aggshows err "+err.message);
-                        vm.indicesName = $rootScope.index;
-                            aggShows(aggName, flag);
-                    });
+                      }, function (err) {
+                          // log("aggshows err "+err.message);
+                          vm.indicesName = $rootScope.index;
+                          aggShows(aggName, flag);
+                      });
 
             }
 
+            //draw multi-field dashboard2
             function drawDashboard2(agg, y) {
 
                 google.setOnLoadCallback(drawDashboard2);
@@ -517,6 +524,7 @@
 
             }
 
+            //draw dashboard
             function drawDashboard(agg, aggName) {
 
                 google.setOnLoadCallback(drawDashboard);
@@ -589,6 +597,7 @@
 
             }
 
+            //draw map in dashboard
             function drawMap(r) {
                 google.setOnLoadCallback(drawMap);
                 var geoData = new google.visualization.DataTable();
@@ -624,6 +633,7 @@
 
             }
 
+            //draw table in dashboard
             function drawTable(data, name, field) {
 
                 google.setOnLoadCallback(drawTable);
@@ -632,7 +642,7 @@
                 table.draw(data, { showRowNumber: true });
 
                 google.visualization.events.addListener(table, 'select', function () {
-                    var row = table.getSelection()[0].row;         
+                    var row = table.getSelection()[0].row;
                     if (vm.refinedsearch.length > 1)
                     { vm.treestatus = false; }
                     if (field.substring(field.length - 3, field.length) === "raw") {

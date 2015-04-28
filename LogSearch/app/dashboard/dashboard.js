@@ -50,22 +50,18 @@
         //#region View Load
         vm.st = "";
         vm.ft = "";
+        var ip;
 
         activate();
         function activate() {
-            common.activateController([], controllerId)
+            common.activateController([init()], controllerId)
                 .then(function () {
-                    if ($rootScope.reload) {
-                        $timeout(init, 1000);
-                        $rootScope.reload = false;
-                    } else {
-                        init();
-                    }
                     log('Activated Dashboard View');
 
                 });
         }
 
+        //bootstrap 
         function init() {
             getIndexName();
             vm.type = $rootScope.logtype;
@@ -95,8 +91,7 @@
             }
         }
 
-        var ip;
-
+        //Load index
         function getIndexName() {
             if ($cookieStore.get('index') !== undefined && $rootScope.index !== undefined) {
                 if ($rootScope.index.length !== $cookieStore.get('index').length) {
@@ -122,6 +117,7 @@
 
         //#region Draw Map
         vm.location = [];
+        //get geomap data
         function geoMap() {
             datasearch.termAggragation(vm.indicesName, vm.type, "geoip.city_name.raw", vm.size, vm.st, vm.ft).
                 then(function (resp) {
@@ -134,6 +130,8 @@
                 });
 
         }
+
+        //draw geomap
         function drawMap(r, tt) {
 
             google.setOnLoadCallback(drawMap);
@@ -189,6 +187,7 @@
 
 
         //#region Draw Pie 
+        //get piechart data
         function pieChart() {
             client.search({
                 index: vm.indicesName,
@@ -207,6 +206,7 @@
             });
         }
 
+        //draw piechart
         function drawpie(agg) {
             google.setOnLoadCallback(drawpie);
             var data = new google.visualization.DataTable();
@@ -270,7 +270,7 @@
 
 
         //#region Time Chart
-
+        //get timelineGram data
         function timeLineGram() {
 
             datasearch.dateHistogramAggregation(vm.indicesName, vm.type, "@timestamp", "day", vm.st, vm.ft)
@@ -285,6 +285,7 @@
                 });
         }
 
+        //draw timelineGram
         function drawTimwLine(agg) {
             google.setOnLoadCallback(drawTimwLine);
             var data = new google.visualization.DataTable();
@@ -302,6 +303,7 @@
 
         }
 
+        //get histgram data
         function histGram() {
 
             datasearch.dateHistogramAggregation(vm.indicesName, vm.type, "@timestamp", "day", vm.st, vm.ft).then(function (resp) {
@@ -313,6 +315,7 @@
             });
         }
 
+        //draw histgram
         function drawHist(agg) {
 
             google.setOnLoadCallback(drawHist);
@@ -371,6 +374,7 @@
 
 
         //#region Draw Map2
+        //get geomap2 data
         function geoMap2() {
             datasearch.termAggragation(vm.indicesName, vm.type, "geoip.country_name.raw", 100, vm.st, vm.ft).
                 then(function (resp) {
@@ -383,6 +387,7 @@
                 });
         }
 
+        //draw geomap2
         function drawMap2(r) {
 
             google.setOnLoadCallback(drawMap2);

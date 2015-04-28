@@ -13,13 +13,14 @@
         </div>
     </div>
     <section class="matter">
-
         <div class="container-fluid">
             <div id="Header" class="input-append row-fluid">
                 <input type="text" class="form-control"
                        data-ng-keyup="vm.search()"
                        data-ng-model=" vm.searchText"
-                       placeholder="  Search" />
+                       placeholder="  Search"
+                       typeahead=" record for record in vm.at| filter:$viewValue | limitTo:5" typeahead-loading="loading" />
+                <i ng-show="loading" class="glyphicon glyphicon-refresh"></i>
                 <button class="btn btn-large btn-info btn-notext ng-click-active" type="button" data-ng-click="vm.search()">
                     <i class="fa fa-search"> Search </i>
                 </button>
@@ -135,7 +136,7 @@
                     <option selected vaule=10000>10000</option>
                     <option selected vaule=99999>99999</option>
                 </select>
-                <select class="form-control pull-right" style="width: 50px"  ng-model="vm.paging.pageSize" ng-click="vm.refreshPage()">
+                <select class="form-control pull-right" style="width: 50px" ng-model="vm.paging.pageSize" ng-click="vm.refreshPage()">
                     <option selected value=5>5</option>
                     <option value=10>10</option>
                     <option value=25>25</option>

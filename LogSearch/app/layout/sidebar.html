@@ -7,8 +7,9 @@
 
     <div class="sidebar-inner">
         <div class="sidebar-widget">
-        </div>
-        <ul class="navi">
+            <button class="btn btn-large btn-notext " style="width: 80%; background-color: transparent;color:skyblue " ng-click="collapse=!collapse"><i class="fa fa-align-justify fa-2x"></i></button>
+        </div>        
+        <ul class="navi" collapse="collapse">
             <li class="nlightblue fade-selection-animation" data-ng-class="vm.isCurrent(r)"
                 data-ng-repeat="r in vm.navRoutes">
                 <a href="#{{r.url}}" data-ng-bind-html="r.config.settings.content"></a>
@@ -17,7 +18,6 @@
             <li class="nlightblue fade-selection-animation" data-ng-repeat="r in vm.agg ">
                 <a><i class="fa fa-cloud"></i> {{r}}</a>
             </li>
-
 
 
             <li class="nlightblue fade-selection-animation" ng-click="vm.showUser()"> <a><i class="fa fa-user"></i> User</a></li>
@@ -44,7 +44,7 @@
             <ul collapse="vm.isCollapsed2" class="nlightblue fade-selection-animation">
                 <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.request.raw')"
                     data-ng-repeat="r in vm.apiaddress">
-                    <a style="color:whitesmoke">  {{r.key.toString()}} ({{r.doc_count}})    </a>
+                    <a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>
                 </li>
             </ul>
 
@@ -54,7 +54,7 @@
             <ul collapse="vm.isCollapsed3" class="nlightblue fade-selection-animation">
                 <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.verb.raw')"
                     data-ng-repeat="r in vm.httpmethod">
-                    <a style="color:whitesmoke">  {{r.key.toString()}} ({{r.doc_count}})    </a>
+                    <a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>
                 </li>
             </ul>
 
@@ -64,7 +64,7 @@
             <ul collapse="vm.isCollapsed5" class="nlightblue fade-selection-animation">
                 <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.action.raw')"
                     data-ng-repeat="r in vm.useraction">
-                    <a style="color:whitesmoke">  {{r.key.toString()}} ({{r.doc_count}})    </a>
+                    <a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>
                 </li>
             </ul>
 

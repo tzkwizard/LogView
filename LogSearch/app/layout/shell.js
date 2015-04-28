@@ -29,6 +29,7 @@
 
 
         //#region Login
+        //open login page
         vm.open = function () {
             var modalInstance = $modal.open({
                 templateUrl: 'loginModal.html',
@@ -46,6 +47,7 @@
 
         vm.login = login;
 
+        //log in
         function login() {
             return client.ping({
                 requestTimeout: 1000,
@@ -140,12 +142,14 @@
             $scope.username = "";
             $scope.password = "";
 
+            //keyboard support
             $scope.try = function ($event) {
                 if ($event.keyCode === config.keyCodes.enter) {
                     $scope.ok();
                 }
             }
 
+            //validate username and password
             $scope.ok = function () {
                 var z = "tzk";
                 var x = sjcl.encrypt(z, $scope.username);
@@ -159,6 +163,7 @@
                 $modalInstance.close();
             };
 
+            //close login page
             $scope.cancel = function () {
                 $modalInstance.dismiss('cancel');
             };
