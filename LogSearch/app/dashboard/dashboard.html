@@ -5,7 +5,10 @@
                 <div data-cc-spinner="vm.spinnerOptions"></div>
                 <div class="page-splash-message page-splash-message-subtle">{{vm.busyMessage}}</div>
             </div>
-
+            <select class="form-control pull-right" style="width: 70px" ng-model="vm.geomap2selection" ng-click="vm.test()">
+                <option selected value=1>World</option>
+                <option value=2>United states</option> 
+            </select>
             <div class="widget wlightblue">
                 <div data-cc-widget-header title=" Region Map" allow-collapse="true"></div>
                 <div class="widget-content">

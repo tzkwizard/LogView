@@ -13,12 +13,12 @@
         //#region service
         var service = {
             getSampledata: getSampledata,
-            stringSearch: stringSearch,
-            searchWithoutFilter: searchWithoutFilter,
+            stringSearch: stringQuery,
+            searchWithoutFilter: termQuery,
             basicSearch: basicSearch,
-            stringquery: stringquery,
-            termqueryandfilter: termqueryandfilter,
-            getFieldsample: getFieldsample,
+            stringquery: test,
+            termQueryWithBoolFilter: termQueryWithBoolFilter,
+            stringQueryWithBoolFilter: stringQueryWithBoolFilter,
             termAggragation: termAggragation,
             termAggragationwithQuery: termAggragationwithQuery,
             dateHistogramAggregation: dateHistogramAggregation
@@ -72,7 +72,166 @@
 
 
         //#region Filter
-        function stringquery(indices, type, pagecount, field, searchText, filterField, filter, condition, choice) {
+
+        function getSampledata(indices, type, pagecount, start, end) {
+            return client.search({
+                index: indices,
+                //type: type,
+                size: pagecount,
+                body:
+                    ejs.Request()
+                        .query(ejs.MatchAllQuery())
+                        .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
+
+            });
+        }
+
+        function stringQuery(indices, type, pagecount, searchText, start, end) {
+
+            return client.search({
+                index: indices,
+                type: type,
+                size: pagecount,
+                body: ejs.Request()
+                    .query(ejs.QueryStringQuery(searchText))
+                   .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
+            });
+        }
+
+        function termQuery(indices, type, pagecount, field, searchText, start, end) {
+            return client.search({
+                index: indices,
+                type: type,
+                size: pagecount,
+                body: ejs.Request()
+                    .query(ejs.MatchQuery(field, searchText))
+                   .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
+            });
+        }
+
+        function termQueryWithBoolFilter(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end) {
+
+            var m = [];
+            var n = [];
+            var s = [];
+            angular.forEach(condition, function (cc) {
+                if (cc.condition === "MUST") {
+                    var x = ejs.TermFilter(cc.field, cc.text);
+                    m.push(x);
+                }
+                if (cc.condition === "MUST_NOT") {
+                    var y = ejs.TermFilter(cc.field, cc.text);
+                    n.push(y);
+                }
+                if (cc.condition === "SHOULD") {
+                    var z = ejs.TermFilter(cc.field, cc.text);
+                    s.push(z);
+                }
+            });
+
+
+            var fmust = ejs.AndFilter(m);
+            var fnot = ejs.AndFilter(n);
+            var fshould = ejs.AndFilter(s);
+
+            if (m.length < 1) {
+                fmust = ejs.MatchAllFilter();
+            }
+            if (n.length < 1) {
+                fnot = ejs.NotFilter(ejs.MatchAllFilter());
+            }
+            if (s.length < 1) {
+                fshould = ejs.MatchAllFilter();
+            }
+
+
+            return client.search({
+                index: indices,
+                type: type,
+                size: pagecount,
+                body: ejs.Request()
+                    .query(ejs.MatchQuery(field, searchText))
+                    .filter(ejs.BoolFilter().must(fmust).mustNot(fnot).should(fshould))
+                //.filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
+            });
+        }
+
+        function stringQueryWithBoolFilter(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end) {
+
+            var m = [];
+            var n = [];
+            var s = [];
+            angular.forEach(condition, function (cc) {
+                if (cc.condition === "MUST") {
+                    var x = ejs.TermFilter(cc.field, cc.text);
+                    m.push(x);
+                }
+                if (cc.condition === "MUST_NOT") {
+                    var y = ejs.TermFilter(cc.field, cc.text);
+                    n.push(y);
+                }
+                if (cc.condition === "SHOULD") {
+                    var z = ejs.TermFilter(cc.field, cc.text);
+                    s.push(z);
+                }
+            });
+
+
+            var fmust = ejs.AndFilter(m);
+            var fnot = ejs.AndFilter(n);
+            var fshould = ejs.AndFilter(s);
+
+            if (m.length < 1) {
+                fmust = ejs.MatchAllFilter();
+            }
+            if (n.length < 1) {
+                fnot = ejs.NotFilter(ejs.MatchAllFilter());
+            }
+            if (s.length < 1) {
+                fshould = ejs.MatchAllFilter();
+            }
+
+
+            return client.search({
+                index: indices,
+                type: type,
+                size: pagecount,
+                body: ejs.Request()
+                    .query(ejs.QueryStringQuery(searchText))
+                    .filter(ejs.BoolFilter().must(fmust).mustNot(fnot).should(fshould))
+                //.filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
+            });
+        }
+
+        //#endregion
+
+
+        //#region Main search 
+        function basicSearch(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end) {
+
+            if (condition.length < 1) {
+                if (field === "" || field === "all" || field === undefined) {
+                    return stringQuery(indices, type, pagecount, searchText, start, end);
+                } else {
+                    return termQuery(indices, type, pagecount, field, searchText, start, end);
+                }
+
+            } else {
+                if (field === "" || field === "all" || field === undefined) {
+                    return stringQueryWithBoolFilter(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end);
+                } else {
+                    return termQueryWithBoolFilter(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end);
+                }
+
+            }
+        }
+
+        //#endregion
+
+
+        //#region Deprecated
+
+        function test(indices, type, pagecount, field, searchText, filterField, filter, condition, choice) {
 
             var stringQ = ejs.QueryStringQuery(searchText);
 
@@ -128,143 +287,7 @@
                     .filter(ejs.BoolFilter().must(fmust))
             });
         }
-
-        function getSampledata(indices, type, pagecount, start, end) {
-            return client.search({
-                index: indices,
-                //type: type,
-                size: pagecount,
-                body:
-                    ejs.Request()
-                        .query(ejs.MatchAllQuery())
-                        .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
-
-            });
-        }
-
-        function getFieldsample() {
-
-            return client.search({
-                index: indices,
-                //type: type,
-                size: pagecount,
-                body:
-                    ejs.Request()
-                        .query(ejs.MatchAllQuery())
-
-            });
-        }
-
-        function stringSearch(indices, type, pagecount, searchText, start, end) {
-
-            return client.search({
-                index: indices,
-                type: type,
-                size: pagecount,
-                body: ejs.Request()
-                    .query(ejs.QueryStringQuery(searchText))
-                   .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
-            });
-        }
-
-        function searchWithoutFilter(indices, type, pagecount, field, searchText, start, end) {
-            return client.search({
-                index: indices,
-                type: type,
-                size: pagecount,
-                body: ejs.Request()
-                    .query(ejs.MatchQuery(field, searchText))
-                   .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
-            });
-        }
-
-        function termqueryandfilter(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end) {
-            /*  if (field === "" || field === "all") {
-                // mSearch(searchText); 
-                return stringSearch(indices, type, pagecount, searchText);
-                
-            }
-            if (filter === "" || filterField === "" || filterField === "all") {
-                return searchWithoutFilter(indices, type, pagecount, field, searchText);
-            }
-            */
-            var fmust;
-            var ftrue = ejs.TermFilter(filterField, filter);
-            var fmustfalse = ejs.NotFilter(ejs.TermFilter(filterField, ""));
-            var fnotmust;
-
-            var fnotmustfalse = ejs.TermFilter(filterField, "");
-            var fshould;
-
-            var fshouldfalse = ejs.NotFilter(ejs.TermFilter(filterField, ""));
-
-            if (condition === "MUST") {
-                fmust = ftrue;
-                fnotmust = fnotmustfalse;
-                fshould = fshouldfalse;
-            } else if (condition === "MUST_NOT") {
-                fmust = fmustfalse;
-                fnotmust = ftrue;
-                fshould = fshouldfalse;
-            } else {
-                fmust = fmustfalse;
-                fnotmust = fnotmustfalse;
-                fshould = ftrue;
-            }
-
-            return client.search({
-                index: indices,
-                type: type,
-                size: pagecount,
-                body: ejs.Request()
-                    .query(ejs.MatchQuery(field, searchText))
-                    //.filter(ejs.TermFilter(filterField, filter))
-                    //.filter(ejs.BoolFilter().mustNot(mmm))
-                    .filter(ejs.BoolFilter().must(fmust).mustNot(fnotmust).should(fshould))
-                    .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
-            });
-        }
-        //#endregion
-
-
-        //#region Main search 
-        function basicSearch(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end) {
-
-            if (filter === "" || filter === undefined) {
-                if (field === "" || field === "all" || field === undefined) {
-                    return stringSearch(indices, type, pagecount, searchText, start, end);
-                } else {
-                    return searchWithoutFilter(indices, type, pagecount, field, searchText, start, end);
-                }
-
-            } else {
-                if (searchText === "" || searchText === undefined) {
-                    if (filterField === "" || filterField === "all" || filterField === undefined) {
-                        return stringSearch(indices, type, pagecount, searchText, start, end);
-                    } else {
-                        return termqueryandfilter(indices, type, pagecount, field, searchText, filterField, filter, condition, 1, start, end);
-                    }
-                } else {
-                    if (field === "" || field === "all" || field === undefined) {
-                        if (filterField === "" || filterField === "all" || filterField === undefined) {
-                            return stringquery(indices, type, pagecount, field, searchText, filterField, filter, condition, 1, start, end);
-                        } else {
-                            return stringquery(indices, type, pagecount, field, searchText, filterField, filter, condition, 2, start, end);
-                        }
-                    } else {
-                        if (filterField === "" || filterField === "all" || filterField === undefined) {
-                            return termqueryandfilter(indices, type, pagecount, field, searchText, filterField, filter, condition, 2, start, end);
-                        } else {
-                            return termqueryandfilter(indices, type, pagecount, field, searchText, filterField, filter, condition, 3, start, end);
-                        }
-                    }
-
-                }
-
-            }
-        }
-
-        //#endregion
     }
+        //#endregion
 
 })();

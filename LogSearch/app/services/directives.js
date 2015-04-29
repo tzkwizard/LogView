@@ -31,20 +31,7 @@
         };
     });
 
-    //Directive for showing an alert on click
-    app.directive("alert", function () {
-        return function (scope, element, attrs) {
-            element.bind("click", function () {
-                console.log(attrs);
-                alert("This is alert #" + attrs.alert);
-            });
-        };
-    });
-
-
-
-
-
+    
     var googleChart = googleChart || angular.module("google-chart", []);
 
     googleChart.directive("googleChart", function () {

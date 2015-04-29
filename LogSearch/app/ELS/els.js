@@ -43,6 +43,7 @@
             vm.st = "";
             vm.at = [];
             vm.showSplash = true;
+            vm.filterfill = false;
 
             vm.Syntax = {
                 title: 'Help',
@@ -346,6 +347,11 @@
                         if (result) {
                             vm.searchText = "";
                             search();
+                            vm.filterfill = false;
+                            while (vm.im > 1) {
+                                removefilter();
+                                
+                            }
                             log("Refresh");
                         } else {
                             log('Nope.');
@@ -394,7 +400,7 @@
                         }
 
                     }
-
+                    vm.filterfill = true;
                 }
                 search();
             }
@@ -537,12 +543,30 @@
 
 
             //#region Search and Filter 
-            vm.condition = "";
+            vm.condition = [];
 
             //core search function
             function search() {
-
+                var filterdata = {
+                    text: "",
+                    field:"",
+                    condition :""
+                };
+               
                 vm.hitSearch = "";
+                if (!vm.filterfill) {
+                    for (var i = 1; i < vm.im; i++) {
+                        var s1 = document.getElementById('jselect' + i.toString());
+                        var s2 = document.getElementById('fselect' + i.toString());
+                        var s3 = document.getElementById('input' + i.toString());
+                        filterdata.text = s3.value;
+                        filterdata.field = s2.value;
+                        filterdata.condition = s1.value;
+                        vm.condition.push(filterdata);
+                    }
+                }
+
+
                 if (vm.searchText == undefined || vm.searchText === "") {
                     init().then(function () {
                         random();
@@ -796,7 +820,7 @@
             //#endregion
 
 
-
+            //#region Button
             $scope.ok = function () {
                 // 
 
@@ -811,6 +835,8 @@
             $scope.cancel = function () {
                 $modalInstance.dismiss('cancel');
             };
+            //#endregion
+
         });
 })();
 

@@ -26,6 +26,7 @@
         vm.title = 'Dashboard';
         vm.indicesName = [];
         vm.type = "";
+        vm.geomap2selection = 1;
         //#endregion
 
         //#region function
@@ -401,7 +402,8 @@
             });
             var options = {
                 colorAxis: { colors: ['#B2B2FF', '#0000FF', '#00004C'] },
-                backgroundColor: '#FFF0F5'
+                backgroundColor: '#FFF0F5',
+
             };
 
             if (document.getElementById('gmap_div') == undefined) {
@@ -410,6 +412,11 @@
             var chart = new google.visualization.GeoChart(document.getElementById('gmap_div'));
 
             chart.draw(geoData2, options);
+
+            google.visualization.events.addListener(chart, 'select', function () {
+                var row = chart.getSelection()[0];
+                log(row);
+            });
 
             vm.isBusy = false;
         }
