@@ -3,3 +3,12 @@ C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\bin\D
 C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\bin\Debug\LogView.pdb
 C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\obj\Debug\LogView.exe
 C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\obj\Debug\LogView.pdb
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\bin\Debug\Elasticsearch.Net.dll
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\bin\Debug\Nest.dll
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\bin\Debug\Newtonsoft.Json.dll
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\bin\Debug\Elasticsearch.Net.pdb
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\bin\Debug\Elasticsearch.Net.xml
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\bin\Debug\Nest.pdb
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\bin\Debug\Nest.xml
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\bin\Debug\Newtonsoft.Json.xml
+C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogView\obj\Debug\LogView.csprojResolveAssemblyReference.cache
