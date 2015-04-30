@@ -14,7 +14,7 @@
         vm.busyMessage = 'Please wait ...';
         vm.isBusy = true;
         vm.spinnerOptions = {
-            radius: 120,
+            radius: 60,
             lines: 24,
             length: 0,
             width: 30,

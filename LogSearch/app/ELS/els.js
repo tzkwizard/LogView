@@ -5,7 +5,7 @@
 
     angular.module('app')
         .controller(controllerId, function ($timeout, bsDialog, $rootScope, $routeParams,
-         $injector, $log, $scope, $location, $modal, client, common, datasearch, dataconfig, $cookieStore) {
+          $log, $scope, $location, $modal, client, common, datasearch, dataconfig, $cookieStore) {
 
 
             var vm = this;
@@ -22,7 +22,6 @@
 
 
             //#region variable
-            vm.fi = "";
             vm.searchText = $routeParams.search || '';
             vm.hitSearch = "";
             vm.acount = 4;
@@ -32,7 +31,6 @@
             vm.field = "";
             vm.index = $routeParams.index || "";
             vm.type = "";
-            vm.filterAggName = "";
             vm.pagecount = 1000;
             vm.fieldsName = [];
             vm.typesName = [];
@@ -44,7 +42,7 @@
             vm.at = [];
             vm.showSplash = true;
             vm.filterfill = false;
-
+            vm.condition = [];
             vm.Syntax = {
                 title: 'Help',
                 Description: "Terms Fields Escaping Special Characters"
@@ -68,6 +66,8 @@
             vm.addfilter = addfilter;
             vm.removefilter = removefilter;
             vm.filterst = filterst;
+            vm.autoFill = autoFill;
+            vm.addFilterdata = addFilterdata;
             //#endregion
 
 
@@ -350,7 +350,7 @@
                             vm.filterfill = false;
                             while (vm.im > 1) {
                                 removefilter();
-                                
+
                             }
                             log("Refresh");
                         } else {
@@ -361,65 +361,6 @@
 
             }
 
-            //fill searchText with filter information
-            function filltext() {
-
-                if (vm.im > 1) {
-                    vm.searchText = "";
-
-                    for (var i = 1; i < vm.im; i++) {
-                        var s1 = document.getElementById('jselect' + i.toString());
-                        var s2 = document.getElementById('fselect' + i.toString());
-                        var s3 = document.getElementById('input' + i.toString());
-
-                        if (s1.value === "MUST") {
-                            if (s3.value !== "") {
-                                if (i === 1) {
-                                    vm.searchText += s2.value + " : \"" + s3.value + "\"^2";
-                                } else {
-                                    vm.searchText += " AND " + s2.value + " : \"" + s3.value + "\"^2";
-                                }
-                            }
-                        }
-                        else if (s1.value === "MUST_NOT") {
-                            if (s3.value !== "") {
-                                if (i === 1) {
-                                    vm.searchText += " NOT " + s2.value + " : \"" + s3.value + "\"";
-                                } else {
-                                    vm.searchText += " NOT " + s2.value + " : \"" + s3.value + "\"";
-                                }
-                            }
-                        } else {
-                            if (s3.value !== "") {
-                                if (i === 1) {
-                                    vm.searchText += s2.value + " : \"" + s3.value + "\"";
-                                } else {
-                                    vm.searchText += " AND " + s2.value + " : \"" + s3.value + "\"";
-                                }
-                            }
-                        }
-
-                    }
-                    vm.filterfill = true;
-                }
-                search();
-            }
-
-            //add filter button
-            function addfilter() {
-                dataconfig.addFilter(vm.im, vm.fieldsName);
-                vm.im++;
-            }
-
-            //delete filter button
-            function removefilter() {
-
-                var x = vm.im - 1;
-                if (x >= 1) {
-                    dataconfig.removeFilter(x);
-                    vm.im--;
-                }
-            }
 
             //Load Index
             function getIndexName() {
@@ -543,52 +484,23 @@
 
 
             //#region Search and Filter 
-            vm.condition = [];
 
             //core search function
             function search() {
-                var filterdata = {
-                    text: "",
-                    field:"",
-                    condition :""
-                };
-               
                 vm.hitSearch = "";
-                if (!vm.filterfill) {
-                    for (var i = 1; i < vm.im; i++) {
-                        var s1 = document.getElementById('jselect' + i.toString());
-                        var s2 = document.getElementById('fselect' + i.toString());
-                        var s3 = document.getElementById('input' + i.toString());
-                        filterdata.text = s3.value;
-                        filterdata.field = s2.value;
-                        filterdata.condition = s1.value;
-                        vm.condition.push(filterdata);
-                    }
-                }
-
-
+                vm.condition = [];
+                addFilterdata();
                 if (vm.searchText == undefined || vm.searchText === "") {
                     init().then(function () {
                         random();
                     });
 
-
                 } else {
-
-                    dataconfig.autoFill().then(function (word) {
-                        if (vm.at.length !== word.length) {
-                            vm.at = word;
-                            toastr.info("Auto Fill Update !");
-                        }
-                    });
-
-                    datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, vm.filterAggName, vm.fi, vm.condition, vm.st, vm.ft)
+                    // autoFill();
+                    datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, vm.condition, vm.st, vm.ft)
                         .then(function (resp) {
                             vm.hitSearch = resp.hits.hits;
                             vm.total = resp.hits.total;
-                            /* if (vm.total === 0) {
-                                 log("None Result");
-                             }*/
                             vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
                             vm.getCurrentPageData(vm.hitSearch);
                             random();
@@ -597,6 +509,100 @@
                         });
                 }
 
+            }
+            /*var filterdata = {
+                text: "",
+                field: "",
+                condition: ""
+            };*/
+
+            //fill condition with filter information
+            function addFilterdata() {
+
+
+                if (!vm.filterfill) {
+                    for (var i = 1; i < vm.im; i++) {
+                        var s1 = document.getElementById('jselect' + i.toString());
+                        var s2 = document.getElementById('fselect' + i.toString());
+                        var s3 = document.getElementById('input' + i.toString());
+                        var filterdata = {
+                            text: s3.value,
+                            field: s2.value,
+                            condition: s1.value
+                        }
+                        vm.condition.push(filterdata);
+                    }
+                }
+            }
+
+            //update auto-fill data
+            function autoFill() {
+                dataconfig.autoFill().then(function (word) {
+                    if (vm.at.length !== word.length) {
+                        vm.at = word;
+                        toastr.info("Auto Fill Update !");
+                    }
+                });
+            }
+
+            //fill searchText with filter information
+            function filltext() {
+
+                if (vm.im > 1) {
+                    vm.searchText = "";
+
+                    for (var i = 1; i < vm.im; i++) {
+                        var s1 = document.getElementById('jselect' + i.toString());
+                        var s2 = document.getElementById('fselect' + i.toString());
+                        var s3 = document.getElementById('input' + i.toString());
+
+                        if (s1.value === "MUST") {
+                            if (s3.value !== "") {
+                                if (i === 1) {
+                                    vm.searchText += s2.value + " : \"" + s3.value + "\"^2";
+                                } else {
+                                    vm.searchText += " AND " + s2.value + " : \"" + s3.value + "\"^2";
+                                }
+                            }
+                        }
+                        else if (s1.value === "MUST_NOT") {
+                            if (s3.value !== "") {
+                                if (i === 1) {
+                                    vm.searchText += " NOT " + s2.value + " : \"" + s3.value + "\"";
+                                } else {
+                                    vm.searchText += " NOT " + s2.value + " : \"" + s3.value + "\"";
+                                }
+                            }
+                        } else {
+                            if (s3.value !== "") {
+                                if (i === 1) {
+                                    vm.searchText += s2.value + " : \"" + s3.value + "\"";
+                                } else {
+                                    vm.searchText += " AND " + s2.value + " : \"" + s3.value + "\"";
+                                }
+                            }
+                        }
+
+                    }
+                    vm.filterfill = true;
+                }
+                search();
+            }
+
+            //add filter button
+            function addfilter() {
+                dataconfig.addFilter(vm.im, vm.fieldsName);
+                vm.im++;
+            }
+
+            //delete filter button
+            function removefilter() {
+
+                var x = vm.im - 1;
+                if (x >= 1) {
+                    dataconfig.removeFilter(x);
+                    vm.im--;
+                }
             }
 
             //#endregion

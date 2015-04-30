@@ -1,9 +1,9 @@
 ﻿(function () {
     'use strict';
     var controllerId = 'dashboard';
-    angular.module('app').controller(controllerId, ['$interval', '$scope', '$q', '$timeout', '$cookieStore', '$rootScope', 'common', 'dataconfig', 'datasearch', 'client', dashboard]);
+    angular.module('app').controller(controllerId, ['$interval', '$scope', '$q', '$timeout', '$cookieStore', '$rootScope', 'common', 'dataconfig', 'datasearch', dashboard]);
 
-    function dashboard($interval, $scope, $q, $timeout, $cookieStore, $rootScope, common, dataconfig, datasearch, client) {
+    function dashboard($interval, $scope, $q, $timeout, $cookieStore, $rootScope, common, dataconfig, datasearch) {
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
         var vm = this;
@@ -14,7 +14,7 @@
         vm.isBusy = true;
         vm.busyMessage = "wait";
         vm.spinnerOptions = {
-            radius: 120,
+            radius: 60,
             lines: 24,
             length: 0,
             width: 30,
@@ -26,7 +26,7 @@
         vm.title = 'Dashboard';
         vm.indicesName = [];
         vm.type = "";
-        vm.geomap2selection = 1;
+        vm.geomap2selection = 2;
         //#endregion
 
         //#region function
@@ -37,6 +37,8 @@
         vm.init = init;
         vm.timeLineGram = timeLineGram;
         vm.geoMap2 = geoMap2;
+        vm.usGeomap = usGeomap;
+        vm.changeMap = changeMap;
         //#endregion
 
 
@@ -81,14 +83,16 @@
                     pieChart();
                     geoMap();
                     histGram();
-                    geoMap2();
+                    //geoMap2();
+                    usGeomap();
                 });
             } else {
                 timeLineGram();
                 pieChart();
                 geoMap();
                 histGram();
-                geoMap2();
+                // geoMap2();
+                usGeomap();
             }
         }
 
@@ -190,21 +194,14 @@
         //#region Draw Pie 
         //get piechart data
         function pieChart() {
-            client.search({
-                index: vm.indicesName,
-                type: vm.type,
-                body: ejs.Request()
-                     .aggregation(ejs.FilterAggregation("ag1").filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st)).agg(ejs.TermsAggregation("agg1").field("verb")))
-                    .aggregation(ejs.FilterAggregation("ag2").filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st)).agg(ejs.TermsAggregation("agg2").field("geoip.city_name.raw")))
-                    .aggregation(ejs.FilterAggregation("ag3").filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st)).agg(ejs.TermsAggregation("agg3").field("request.raw")))
-
-            }).then(function (resp) {
-                drawpie(resp.aggregations);
-            }, function (err) {
-                //log("pieChart data error " + err.message);
-                vm.indicesName = $rootScope.index;
-                pieChart();
-            });
+            datasearch.dashboardPieAggregation("verb", "geoip.city_name.raw", "request.raw", vm.st, vm.ft)
+           .then(function (resp) {
+               drawpie(resp.aggregations);
+           }, function (err) {
+               //log("pieChart data error " + err.message);
+               vm.indicesName = $rootScope.index;
+               pieChart();
+           });
         }
 
         //draw piechart
@@ -420,8 +417,68 @@
 
             vm.isBusy = false;
         }
-        //#endregion
-    }
 
+        function usGeomap() {
+
+            datasearch.termQueryAggragation(vm.indicesName, vm.type, "geoip.real_region_name.raw", 50, vm.st, vm.ft).
+                   then(function (resp) {
+                       //vm.tt = resp.hits.total;
+                       drawUSmap(resp.aggregations.ag.agg.buckets);
+                   }, function (err) {
+                       //log("geoMap2 data error" + err.message);
+                       vm.indicesName = $rootScope.index;
+                       drawUSmap();
+                   });
+        }
+
+        function drawUSmap(r) {
+            google.setOnLoadCallback(drawUSmap);
+
+            var geoDataus = new google.visualization.DataTable();
+            geoDataus.addColumn('string', 'City');
+            geoDataus.addColumn('number', 'Count');
+
+            angular.forEach(r, function (n) {
+                geoDataus.addRow([n.key.toString(), n.doc_count]);
+            });
+            var options = {
+                colorAxis: { colors: ['#B2B2FF', '#0000FF', '#00004C'] },
+                backgroundColor: '#FFF0F5',
+                region: 'US',
+                resolution: 'provinces'
+            };
+
+
+
+            if (document.getElementById('gmap_div') == undefined) {
+                log("1");
+            }
+            var chart = new google.visualization.GeoChart(document.getElementById('gmap_div'));
+
+            chart.draw(geoDataus, options);
+
+              google.visualization.events.addListener(chart, 'select', function () {
+                 var row = chart.getSelection()[0];
+                 log(row);
+             });
+            vm.isBusy = false;
+        }
+
+        //#endregion
+
+
+        //#region map selector
+        function changeMap() {
+            if (vm.geomap2selection == 1) {
+                geoMap2();
+            } else if (vm.geomap2selection == 2) {
+                usGeomap();
+            }
+        }
+        //#endregion
+
+
+
+    }
 
 })();

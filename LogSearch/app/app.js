@@ -2,7 +2,7 @@
     
     'use strict';
     //Load google Api
-    google.load('visualization', '1', { packages: ['geochart', 'bar', 'corechart', 'controls', 'table', 'map', 'annotatedtimeline', 'treemap'] });
+    google.load('visualization', '1', { packages: ['geomap','geochart', 'bar', 'corechart', 'controls', 'table', 'map', 'annotatedtimeline', 'treemap'] });
     var app = angular.module('app', [
         // Angular modules 
         'ngAnimate',        // animations

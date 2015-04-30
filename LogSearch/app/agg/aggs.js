@@ -4,8 +4,8 @@
     var controllerId = 'aggs';
 
     angular.module('app')
-        .controller(controllerId, function ($interval, $q, $route, $timeout, $cookieStore, $rootScope, $scope, $location,
-            common, bsDialog, client, datasearch, dataconfig, config) {
+        .controller(controllerId, function ($q, $route, $timeout, $cookieStore, $rootScope, $scope, $location,
+            common, bsDialog, datasearch, dataconfig, config) {
 
             var vm = this;
             vm.title = "Aggragations";
@@ -19,7 +19,7 @@
             vm.isBusy = true;
             vm.busyMessage = "wait";
             vm.spinnerOptions = {
-                radius: 120,
+                radius: 60,
                 lines: 24,
                 length: 0,
                 width: 30,

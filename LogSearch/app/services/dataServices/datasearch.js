@@ -12,22 +12,37 @@
 
         //#region service
         var service = {
+            basicSearch: basicSearch,
             getSampledata: getSampledata,
             stringSearch: stringQuery,
             searchWithoutFilter: termQuery,
-            basicSearch: basicSearch,
-            stringquery: test,
             termQueryWithBoolFilter: termQueryWithBoolFilter,
             stringQueryWithBoolFilter: stringQueryWithBoolFilter,
             termAggragation: termAggragation,
             termAggragationwithQuery: termAggragationwithQuery,
-            dateHistogramAggregation: dateHistogramAggregation
+            dateHistogramAggregation: dateHistogramAggregation,
+            dashboardPieAggregation: dashboardPieAggregation,
+            termQueryAggragation: termQueryAggragation,
+            test: test
         }
         return service;
         //#endregion
 
 
         //#region Aggragation
+        function dashboardPieAggregation(f1,f2,f3,start,end) {
+        return  client.search({
+                index: vm.indicesName,
+                type: vm.type,
+                body: ejs.Request()
+                    .aggregation(ejs.FilterAggregation("ag1").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).agg(ejs.TermsAggregation("agg1").field(f1)))
+                    .aggregation(ejs.FilterAggregation("ag2").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).agg(ejs.TermsAggregation("agg2").field(f2)))
+                    .aggregation(ejs.FilterAggregation("ag3").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).agg(ejs.TermsAggregation("agg3").field(f3)))
+
+            });
+        }
+
+
         function dateHistogramAggregation(index, type, aggfield, span, start, end) {
             return client.search({
                 index: index,
@@ -68,6 +83,18 @@
 
             });
         }
+
+        function termQueryAggragation(indices, type, aggfield, size, start, end) {
+            return client.search({
+                index: indices,
+                type: type,
+                body: ejs.Request()
+                    .query(ejs.TermQuery("geoip.country_code3.raw", "USA"))
+                    .aggregation(ejs.FilterAggregation("ag").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size)))
+
+            });
+        }
+
         //#endregion
 
 
@@ -109,11 +136,13 @@
             });
         }
 
-        function termQueryWithBoolFilter(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end) {
+        function termQueryWithBoolFilter(indices, type, pagecount, field, searchText, condition, start, end) {
 
             var m = [];
             var n = [];
             var s = [];
+            var time = ejs.RangeFilter("@timestamp").lte(end).gte(start);
+            m.push(time);
             angular.forEach(condition, function (cc) {
                 if (cc.condition === "MUST") {
                     var x = ejs.TermFilter(cc.field, cc.text);
@@ -129,14 +158,14 @@
                 }
             });
 
-
+            
             var fmust = ejs.AndFilter(m);
             var fnot = ejs.AndFilter(n);
             var fshould = ejs.AndFilter(s);
+            
 
-            if (m.length < 1) {
-                fmust = ejs.MatchAllFilter();
-            }
+
+         
             if (n.length < 1) {
                 fnot = ejs.NotFilter(ejs.MatchAllFilter());
             }
@@ -151,16 +180,17 @@
                 size: pagecount,
                 body: ejs.Request()
                     .query(ejs.MatchQuery(field, searchText))
-                    .filter(ejs.BoolFilter().must(fmust).mustNot(fnot).should(fshould))
-                //.filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
+                    .filter(ejs.BoolFilter().must(fmust).mustNot(fnot).should(fshould))                 
             });
         }
 
-        function stringQueryWithBoolFilter(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end) {
+        function stringQueryWithBoolFilter(indices, type, pagecount, field, searchText, condition, start, end) {
 
             var m = [];
             var n = [];
             var s = [];
+            var time = ejs.RangeFilter("@timestamp").lte(end).gte(start);
+            m.push(time);
             angular.forEach(condition, function (cc) {
                 if (cc.condition === "MUST") {
                     var x = ejs.TermFilter(cc.field, cc.text);
@@ -180,12 +210,9 @@
             var fmust = ejs.AndFilter(m);
             var fnot = ejs.AndFilter(n);
             var fshould = ejs.AndFilter(s);
-
-            if (m.length < 1) {
-                fmust = ejs.MatchAllFilter();
-            }
+           
             if (n.length < 1) {
-                fnot = ejs.NotFilter(ejs.MatchAllFilter());
+                fnot = ejs.NotFilter(ejs.TermFilter("",""));
             }
             if (s.length < 1) {
                 fshould = ejs.MatchAllFilter();
@@ -199,7 +226,6 @@
                 body: ejs.Request()
                     .query(ejs.QueryStringQuery(searchText))
                     .filter(ejs.BoolFilter().must(fmust).mustNot(fnot).should(fshould))
-                //.filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
             });
         }
 
@@ -207,7 +233,7 @@
 
 
         //#region Main search 
-        function basicSearch(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end) {
+        function basicSearch(indices, type, pagecount, field, searchText, condition, start, end) {
 
             if (condition.length < 1) {
                 if (field === "" || field === "all" || field === undefined) {
@@ -218,9 +244,9 @@
 
             } else {
                 if (field === "" || field === "all" || field === undefined) {
-                    return stringQueryWithBoolFilter(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end);
+                    return stringQueryWithBoolFilter(indices, type, pagecount, field, searchText, condition, start, end);
                 } else {
-                    return termQueryWithBoolFilter(indices, type, pagecount, field, searchText, filterField, filter, condition, start, end);
+                    return termQueryWithBoolFilter(indices, type, pagecount, field, searchText, condition, start, end);
                 }
 
             }
@@ -288,6 +314,6 @@
             });
         }
     }
-        //#endregion
+    //#endregion
 
 })();

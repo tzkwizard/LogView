@@ -62,15 +62,15 @@
   <ItemGroup>
     <Content Include="app\agg\aggs.html" />
     <Content Include="app\agg\aggs.js" />
-    <Content Include="app\dataServices\dataconfig.js" />
-    <Content Include="app\dataServices\datasearch.js" />
-    <Content Include="app\ELS\els.html" />
-    <Content Include="app\ELS\els.js" />
-    <Content Include="app\ELS\client.js" />
-    <Content Include="app\ELS\Loading.html" />
-    <Content Include="app\ELS\Loading.js" />
-    <Content Include="app\ELS\TODO.html" />
-    <Content Include="app\ELS\TODO.js" />
+    <Content Include="app\services\dataServices\dataconfig.js" />
+    <Content Include="app\services\dataServices\datasearch.js" />
+    <Content Include="app\els\els.html" />
+    <Content Include="app\els\els.js" />
+    <Content Include="app\els\client.js" />
+    <Content Include="app\els\Loading.html" />
+    <Content Include="app\els\Loading.js" />
+    <Content Include="app\els\TODO.html" />
+    <Content Include="app\els\TODO.js" />
     <Content Include="app\layout\topnav.js" />
     <Content Include="app\services\routeMediator.js" />
     <Content Include="Scripts\angularjs\angular-animate.js" />

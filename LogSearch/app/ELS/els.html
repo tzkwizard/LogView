@@ -16,7 +16,7 @@
         <div class="container-fluid">
             <div id="Header" class="input-append row-fluid">
                 <input type="text" class="form-control"
-                       data-ng-keyup="vm.search()"
+                       data-ng-keyup="vm.autoFill()"
                        data-ng-model=" vm.searchText"
                        placeholder="  Search"
                        typeahead=" record for record in vm.at| filter:$viewValue | limitTo:5" typeahead-loading="loading" />
