@@ -399,7 +399,7 @@
         //#region Draw Map2
         //get geomap2 data
         function geoMap2() {
-            datasearch.termAggragation(vm.indicesName, vm.type, "geoip.country_name.raw", 100, vm.st, vm.ft).
+            datasearch.termAggragation(vm.indicesName, vm.type, "geoip.country_name.raw", 200, vm.st, vm.ft).
                 then(function (resp) {
                     if (resp.data.Total !== 0) {
                         drawMap2(resp.data.AggData);

@@ -1,4 +1,5 @@
-﻿(function () {
+﻿/// <reference path="component/load/Loading.html" />
+(function () {
     'use strict';
 
     var app = angular.module('app');
@@ -80,7 +81,7 @@
             {
                 url: '/',
                 config: {
-                    templateUrl: 'app/ELS/Loading.html',
+                    templateUrl: 'app/component/load/Loading.html',
                     title: 'load',
                     settings: {
 
@@ -104,7 +105,7 @@
                  url: '/els',
                  config: {
                      title: 'els',
-                     templateUrl: 'app/ELS/els.html',
+                     templateUrl: 'app/component/els/els.html',
                      settings: {
                          nav: 2,
                          content: '<i class="fa fa-search"></i> ELS'
@@ -114,7 +115,7 @@
                  url: '/aggs',
                  config: {
                      title: 'aggs',
-                     templateUrl: 'app/agg/aggs.html',
+                     templateUrl: 'app/component/agg/aggs.html',
                      settings: {
                          nav: 3,
                          content: '<i class="fa fa-area-chart"></i> Aggs'
@@ -125,7 +126,7 @@
                  url: '/todo',
                  config: {
                      title: 'TODO',
-                     templateUrl: 'app/ELS/TODO.html',
+                     templateUrl: 'app/component/load/TODO.html',
                      settings: {
                          nav: 4,
                          content: '<i class="fa fa-cloud"></i> TODO'
@@ -136,7 +137,7 @@
                  url: '/els/:search',
                  config: {
                      title: 'search',
-                     templateUrl: 'app/ELS/els.html',
+                     templateUrl: 'app/component/els/els.html',
                      settings: {
                      }
                  }

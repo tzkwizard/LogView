@@ -260,6 +260,19 @@
             var local = "http://localhost:1972/" + "api/ElasticSearch";
             var ii = angular.toJson(info);
 
+
+            return $http({
+                method: 'POST',
+                url: local,           
+                data: info
+            })
+              .success(function (resp) {
+                  return resp;
+              }).error(function (e) {
+                  toastr.info(e);
+              });
+
+
             return $http.post(local, ii)
               .success(function (resp) {
                   return resp;

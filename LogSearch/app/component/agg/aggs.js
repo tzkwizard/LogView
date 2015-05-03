@@ -169,7 +169,8 @@
                 });
                 var field = vm.fieldstree.indexOf("timestamp.raw");
                 vm.fieldstree.splice(field, 1);
-
+                field = vm.fieldstree.indexOf("tags.raw");
+                vm.fieldstree.splice(field, 1);
 
                 datatree.addColumn('string', 'Name');
                 datatree.addColumn('string', 'Parent');
@@ -449,7 +450,7 @@
 
                 //dataconfig.createContainer(aggName);
                 vm.dashboard = "dash";
-                vm.range = "range";
+                vm.range = "range"; 
                 vm.barchart = "bar";
                 vm.tablechart = "table";
 

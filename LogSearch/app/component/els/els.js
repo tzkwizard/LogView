@@ -680,7 +680,7 @@
 
 
 
-
+/*
 (function () {
     'use strict';
 
@@ -718,7 +718,7 @@
                  { Field: "RuquestTime", Value: $scope.items._source.timestamp },
                  { Field: "Referrer", Value: $scope.items._source.referrer },
                  { Field: "ActualAction", Value: $scope.items._source.action }
-             ];*/
+             ];#1#
 
 
             $scope.gridOptions = {
@@ -845,5 +845,5 @@
             //#endregion
 
         });
-})();
+})();*/
 
