@@ -2,9 +2,9 @@
     'use strict';
 
     var serviceId = 'dataconfig';
-    angular.module('app').factory(serviceId, ['$q', '$timeout', '$rootScope', '$cookieStore', 'common', 'client', 'datasearch', dataconfig]);
+    angular.module('app').factory(serviceId, ['$http', '$q', '$timeout', '$rootScope', '$cookieStore', 'common', 'client', 'datasearch', dataconfig]);
 
-    function dataconfig($q, $timeout, $rootScope, $cookieStore, common, client, datasearch) {
+    function dataconfig($http,$q, $timeout, $rootScope, $cookieStore, common, client, datasearch) {
 
         var vm = this;
         var getLogFn = common.logger.getLogFn;
@@ -54,10 +54,15 @@
             angular.forEach(vm.pfx, function (agg) {
                 var aSubp = datasearch.termAggragation($rootScope.index, 'logs', agg, 1000, $rootScope.st, $rootScope.ft)
                    .then(function (resp) {
-                       var tt = resp.aggregations.ag.agg.buckets;
+                       var tt = resp.data.AggData;
+                       angular.forEach(tt, function (y) {
+                           word.push(y.Key);
+                       });
+
+                      /* var tt = resp.aggregations.ag.agg.buckets;
                        angular.forEach(tt, function (y) {
                            word.push(y.key);
-                       });
+                       });*/
 
                    }, function (err) {
                        // toastr.info("Auto Fill Load error" + err.message);
@@ -201,7 +206,21 @@
         function initIndex() {
             var indicesName = [];
 
-            var ipromise = client.cluster.state({
+            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticMapping/LogstashMap";
+            var local = "http://localhost:1972/" + "api/ElasticMapping/LogstashMap";
+            var ipromise= $http.get(local)
+              .success(function (resp) {
+                indicesName = resp.Index;
+                // return resp;
+            }).error(function (e) {
+                  toastr.info(e);
+              });
+            return ipromise.then(function () {
+                return indicesName;
+            });
+
+
+           /* var ipromise = client.cluster.state({
                 flatSettings: true
 
             }).then(function (resp) {
@@ -232,11 +251,12 @@
             //return indicesName;
             return ipromise.then(function () {
                 return indicesName;
-            });
+            });*/
         }
 
         //get index from cluster
         function getIndexName() {
+
             var indicesName = [];
 
             client.cluster.state({
@@ -299,7 +319,28 @@
 
         //get field from cluster
         function getFieldName(index, type) {
-            if (type === "all" || type === "")
+            var fieldsName = [];
+            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticMapping/LogstashMap";
+            var local = "http://localhost:1972/" + "api/ElasticMapping/LogstashMap";
+            var ipromise = $http.get(local)
+              .success(function (resp) {
+                  fieldsName = resp.Field;
+                angular.forEach(fieldsName, function(name) {
+                    if (name.substring(0, 1) === '_') {
+                        var index = fieldsName.indexOf(name);
+                        fieldsName.splice(index, 1);
+                    }
+                });
+
+            }).error(function (e) {
+                  toastr.info(e);
+              });
+            return ipromise.then(function () {
+                return fieldsName;
+            });
+
+
+            /* if (type === "all" || type === "")
                 //|| vm.typesName.indexOf(type) === -1
                 return "";
             var fieldsName = [];
@@ -329,7 +370,7 @@
             return fpromise.then(function () {
                 return fieldsName;
             });
-            //return fieldsName;
+            //return fieldsName;*/
         }
         //#endregion
 

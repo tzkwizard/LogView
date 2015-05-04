@@ -24,23 +24,39 @@ namespace LogView
 
             Program p = new Program();
 
-            const string elUri = "http://aotuo:123456@localhost:9200/";
-            Node = new Uri(elUri);
-            var connectionPool = new SniffingConnectionPool(new[] { Node });
-            Settings = new ConnectionSettings(Node);
-            var config = new ConnectionConfiguration(connectionPool)
-                .EnableTrace()
-                .ExposeRawResponse()
-                .SetBasicAuthentication("aotuo", "123456")
-                .SetTimeout(4000);
+            /* const string elUri = "http://aotuo:123456@localhost:9200/";
+             Node = new Uri(elUri);
+             var connectionPool = new SniffingConnectionPool(new[] { Node });
+             Settings = new ConnectionSettings(Node);
+             var config = new ConnectionConfiguration(connectionPool)
+                 .EnableTrace()
+                 .ExposeRawResponse()
+                 .SetBasicAuthentication("aotuo", "123456")
+                 .SetTimeout(4000);
 
-            Client = new ElasticClient(Settings);
+             Client = new ElasticClient(Settings);*/
 
+            #region Test
+
+            QueryInfo q = new QueryInfo
+            {
+                Type = "logs",
+                Size = 150,
+                SearchText = "london",
+                Field = "geoip.city_name",
+                End = DateTime.Now,
+                Start = DateTime.Now.AddDays(-22),
+                AggField = "geoip.real_region_name.raw",
+                Span = "day",
+                SubSize = 5
+            };
             
-            QueryInfo q= new QueryInfo();
-            
+
             DataConfig dataConfig=new DataConfig();
             dataConfig.Ping();
+            dataConfig.GetField();
+
+            
 
 
             var type = "logs";
@@ -51,19 +67,22 @@ namespace LogView
             DateTime start = end.AddDays(-7);
             DataService dataService = new DataService();
 
-            dataService.StringQuery(Client,"", type, pagecount, searchText,start,end);
-           // dataService.GetSampledata(Client, "", type, pagecount, start, end);
-            //dataService.TermQuery(Client, "", type, pagecount,searchText,field, start, end);
-           // dataService.TermAggragation(Client, "", type,field, pagecount,start, end);
-            //dataService.TermAggragationwithQuery(Client, "", type, field, pagecount,searchText, start, end);
-           // dataService.DateHistogramAggregation(Client, "", type, field, "", start, end);
+
+            
+            // dataService.StringQuery(q);
+           // dataService.GetSampledata(q);
+            //dataService.TermQuery(q);
+           // dataService.TermAggragation(q);
+           // dataService.TermAggragationwithQuery(q);
+           // dataService.DateHistogramAggregation(q);
+           // dataService.TermQueryAggragation(q);
+            #endregion
 
 
 
 
-
-
-/*
+            #region Deprecated
+            /*
             var newPost = new activitylog
             {
                 IpAddress = "21",
@@ -77,24 +96,24 @@ namespace LogView
            
             var indexsettings = new IndexSettings();*/
 
-           /* try
-            {
-                var res = Client.Count(c=>c.AllIndices().Type("logs"));
-                var res2 =Client.Search<object>(s => s.AllIndices()
-                .From(0)
-                .Size(50)
-                .Query(q =>q.Term("ident","BingLi"))      
-                );
+            /* try
+             {
+                 var res = Client.Count(c=>c.AllIndices().Type("logs"));
+                 var res2 =Client.Search<object>(s => s.AllIndices()
+                 .From(0)
+                 .Size(50)
+                 .Query(q =>q.Term("ident","BingLi"))      
+                 );
 
-                Console.WriteLine(res.Count);
-                Escount = (int)res.Count;
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("error");
-            }
-            Termquery();*/
-
+                 Console.WriteLine(res.Count);
+                 Escount = (int)res.Count;
+             }
+             catch (Exception)
+             {
+                 Console.WriteLine("error");
+             }
+             Termquery();*/
+            #endregion
 
 
 

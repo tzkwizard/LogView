@@ -472,12 +472,21 @@
 
                 return datasearch.getSampledata(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.st, vm.ft)
                       .then(function (resp) {
-                          vm.hitSearch = resp.hits.hits;
-                          vm.total = resp.hits.total;
-                          vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
-                          vm.getCurrentPageData(vm.hitSearch);
-                          vm.type = "";
-                          //log('Loaded sample document');
+
+                          if (resp.data.Total !== 0) {
+                              vm.hitSearch = resp.data.Data;
+                              vm.total = resp.data.Total;
+                              vm.tt = resp.total < vm.pagecount ? resp.total : vm.pagecount;
+                              vm.getCurrentPageData(vm.hitSearch);
+                              random();
+                          }
+
+                          /* vm.hitSearch = resp.hits.hits;
+                           vm.total = resp.hits.total;
+                           vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
+                           vm.getCurrentPageData(vm.hitSearch);
+                           vm.type = "";
+                           log('Loaded sample document');*/
                       });
             }
             //#endregion
@@ -499,22 +508,25 @@
                     // autoFill();
                     datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, vm.condition, vm.st, vm.ft)
                         .then(function (resp) {
-                            vm.hitSearch = resp.hits.hits;
+                            if (resp.data.Total !== 0) {
+                                vm.hitSearch = resp.data.Data;
+                                vm.total = resp.data.Total;
+                                vm.tt = resp.total < vm.pagecount ? resp.total : vm.pagecount;
+                                vm.getCurrentPageData(vm.hitSearch);
+                                random();
+                            }
+                            /*vm.hitSearch = resp.hits.hits;
                             vm.total = resp.hits.total;
                             vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
                             vm.getCurrentPageData(vm.hitSearch);
-                            random();
+                            random();*/
                         }, function (err) {
                             // log("search data error " + err.message);
                         });
                 }
 
             }
-            /*var filterdata = {
-                text: "",
-                field: "",
-                condition: ""
-            };*/
+
 
             //fill condition with filter information
             function addFilterdata() {
@@ -585,8 +597,10 @@
 
                     }
                     vm.filterfill = true;
+                    vm.field = "all";
+                    search();
                 }
-                search();
+
             }
 
             //add filter button

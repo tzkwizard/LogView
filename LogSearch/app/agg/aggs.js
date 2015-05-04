@@ -137,12 +137,15 @@
             //get treemap data
             function treeMap(index, aggName, datatree) {
                 return datasearch.termAggragation(index, vm.type, aggName, vm.size, vm.st, vm.ft)
-                        .then(function (resp) {
-                            var tt = resp.aggregations.ag.agg.buckets;
+                        .then(function (resp) {                          
+                            //var tt = resp.aggregations.ag.agg.buckets;
+                            var tt = resp.data.AggData;
                             tt.map(function (y) {
-                                var x = Math.random() * y.doc_count - 50;
-                                // datatree.addRow([y.key + "\n" + aggName + "\n" + index, aggName + "\n" + index, y.doc_count, x]);
-                                datatree.addRow([y.key + "\n" + aggName, aggName, y.doc_count, x]);
+                                //var x = Math.random() * y.doc_count - 50;
+                                //datatree.addRow([y.key + "\n" + aggName, aggName, y.doc_count, x]);
+                                var x = Math.random() * y.DocCount - 50;
+                                datatree.addRow([y.Key + "\n" + aggName, aggName, y.DocCount, x]);
+
                             });
                         }, function (err) {
                             //log("Tree data Load " + err.message);
@@ -413,9 +416,13 @@
                     vm.token = true;
                     datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft)
                         .then(function (resp) {
-                            vm.total = resp.hits.total;
+                           /* vm.total = resp.hits.total;
                             vm.hitSearch = resp.aggregations.ag.agg.buckets;
-                            drawDashboard(resp.aggregations.ag.agg, aggName);
+                            drawDashboard(resp.aggregations.ag.agg, aggName);*/
+                            vm.total = resp.data.Total;
+                            vm.hitSearch = resp.data.AggData;
+                            drawDashboard(resp.data.AggData, aggName);
+
                         }, function (err) {
                             log(err.message);
                             vm.indicesName = $rootScope.index;
@@ -444,14 +451,25 @@
                           vm.range = vm.range + aggName;
                           vm.barchart = vm.barchart + aggName;
                           vm.tablechart = vm.tablechart + aggName;
-                          vm.total = resp.hits.total;
-                          if (!flag) {
+                          //vm.total = resp.hits.total;
+                          vm.total = resp.data.Total;
+
+                         /* if (!flag) {
                               if (resp.aggregations.ag.agg.buckets.length > 1) {
                                   drawDashboard2(resp.aggregations.ag.agg, aggName);
                               }
                           } else {
                               drawDashboard2(resp.aggregations.ag.agg, aggName);
+                          }*/
+
+                          if (!flag) {
+                              if (resp.data.AggData.length > 1) {
+                                  drawDashboard2(resp.data.AggData, aggName);
+                              }
+                          } else {
+                              drawDashboard2(resp.data.AggData, aggName);
                           }
+
 
                       }, function (err) {
                           // log("aggshows err "+err.message);
@@ -468,10 +486,14 @@
                 var data = new google.visualization.DataTable();
                 data.addColumn('string', 'key');
                 data.addColumn('number', 'Count Range');
-                for (var i = 0; i < agg.buckets.length; i++) {
+               /* for (var i = 0; i < agg.buckets.length; i++) {
                     data.addRow([agg.buckets[i].key.toString(), agg.buckets[i].doc_count]);
 
-                }
+                }*/
+                angular.forEach(agg,function(ag) {
+                    data.addRow([ag.Key.toString(), ag.DocCount]);
+                });
+
                 // Create a dashboard.
                 var dashboard = new google.visualization.Dashboard(
                     document.getElementById("dash" + y));
@@ -536,10 +558,13 @@
                 var data = new google.visualization.DataTable();
                 data.addColumn('string', 'key');
                 data.addColumn('number', 'Number');
-                for (var i = 0; i < agg.buckets.length; i++) {
+               /* for (var i = 0; i < agg.buckets.length; i++) {
                     data.addRow([agg.buckets[i].key.toString(), agg.buckets[i].doc_count]);
 
-                }
+                }*/
+                angular.forEach(agg, function (ag) {
+                    data.addRow([ag.Key.toString(), ag.DocCount]);
+                });
                 // Create a dashboard.
                 var dashboard = new google.visualization.Dashboard(
                     document.getElementById('dashboard'));

@@ -66,7 +66,7 @@
 
         //bootstrap 
         function init() {
-            getIndexName();
+            //getIndexName();
             vm.type = $rootScope.logtype;
             if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {
                 vm.ft = $rootScope.ft;
@@ -126,8 +126,11 @@
         function geoMap() {
             datasearch.termAggragation(vm.indicesName, vm.type, "geoip.city_name.raw", vm.size, vm.st, vm.ft).
                 then(function (resp) {
-                    vm.tt = resp.hits.total;
-                    drawMap(resp.aggregations.ag.agg.buckets, vm.tt);
+                    if (resp.data.Total !== 0) {
+                        drawMap(resp.data.AggData);
+                    }
+                    /* vm.tt = resp.hits.total;
+                     drawMap(resp.aggregations.ag.agg.buckets, vm.tt);*/
                 }, function (err) {
                     //log("geoMap data error " + err.message);
                     vm.indicesName = $rootScope.index;
@@ -149,10 +152,14 @@
             //geoData.addRow([n._source.geoip.city_name, 1, n._source.geoip.latitude, n._source.geoip.longitude]);
             vm.j = -1;
             angular.forEach(r, function (n) {
-
-                if (n.doc_count > 10) {
+              /*  if (n.doc_count > 10) {
                     geoData.addRow([n.key.toString(), n.doc_count]);
+                }*/
+                if (n.DocCount > 10) {
+                    geoData.addRow([n.Key, n.DocCount]);
                 }
+
+
             });
 
             var geoView = new google.visualization.DataView(geoData);
@@ -273,9 +280,12 @@
 
             datasearch.dateHistogramAggregation(vm.indicesName, vm.type, "@timestamp", "day", vm.st, vm.ft)
                 .then(function (resp) {
-                    vm.total = resp.aggregations;
+                    if (resp.data.Total !== 0) {
+                        drawTimwLine(resp.data.DateHistData);
+                    }
+                   /* vm.total = resp.aggregations;
                     vm.hitSearch = resp.aggregations.ag.agg.buckets;
-                    drawTimwLine(resp.aggregations.ag.agg.buckets);
+                    drawTimwLine(resp.aggregations.ag.agg.buckets);*/
                 }, function (err) {
                     //log("timelineGram data error " + err.message);
                     vm.indicesName = $rootScope.index;
@@ -291,7 +301,9 @@
             data.addColumn('number', 'Count');
 
             angular.forEach(agg, function (n) {
-                data.addRow([new Date(n.key), n.doc_count]);
+                //data.addRow([new Date(n.key), n.doc_count]);
+                data.addRow([new Date(n.Key), n.DocCount]);
+
             });
             var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('TimeLine_div'));
             chart.draw(data, {
@@ -305,9 +317,12 @@
         function histGram() {
 
             datasearch.dateHistogramAggregation(vm.indicesName, vm.type, "@timestamp", "day", vm.st, vm.ft).then(function (resp) {
-                vm.total = resp.aggregations;
+                if (resp.data.Total !== 0) {
+                    drawHist(resp.data.DateHistData);
+                }
+               /* vm.total = resp.aggregations;
                 vm.hitSearch = resp.aggregations.ag.agg.buckets;
-                drawHist(resp.aggregations.ag.agg.buckets);
+                drawHist(resp.aggregations.ag.agg.buckets);*/
             }, function (err) {
                 log("histGram data error " + err.message);
             });
@@ -347,8 +362,8 @@
          [new Date(2008, 1 ,2),0.5],
               ]);*/
             angular.forEach(agg, function (n) {
-                data.addRow([new Date(n.key), n.doc_count]);
-
+                //data.addRow([new Date(n.key), n.doc_count]);
+                data.addRow([new Date(n.Key), n.DocCount]);
                 // Data.addRow([n.doc_count, new Date(n.key_as_string.substring(0,4), n.key_as_string.substring(5,7), n.key_as_string.substring(8,10))]);
             });
 
@@ -376,8 +391,11 @@
         function geoMap2() {
             datasearch.termAggragation(vm.indicesName, vm.type, "geoip.country_name.raw", 100, vm.st, vm.ft).
                 then(function (resp) {
+                    if (resp.data.Total !== 0) {
+                        drawMap2(resp.data.AggData);
+                    }
                     //vm.tt = resp.hits.total;
-                    drawMap2(resp.aggregations.ag.agg.buckets);
+                    //drawMap2(resp.aggregations.ag.agg.buckets);
                 }, function (err) {
                     //log("geoMap2 data error" + err.message);
                     vm.indicesName = $rootScope.index;
@@ -395,7 +413,8 @@
             geoData2.addColumn('number', 'Count');
 
             angular.forEach(r, function (n) {
-                geoData2.addRow([n.key.toString(), n.doc_count]);
+                //geoData2.addRow([n.key.toString(), n.doc_count]);
+                geoData2.addRow([n.Key, n.DocCount]);
             });
             var options = {
                 colorAxis: { colors: ['#B2B2FF', '#0000FF', '#00004C'] },
@@ -422,8 +441,12 @@
 
             datasearch.termQueryAggragation(vm.indicesName, vm.type, "geoip.real_region_name.raw", 50, vm.st, vm.ft).
                    then(function (resp) {
+                       if (resp.data.Total !== 0) {
+                           drawUSmap(resp.data.AggData);
+
+                       }
                        //vm.tt = resp.hits.total;
-                       drawUSmap(resp.aggregations.ag.agg.buckets);
+                       ///drawUSmap(resp.aggregations.ag.agg.buckets);                      
                    }, function (err) {
                        //log("geoMap2 data error" + err.message);
                        vm.indicesName = $rootScope.index;
@@ -439,7 +462,8 @@
             geoDataus.addColumn('number', 'Count');
 
             angular.forEach(r, function (n) {
-                geoDataus.addRow([n.key.toString(), n.doc_count]);
+                //geoDataus.addRow([n.key.toString(), n.doc_count]);
+                geoDataus.addRow([n.Key, n.DocCount]);
             });
             var options = {
                 colorAxis: { colors: ['#B2B2FF', '#0000FF', '#00004C'] },
@@ -457,10 +481,10 @@
 
             chart.draw(geoDataus, options);
 
-              google.visualization.events.addListener(chart, 'select', function () {
-                 var row = chart.getSelection()[0];
-                 log(row);
-             });
+            google.visualization.events.addListener(chart, 'select', function () {
+                var row = chart.getSelection()[0];
+                log(row);
+            });
             vm.isBusy = false;
         }
 

@@ -1,0 +1,264 @@
+﻿<section class="mainbar" data-ng-controller="els as vm">
+
+    <div id="LoadingPage">
+        <div id="splash-page" data-ng-show="vm.showSplash">
+            <div class="page-splash">
+                <div class="page-splash-message">
+                    Loading
+                </div>
+                <div class="progress progress-striped active page-progress-bar">
+                    <div class="bar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="matter">
+        <div class="container-fluid">
+            <div id="Header" class="input-append row-fluid">
+                <input type="text" class="form-control"
+                       data-ng-keyup="vm.autoFill()"
+                       data-ng-model=" vm.searchText"
+                       placeholder="  Search"
+                       typeahead=" record for record in vm.at| filter:$viewValue | limitTo:5" typeahead-loading="loading" />
+                <i ng-show="loading" class="glyphicon glyphicon-refresh"></i>
+                <button class="btn btn-large btn-info btn-notext ng-click-active" type="button" data-ng-click="vm.search()">
+                    <i class="fa fa-search"> Search </i>
+                </button>
+                <button class="btn btn-large btn-info btn-notext ng-click-active" type="button" data-ng-click="vm.refresh($event)">
+                    <i class="fa fa-refresh"> Refresh </i>
+                </button>
+                <button class="btn-group-sm" type="button">
+                    <i class="fa fa-question-circle" tooltip="{{vm.Syntax.title}}+{{vm.Syntax.Description}}" tooltip-trigger="click" tooltip-placement="right"> </i>
+                </button>
+
+
+                <select ng-model="vm.field" class="form-control" style="width: 120px">
+                    <option value="" disabled selected>Select your Field</option>
+                    <option value="all">all</option>
+                    <option value={{doc}} data-ng-repeat="doc in vm.fieldsName">{{doc}} </option>
+                </select>
+
+                <!--
+                <button type="button" class="btn btn-default" ng-click="vm.toggleMin()" tooltip="After today restriction">Min date</button>
+                -->
+
+                <div class="btn-group pull-right" dropdown is-open="status.isopen">
+                    <button type="button" class="btn btn-info dropdown-toggle " dropdown-toggle ng-disabled="disabled">
+                        History <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" ng-model="vm.dadjust">
+                        <li ng-repeat="choice in vm.it" data-ng-click="vm.filterst(choice)">
+                            <a>{{choice}}</a>
+                        <li class="divider"></li>
+                        <li><a href="#/dashboard">Separated link</a></li>
+                    </ul>
+                </div>
+
+
+
+            </div>
+
+            <div class="widget wlightblue">
+                <div data-cc-widget-header title="{{vm.title2}}"
+                     allow-collapse="true"></div>
+
+                <div class="widget-content">
+                    <div id="Function1" class="input-append row-fluid">
+
+                        <div class="input-group-pull">
+
+                            <select class="form-control" ng-model="vm.format" ng-options="f for f in vm.formats" ng-show="false"><option></option></select>
+
+                            <input type="text" class="form-control" datepicker-popup="{{vm.format}}" ng-model="vm.st"
+                                   is-open="vm.timeopened" min-date="vm.minDate" datepicker-options="vm.dateOptions"
+                                   date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  start date" ng-show="false" />
+                            <button type="button" class="btn btn-large btn-info btn-notext" ng-click="vm.timeopen($event)"><i class="fa fa-calendar"> Ini Day </i></button>
+
+                            <input type="text" class="form-control" datepicker-popup="{{vm.format}}" ng-model="vm.ft"
+                                   is-open="vm.ftimeopened" min-date="vm.minDate" datepicker-options="vm.dateOptions"
+                                   date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  end date" ng-show="false" />
+                            <button type="button" class="btn btn-large btn-info btn-notext" ng-click="vm.ftimeopen($event)"><i class="fa fa-calendar"> End Day </i></button>
+                        </div>
+
+
+
+                        <div id="filter" class="btn-group">
+                            <input type="text" size="8"
+                                   data-ng-model="vm.fi"
+                                   placeholder="  Filter " ng-show="false" />
+                            <select id="test" ng-model="vm.filterAggName" ng-show="false" class="input-medium" style="width: 100px">
+                                <option value={{doc}} data-ng-repeat="doc in vm.fieldsName">{{doc}} </option>
+                            </select>
+                            <select ng-model=" vm.condition" ng-show="false">
+                                <option selected value='MUST'>MUST</option>
+                                <option vaule='MUST_NOT'>MUST_NOT</option>
+                                <option vaule='SHOULD'>SHOULD</option>
+                            </select>
+                            <button data-ng-click="vm.test()" class="btn btn-info btn-notext " type="button" ng-show="false">
+                                <i class="fa fa-pie-chart">Test</i>
+                            </button>
+
+                        </div>
+
+
+
+
+                    </div>
+
+                    <div id="Function2" class="row-fluid">
+                        <div id="FilterButton">
+                            <button data-ng-click="vm.addfilter()" class="btn btn-info btn-notext " type="button">
+                                <i class="fa fa-plus-square"></i>
+                            </button>
+                            <button data-ng-click="vm.removefilter()" class="btn btn-info btn-notext " type="button">
+                                <i class="fa fa-minus-square"></i>
+                            </button>
+                            <button data-ng-click="vm.filltext()" class="btn btn-info btn-notext " type="button">
+                                <i class="fa fa-apple"> Fill </i>
+                            </button>
+
+                        </div>
+                        <br><br>
+                        {{vm.st}}
+                        {{vm.ft}}
+                    </div>
+                </div>
+            </div>
+
+            <div id="Result" class="row-fluid">
+
+                <progressbar class="progress-striped active" value="vm.dynamic" type="{{vm.ptype}}">{{vm.ptype}} <i ng-show="showWarning">!!! Watch out !!!</i></progressbar>
+                <select class="form-control pull-right" style="width: 70px" ng-model="vm.pagecount" ng-click="vm.refreshPage()">
+                    <option value=100>100</option>
+                    <option value=500>500</option>
+                    <option vaule=1000>1000</option>
+                    <option vaule=5000>5000</option>
+                    <option selected vaule=10000>10000</option>
+                    <option selected vaule=99999>99999</option>
+                </select>
+                <select class="form-control pull-right" style="width: 50px" ng-model="vm.paging.pageSize" ng-click="vm.refreshPage()">
+                    <option selected value=5>5</option>
+                    <option value=10>10</option>
+                    <option value=25>25</option>
+                    <option vaule=50>50</option>
+                    <option vaule=100>100</option>
+                </select>
+
+                <div class="widget wgreen">
+                    <div data-cc-widget-header title="{{vm.title}}"
+                         allow-collapse="true"
+                         subtitle="{{vm.tt}} / {{vm.total}}"
+                         right-text="Page {{vm.paging.currentPage}} of {{vm.paging.pageCount}}"></div>
+                    <!--
+                    <div data-ng-repeat="doc in vm.hits.buckets" class="fader-animation" data-ng-style="vm.mystyle">
+                        <h2>key: {{doc.key}} --- count: {{doc.doc_count}}</h2>
+                    </div>-->
+
+
+                    <div class="widget-content">
+                        <table class="table table-striped table-condensed table-hover">
+                            <thead>
+
+                                <tr>
+                                    <th class="message" width="200">Time&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend, 'glyphicon-chevron-up': !trend}" data-ng-click="predicate = '_source.timestamp'; reverse=!reverse;trend=!trend"></i></th>
+                                    <th class="message">Message&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend1, 'glyphicon-chevron-up': !trend1}" data-ng-click=" predicate='_source.message' ; reverse=!reverse;trend1=!trend1"></i></th>
+                                    <th class="message" width="100">Score&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend2, 'glyphicon-chevron-up': !trend2}" data-ng-click=" predicate='_score' ; reverse=!reverse;trend2=!trend2"></i></th>
+                                    <th class="message">Index&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend, 'glyphicon-chevron-up': !trend}" data-ng-click=" predicate='_index' ; reverse=!reverse;trend=!trend"></i></th>
+                                </tr>
+                            </thead>
+
+
+                            <tbody>
+                                <tr class="fader-animation" data-ng-repeat="doc in vm.res| orderBy:predicate:reverse" data-ng-click="vm.open(doc)">
+                                    <td>{{doc._source['@timestamp']}}</td>
+                                    <td>{{doc._source.message}}</td>
+                                    <td>{{doc._score}}</td>
+                                    <td>{{doc._index}}</td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                        <li class="fader-animation" data-ng-repeat="doc in vm.res| orderBy:predicate:reverse" data-ng-click="vm.open(doc)">
+                            <hr> <a>{{doc._source['@timestamp']}}</a> ---- {{doc._source.message}}
+                        </li>
+
+                    </div>
+                </div>
+
+                <script type="text/ng-template" id="resultModal.html">
+                    <div class="widget wlightblue">
+                        <div data-cc-widget-header title="{{title}}" allow-collapse="true"></div>
+                        <div class="widget-content">
+                            <hr />
+                            <div class="modal-body">
+                                <table class="columns">
+                                    <col width="500">
+                                    <tr>
+                                        <td width="500">
+                                            <h3> All Message Field </h3>
+                                            <div class="gridStyle2" ng-grid="gridOptions"></div>
+                                        </td>
+
+                                        <td width="500">
+                                            <h3> User Basic Information </h3>
+                                            <div class="gridStyle" ng-grid="gridOptions2"></div>
+                                            <br><br> <hr />
+                                            <h3> User Action Information </h3>
+                                            <div class="gridStyle" ng-grid="gridOptions3"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="500"></td>
+                                        <td width="500"></td>
+
+                                    </tr>
+                                </table>
+                                <hr />
+                                {{mySelections}}
+
+                                <ul>
+                                    <!--  <li ng-click="selected.item = items._source.timestamp"><h5>Time :  <a>{{items._source.timestamp}}</a></h5></li>-->
+                                    <!--<ul ng-repeat="item in items._source">
+                                    <li ng-click="selected.item = item">{{field}}{{ item|json }}</li>
+
+                                    </>-->
+                                </ul>
+                                Selected: <b>{{ selected.item |json }}</b>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" ng-click="ok()">OK</button>
+                        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                    </div>
+                </script>
+
+
+
+                <div class="widget-foot">
+                    <div class="clearfix"></div>
+                    <pagination boundary-links="true"
+                                total-items="vm.tt"
+                                items-per-page="vm.paging.pageSize"
+                                data-ng-model="vm.paging.currentPage"
+                                data-ng-change="vm.pageChanged()"
+                                max-size="vm.paging.maxPagesToShow"
+                                class="pagination-sm"
+                                previous-text="Prev"
+                                next-text="Next"
+                                first-text="First"
+                                last-text="Last"></pagination>
+                    <div class="clearfix"></div>
+                </div>
+
+
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+</section>

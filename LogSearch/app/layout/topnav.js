@@ -3,9 +3,9 @@
 
     var controllerId = 'topnav';
     angular.module('app').controller(controllerId,
-        ['$q', '$cookieStore', '$timeout', '$rootScope', '$http', '$window', '$route', '$scope', '$location', 'dataconfig', 'datasearch', 'config', 'client', topnav]);
+        ['$q', '$cookieStore', '$timeout', '$rootScope', '$http', '$window', '$route', '$scope', '$location', 'dataconfig', 'config', 'client', topnav]);
 
-    function topnav($q, $cookieStore, $timeout, $rootScope, $http, $window, $route, $scope, $location, dataconfig, datasearch, config, client) {
+    function topnav($q, $cookieStore, $timeout, $rootScope, $http, $window, $route, $scope, $location, dataconfig, config, client) {
         var vm = this;
         // var keyCodes = config.keyCodes;
 

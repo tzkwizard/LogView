@@ -1,0 +1,51 @@
+﻿<section id="dashboard-view" class="mainbar" data-ng-controller="dashboard as vm">
+    <section class="matter">
+        <div class="container">
+            <div data-ng-show="vm.isBusy" class="page-splash dissolve-animation">
+                <div data-cc-spinner="vm.spinnerOptions"></div>
+                <div class="page-splash-message page-splash-message-subtle">{{vm.busyMessage}}</div>
+            </div>
+            <select class="form-control pull-right" style="width: 70px" ng-model="vm.geomap2selection" ng-click="vm.changeMap()">
+                <option value=1>World</option>
+                <option value=2>United states</option> 
+            </select>
+            <div class="widget wlightblue">
+                <div data-cc-widget-header title=" Region Map" allow-collapse="true"></div>
+                <div class="widget-content">
+                    <div id="gmap_div" style="height: 75%; width: 100%"></div>
+                </div>
+            </div>
+            <div class="widget waqua">
+                <div data-cc-widget-header title=" City Map" allow-collapse="true"></div>
+                <div class="widget-content">
+                    <div id="dmap_div" style="height: 70%; width: 100%"></div>
+                </div>
+            </div>
+            <div class="widget wgreen">
+                <div data-cc-widget-header title=" Chart" allow-collapse="true"></div>
+                <div class="widget-content">
+                    <table class="columns" style="height: 22%; width: 100%">
+                        <tr>
+                            <td width="33%">
+                                <div id="pie_div1" ng-click="vm.test()"></div>
+                            </td>
+                            <td width="33%">
+                                <div id="pie_div2"></div>
+                            </td>
+                            <td width="34%">
+                                <div id="pie_div3"></div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div id='DateHist_div' style='width: 100%; height: 22%;'></div>
+                    <div id='TimeLine_div' style='width: 100%; height: 22%;'></div>
+                    <div id="dtable_div"></div>
+                </div>
+            </div>
+        </div>
+
+     
+
+        <button data-ng-click="vm.filterindex()" class="btn btn-info btn-notext" type="button">TT</button>
+    </section>
+</section>

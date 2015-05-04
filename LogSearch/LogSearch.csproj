@@ -102,6 +102,8 @@
     <Content Include="Scripts\elasticsearch\elasticsearch.min.js" />
     <Content Include="Scripts\google chart\googleapi.js" />
     <Content Include="Scripts\jquery\jquery-2.1.1.js" />
+    <None Include="Properties\PublishProfiles\azapi.pubxml" />
+    <None Include="Properties\PublishProfiles\elscall.pubxml" />
     <None Include="Scripts\jquery\jquery-2.1.3.intellisense.js" />
     <Content Include="Scripts\jquery\jquery-2.1.3.js" />
     <Content Include="Scripts\jquery\jquery-2.1.3.min.js" />
@@ -242,7 +244,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Controllers\" />
-    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

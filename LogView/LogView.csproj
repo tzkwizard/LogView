@@ -56,6 +56,7 @@
     <Compile Include="DataConfig.cs" />
     <Compile Include="DataService.cs" />
     <Compile Include="model\ActivityLog.cs" />
+    <Compile Include="model\ELSresult.cs" />
     <Compile Include="model\logs.cs" />
     <Compile Include="model\QueryInfo.cs" />
     <Compile Include="Program.cs" />

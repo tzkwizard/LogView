@@ -2,9 +2,9 @@
     'use strict';
 
     var serviceId = 'datasearch';
-    angular.module('app').factory(serviceId, ['common', 'client', datasearch]);
+    angular.module('app').factory(serviceId, ['common', 'client', '$http', datasearch]);
 
-    function datasearch(common, client) {
+    function datasearch(common, client, $http) {
 
         var vm = this;
         var getLogFn = common.logger.getLogFn;
@@ -30,8 +30,8 @@
 
 
         //#region Aggragation
-        function dashboardPieAggregation(f1,f2,f3,start,end) {
-        return  client.search({
+        function dashboardPieAggregation(f1, f2, f3, start, end) {
+            return client.search({
                 index: vm.indicesName,
                 type: vm.type,
                 body: ejs.Request()
@@ -44,19 +44,67 @@
 
 
         function dateHistogramAggregation(index, type, aggfield, span, start, end) {
+
+
+
+            var info =
+        {
+            Span: span,
+            Start: start,
+            End: end,
+            AggField: aggfield
+        }
+
+            var ii = angular.toJson(info);
+
+            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticAggragation/DateHistogram";
+            var local = "http://localhost:1972/" + "api/ElasticAggragation/DateHistogram";
+            return $http.post(local, ii)
+              .success(function (resp) {
+                  return resp;
+              }).error(function (e) {
+                  toastr.info(e);
+              });
+
+
+
             return client.search({
                 index: index,
                 type: type,
                 body: ejs.Request()
                     .aggregation(ejs.FilterAggregation("ag").aggregation(ejs.DateHistogramAggregation("agg").field(aggfield).interval(span)).filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)))
-                // .aggregation(ejs.DateHistogramAggregation("agg").field(aggfield).interval(span))
-                //  .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
                 //.format("yyyy-MM-dd")
 
             });
         }
 
         function termAggragation(indices, type, aggfield, size, start, end) {
+
+
+            var info =
+        {
+            SubSize: size,
+            Start: start,
+            End: end,
+            AggField: aggfield
+        }
+
+            var ii = angular.toJson(info);
+
+            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticAggragation/Term";
+            var local = "http://localhost:1972/" + "api/ElasticAggragation/Term";
+            return $http.post(local, ii)
+              .success(function (resp) {
+                  return resp;
+              }).error(function (e) {
+                  toastr.info(e);
+              });
+
+
+
+            ;
+
+
             return client.search({
                 index: indices,
                 type: type,
@@ -64,13 +112,35 @@
                     ejs.Request()
                         .query(ejs.MatchAllQuery())
                          .aggregation(ejs.FilterAggregation("ag").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size)))
-                //.aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size))
-                // .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
             });
 
         }
 
         function termAggragationwithQuery(indices, type, aggfield, size, searchText, start, end) {
+
+
+            var info =
+     {
+         SearchText: searchText,
+         SubSize: size,
+         Start: start,
+         End: end,
+         AggField: aggfield
+     }
+
+            var ii = angular.toJson(info);
+
+            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticAggragation/StringQuery";
+            var local = "http://localhost:1972/" + "api/ElasticAggragation/StringQuery";
+            return $http.post(local, ii)
+              .success(function (resp) {
+                  return resp;
+              }).error(function (e) {
+                  toastr.info(e);
+              });
+
+
+
             return client.search({
                 index: indices,
                 type: type,
@@ -78,13 +148,32 @@
                     .query(ejs.QueryStringQuery(searchText))
                      .aggregation(ejs.FilterAggregation("ag").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size)))
 
-                //  .aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size))
-                // .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
 
             });
         }
 
         function termQueryAggragation(indices, type, aggfield, size, start, end) {
+
+            var info =
+          {
+              SubSize: size,
+              Start: start,
+              End: end,
+              AggField: aggfield
+          }
+
+            var ii = angular.toJson(info);
+
+            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticAggragation/TermQuery";
+            var local = "http://localhost:1972/" + "api/ElasticAggragation/TermQuery";
+            return $http.post(local, ii)
+              .success(function (resp) {
+                  return resp;
+              }).error(function (e) {
+                  toastr.info(e);
+              });
+
+
             return client.search({
                 index: indices,
                 type: type,
@@ -101,6 +190,29 @@
         //#region Filter
 
         function getSampledata(indices, type, pagecount, start, end) {
+
+
+            var info = {
+                Type: type,
+                Size: pagecount,
+                Start: start,
+                End: end
+            }
+
+            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticSearch/SampleData";
+            var local = "http://localhost:1972/" + "api/ElasticSearch/SampleData";
+            var ii = angular.toJson(info);
+
+            return $http.post(local, ii)
+              .success(function (resp) {
+                  toastr.info(resp);
+                  return resp;
+              }).error(function (e) {
+                  toastr.info(e);
+              });
+
+
+
             return client.search({
                 index: indices,
                 //type: type,
@@ -113,7 +225,31 @@
             });
         }
 
+
         function stringQuery(indices, type, pagecount, searchText, start, end) {
+
+            var info = {
+                Type: type,
+                Size: pagecount,
+                SearchText: searchText,
+                Start: start,
+                End: end
+            }
+
+            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticSearch";
+            var local = "http://localhost:1972/" + "api/ElasticSearch";
+            var ii = angular.toJson(info);
+
+            return $http.post(local, ii)
+              .success(function (resp) {
+                  toastr.info(resp);
+                  return resp;
+              }).error(function (e) {
+                  toastr.info(e);
+              });
+
+
+
 
             return client.search({
                 index: indices,
@@ -123,9 +259,36 @@
                     .query(ejs.QueryStringQuery(searchText))
                    .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
             });
+
         }
 
         function termQuery(indices, type, pagecount, field, searchText, start, end) {
+
+            var info = {
+                Type: type,
+                Size: pagecount,
+                SearchText: searchText,
+                Field: field,
+                Start: start,
+                End: end
+            }
+
+            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticSearch/Term";
+            var local = "http://localhost:1972/" + "api/ElasticSearch/Term";
+            var ii = angular.toJson(info);
+
+            return $http.post(local, ii)
+              .success(function (resp) {
+                  toastr.info(resp);
+                  return resp;
+              }).error(function (e) {
+                  toastr.info(e);
+              });
+
+
+
+
+
             return client.search({
                 index: indices,
                 type: type,
@@ -158,14 +321,14 @@
                 }
             });
 
-            
+
             var fmust = ejs.AndFilter(m);
             var fnot = ejs.AndFilter(n);
             var fshould = ejs.AndFilter(s);
-            
 
 
-         
+
+
             if (n.length < 1) {
                 fnot = ejs.NotFilter(ejs.MatchAllFilter());
             }
@@ -180,7 +343,7 @@
                 size: pagecount,
                 body: ejs.Request()
                     .query(ejs.MatchQuery(field, searchText))
-                    .filter(ejs.BoolFilter().must(fmust).mustNot(fnot).should(fshould))                 
+                    .filter(ejs.BoolFilter().must(fmust).mustNot(fnot).should(fshould))
             });
         }
 
@@ -210,9 +373,9 @@
             var fmust = ejs.AndFilter(m);
             var fnot = ejs.AndFilter(n);
             var fshould = ejs.AndFilter(s);
-           
+
             if (n.length < 1) {
-                fnot = ejs.NotFilter(ejs.TermFilter("",""));
+                fnot = ejs.NotFilter(ejs.TermFilter("", ""));
             }
             if (s.length < 1) {
                 fshould = ejs.MatchAllFilter();

@@ -25,7 +25,8 @@
             <ul collapse="vm.isCollapsed4" class="nlightblue fade-selection-animation">
                 <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.ident.raw')"
                     data-ng-repeat="r in vm.user">
-                    <a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>
+                    <!--<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>-->
+                    <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
                 </li>
             </ul>
 
@@ -35,7 +36,8 @@
             <ul collapse="vm.isCollapsed" class="nlightblue fade-selection-animation">
                 <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.geoip.city_name.raw')"
                     data-ng-repeat="r in vm.location">
-                    <a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>
+                    <!--<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>-->
+                    <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
                 </li>
             </ul>
 
@@ -44,7 +46,8 @@
             <ul collapse="vm.isCollapsed2" class="nlightblue fade-selection-animation">
                 <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.request.raw')"
                     data-ng-repeat="r in vm.apiaddress">
-                    <a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>
+                    <!--<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>-->
+                    <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
                 </li>
             </ul>
 
@@ -54,7 +57,8 @@
             <ul collapse="vm.isCollapsed3" class="nlightblue fade-selection-animation">
                 <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.verb.raw')"
                     data-ng-repeat="r in vm.httpmethod">
-                    <a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>
+                    <!--<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>-->
+                    <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
                 </li>
             </ul>
 
@@ -64,7 +68,8 @@
             <ul collapse="vm.isCollapsed5" class="nlightblue fade-selection-animation">
                 <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.action.raw')"
                     data-ng-repeat="r in vm.useraction">
-                    <a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>
+                    <!-- <a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>-->
+                    <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
                 </li>
             </ul>
 

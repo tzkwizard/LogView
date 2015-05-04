@@ -95,7 +95,8 @@
             if (vm.location === "" || vm.location === undefined || $location.search.refresh) {
 
                 datasearch.termAggragation($rootScope.index, $rootScope.logtype, "geoip.city_name.raw", vm.size, vm.st, vm.ft).then(function (resp) {
-                    vm.location = resp.aggregations.ag.agg.buckets;
+                    //vm.location = resp.aggregations.ag.agg.buckets;
+                    vm.location = resp.data.AggData;
                     $location.search.refresh = false;
                     // log("re");
                 }, function (err) {
@@ -110,7 +111,8 @@
         vm.showRequestAPI = function () {
             if (vm.apiaddress === "" || vm.apiaddress === undefined || $location.search.refresh) {
                 datasearch.termAggragation($rootScope.index, $rootScope.logtype, "request.raw", vm.size, vm.st, vm.ft).then(function (resp) {
-                    vm.apiaddress = resp.aggregations.ag.agg.buckets;
+                    //vm.apiaddress = resp.aggregations.ag.agg.buckets;
+                    vm.apiaddress = resp.data.AggData;
                     $location.search.refresh = false;
                     //log("re");
                 }, function (err) {
@@ -125,7 +127,8 @@
         vm.showRequestMethod = function () {
             if (vm.httpmethod === "" || vm.httpmethod === undefined || $location.search.refresh) {
                 datasearch.termAggragation($rootScope.index, $rootScope.logtype, "verb.raw", vm.size, vm.st, vm.ft).then(function (resp) {
-                    vm.httpmethod = resp.aggregations.ag.agg.buckets;
+                    //vm.httpmethod = resp.aggregations.ag.agg.buckets;
+                    vm.httpmethod = resp.data.AggData;
                     $location.search.refresh = false;
                     //log("re");
                 }, function (err) {
@@ -139,7 +142,8 @@
         vm.showUser = function () {
             if (vm.user === "" || vm.user === undefined || $location.search.refresh) {
                 datasearch.termAggragation($rootScope.index, $rootScope.logtype, "ident.raw", vm.size, vm.st, vm.ft).then(function (resp) {
-                    vm.user = resp.aggregations.ag.agg.buckets;
+                    //vm.user = resp.aggregations.ag.agg.buckets;
+                    vm.user = resp.data.AggData;
                     $location.search.refresh = false;
                     //  log("re");
                 }, function (err) {
@@ -153,7 +157,8 @@
         vm.showUserAction = function () {
             if (vm.useraction === "" || vm.useraction === undefined || $location.search.refresh) {
                 datasearch.termAggragation($rootScope.index, $rootScope.logtype, "action.raw", vm.size, vm.st, vm.ft).then(function (resp) {
-                    vm.useraction = resp.aggregations.ag.agg.buckets;
+                    //vm.useraction = resp.aggregations.ag.agg.buckets;
+                    vm.useraction = resp.data.AggData;
                     $location.search.refresh = false;
                     //  log("re");
                 }, function (err) {
@@ -168,8 +173,10 @@
             //$location.search();
             $location.search.field = f;
             $location.search('field', f);
-            $location.search('text', r.key.toString());
-            $location.search.text = "\"" + r.key.toString() + "\"";
+            //$location.search('text', r.key.toString());
+            //$location.search.text = "\"" + r.key.toString() + "\"";
+            $location.search('text', r.Key.toString());
+            $location.search.text = "\"" + r.Key.toString() + "\"";
             $location.path('/els/')
             //$location.path('/els/' + r.key.toString());
         }
