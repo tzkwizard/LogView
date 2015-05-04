@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections;
 
 namespace LogView.model
 {
@@ -15,6 +16,7 @@ namespace LogView.model
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
         public string Span { get; set; }
+        public string[] MultiField { get; set; }
         public FilterInfo[] Filterdata { get; set; }
     }
 

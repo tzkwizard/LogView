@@ -47,22 +47,37 @@
             });
         }
         // get auto fill data
-        function autoFill() {
+        function autoFill(text) {
+
+            var info = {
+                SearchText: text,
+                Start: $rootScope.st,
+                End: $rootScope.ft
+            }
+
+            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticMapping/AutoFill";
+            var local = "http://localhost:1972/" + "api/ElasticMapping/AutoFill";
+            var ii = angular.toJson(info);
+
+            return $http.post(local, ii)
+              .success(function (resp) {
+                  return resp;
+              }).error(function (e) {
+                  toastr.info(e);
+              });
+
+
+
             var word = [];
             var apromise = [];
             vm.pfx = ["geoip.timezone.raw", "ident.raw", "auth.raw", "geoip.city_name.raw", "request.raw", "geoip.country_name.raw", "geoip.region_name.raw", "geoip.postal_code.raw"];
             angular.forEach(vm.pfx, function (agg) {
                 var aSubp = datasearch.termAggragation($rootScope.index, 'logs', agg, 1000, $rootScope.st, $rootScope.ft)
-                   .then(function (resp) {
-                       var tt = resp.data.AggData;
-                       angular.forEach(tt, function (y) {
-                           word.push(y.Key);
-                       });
-
-                      /* var tt = resp.aggregations.ag.agg.buckets;
+                   .then(function (resp) {                      
+                       var tt = resp.aggregations.ag.agg.buckets;
                        angular.forEach(tt, function (y) {
                            word.push(y.key);
-                       });*/
+                       });
 
                    }, function (err) {
                        // toastr.info("Auto Fill Load error" + err.message);

@@ -87,12 +87,9 @@
         //#region Auto-Fill
         //get auto-fill data
         function autoFill() {
-            dataconfig.autoFill().then(function (word) {
-                if (vm.ip.length !== word.length) {
-
-                    vm.ip = word;
-                    toastr.info("Auto Fill Update !");
-                }
+            dataconfig.autoFill().then(function (resp) {
+                vm.ip = resp.data.AutoData;
+                //toastr.info("Auto Fill Update !");               
             });
 
 
@@ -140,8 +137,8 @@
                 vm.ft = new Date();
             }
 
-            dataconfig.autoFill().then(function (word) {
-                vm.ip = word;
+            dataconfig.autoFill(vm.searchText).then(function (resp) {
+                vm.ip = resp.data.AutoData;
                 toastr.info("Auto Fill Load");
             });
         }

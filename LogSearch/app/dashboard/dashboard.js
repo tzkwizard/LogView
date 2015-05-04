@@ -57,8 +57,9 @@
 
         activate();
         function activate() {
-            common.activateController([init()], controllerId)
+            common.activateController([getIndexName()], controllerId)
                 .then(function () {
+                    init();
                     log('Activated Dashboard View');
 
                 });
@@ -66,7 +67,7 @@
 
         //bootstrap 
         function init() {
-            //getIndexName();
+
             vm.type = $rootScope.logtype;
             if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {
                 vm.ft = $rootScope.ft;
@@ -76,24 +77,13 @@
                 vm.ft = new Date();
             }
 
-            if (typeof ip === 'Promise') {
-                ip.then(function (data) {
-                    vm.indicesName = data
-                    timeLineGram();
-                    pieChart();
-                    geoMap();
-                    histGram();
-                    //geoMap2();
-                    usGeomap();
-                });
-            } else {
-                timeLineGram();
-                pieChart();
-                geoMap();
-                histGram();
-                // geoMap2();
-                usGeomap();
-            }
+            timeLineGram();
+            pieChart();
+            geoMap();
+            histGram();
+            // geoMap2();
+            usGeomap();
+
         }
 
         //Load index
@@ -116,6 +106,13 @@
                 }
             }
 
+            if (ip !== undefined) {
+                return ip.then(function (data) {
+                    vm.indicesName = data;
+                });
+            }
+
+            return null;
         }
         //#endregion
 
@@ -145,16 +142,15 @@
             google.setOnLoadCallback(drawMap);
             var geoData = new google.visualization.DataTable();
             geoData.addColumn('string', 'Name');
-            // geoData.addColumn('string', 'ip');
             // geoData.addColumn('number', 'Lat');
             //  geoData.addColumn('number', 'Lon');           
             geoData.addColumn('number', 'Number');
             //geoData.addRow([n._source.geoip.city_name, 1, n._source.geoip.latitude, n._source.geoip.longitude]);
             vm.j = -1;
             angular.forEach(r, function (n) {
-              /*  if (n.doc_count > 10) {
-                    geoData.addRow([n.key.toString(), n.doc_count]);
-                }*/
+                /*  if (n.doc_count > 10) {
+                      geoData.addRow([n.key.toString(), n.doc_count]);
+                  }*/
                 if (n.DocCount > 10) {
                     geoData.addRow([n.Key, n.DocCount]);
                 }
@@ -203,7 +199,8 @@
         function pieChart() {
             datasearch.dashboardPieAggregation("verb", "geoip.city_name.raw", "request.raw", vm.st, vm.ft)
            .then(function (resp) {
-               drawpie(resp.aggregations);
+               //drawpie(resp.aggregations);
+               drawpie(resp.data);
            }, function (err) {
                //log("pieChart data error " + err.message);
                vm.indicesName = $rootScope.index;
@@ -217,11 +214,15 @@
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'key');
             data.addColumn('number', 'Number');
-            angular.forEach(agg.ag1.agg1.buckets, function (n) {
+            
+           /* angular.forEach(agg.ag1.agg1.buckets, function (n) {
                 data.addRow([n.key.toString(), n.doc_count]);
 
-            });
+            });*/
+            angular.forEach(agg[1], function (n) {
+                data.addRow([n.Key.toString(), n.DocCount]);
 
+            });
             var piechart = new google.visualization.PieChart(document.getElementById('pie_div1'));
             var options = {
                 is3D: true,
@@ -239,26 +240,35 @@
             };
             piechart.draw(data, options);
 
+           
 
+         
             var data1 = new google.visualization.DataTable();
             data1.addColumn('string', 'key');
             data1.addColumn('number', 'Number');
-            angular.forEach(agg.ag2.agg2.buckets, function (n) {
+           /* angular.forEach(agg.ag2.agg2.buckets, function (n) {
                 data1.addRow([n.key.toString(), n.doc_count]);
 
-            });
+            });*/
+            angular.forEach(agg[2], function (n) {
+                data1.addRow([n.Key.toString(), n.DocCount]);
 
+            });
             var piechart1 = new google.visualization.PieChart(document.getElementById('pie_div2'));
             piechart1.draw(data1, options);
 
+            
             var data2 = new google.visualization.DataTable();
             data2.addColumn('string', 'key');
             data2.addColumn('number', 'Number');
-            angular.forEach(agg.ag3.agg3.buckets, function (n) {
+           /* angular.forEach(agg.ag3.agg3.buckets, function (n) {
                 data2.addRow([n.key.toString(), n.doc_count]);
 
-            });
+            });*/
+            angular.forEach(agg[2], function (n) {
+                data2.addRow([n.Key.toString(), n.DocCount]);
 
+            });
             var piechart2 = new google.visualization.PieChart(document.getElementById('pie_div3'));
             piechart2.draw(data2, options);
 
@@ -283,9 +293,9 @@
                     if (resp.data.Total !== 0) {
                         drawTimwLine(resp.data.DateHistData);
                     }
-                   /* vm.total = resp.aggregations;
-                    vm.hitSearch = resp.aggregations.ag.agg.buckets;
-                    drawTimwLine(resp.aggregations.ag.agg.buckets);*/
+                    /* vm.total = resp.aggregations;
+                     vm.hitSearch = resp.aggregations.ag.agg.buckets;
+                     drawTimwLine(resp.aggregations.ag.agg.buckets);*/
                 }, function (err) {
                     //log("timelineGram data error " + err.message);
                     vm.indicesName = $rootScope.index;
@@ -320,9 +330,9 @@
                 if (resp.data.Total !== 0) {
                     drawHist(resp.data.DateHistData);
                 }
-               /* vm.total = resp.aggregations;
-                vm.hitSearch = resp.aggregations.ag.agg.buckets;
-                drawHist(resp.aggregations.ag.agg.buckets);*/
+                /* vm.total = resp.aggregations;
+                 vm.hitSearch = resp.aggregations.ag.agg.buckets;
+                 drawHist(resp.aggregations.ag.agg.buckets);*/
             }, function (err) {
                 log("histGram data error " + err.message);
             });

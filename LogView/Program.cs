@@ -14,11 +14,9 @@ namespace LogView
 {
     class Program
     {
-        public static Uri Node;
-        public static ConnectionSettings Settings;
-        public static ElasticClient Client;
-        // public static ElasticsearchClient Client;
-        public static int Escount;
+        private static Uri _node;
+        private static ConnectionSettings _settings;
+        private static ElasticClient _client;
         static void Main(string[] args)
         {
 
@@ -48,23 +46,18 @@ namespace LogView
                 Start = DateTime.Now.AddDays(-22),
                 AggField = "geoip.real_region_name.raw",
                 Span = "day",
-                SubSize = 5
+                SubSize = 5,
+                MultiField = new string[] { "verb", "geoip.city_name.raw", "request.raw" }
             };
-            
+
+          
+
 
             DataConfig dataConfig=new DataConfig();
             dataConfig.Ping();
             dataConfig.GetField();
 
-            
-
-
-            var type = "logs";
-            var pagecount = 150000;
-            var searchText = "london";
-            var field = "verb";
-            DateTime end = DateTime.Now;
-            DateTime start = end.AddDays(-7);
+         
             DataService dataService = new DataService();
 
 
@@ -76,6 +69,7 @@ namespace LogView
            // dataService.TermAggragationwithQuery(q);
            // dataService.DateHistogramAggregation(q);
            // dataService.TermQueryAggragation(q);
+            dataService.DashboardPieAggregation(q);
             #endregion
 
 
@@ -126,15 +120,15 @@ namespace LogView
 
 
 
-            Node = new Uri(elUri);
-            var connectionPool = new SniffingConnectionPool(new[] { Node });
-            Settings = new ConnectionSettings(Node);
-            Client = new ElasticClient(Settings);
+            _node = new Uri(elUri);
+            var connectionPool = new SniffingConnectionPool(new[] { _node });
+            _settings = new ConnectionSettings(_node);
+            _client = new ElasticClient(_settings);
             var indexsettings = new IndexSettings();
             indexsettings.NumberOfReplicas = 1;
             indexsettings.NumberOfShards = 5;
 
-            Client.CreateIndex(c => c
+            _client.CreateIndex(c => c
                 .Index(name)
                 .InitializeUsing(indexsettings)
                 .AddMapping<activitylog>(m => m.MapFromAttributes()));
@@ -148,17 +142,15 @@ namespace LogView
                 Time = DateTime.Now.ToString(CultureInfo.CurrentCulture),
                 Desciption = "azure elastic 1"
             };
-            Client.Index(newPost);
+            _client.Index(newPost);
             Console.WriteLine("inserted data");
 
         }
 
         public static void Termquery()
         {
-            var result = Client.Search<logs>(s => s
-                         .Size(Escount)
+            var result = _client.Search<logs>(s => s
                          .Query(p => p.QueryString(q => q.Query("ca")))
-                //.Query(p => p.Term("logs.geoip.city_name.raw", "Beijing"))
                          .Filter(f => f.Range(t => t.OnField("@timestamp").Greater("2015-4-23")))
                          );
 
@@ -173,13 +165,13 @@ namespace LogView
 
         public void MathPhrase()
         {
-            var res = Client.Search<activitylog>(s => s
+            var res = _client.Search<activitylog>(s => s
                            .Query(q => q.MatchPhrase(m => m.OnField("ipAddress").Query("1"))));
         }
 
         public void Fillter()
         {
-            var res2 = Client.Search<activitylog>(s => s
+            var res2 = _client.Search<activitylog>(s => s
                 .Query(q => q.Term(p => p.Desciption, "azure"))
                 .Filter(f => f.Range(r => r.OnField("ipAddress").Greater("0"))));
 

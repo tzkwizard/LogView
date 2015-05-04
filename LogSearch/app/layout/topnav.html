@@ -12,7 +12,7 @@
                 <span class="icon-bar"></span>
             </a>
         </div>
-        <input type="text" ng-model="vm.searchText" placeholder=" search " data-ng-keyup="vm.autoFill()"
+        <input type="text" ng-model="vm.searchText" placeholder=" search " data-ng-keydown="vm.autoFill()"
                typeahead=" record for record in vm.ip| filter:$viewValue | limitTo:5" typeahead-loading="loading" class="form-control">
         <i ng-show="loading" class="glyphicon glyphicon-refresh"></i>
 

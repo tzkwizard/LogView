@@ -53,7 +53,7 @@
             vm.search = search;
             vm.mSearch = mSearch;
             vm.filtertemp = filtertemp;
-            vm.init = init;
+            vm.getSampleData = getSampleData;
             vm.test = test;
 
             vm.today = today;
@@ -90,11 +90,7 @@
                     type: 'logs',
                     size: vm.pagecount,
                     body: ejs.Request()
-                        //.query(ejs.MatchQuery("message", searchText).zeroTermsQuery("all"))
-                        //.query(ejs.BoolQuery().must(ejs.MatchQuery("message", searchText)).mustNot(ejs.MatchQuery("message", "java")))
-                        //  .query(ejs.BoostingQuery(ejs.MultiMatchQuery(["username", "response", "message", "ip"], searchText), ejs.MatchQuery("message", "java"), 0.2))
-                        //   .query(ejs.CommonTermsQuery("message", searchText).cutoffFrequency(0.01).highFreqOperator("and").minimumShouldMatchLowFreq(2))
-                        //.query(ejs.BoolQuery().mustNot(ejs.QueryStringQuery('dev')))
+     
                         .query(y)
                         .filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st))
 
@@ -106,14 +102,6 @@
                 }, function (err) {
                     log(err.message);
                 });
-
-
-                /* var t1 = document.getElementById('jselect1');
-                 var t2 = document.getElementById('fselect1');
-                 var t3 = document.getElementById('input1');
- 
- 
-                 toastr.info(t1.value + t2.value + t3.value + vm.fi1);*/
 
             }
             //#endregion
@@ -391,14 +379,14 @@
                     }
                 }
 
-                if (ip === undefined) {
+               /* if (ip === undefined) {
                     getFieldName();
                 } else {
                     ip.then(function (data) {
                         vm.indicesName = data;
                         getFieldName();
                     });
-                }
+                }*/
 
 
             }
@@ -428,7 +416,7 @@
 
             activate();
             function activate() {
-                common.activateController([getIndexName()], controllerId)
+                common.activateController([getIndexName(),getFieldName()], controllerId)
                     .then(function () {
                         $location.search();
 
@@ -468,7 +456,7 @@
             }
 
             //get sample search result
-            function init() {
+            function getSampleData() {
 
                 return datasearch.getSampledata(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.st, vm.ft)
                       .then(function (resp) {
@@ -500,7 +488,7 @@
                 vm.condition = [];
                 addFilterdata();
                 if (vm.searchText == undefined || vm.searchText === "") {
-                    init().then(function () {
+                    getSampleData().then(function () {
                         random();
                     });
 
@@ -510,11 +498,11 @@
                         .then(function (resp) {
                             if (resp.data.Total !== 0) {
                                 vm.hitSearch = resp.data.Data;
-                                vm.total = resp.data.Total;
-                                vm.tt = resp.total < vm.pagecount ? resp.total : vm.pagecount;
-                                vm.getCurrentPageData(vm.hitSearch);
-                                random();
                             }
+                            vm.total = resp.data.Total;
+                            vm.tt = vm.total < vm.pagecount ? vm.total : vm.pagecount;
+                            vm.getCurrentPageData(vm.hitSearch);
+                            random();
                             /*vm.hitSearch = resp.hits.hits;
                             vm.total = resp.hits.total;
                             vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
@@ -549,11 +537,10 @@
 
             //update auto-fill data
             function autoFill() {
-                dataconfig.autoFill().then(function (word) {
-                    if (vm.at.length !== word.length) {
-                        vm.at = word;
-                        toastr.info("Auto Fill Update !");
-                    }
+                dataconfig.autoFill().then(function (resp) {
+                    vm.at = resp.data.AutoData;
+                    // toastr.info("Auto Fill Update !");
+
                 });
             }
 

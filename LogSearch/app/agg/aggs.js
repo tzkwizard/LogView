@@ -12,7 +12,6 @@
             vm.title2 = "PieChart";
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
-            var events = config.events;
 
 
             //#region variable
@@ -107,6 +106,7 @@
             function refresh() {
                 //$route.reload();
                 //window.location.reload();
+                vm.isBusy = true;
                 activate();
                 $location.search.refresh = true;
                 log("Refreshed");
@@ -137,7 +137,7 @@
             //get treemap data
             function treeMap(index, aggName, datatree) {
                 return datasearch.termAggragation(index, vm.type, aggName, vm.size, vm.st, vm.ft)
-                        .then(function (resp) {                          
+                        .then(function (resp) {
                             //var tt = resp.aggregations.ag.agg.buckets;
                             var tt = resp.data.AggData;
                             tt.map(function (y) {
@@ -249,13 +249,17 @@
             var ap = [];
             activate();
             function activate() {
-                common.activateController([getIndexName()], controllerId)
+                common.activateController([getIndexName(), getFieldName()], controllerId)
                       .then(function () {
+                          if (vm.treestatus === true) {
+                              drawTreemap();
+                          }
+                          aggShow();
+
                           vm.refinedsearch = [
                           { key: 'Time', value: new Date() },
                           { key: 'School', value: $rootScope.school }
                           ];
-                          //log(vm.searchText);
                           log('Activated Aggs search View');
 
                       });
@@ -271,43 +275,45 @@
                     vm.st = moment(new Date()).subtract(2, 'month');
                     vm.ft = new Date();
                 }
+
                 vm.type = $rootScope.logtype;
-                try {
-                    if ($cookieStore.get('index') !== undefined && $rootScope.index !== undefined) {
-                        if ($rootScope.index.length !== $cookieStore.get('index').length) {
-                            log("Index Changed");
-                            $cookieStore.remove('index');
-                        }
 
-                    }
-                    vm.indicesName = $cookieStore.get('index');
-                    if ($cookieStore.get('index') === undefined) {
-                        if ($rootScope.index !== undefined) {
-                            $cookieStore.put('index', $rootScope.index);
-                            vm.indicesName = $cookieStore.get('index');
-                        } else {
-                            // vm.indicesName = dataconfig.initIndex();
-                            ip = dataconfig.initIndex();
-                        }
+                if ($cookieStore.get('index') !== undefined && $rootScope.index !== undefined) {
+                    if ($rootScope.index.length !== $cookieStore.get('index').length) {
+                        log("Index Changed");
+                        $cookieStore.remove('index');
                     }
 
-
-                    // vm.indicesName = $cookieStore.get('index');
-                    vm.treestatus = true;
-
-                } catch (ex) {
-                    log("Fail to Load Index " + ex);
+                }
+                vm.indicesName = $cookieStore.get('index');
+                if ($cookieStore.get('index') === undefined) {
+                    if ($rootScope.index !== undefined) {
+                        $cookieStore.put('index', $rootScope.index);
+                        vm.indicesName = $cookieStore.get('index');
+                    } else {
+                        // vm.indicesName = dataconfig.initIndex();
+                        ip = dataconfig.initIndex();
+                    }
                 }
 
-                if (ip === undefined) {
-                    getFieldName();
-                } else {
-                    ip.then(function (data) {
+                vm.treestatus = true;
+
+
+                /* if (ip === undefined) {
+                     getFieldName();
+                 } else {
+                     ip.then(function (data) {
+                         vm.indicesName = data;
+                         getFieldName();
+                     });
+                 }*/
+                if (ip !== undefined) {
+                    return ip.then(function (data) {
                         vm.indicesName = data;
-                        getFieldName();
                     });
                 }
 
+                return null;
             }
 
             //Load type
@@ -318,47 +324,50 @@
             //Load field
             function getFieldName() {
 
-                try {
-                    if ($cookieStore.get('logfield') !== undefined && $rootScope.logfield !== undefined) {
-                        if ($rootScope.logfield.length !== $cookieStore.get('logfield').length) {
-                            log("Field Changed");
-                            $cookieStore.remove('logfield');
-                        }
-
+                if ($cookieStore.get('logfield') !== undefined && $rootScope.logfield !== undefined) {
+                    if ($rootScope.logfield.length !== $cookieStore.get('logfield').length) {
+                        log("Field Changed");
+                        $cookieStore.remove('logfield');
                     }
-                    vm.fieldsName = $cookieStore.get('logfield');
 
-                    if ($cookieStore.get('logfield') === undefined) {
-                        if ($rootScope.logfield !== undefined) {
-                            $cookieStore.put('logfield', $rootScope.logfield);
-                            vm.fieldsName = $cookieStore.get('logfield');
-                        } else {
-
-                            //vm.fieldsName = dataconfig.getFieldName(vm.indicesName[0], $rootScope.logtype);
-                            fp = dataconfig.getFieldName(vm.indicesName[0], $rootScope.logtype);
-                        }
-                    }
-                } catch (ex) {
-                    log("Fail to Load Field " + ex);
                 }
+                vm.fieldsName = $cookieStore.get('logfield');
 
+                if ($cookieStore.get('logfield') === undefined) {
+                    if ($rootScope.logfield !== undefined) {
+                        $cookieStore.put('logfield', $rootScope.logfield);
+                        vm.fieldsName = $cookieStore.get('logfield');
+                    } else {
+
+                        //vm.fieldsName = dataconfig.getFieldName(vm.indicesName[0], $rootScope.logtype);
+                        fp = dataconfig.getFieldName(vm.indicesName[0], $rootScope.logtype);
+                    }
+                }
 
                 vm.aggName = "";
 
-                if (fp === undefined) {
-                    if (vm.treestatus === true) {
-                        drawTreemap();
-                    }
-                    aggShow();
-                } else {
-                    fp.then(function (data) {
+                /*   if (fp === undefined) {
+                       if (vm.treestatus === true) {
+                           drawTreemap();
+                       }
+                       aggShow();
+                   } else {
+                       fp.then(function (data) {
+                           vm.fieldsName = data;
+                           if (vm.treestatus === true) {
+                               drawTreemap();
+                           }
+                           aggShow();
+                       });
+                   }*/
+
+                if (fp !== undefined) {
+                    return fp.then(function (data) {
                         vm.fieldsName = data;
-                        if (vm.treestatus === true) {
-                            drawTreemap();
-                        }
-                        aggShow();
                     });
                 }
+
+                return null;
 
             }
             //#endregion
@@ -369,7 +378,6 @@
             function aggShow(aggName) {
 
                 var main = document.getElementById('div2');
-                log(main.childNodes.length);
                 var contain = document.getElementById('contain');
                 if (contain !== null && main.childNodes.length !== 0) {
                     main.removeChild(contain);
@@ -416,9 +424,9 @@
                     vm.token = true;
                     datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft)
                         .then(function (resp) {
-                           /* vm.total = resp.hits.total;
-                            vm.hitSearch = resp.aggregations.ag.agg.buckets;
-                            drawDashboard(resp.aggregations.ag.agg, aggName);*/
+                            /* vm.total = resp.hits.total;
+                             vm.hitSearch = resp.aggregations.ag.agg.buckets;
+                             drawDashboard(resp.aggregations.ag.agg, aggName);*/
                             vm.total = resp.data.Total;
                             vm.hitSearch = resp.data.AggData;
                             drawDashboard(resp.data.AggData, aggName);
@@ -454,13 +462,13 @@
                           //vm.total = resp.hits.total;
                           vm.total = resp.data.Total;
 
-                         /* if (!flag) {
-                              if (resp.aggregations.ag.agg.buckets.length > 1) {
-                                  drawDashboard2(resp.aggregations.ag.agg, aggName);
-                              }
-                          } else {
-                              drawDashboard2(resp.aggregations.ag.agg, aggName);
-                          }*/
+                          /* if (!flag) {
+                               if (resp.aggregations.ag.agg.buckets.length > 1) {
+                                   drawDashboard2(resp.aggregations.ag.agg, aggName);
+                               }
+                           } else {
+                               drawDashboard2(resp.aggregations.ag.agg, aggName);
+                           }*/
 
                           if (!flag) {
                               if (resp.data.AggData.length > 1) {
@@ -486,11 +494,9 @@
                 var data = new google.visualization.DataTable();
                 data.addColumn('string', 'key');
                 data.addColumn('number', 'Count Range');
-               /* for (var i = 0; i < agg.buckets.length; i++) {
-                    data.addRow([agg.buckets[i].key.toString(), agg.buckets[i].doc_count]);
 
-                }*/
-                angular.forEach(agg,function(ag) {
+                angular.forEach(agg, function (ag) {
+                    // data.addRow([agg.key.toString(), agg.doc_count]);
                     data.addRow([ag.Key.toString(), ag.DocCount]);
                 });
 
@@ -535,7 +541,7 @@
                 var name = "table" + y;
                 drawTable(data, name, y);
 
-                // Establish dependencies, declaring that 'filter' drives 'pieChart',given the chosen slider range.
+                // Establish dependencies
                 dashboard.bind(donutRangeSlider, [pieChart]);
 
                 // Draw the dashboard.
@@ -551,20 +557,15 @@
 
                 google.setOnLoadCallback(drawDashboard);
 
-                /*if (vm.typesName.indexOf(vm.type) === -1 || vm.fieldsName.indexOf(vm.aggName) === -1) {
-                return;
-            }*/
-
                 var data = new google.visualization.DataTable();
                 data.addColumn('string', 'key');
                 data.addColumn('number', 'Number');
-               /* for (var i = 0; i < agg.buckets.length; i++) {
-                    data.addRow([agg.buckets[i].key.toString(), agg.buckets[i].doc_count]);
 
-                }*/
                 angular.forEach(agg, function (ag) {
                     data.addRow([ag.Key.toString(), ag.DocCount]);
+                    // data.addRow([agg.key.toString(), agg.doc_count]);
                 });
+
                 // Create a dashboard.
                 var dashboard = new google.visualization.Dashboard(
                     document.getElementById('dashboard'));
@@ -592,26 +593,15 @@
                     }
                 });
 
-                //table
-
-                /*  var table = new google.visualization.ChartWrapper({
-                   'chartType': 'Table',
-                   'containerId': 'table_div',
-                   'options': {
-                       'width': '300px'
-                   }
-               });*/
 
                 drawTable(data, 'table_div', aggName);
 
-                // Establish dependencies, declaring that 'filter' drives 'pieChart',
-                // so that the pie chart will only display entries that are let through
-                // given the chosen slider range.
+                // Establish dependencies
                 dashboard.bind(donutRangeSlider, [pieChart]);
 
                 // Draw the dashboard.
                 dashboard.draw(data);
-                vm.ft = new Date();
+
                 datasearch.getSampledata(vm.indicesName, vm.type, 15, vm.st, vm.ft).then(function (resp) {
                     vm.hit = resp.hits.hits;
                     drawMap(vm.hit);
@@ -668,13 +658,17 @@
 
                 google.visualization.events.addListener(table, 'select', function () {
                     var row = table.getSelection()[0].row;
-                    if (vm.refinedsearch.length > 1)
-                    { vm.treestatus = false; }
+                    if (vm.refinedsearch.length > 1) {
+                        vm.treestatus = false;
+
+                    }
                     if (field.substring(field.length - 3, field.length) === "raw") {
-                        // log(field.substring(0, field.length - 4));
                         field = field.substring(0, field.length - 4);
                     }
 
+                    function pushrefinedata() {
+                        vm.refinedsearch.push({ key: field, value: data.getValue(row, 0) });
+                    }
 
                     if (vm.searchText === "*") {
                         vm.searchText = field + " : \"" + data.getValue(row, 0) + "\"";
@@ -684,12 +678,6 @@
                         vm.searchText += " AND " + field + " : \"" + data.getValue(row, 0) + "\"";
                         pushrefinedata();
                     }
-                    vm.pushrefinedata = pushrefinedata;
-                    function pushrefinedata() {
-                        vm.refinedsearch.push({ key: field, value: data.getValue(row, 0) });
-                    }
-
-                    log(vm.searchText);
                     aggShow("");
                 });
 

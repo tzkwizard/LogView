@@ -12,16 +12,21 @@ namespace LogView
 {
     class DataConfig
     {
+         private static ElasticClient _client;
+         public DataConfig()
+        {
+            if (_client == null || _client.RootNodeInfo().Status != 200)
+            {
+                const string elUri = "http://localhost:9200/";
+                var node = new Uri(elUri);
+                var connectionPool = new SniffingConnectionPool(new[] {node});
+                var settings = new ConnectionSettings(node).SetBasicAuthentication("aotuo", "123456");
+                _client = new ElasticClient(settings);
+            }
+        }
         public void Ping()
         {
-            const string elUri = "http://aotuo:123456@localhost:9200/";
-            var Node = new Uri(elUri);
-            var connectionPool = new SniffingConnectionPool(new[] { Node });
-            var Settings = new ConnectionSettings(Node);
-
-            var Client = new ElasticClient(Settings);
-
-            var pp = Client.RootNodeInfo();
+            var pp = _client.RootNodeInfo();
             if (pp.Status == 200)
             {
                 Console.WriteLine("haha");
@@ -30,13 +35,8 @@ namespace LogView
 
         public void GetField()
         {
-            const string elUri = "http://aotuo:123456@localhost:9200/";
-            var Node = new Uri(elUri);
-            var connectionPool = new SniffingConnectionPool(new[] { Node });
-            var Settings = new ConnectionSettings(Node);
 
-            var Client = new ElasticClient(Settings);
-            var y = Client.GetFieldMapping<logs>(m=>m.Fields("*"));
+            var y = _client.GetFieldMapping<logs>(m=>m.Fields("*"));
             var z = y.Indices;
             var ss = true;
             foreach (var x in z)

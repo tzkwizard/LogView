@@ -31,6 +31,29 @@
 
         //#region Aggragation
         function dashboardPieAggregation(f1, f2, f3, start, end) {
+
+
+            var info =
+             {
+                 MultiField: [f1,f2,f3],
+                 Start: start,
+                 End: end,
+                 SubSize : 10
+             }
+
+            var ii = angular.toJson(info);
+
+            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticAggragation/DashBoardPie";
+            var local = "http://localhost:1972/" + "api/ElasticAggragation/DashBoardPie";
+            return $http.post(local, ii)
+              .success(function (resp) {
+                  return resp;
+              }).error(function (e) {
+                  toastr.info(e);
+              });
+
+
+
             return client.search({
                 index: vm.indicesName,
                 type: vm.type,
@@ -45,15 +68,13 @@
 
         function dateHistogramAggregation(index, type, aggfield, span, start, end) {
 
-
-
             var info =
-        {
-            Span: span,
-            Start: start,
-            End: end,
-            AggField: aggfield
-        }
+             {
+                 Span: span,
+                 Start: start,
+                 End: end,
+                 AggField: aggfield
+             }
 
             var ii = angular.toJson(info);
 
@@ -82,12 +103,12 @@
 
 
             var info =
-        {
-            SubSize: size,
-            Start: start,
-            End: end,
-            AggField: aggfield
-        }
+             {
+                 SubSize: size,
+                 Start: start,
+                 End: end,
+                 AggField: aggfield
+             }
 
             var ii = angular.toJson(info);
 
@@ -120,13 +141,13 @@
 
 
             var info =
-     {
-         SearchText: searchText,
-         SubSize: size,
-         Start: start,
-         End: end,
-         AggField: aggfield
-     }
+            {
+                SearchText: searchText,
+                SubSize: size,
+                Start: start,
+                End: end,
+                AggField: aggfield
+            }
 
             var ii = angular.toJson(info);
 
@@ -205,7 +226,6 @@
 
             return $http.post(local, ii)
               .success(function (resp) {
-                  toastr.info(resp);
                   return resp;
               }).error(function (e) {
                   toastr.info(e);
@@ -242,7 +262,6 @@
 
             return $http.post(local, ii)
               .success(function (resp) {
-                  toastr.info(resp);
                   return resp;
               }).error(function (e) {
                   toastr.info(e);
@@ -279,7 +298,6 @@
 
             return $http.post(local, ii)
               .success(function (resp) {
-                  toastr.info(resp);
                   return resp;
               }).error(function (e) {
                   toastr.info(e);

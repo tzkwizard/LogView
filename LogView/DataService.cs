@@ -35,7 +35,7 @@ namespace LogView
                          .Filter(f => f.Range(t => t.OnField("@timestamp").Greater(q.Start).Lower(q.End)))
                          );
 
-            var n = 1;
+            //var n = 1;
             Console.WriteLine(result.HitsMetaData.Total + "-----" + result.ElapsedMilliseconds);
             foreach (var x in result.Documents)
             {
@@ -177,7 +177,37 @@ namespace LogView
                 Console.WriteLine(x.Key + "------" + x.DocCount);
             }
         }
-        
+
+
+        public void DashboardPieAggregation(QueryInfo q)
+        {
+
+
+            foreach (var agg in q.MultiField)
+            {
+                var result = _client.Search<logs>(s => s
+                    .Size(q.Size)
+                    .Aggregations(fa => fa
+                        .Filter("ff", f => f
+                            .Filter(fd => fd
+                                .Range(t => t
+                                    .OnField("@timestamp").Greater(q.Start).Lower(q.End)))
+                            .Aggregations(a => a.Terms("agg", ag => ag.Field(agg)))
+
+                        )
+                    ));
+                var ff = result.Aggs.Filter("ff");
+                var fagg = ff.Terms("agg");
+               
+
+
+            }
+
+            
+
+        }
+
+         
 
         #endregion
 

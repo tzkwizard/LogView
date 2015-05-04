@@ -16,7 +16,7 @@
         <div class="container-fluid">
             <div id="Header" class="input-append row-fluid">
                 <input type="text" class="form-control"
-                       data-ng-keyup="vm.autoFill()"
+                       data-ng-keydown="vm.autoFill()"
                        data-ng-model=" vm.searchText"
                        placeholder="  Search"
                        typeahead=" record for record in vm.at| filter:$viewValue | limitTo:5" typeahead-loading="loading" />
@@ -170,7 +170,7 @@
 
                             <tbody>
                                 <tr class="fader-animation" data-ng-repeat="doc in vm.res| orderBy:predicate:reverse" data-ng-click="vm.open(doc)">
-                                    <td>{{doc._source['@timestamp']}}</td>
+                                    <td>{{doc._source['timestamp']| date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
                                     <td>{{doc._source.message}}</td>
                                     <td>{{doc._score}}</td>
                                     <td>{{doc._index}}</td>
@@ -180,7 +180,7 @@
                         </table>
 
                         <li class="fader-animation" data-ng-repeat="doc in vm.res| orderBy:predicate:reverse" data-ng-click="vm.open(doc)">
-                            <hr> <a>{{doc._source['@timestamp']}}</a> ---- {{doc._source.message}}
+                            <hr> <a>{{doc._source['timestamp']}}</a> ---- {{doc._source.message}}
                         </li>
 
                     </div>
