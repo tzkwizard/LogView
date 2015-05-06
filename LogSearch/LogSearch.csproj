@@ -63,6 +63,7 @@
     <Content Include="app\component\agg\aggs.html" />
     <Content Include="app\component\agg\aggs.js" />
     <Content Include="app\component\els\resultModal.js" />
+    <Content Include="app\layout\bottom-time-list.html" />
     <Content Include="app\services\dataServices\dataconfig.js" />
     <Content Include="app\services\dataServices\datasearch.js" />
     <Content Include="app\component\els\els.html" />
@@ -74,6 +75,9 @@
     <Content Include="app\component\load\TODO.js" />
     <Content Include="app\layout\topnav.js" />
     <Content Include="app\services\routeMediator.js" />
+    <Content Include="content\angular-material.css" />
+    <Content Include="Scripts\angular-ui\angular-aria.js" />
+    <Content Include="Scripts\angular-ui\angular-material.js" />
     <Content Include="Scripts\angularjs\angular-animate.js" />
     <Content Include="Scripts\angularjs\angular-animate.min.js" />
     <Content Include="Scripts\angularjs\angular-cookies.js" />

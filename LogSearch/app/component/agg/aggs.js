@@ -4,8 +4,8 @@
     var controllerId = 'aggs';
 
     angular.module('app')
-        .controller(controllerId, function ($q, $route, $timeout, $cookieStore, $rootScope, $scope, $location,
-            common, bsDialog, datasearch, dataconfig, config) {
+        .controller(controllerId, function ($cookieStore, $rootScope, $scope,
+            common, datasearch, dataconfig) {
 
             var vm = this;
             vm.title = "Aggragations";
@@ -108,15 +108,15 @@
                 //window.location.reload();
                 vm.isBusy = true;
                 activate();
-                $location.search.refresh = true;
+                common.$location.search.refresh = true;
                 log("Refreshed");
             }
 
             //go to els page get result
             function go() {
 
-                $location.search.text = vm.searchText;
-                $location.path('/els/');
+                common.$location.search.text = vm.searchText;
+                common.$location.path('/els/');
             }
 
             //clear searchtext
@@ -203,11 +203,11 @@
 
                 vm.startDrawTree = startDrawTree;
 
-                $q.all(tpromise).then(function () {
+                common.$q.all(tpromise).then(function () {
                     if (terror === true) {
                         terror = false;
                         vm.indicesName = $rootScope.index;
-                        drawTreemap();
+                        //drawTreemap();
                     }
                     else {
                         startDrawTree();
@@ -238,7 +238,7 @@
                             tree.goUpAndDraw();
                         });
 
-                    //vm.isBusy = false;
+                    vm.isBusy = false;
                 }
             }
             //#endregion
@@ -389,7 +389,7 @@
                     vm.aggfield = vm.fieldsName;
                     vm.token = false;
 
-                    var fieldFilter = ["geoip.timezone", "timestamp.raw", "@timestamp", "referrer", "referrer.raw", "timestamp", "request", "edata", "host", "action", "agent", "geoip.location"];
+                    var fieldFilter = ["geoip.timezone", "timestamp.raw", "@timestamp", "referrer", "referrer.raw", "timestamp", "request", "edata", "host", "action", "agent"];
 
                     fieldFilter.map(function (f) {
 
@@ -435,12 +435,12 @@
                         }, function (err) {
                             log(err.message);
                             vm.indicesName = $rootScope.index;
-                            aggShow(aggName);
+                            //aggShow(aggName);
 
                         });
                 }
 
-                $q.all(ap).then(function () {
+                common.$q.all(ap).then(function () {
                     vm.isBusy = false;
                 });
             }
@@ -450,7 +450,7 @@
 
                 //dataconfig.createContainer(aggName);
                 vm.dashboard = "dash";
-                vm.range = "range"; 
+                vm.range = "range";
                 vm.barchart = "bar";
                 vm.tablechart = "table";
 
@@ -483,7 +483,7 @@
                       }, function (err) {
                           // log("aggshows err "+err.message);
                           vm.indicesName = $rootScope.index;
-                          aggShows(aggName, flag);
+                          //aggShows(aggName, flag);
                       });
 
             }
@@ -604,8 +604,8 @@
                 dashboard.draw(data);
 
                 datasearch.getSampledata(vm.indicesName, vm.type, 15, vm.st, vm.ft).then(function (resp) {
-                    vm.hit = resp.hits.hits;
-                    drawMap(vm.hit);
+                    //vm.hit = resp.hits.hits;
+                   // drawMap(vm.hit);
                 }, function (err) {
                     log("sample data error " + err.message);
                 });

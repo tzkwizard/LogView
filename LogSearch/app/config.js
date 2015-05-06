@@ -37,6 +37,8 @@
         spinnerToggle: 'spinner.toggle'
     };
 
+    var localApiUrl = "http://localhost:1972/";
+    var remoteApiUrl = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/";
     var config = {
         appErrorPrefix: '[ES Error] ', //Configure the exceptionHandler decorator
         docTitle: 'Elasticsearch:',
@@ -44,7 +46,9 @@
         imageSettings:imageSettings,
         remoteServiceName: remoteServiceName,
         version: '2.1.0',
-        keyCodes:keyCodes
+        keyCodes:keyCodes,
+        remoteApiUrl:remoteApiUrl,
+        localApiUrl:localApiUrl
     };
     app.config([
     "$routeProvider",

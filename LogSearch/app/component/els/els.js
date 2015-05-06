@@ -4,8 +4,8 @@
     var controllerId = 'els';
 
     angular.module('app')
-        .controller(controllerId, function ($timeout, bsDialog, $rootScope, $routeParams,
-          $log, $scope, $location, $modal, client, common, datasearch, dataconfig, $cookieStore) {
+        .controller(controllerId, function (bsDialog, $rootScope, $routeParams,
+           $scope, $modal, client, common, datasearch, dataconfig, $cookieStore, config) {
 
 
             var vm = this;
@@ -18,11 +18,12 @@
             $scope.trend1 = 'true';
             $scope.trend2 = 'true';
             $scope.count = 0;
-
-
+            vm.distance = 0;
+            vm.location = "";
 
             //#region variable
             vm.searchText = $routeParams.search || '';
+            vm.processSearch = false;
             vm.hitSearch = "";
             vm.acount = 4;
             vm.hits = "2";
@@ -52,6 +53,7 @@
             //#region function
             vm.search = search;
             vm.mSearch = mSearch;
+            vm.trySeach = trySeach;
             vm.filtertemp = filtertemp;
             vm.getSampleData = getSampleData;
             vm.test = test;
@@ -68,6 +70,7 @@
             vm.filterst = filterst;
             vm.autoFill = autoFill;
             vm.addFilterdata = addFilterdata;
+
             //#endregion
 
 
@@ -77,8 +80,7 @@
             function tests(x) {
                 log("1");
             }
-
-
+           
 
             function test() {
                 //  bsDialog.deleteDialog('Session');
@@ -90,7 +92,7 @@
                     type: 'logs',
                     size: vm.pagecount,
                     body: ejs.Request()
-     
+
                         .query(y)
                         .filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st))
 
@@ -142,7 +144,10 @@
 
             //refresh page
             function refreshPage() {
-                // vm.tt = vm.total;
+                if (vm.pagecount === "0") {
+                    vm.pagecount = vm.total;
+                }
+
                 if (vm.tt > vm.pagecount) {
                     vm.tt = vm.pagecount;
                 } else {
@@ -216,7 +221,7 @@
                 modalInstance.result.then(function (selectedItem) {
                     vm.selected = selectedItem;
                 }, function () {
-                    $log.info('Modal dismissed at: ' + new Date());
+                    log.info('Modal dismissed at: ' + new Date());
                 });
             };
             //#endregion
@@ -232,11 +237,16 @@
                 startingDay: 1
             };
 
-            //save time change on global
+           /* //save time change on global
             $scope.$on("$destroy", function () {
                 $rootScope.ft = vm.ft;
                 $rootScope.st = vm.st;
-            });
+            });*/
+            vm.timeChange = timeChange;
+            function timeChange() {
+                $rootScope.ft = vm.ft;
+                $rootScope.st = vm.st;
+            }
 
             //change time span on scope
             function filterst(x) {
@@ -281,7 +291,7 @@
             // vm.minDate = true;
             function toggleMin() {
                 vm.tmind = new Date();
-                vm.tmind.setMonth(vm.tmind.getMonth() - 1);
+                //vm.tmind.setMonth(vm.tmind.getMonth() - 1);
                 vm.minDate = vm.minDate ? null : vm.tmind;
             };
 
@@ -360,6 +370,8 @@
                     vm.ft = new Date();
                 }
 
+
+
                 if ($cookieStore.get('index') !== undefined && $rootScope.index !== undefined) {
                     if ($rootScope.index.length !== $cookieStore.get('index').length) {
                         log("Index Changed");
@@ -379,14 +391,14 @@
                     }
                 }
 
-               /* if (ip === undefined) {
-                    getFieldName();
-                } else {
-                    ip.then(function (data) {
-                        vm.indicesName = data;
-                        getFieldName();
-                    });
-                }*/
+                /* if (ip === undefined) {
+                     getFieldName();
+                 } else {
+                     ip.then(function (data) {
+                         vm.indicesName = data;
+                         getFieldName();
+                     });
+                 }*/
 
 
             }
@@ -416,39 +428,26 @@
 
             activate();
             function activate() {
-                common.activateController([getIndexName(),getFieldName()], controllerId)
+                common.activateController([getIndexName(), getFieldName()], controllerId)
                     .then(function () {
-                        $location.search();
-
-                        if ($location.search.field === "" || $location.search.field === undefined) {
-                            if ($location.search.text !== "") {
-                                vm.searchText = $location.search.text;
+                        common.$location.search();
+                        if (common.$location.search.field === "" || common.$location.search.field === undefined) {
+                            if (common.$location.search.text !== "") {
+                                vm.searchText = common.$location.search.text;
                                 search();
                             } else {
                                 search();
                             }
 
                         } else {
-                            vm.searchText = $location.search.field + " : " + $location.search.text;
+                            vm.searchText = common.$location.search.field + " : " + common.$location.search.text;
                             search();
 
                         }
 
 
-                        /* if ($location.search.text !== "") {
-                             vm.searchText = $location.search.text;
-                         }
- 
-                         if ($location.search().field === "" || $location.search().field === undefined) {
-                             search();
-                         } else {
-                             //vm.field = $location.search().field;
-                             vm.searchText =
-                             search();
-                             $location.search().field = "";
-                         }*/
-                        $location.search.field = "";
-                        $location.search.text = "";
+                        common.$location.search.field = "";
+                        common.$location.search.text = "";
                         vm.showSplash = false;
                         log('Activated ELS search View');
 
@@ -458,17 +457,17 @@
             //get sample search result
             function getSampleData() {
 
-                return datasearch.getSampledata(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.st, vm.ft)
+                return datasearch.getSampledata(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.st, vm.ft, vm.locationF, vm.distanceF)
                       .then(function (resp) {
 
                           if (resp.data.Total !== 0) {
                               vm.hitSearch = resp.data.Data;
-                              vm.total = resp.data.Total;
-                              vm.tt = resp.total < vm.pagecount ? resp.total : vm.pagecount;
-                              vm.getCurrentPageData(vm.hitSearch);
-                              random();
                           }
 
+                          vm.total = resp.data.Total;
+                          vm.tt = resp.total < vm.pagecount ? resp.total : vm.pagecount;
+                          vm.getCurrentPageData(vm.hitSearch);
+                          random();
                           /* vm.hitSearch = resp.hits.hits;
                            vm.total = resp.hits.total;
                            vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
@@ -479,26 +478,50 @@
             }
             //#endregion
 
-
+            vm.locationF = "";
+            vm.distanceF = "";
             //#region Search and Filter 
+
+            function trySeach($event) {
+                if ($event.keyCode === config.keyCodes.esc) {
+                    vm.searchText = '';
+                    return;
+                }
+
+                if ($event.keyCode === config.keyCodes.enter) {
+                    search();
+                }
+
+            }
 
             //core search function
             function search() {
+                if (vm.st > vm.ft) {
+                    log("Date error");
+                    return;
+                }
+                vm.location = "";
+
+
+                vm.processSearch = true;
                 vm.hitSearch = "";
                 vm.condition = [];
                 addFilterdata();
+
                 if (vm.searchText == undefined || vm.searchText === "") {
                     getSampleData().then(function () {
+                        vm.processSearch = false;
                         random();
                     });
 
                 } else {
                     // autoFill();
-                    datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, vm.condition, vm.st, vm.ft)
+                    datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, vm.condition, vm.st, vm.ft,vm.locationF,vm.distanceF)
                         .then(function (resp) {
                             if (resp.data.Total !== 0) {
                                 vm.hitSearch = resp.data.Data;
                             }
+                            vm.processSearch = false;
                             vm.total = resp.data.Total;
                             vm.tt = vm.total < vm.pagecount ? vm.total : vm.pagecount;
                             vm.getCurrentPageData(vm.hitSearch);
@@ -539,7 +562,7 @@
             function autoFill() {
                 dataconfig.autoFill().then(function (resp) {
                     vm.at = resp.data.AutoData;
-                    // toastr.info("Auto Fill Update !");
+                    toastr.info("Auto Fill Update !");
 
                 });
             }
@@ -674,176 +697,9 @@
             //#endregion
 
         });
+
 })();
 
 
 
-
-
-/*
-(function () {
-    'use strict';
-
-    var controllerId = 'resultModal';
-
-    angular.module('app')
-        .controller(controllerId, function ($scope, $modalInstance, $location, common, items) {
-
-            //#region variable
-            $scope.title = "Detailed search result";
-            $scope.items = items.data;
-            $scope.field = items.field;
-
-            $scope.selected = {
-                item: ""
-            };
-
-            $scope.mySelections = [];
-            $scope.myData = [];
-            //#endregion
-
-
-            //#region Form1
-            angular.forEach(Object.keys($scope.items._source), function (item) {
-                $scope.myData.push({
-                    Field: item, Value: $scope.items._source[item]
-                });
-            });
-
-            /* $scope.myData = [
-                 { Field: "UserIP", Value: $scope.items._source.clientip },
-                 { Field: "Location", Value: $scope.items._source.geoip },
-                 { Field: "HTTPmethod ", Value: $scope.items._source.verb },
-                 { Field: "ResquestApi", Value: $scope.items._source.request },
-                 { Field: "RuquestTime", Value: $scope.items._source.timestamp },
-                 { Field: "Referrer", Value: $scope.items._source.referrer },
-                 { Field: "ActualAction", Value: $scope.items._source.action }
-             ];#1#
-
-
-            $scope.gridOptions = {
-                columnDefs: [
-                    { field: 'Field', displayName: 'Field', width: 120 },
-                    { field: 'Value', displayName: 'Value', width: 120 }
-                ],
-                data: 'myData',
-                selectedItems: $scope.mySelections,
-                //  multiSelect: false,
-                jqueryUITheme: true,
-                enableColumnResize: true,
-                afterSelectionChange: function () {
-                    //var x= $scope.mySelections.pop();
-                    //  toastr.info($scope.mySelections.pop());
-                    angular.forEach($scope.mySelections, function (item) {
-                        // toastr.info(item.Value);
-                        $scope.selected.item = item["Field"] + " : " + item["Value"];
-                    });
-                }
-            };
-            //#endregion
-
-
-            //#region Form2
-            $scope.myData2 = [
-                { Field: "UserIP", Value: $scope.items._source['clientip'] }
-            ];
-            var x = $scope.items._source;
-            if (x.hasOwnProperty('geoip')) {
-                //toastr.info($scope.items._source['geoip']);
-                $scope.myData2.push({ Field: "Country_Name", Value: $scope.items._source.geoip['country_name'] });
-                $scope.myData2.push({ Field: "City_Name", Value: $scope.items._source['geoip']['city_name'] });
-                $scope.myData2.push({ Field: "Real_Region_Name", Value: $scope.items._source['geoip']['real_region_name'] });
-                $scope.myData2.push({ Field: "Postal_code", Value: $scope.items._source['geoip']['postal_code'] });
-                $scope.myData2.push({ Field: "Coordinates ", Value: $scope.items._source['geoip']['coordinates'] });
-                $scope.myData2.push({ Field: "Timezone", Value: $scope.items._source['geoip']['timezone'] });
-
-            }
-
-
-            $scope.gridOptions2 = {
-                columnDefs: [
-      { field: 'Field', displayName: 'Field', width: 120 },
-      { field: 'Value', displayName: 'Value', width: 300 }
-                ],
-                data: 'myData2',
-                selectedItems: $scope.mySelections,
-                // multiSelect: false,
-                jqueryUITheme: true,
-                enableColumnResize: true,
-                afterSelectionChange: function () {
-                    //var x= $scope.mySelections.pop();
-                    //  toastr.info($scope.mySelections.pop());
-                    angular.forEach($scope.mySelections, function (item) {
-                        // toastr.info(item.Value);
-                        $scope.selected.item = item["Field"].toLowerCase() + " : " + item["Value"];
-                    });
-                }
-            };
-
-            //#endregion
-
-
-            //#region Form3
-            $scope.myData3 = [{ Field: "ClientIP", Value: $scope.items._source['clientip'] },
-                   { Field: "HTTPmethod", Value: $scope.items._source['verb'] },
-                   { Field: "Resquest", Value: $scope.items._source['request'] },
-                   { Field: "Response", Value: $scope.items._source['response'] },
-                   { Field: "APIresponse", Value: $scope.items._source['APIresponse'] },
-                   { Field: "RuquestTime", Value: $scope.items._source['@timestamp'] },
-                   { Field: "Referrer", Value: $scope.items._source['referrer'] },
-                   { Field: "Action", Value: $scope.items._source['action'] },
-                   { Field: "Agent", Value: $scope.items._source['agent'] }
-
-            ];
-
-
-
-
-            $scope.gridOptions3 = {
-                columnDefs: [
-                     { field: 'Field', displayName: 'Field', width: 120 },
-                     { field: 'Value', displayName: 'Value', width: 420 }
-                ],
-                data: 'myData3',
-                selectedItems: $scope.mySelections,
-                multiSelect: false,
-                enableColumnResize: true,
-                jqueryUITheme: true,
-                afterSelectionChange: function () {
-                    //var x= $scope.mySelections.pop();
-                    //  toastr.info($scope.mySelections.pop());
-                    angular.forEach($scope.mySelections, function (item) {
-                        // toastr.info(item.Value);
-                        if (item["Field"] === "HTTPmethod")
-                        { $scope.selected.item = "verb" + " : " + item["Value"]; }
-                        else if (item["Field"] === "RuquestTime") {
-                            $scope.selected.item = "@timestamp" + " : " + item["Value"];
-                        } else {
-                            $scope.selected.item = item["Field"].toLowerCase() + " : " + item["Value"];
-                        }
-                    });
-                }
-            };
-            //#endregion
-
-
-            //#region Button
-            $scope.ok = function () {
-                // 
-
-
-                //  $location.search('field', f);
-                $location.search.text = $scope.selected.item;
-                //toastr.info($location.search.text);
-                $location.path('/els/');
-                $modalInstance.close($scope.selected.item);
-            };
-
-            $scope.cancel = function () {
-                $modalInstance.dismiss('cancel');
-            };
-            //#endregion
-
-        });
-})();*/
 

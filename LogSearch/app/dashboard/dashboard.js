@@ -1,9 +1,9 @@
 ﻿(function () {
     'use strict';
     var controllerId = 'dashboard';
-    angular.module('app').controller(controllerId, ['$interval', '$scope', '$q', '$timeout', '$cookieStore', '$rootScope', 'common', 'dataconfig', 'datasearch', dashboard]);
+    angular.module('app').controller(controllerId, ['$scope', '$cookieStore', '$rootScope', 'common', 'dataconfig', 'datasearch', dashboard]);
 
-    function dashboard($interval, $scope, $q, $timeout, $cookieStore, $rootScope, common, dataconfig, datasearch) {
+    function dashboard($scope, $cookieStore, $rootScope, common, dataconfig, datasearch) {
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
         var vm = this;
@@ -26,7 +26,7 @@
         vm.title = 'Dashboard';
         vm.indicesName = [];
         vm.type = "";
-        vm.geomap2selection = 2;
+        vm.geomap2selection = "USA";
         //#endregion
 
         //#region function
@@ -131,7 +131,7 @@
                 }, function (err) {
                     //log("geoMap data error " + err.message);
                     vm.indicesName = $rootScope.index;
-                    geoMap();
+                    //geoMap();
                 });
 
         }
@@ -204,7 +204,7 @@
            }, function (err) {
                //log("pieChart data error " + err.message);
                vm.indicesName = $rootScope.index;
-               pieChart();
+               //pieChart();
            });
         }
 
@@ -214,11 +214,11 @@
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'key');
             data.addColumn('number', 'Number');
-            
-           /* angular.forEach(agg.ag1.agg1.buckets, function (n) {
-                data.addRow([n.key.toString(), n.doc_count]);
 
-            });*/
+            /* angular.forEach(agg.ag1.agg1.buckets, function (n) {
+                 data.addRow([n.key.toString(), n.doc_count]);
+ 
+             });*/
             angular.forEach(agg[1], function (n) {
                 data.addRow([n.Key.toString(), n.DocCount]);
 
@@ -240,16 +240,16 @@
             };
             piechart.draw(data, options);
 
-           
 
-         
+
+
             var data1 = new google.visualization.DataTable();
             data1.addColumn('string', 'key');
             data1.addColumn('number', 'Number');
-           /* angular.forEach(agg.ag2.agg2.buckets, function (n) {
-                data1.addRow([n.key.toString(), n.doc_count]);
-
-            });*/
+            /* angular.forEach(agg.ag2.agg2.buckets, function (n) {
+                 data1.addRow([n.key.toString(), n.doc_count]);
+ 
+             });*/
             angular.forEach(agg[2], function (n) {
                 data1.addRow([n.Key.toString(), n.DocCount]);
 
@@ -257,15 +257,15 @@
             var piechart1 = new google.visualization.PieChart(document.getElementById('pie_div2'));
             piechart1.draw(data1, options);
 
-            
+
             var data2 = new google.visualization.DataTable();
             data2.addColumn('string', 'key');
             data2.addColumn('number', 'Number');
-           /* angular.forEach(agg.ag3.agg3.buckets, function (n) {
-                data2.addRow([n.key.toString(), n.doc_count]);
-
-            });*/
-            angular.forEach(agg[2], function (n) {
+            /* angular.forEach(agg.ag3.agg3.buckets, function (n) {
+                 data2.addRow([n.key.toString(), n.doc_count]);
+ 
+             });*/
+            angular.forEach(agg[3], function (n) {
                 data2.addRow([n.Key.toString(), n.DocCount]);
 
             });
@@ -299,7 +299,7 @@
                 }, function (err) {
                     //log("timelineGram data error " + err.message);
                     vm.indicesName = $rootScope.index;
-                    timeLineGram();
+                    //timeLineGram();
                 });
         }
 
@@ -409,7 +409,7 @@
                 }, function (err) {
                     //log("geoMap2 data error" + err.message);
                     vm.indicesName = $rootScope.index;
-                    geoMap2();
+                    //geoMap2();
                 });
         }
 
@@ -503,9 +503,10 @@
 
         //#region map selector
         function changeMap() {
-            if (vm.geomap2selection == 1) {
+            if (vm.geomap2selection == "World") {
                 geoMap2();
-            } else if (vm.geomap2selection == 2) {
+            }
+            if (vm.geomap2selection == "USA") {
                 usGeomap();
             }
         }

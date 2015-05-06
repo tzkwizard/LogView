@@ -7,8 +7,11 @@
 
     <div class="sidebar-inner">
         <div class="sidebar-widget">
-            <button class="btn btn-large btn-notext " style="width: 80%; background-color: transparent;color:skyblue " ng-click="collapse=!collapse"><i class="fa fa-align-justify fa-2x"></i></button>
-        </div>        
+            <md-button class="btn btn-large btn-notext " style="width: 80%; background-color: transparent;
+                                     color: skyblue" ng-click="collapse=!collapse">
+                <i class="fa fa-align-justify fa-2x"></i>
+            </md-button>
+        </div>
         <ul class="navi" collapse="collapse">
             <li class="nlightblue fade-selection-animation" data-ng-class="vm.isCurrent(r)"
                 data-ng-repeat="r in vm.navRoutes">

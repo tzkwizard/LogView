@@ -2,14 +2,14 @@
     'use strict';
 
     var serviceId = 'dataconfig';
-    angular.module('app').factory(serviceId, ['$http', '$q', '$timeout', '$rootScope', '$cookieStore', 'common', 'client', 'datasearch', dataconfig]);
+    angular.module('app').factory(serviceId, ['$http', '$rootScope', '$cookieStore', 'common', 'client', 'datasearch', 'config', dataconfig]);
 
-    function dataconfig($http,$q, $timeout, $rootScope, $cookieStore, common, client, datasearch) {
+    function dataconfig($http, $rootScope, $cookieStore, common, client, datasearch, config) {
 
         var vm = this;
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(serviceId);
-
+        
         //#region Service
         var service = {
             getIndexName: getIndexName,
@@ -55,15 +55,15 @@
                 End: $rootScope.ft
             }
 
-            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticMapping/AutoFill";
-            var local = "http://localhost:1972/" + "api/ElasticMapping/AutoFill";
+            var remote = config.remoteApiUrl + "api/ElasticMapping/AutoFill";
+            var local = config.localApiUrl + "api/ElasticMapping/AutoFill";
             var ii = angular.toJson(info);
 
             return $http.post(local, ii)
               .success(function (resp) {
                   return resp;
               }).error(function (e) {
-                  toastr.info(e);
+                  // toastr.info(e);
               });
 
 
@@ -73,7 +73,7 @@
             vm.pfx = ["geoip.timezone.raw", "ident.raw", "auth.raw", "geoip.city_name.raw", "request.raw", "geoip.country_name.raw", "geoip.region_name.raw", "geoip.postal_code.raw"];
             angular.forEach(vm.pfx, function (agg) {
                 var aSubp = datasearch.termAggragation($rootScope.index, 'logs', agg, 1000, $rootScope.st, $rootScope.ft)
-                   .then(function (resp) {                      
+                   .then(function (resp) {
                        var tt = resp.aggregations.ag.agg.buckets;
                        angular.forEach(tt, function (y) {
                            word.push(y.key);
@@ -85,7 +85,7 @@
                 apromise.push(aSubp);
             });
 
-            return $q.all(apromise).then(function () {
+            return common.$q.all(apromise).then(function () {
                 return word;
             });
         }
@@ -221,52 +221,51 @@
         function initIndex() {
             var indicesName = [];
 
-            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticMapping/LogstashMap";
-            var local = "http://localhost:1972/" + "api/ElasticMapping/LogstashMap";
-            var ipromise= $http.get(local)
+            var remote = config.remoteApiUrl + "api/ElasticMapping/LogstashMap";
+            var local = config.localApiUrl + "api/ElasticMapping/LogstashMap";
+            var ipromise = $http.get(local)
               .success(function (resp) {
-                indicesName = resp.Index;
-                // return resp;
-            }).error(function (e) {
-                  toastr.info(e);
+                  indicesName = resp.Index;
+              }).error(function (e) {
+                  // toastr.info(e);
               });
             return ipromise.then(function () {
                 return indicesName;
             });
 
 
-           /* var ipromise = client.cluster.state({
-                flatSettings: true
-
-            }).then(function (resp) {
-                var hit = resp.routing_table.indices;
-                var j = 0;
-                var temp = [];
-                var tempindices = [];
-                angular.forEach(hit, function (name) {
-
-                    temp[j] = name.shards;
-                    angular.forEach(temp[j], function (shard) {
-                        tempindices[j] = shard[0].index;
-
-                    });
-                    j++;
-                });
-                j = 0;
-                for (var i = 0; i < tempindices.length; i++) {
-                    if (tempindices[i].substring(0, 8) === "logstash") {
-                        indicesName[j] = tempindices[i];
-                        j++;
-                    }
-
-                }
-            }, function (err) {
-                // log("get Logstash Index" + err.message);
-            });
-            //return indicesName;
-            return ipromise.then(function () {
-                return indicesName;
-            });*/
+            /* var ipromise = client.cluster.state({
+                 flatSettings: true
+ 
+             }).then(function (resp) {
+                 var hit = resp.routing_table.indices;
+                 var j = 0;
+                 var temp = [];
+                 var tempindices = [];
+                 angular.forEach(hit, function (name) {
+ 
+                     temp[j] = name.shards;
+                     angular.forEach(temp[j], function (shard) {
+                         tempindices[j] = shard[0].index;
+ 
+                     });
+                     j++;
+                 });
+                 j = 0;
+                 for (var i = 0; i < tempindices.length; i++) {
+                     if (tempindices[i].substring(0, 8) === "logstash") {
+                         indicesName[j] = tempindices[i];
+                         j++;
+                     }
+ 
+                 }
+             }, function (err) {
+                 // log("get Logstash Index" + err.message);
+             });
+             //return indicesName;
+             return ipromise.then(function () {
+                 return indicesName;
+             });*/
         }
 
         //get index from cluster
@@ -335,20 +334,20 @@
         //get field from cluster
         function getFieldName(index, type) {
             var fieldsName = [];
-            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticMapping/LogstashMap";
-            var local = "http://localhost:1972/" + "api/ElasticMapping/LogstashMap";
+            var remote = config.remoteApiUrl + "api/ElasticMapping/LogstashMap";
+            var local = config.localApiUrl + "api/ElasticMapping/LogstashMap";
             var ipromise = $http.get(local)
               .success(function (resp) {
                   fieldsName = resp.Field;
-                angular.forEach(fieldsName, function(name) {
-                    if (name.substring(0, 1) === '_') {
-                        var index = fieldsName.indexOf(name);
-                        fieldsName.splice(index, 1);
-                    }
-                });
+                  angular.forEach(fieldsName, function (name) {
+                      if (name.substring(0, 1) === '_') {
+                          var index = fieldsName.indexOf(name);
+                          fieldsName.splice(index, 1);
+                      }
+                  });
 
-            }).error(function (e) {
-                  toastr.info(e);
+              }).error(function (e) {
+                  //toastr.info(e);
               });
             return ipromise.then(function () {
                 return fieldsName;

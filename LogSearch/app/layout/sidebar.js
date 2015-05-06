@@ -3,9 +3,9 @@
 
     var controllerId = 'sidebar';
     angular.module('app').controller(controllerId,
-        ['$rootScope', '$location', '$route', 'config', 'routes', 'dataconfig', 'datasearch', 'client', 'common', sidebar]);
+        ['$rootScope', 'config', 'routes', 'dataconfig', 'datasearch', 'client', 'common', sidebar]);
 
-    function sidebar($rootScope, $location, $route, config, routes, dataconfig, datasearch, client, common) {
+    function sidebar($rootScope, config, routes, dataconfig, datasearch, client, common) {
         var vm = this;
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
@@ -79,11 +79,11 @@
         }
 
         function isCurrent(route) {
-            if (!route.config.title || !$route.current || !$route.current.title) {
+            if (!route.config.title || !common.$route.current || !common.$route.current.title) {
                 return '';
             }
             var menuName = route.config.title;
-            return $route.current.title.substr(0, menuName.length) === menuName ? 'current' : '';
+            return common.$route.current.title.substr(0, menuName.length) === menuName ? 'current' : '';
         }
 
         //#endregion
@@ -92,12 +92,12 @@
         //#region Siderbar Facet
         //get and show location facet
         vm.showLocation = function () {
-            if (vm.location === "" || vm.location === undefined || $location.search.refresh) {
+            if (vm.location === "" || vm.location === undefined || common.$location.search.refresh) {
 
                 datasearch.termAggragation($rootScope.index, $rootScope.logtype, "geoip.city_name.raw", vm.size, vm.st, vm.ft).then(function (resp) {
                     //vm.location = resp.aggregations.ag.agg.buckets;
                     vm.location = resp.data.AggData;
-                    $location.search.refresh = false;
+                    common.$location.search.refresh = false;
                     // log("re");
                 }, function (err) {
                     log(err.message);
@@ -109,11 +109,11 @@
 
         //get and show api facet
         vm.showRequestAPI = function () {
-            if (vm.apiaddress === "" || vm.apiaddress === undefined || $location.search.refresh) {
+            if (vm.apiaddress === "" || vm.apiaddress === undefined || common.$location.search.refresh) {
                 datasearch.termAggragation($rootScope.index, $rootScope.logtype, "request.raw", vm.size, vm.st, vm.ft).then(function (resp) {
                     //vm.apiaddress = resp.aggregations.ag.agg.buckets;
                     vm.apiaddress = resp.data.AggData;
-                    $location.search.refresh = false;
+                    common.$location.search.refresh = false;
                     //log("re");
                 }, function (err) {
                     log(err.message);
@@ -125,11 +125,11 @@
 
         //get and show verb facet
         vm.showRequestMethod = function () {
-            if (vm.httpmethod === "" || vm.httpmethod === undefined || $location.search.refresh) {
+            if (vm.httpmethod === "" || vm.httpmethod === undefined || common.$location.search.refresh) {
                 datasearch.termAggragation($rootScope.index, $rootScope.logtype, "verb.raw", vm.size, vm.st, vm.ft).then(function (resp) {
                     //vm.httpmethod = resp.aggregations.ag.agg.buckets;
                     vm.httpmethod = resp.data.AggData;
-                    $location.search.refresh = false;
+                    common.$location.search.refresh = false;
                     //log("re");
                 }, function (err) {
                     log(err.message);
@@ -140,11 +140,11 @@
 
         //get and show users facet
         vm.showUser = function () {
-            if (vm.user === "" || vm.user === undefined || $location.search.refresh) {
+            if (vm.user === "" || vm.user === undefined || common.$location.search.refresh) {
                 datasearch.termAggragation($rootScope.index, $rootScope.logtype, "ident.raw", vm.size, vm.st, vm.ft).then(function (resp) {
                     //vm.user = resp.aggregations.ag.agg.buckets;
                     vm.user = resp.data.AggData;
-                    $location.search.refresh = false;
+                    common.$location.search.refresh = false;
                     //  log("re");
                 }, function (err) {
                     log(err.message);
@@ -155,11 +155,11 @@
 
         //get and show useraction facet
         vm.showUserAction = function () {
-            if (vm.useraction === "" || vm.useraction === undefined || $location.search.refresh) {
+            if (vm.useraction === "" || vm.useraction === undefined || common.$location.search.refresh) {
                 datasearch.termAggragation($rootScope.index, $rootScope.logtype, "action.raw", vm.size, vm.st, vm.ft).then(function (resp) {
                     //vm.useraction = resp.aggregations.ag.agg.buckets;
                     vm.useraction = resp.data.AggData;
-                    $location.search.refresh = false;
+                    common.$location.search.refresh = false;
                     //  log("re");
                 }, function (err) {
                     log(err.message);
@@ -171,13 +171,13 @@
         //nav to els page
         function sidebarNav(r, f) {
             //$location.search();
-            $location.search.field = f;
-            $location.search('field', f);
+            common.$location.search.field = f;
+            common.$location.search('field', f);
             //$location.search('text', r.key.toString());
             //$location.search.text = "\"" + r.key.toString() + "\"";
-            $location.search('text', r.Key.toString());
-            $location.search.text = "\"" + r.Key.toString() + "\"";
-            $location.path('/els/')
+            common.$location.search('text', r.Key.toString());
+            common.$location.search.text = "\"" + r.Key.toString() + "\"";
+            common.$location.path('/els/')
             //$location.path('/els/' + r.key.toString());
         }
         //#endregion
@@ -194,7 +194,7 @@
             if ($event.type === 'click' || $event.keyCode === config.keyCodes.enter) {
                 var route = '/sessions/search/';
 
-                $location.path(route + vm.searchText);
+                common.$location.path(route + vm.searchText);
             }
         }
 

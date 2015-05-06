@@ -2,9 +2,9 @@
     'use strict';
 
     var serviceId = 'datasearch';
-    angular.module('app').factory(serviceId, ['common', 'client', '$http', datasearch]);
+    angular.module('app').factory(serviceId, ['common', 'client', '$http', 'config', datasearch]);
 
-    function datasearch(common, client, $http) {
+    function datasearch(common, client, $http, config) {
 
         var vm = this;
         var getLogFn = common.logger.getLogFn;
@@ -35,21 +35,21 @@
 
             var info =
              {
-                 MultiField: [f1,f2,f3],
+                 MultiField: [f1, f2, f3],
                  Start: start,
                  End: end,
-                 SubSize : 10
+                 SubSize: 10
              }
 
             var ii = angular.toJson(info);
 
-            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticAggragation/DashBoardPie";
-            var local = "http://localhost:1972/" + "api/ElasticAggragation/DashBoardPie";
+            var remote = config.remoteApiUrl + "api/ElasticAggragation/DashBoardPie";
+            var local = config.localApiUrl + "api/ElasticAggragation/DashBoardPie";
             return $http.post(local, ii)
               .success(function (resp) {
                   return resp;
               }).error(function (e) {
-                  toastr.info(e);
+                  //toastr.info(e);
               });
 
 
@@ -78,13 +78,13 @@
 
             var ii = angular.toJson(info);
 
-            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticAggragation/DateHistogram";
-            var local = "http://localhost:1972/" + "api/ElasticAggragation/DateHistogram";
+            var remote = config.remoteApiUrl + "api/ElasticAggragation/DateHistogram";
+            var local = config.localApiUrl + "api/ElasticAggragation/DateHistogram";
             return $http.post(local, ii)
               .success(function (resp) {
                   return resp;
               }).error(function (e) {
-                  toastr.info(e);
+                  //toastr.info(e);
               });
 
 
@@ -112,13 +112,13 @@
 
             var ii = angular.toJson(info);
 
-            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticAggragation/Term";
-            var local = "http://localhost:1972/" + "api/ElasticAggragation/Term";
+            var remote = config.remoteApiUrl + "api/ElasticAggragation/Term";
+            var local = config.localApiUrl + "api/ElasticAggragation/Term";
             return $http.post(local, ii)
               .success(function (resp) {
                   return resp;
               }).error(function (e) {
-                  toastr.info(e);
+                  //toastr.info(e);
               });
 
 
@@ -151,13 +151,13 @@
 
             var ii = angular.toJson(info);
 
-            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticAggragation/StringQuery";
-            var local = "http://localhost:1972/" + "api/ElasticAggragation/StringQuery";
+            var remote = config.remoteApiUrl + "api/ElasticAggragation/StringQuery";
+            var local = config.localApiUrl + "api/ElasticAggragation/StringQuery";
             return $http.post(local, ii)
               .success(function (resp) {
                   return resp;
               }).error(function (e) {
-                  toastr.info(e);
+                  //toastr.info(e);
               });
 
 
@@ -185,13 +185,13 @@
 
             var ii = angular.toJson(info);
 
-            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticAggragation/TermQuery";
-            var local = "http://localhost:1972/" + "api/ElasticAggragation/TermQuery";
+            var remote = config.remoteApiUrl + "api/ElasticAggragation/TermQuery";
+            var local = config.localApiUrl + "api/ElasticAggragation/TermQuery";
             return $http.post(local, ii)
               .success(function (resp) {
                   return resp;
               }).error(function (e) {
-                  toastr.info(e);
+                  //toastr.info(e);
               });
 
 
@@ -210,25 +210,27 @@
 
         //#region Filter
 
-        function getSampledata(indices, type, pagecount, start, end) {
+        function getSampledata(indices, type, pagecount, start, end, location, distance) {
 
 
             var info = {
                 Type: type,
                 Size: pagecount,
                 Start: start,
-                End: end
+                End: end,
+                Location: location,
+                GeoDistance: distance
             }
 
-            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticSearch/SampleData";
-            var local = "http://localhost:1972/" + "api/ElasticSearch/SampleData";
+            var remote = config.remoteApiUrl + "api/ElasticSearch/SampleData";
+            var local = config.localApiUrl + "api/ElasticSearch/SampleData";
             var ii = angular.toJson(info);
 
             return $http.post(local, ii)
               .success(function (resp) {
                   return resp;
               }).error(function (e) {
-                  toastr.info(e);
+                  // toastr.info(e);
               });
 
 
@@ -246,30 +248,32 @@
         }
 
 
-        function stringQuery(indices, type, pagecount, searchText, start, end) {
+        function stringQuery(indices, type, pagecount, searchText, start, end, location, distance) {
 
             var info = {
                 Type: type,
                 Size: pagecount,
                 SearchText: searchText,
                 Start: start,
-                End: end
+                End: end,
+                Location: location,
+                GeoDistance: distance
             }
 
-            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticSearch";
-            var local = "http://localhost:1972/" + "api/ElasticSearch";
+            var remote = config.remoteApiUrl + "api/ElasticSearch";
+            var local = config.localApiUrl + "api/ElasticSearch";
             var ii = angular.toJson(info);
 
 
             return $http({
                 method: 'POST',
-                url: local,           
+                url: local,
                 data: info
             })
               .success(function (resp) {
                   return resp;
               }).error(function (e) {
-                  toastr.info(e);
+                  // toastr.info(e);
               });
 
 
@@ -294,7 +298,7 @@
 
         }
 
-        function termQuery(indices, type, pagecount, field, searchText, start, end) {
+        function termQuery(indices, type, pagecount, field, searchText, start, end, location, distance) {
 
             var info = {
                 Type: type,
@@ -302,18 +306,20 @@
                 SearchText: searchText,
                 Field: field,
                 Start: start,
-                End: end
+                End: end,
+                Location: location,
+                GeoDistance: distance
             }
 
-            var remote = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/" + "api/ElasticSearch/Term";
-            var local = "http://localhost:1972/" + "api/ElasticSearch/Term";
+            var remote = config.remoteApiUrl + "api/ElasticSearch/Term";
+            var local = config.localApiUrl + "api/ElasticSearch/Term";
             var ii = angular.toJson(info);
 
             return $http.post(local, ii)
               .success(function (resp) {
                   return resp;
               }).error(function (e) {
-                  toastr.info(e);
+                  //toastr.info(e);
               });
 
 
@@ -330,7 +336,43 @@
             });
         }
 
-        function termQueryWithBoolFilter(indices, type, pagecount, field, searchText, condition, start, end) {
+        function termQueryWithBoolFilter(indices, type, pagecount, field, searchText, condition, start, end, location, distance) {
+
+
+
+
+
+
+
+            var info = {
+                Type: type,
+                Size: pagecount,
+                SearchText: searchText,
+                Field: field,
+                Start: start,
+                End: end,
+                Location: location,
+                GeoDistance: distance,
+                Filterdata: condition
+            }
+
+            var remote = config.remoteApiUrl + "api/ElasticSearch/TermBool";
+            var local = config.localApiUrl + "api/ElasticSearch/TermBool";
+            var ii = angular.toJson(info);
+
+            return $http.post(local, ii)
+              .success(function (resp) {
+                  return resp;
+              }).error(function (e) {
+                  //toastr.info(e);
+              });
+
+
+
+
+
+
+
 
             var m = [];
             var n = [];
@@ -378,7 +420,35 @@
             });
         }
 
-        function stringQueryWithBoolFilter(indices, type, pagecount, field, searchText, condition, start, end) {
+        function stringQueryWithBoolFilter(indices, type, pagecount, field, searchText, condition, start, end, location, distance) {
+
+
+
+
+
+            var info = {
+                Type: type,
+                Size: pagecount,
+                SearchText: searchText,
+                Field: field,
+                Start: start,
+                End: end,
+                Location: location,
+                GeoDistance: distance,
+                Filterdata: condition
+            }
+
+            var remote = config.remoteApiUrl + "api/ElasticSearch/StringBool";
+            var local = config.localApiUrl + "api/ElasticSearch/StringBool";
+            var ii = angular.toJson(info);
+
+            return $http.post(local, ii)
+              .success(function (resp) {
+                  return resp;
+              }).error(function (e) {
+                  //toastr.info(e);
+              });
+
 
             var m = [];
             var n = [];
@@ -427,20 +497,20 @@
 
 
         //#region Main search 
-        function basicSearch(indices, type, pagecount, field, searchText, condition, start, end) {
+        function basicSearch(indices, type, pagecount, field, searchText, condition, start, end, location, distance) {
 
             if (condition.length < 1) {
                 if (field === "" || field === "all" || field === undefined) {
-                    return stringQuery(indices, type, pagecount, searchText, start, end);
+                    return stringQuery(indices, type, pagecount, searchText, start, end, location, distance);
                 } else {
-                    return termQuery(indices, type, pagecount, field, searchText, start, end);
+                    return termQuery(indices, type, pagecount, field, searchText, start, end, location, distance);
                 }
 
             } else {
                 if (field === "" || field === "all" || field === undefined) {
-                    return stringQueryWithBoolFilter(indices, type, pagecount, field, searchText, condition, start, end);
+                    return stringQueryWithBoolFilter(indices, type, pagecount, field, searchText, condition, start, end, location, distance);
                 } else {
-                    return termQueryWithBoolFilter(indices, type, pagecount, field, searchText, condition, start, end);
+                    return termQueryWithBoolFilter(indices, type, pagecount, field, searchText, condition, start, end, location, distance);
                 }
 
             }

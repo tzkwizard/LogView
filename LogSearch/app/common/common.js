@@ -25,9 +25,9 @@
     });
 
     commonModule.factory('common',
-        ['$q', '$rootScope', '$timeout', 'commonConfig', 'logger', common]);
+        ['$http', '$location', '$route', '$q', '$rootScope', '$timeout', 'commonConfig', 'logger', common]);
 
-    function common($q, $rootScope, $timeout, commonConfig, logger) {
+    function common($http,$location, $route, $q, $rootScope, $timeout, commonConfig, logger) {
         var throttles = {};
 
         var service = {
@@ -35,6 +35,9 @@
             $broadcast: $broadcast,
             $q: $q,
             $timeout: $timeout,
+            $route: $route,
+            $location: $location,
+            $http : $http,
             // generic
             activateController: activateController,
             createSearchThrottle: createSearchThrottle,
@@ -76,7 +79,7 @@
                 // translates to ...
                 // vm.filteredSessions 
                 //      = vm.sessions.filter(function(item( { returns vm.sessionFilter (item) } );
-                viewmodel[filteredList] = viewmodel[list].filter(function(item) {
+                viewmodel[filteredList] = viewmodel[list].filter(function (item) {
                     return viewmodel[filter](item);
                 });
             };
@@ -87,7 +90,7 @@
                 var filterInputTimeout;
 
                 // return what becomes the 'applyFilter' function in the controller
-                return function(searchNow) {
+                return function (searchNow) {
                     if (filterInputTimeout) {
                         $timeout.cancel(filterInputTimeout);
                         filterInputTimeout = null;

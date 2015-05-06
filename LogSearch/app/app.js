@@ -1,14 +1,20 @@
-﻿(function() {
-    
+﻿(function () {
     'use strict';
+
     //Load google Api
-    google.load('visualization', '1', { packages: ['geomap','geochart', 'bar', 'corechart', 'controls', 'table', 'map', 'annotatedtimeline', 'treemap'] });
+    google.load('visualization', '1', {
+        packages: ['geomap', 'geochart', 'bar', 'corechart', 'controls',
+            'table', 'map', 'annotatedtimeline', 'treemap']
+    });
+
     var app = angular.module('app', [
         // Angular modules 
         'ngAnimate',        // animations
         'ngRoute',          // routing
         'ngSanitize',       // sanitizes html bindings (ex: sidebar.js)
         'ngCookies',
+        'ngMaterial',
+        'ngAria',
 
         // Custom modules 
         'common',           // common functions, logger, spinner
@@ -25,15 +31,15 @@
     ]);
 
     // Handle routing errors and success events
-    app.run(['$q', '$rootScope', '$route', 'dataconfig', 'routeMediator', 'client',
-        function ( $q, $rootScope, $route, dataconfig, routeMediator, client) {
+    app.run(['$rootScope', '$route', 'dataconfig', 'routeMediator', 'client',
+        function ($rootScope, $route, dataconfig, routeMediator, client) {
             // Include $route to kick start the router.
             routeMediator.setRoutingHandlers();
             $rootScope.school = "TCU";
             $rootScope.st = moment(new Date()).subtract(2, 'month');
             $rootScope.ft = new Date();
             // dataconfig.prime();
-            
+
             //#region Ping           
             /* client.ping({
                  requestTimeout: 1000,

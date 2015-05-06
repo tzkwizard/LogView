@@ -43,7 +43,7 @@ namespace LogView
                 SearchText = "london",
                 Field = "geoip.city_name",
                 End = DateTime.Now,
-                Start = DateTime.Now.AddDays(-22),
+                Start = DateTime.Now.AddDays(-32),
                 AggField = "geoip.real_region_name.raw",
                 Span = "day",
                 SubSize = 5,
@@ -62,14 +62,15 @@ namespace LogView
 
 
             
-            // dataService.StringQuery(q);
+//dataService.StringQuery(q);
            // dataService.GetSampledata(q);
             //dataService.TermQuery(q);
            // dataService.TermAggragation(q);
            // dataService.TermAggragationwithQuery(q);
            // dataService.DateHistogramAggregation(q);
            // dataService.TermQueryAggragation(q);
-            dataService.DashboardPieAggregation(q);
+            //dataService.DashboardPieAggregation(q);
+            dataService.GeoDistanceAggragation(q);
             #endregion
 
 

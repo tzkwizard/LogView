@@ -17,7 +17,7 @@ namespace LogView
             {
                 const string elUri = "http://localhost:9200/";
                 var node = new Uri(elUri);
-                var connectionPool = new SniffingConnectionPool(new[] {node});
+                var connectionPool = new SniffingConnectionPool(new[] { node });
                 var settings = new ConnectionSettings(node).SetBasicAuthentication("aotuo", "123456");
                 _client = new ElasticClient(settings);
             }
@@ -27,7 +27,7 @@ namespace LogView
         public void StringQuery(QueryInfo q)
         {
             var result = _client.Search<logs>(s => s
-                          //.Indices(new [] {"1","2"})
+                //.Indices(new [] {"1","2"})
                           .From(0)
                           .Size(20)
                          .Query(p => p.QueryString(qs => qs.Query(q.SearchText)))
@@ -56,7 +56,7 @@ namespace LogView
             foreach (var x in result.Documents)
             {
                 n++;
-                Console.WriteLine(x.clientip+"------" + n);
+                Console.WriteLine(x.clientip + "------" + n);
             }
         }
 
@@ -93,13 +93,13 @@ namespace LogView
                                         )
 
                         );
-            var ff=result.Aggs.Filter("ff");
+            var ff = result.Aggs.Filter("ff");
             var fagg = ff.Terms("agg");
             Console.WriteLine(result.HitsMetaData.Total + "-----" + result.ElapsedMilliseconds);
             foreach (var x in fagg.Items)
             {
-                
-                Console.WriteLine(x.Key+"------" + x.DocCount);
+
+                Console.WriteLine(x.Key + "------" + x.DocCount);
             }
 
         }
@@ -145,7 +145,7 @@ namespace LogView
             Console.WriteLine(result.HitsMetaData.Total + "-----" + result.ElapsedMilliseconds);
             foreach (var x in fagg.Items)
             {
-               
+
                 Console.WriteLine(x.Date + "------" + x.DocCount);
             }
         }
@@ -198,16 +198,49 @@ namespace LogView
                     ));
                 var ff = result.Aggs.Filter("ff");
                 var fagg = ff.Terms("agg");
-               
+
 
 
             }
 
-            
+
 
         }
 
-         
+
+
+        public void GeoDistanceAggragation(QueryInfo q)
+        {
+            var result = _client.Search<logs>(s => s
+                      .Aggregations(fa => fa
+                          .Filter("ff", f => f
+                              .Filter(fd => fd
+                                  .Range(t => t
+                                      .OnField("@timestamp").Greater(q.Start).Lower(q.End)))
+                                      .Aggregations(a=>a
+                                             .GeoDistance("my_geo_distance_agg", g => g
+                                             .Field("geoip.location")
+                                                .Origin("32.5358, 97.3272").Unit(GeoUnit.Miles)
+                                                .Ranges(
+                                                     r => r.To(1000),
+                                                      r => r.From(1000).To(3000),
+                                                             r => r.From(3000)
+                                                             ))
+
+                                       )
+                                      ))
+
+                      );
+            var ff = result.Aggs.Filter("ff");
+            var fagg = ff.GeoDistance("my_geo_distance_agg");
+            Console.WriteLine(result.HitsMetaData.Total + "-----" + result.ElapsedMilliseconds);
+            foreach (var x in fagg.Items)
+            {
+
+                Console.WriteLine(x.Key + "------" + x.DocCount);
+            }
+  
+        }
 
         #endregion
 
@@ -239,49 +272,49 @@ namespace LogView
                Console.WriteLine(result.HitsMetaData.Total + "-----" + result.ElapsedMilliseconds);*/
         }
 
-         /*var m = [];
-            var n = [];
-            var s = [];
-            var time = ejs.RangeFilter("@timestamp").lte(end).gte(start);
-            m.push(time);
-            angular.forEach(condition, function (cc) {
-                if (cc.condition === "MUST") {
-                    var x = ejs.TermFilter(cc.field, cc.text);
-                    m.push(x);
-                }
-                if (cc.condition === "MUST_NOT") {
-                    var y = ejs.TermFilter(cc.field, cc.text);
-                    n.push(y);
-                }
-                if (cc.condition === "SHOULD") {
-                    var z = ejs.TermFilter(cc.field, cc.text);
-                    s.push(z);
-                }
-            });
+        /*var m = [];
+           var n = [];
+           var s = [];
+           var time = ejs.RangeFilter("@timestamp").lte(end).gte(start);
+           m.push(time);
+           angular.forEach(condition, function (cc) {
+               if (cc.condition === "MUST") {
+                   var x = ejs.TermFilter(cc.field, cc.text);
+                   m.push(x);
+               }
+               if (cc.condition === "MUST_NOT") {
+                   var y = ejs.TermFilter(cc.field, cc.text);
+                   n.push(y);
+               }
+               if (cc.condition === "SHOULD") {
+                   var z = ejs.TermFilter(cc.field, cc.text);
+                   s.push(z);
+               }
+           });
 
 
-            var fmust = ejs.AndFilter(m);
-            var fnot = ejs.AndFilter(n);
-            var fshould = ejs.AndFilter(s);
+           var fmust = ejs.AndFilter(m);
+           var fnot = ejs.AndFilter(n);
+           var fshould = ejs.AndFilter(s);
 
 
 
 
-            if (n.length < 1) {
-                fnot = ejs.NotFilter(ejs.MatchAllFilter());
-            }
-            if (s.length < 1) {
-                fshould = ejs.MatchAllFilter();
-            }
+           if (n.length < 1) {
+               fnot = ejs.NotFilter(ejs.MatchAllFilter());
+           }
+           if (s.length < 1) {
+               fshould = ejs.MatchAllFilter();
+           }
 
 
-            return client.search({
-                index: indices,
-                type: type,
-                size: pagecount,
-                body: ejs.Request()
-                    .query(ejs.MatchQuery(field, searchText))
-                    .filter(ejs.BoolFilter().must(fmust).mustNot(fnot).should(fshould))
-            });*/
+           return client.search({
+               index: indices,
+               type: type,
+               size: pagecount,
+               body: ejs.Request()
+                   .query(ejs.MatchQuery(field, searchText))
+                   .filter(ejs.BoolFilter().must(fmust).mustNot(fnot).should(fshould))
+           });*/
     }
 }

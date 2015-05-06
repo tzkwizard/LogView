@@ -4,7 +4,7 @@
     var controllerId = 'resultModal';
 
     angular.module('app')
-        .controller(controllerId, function ($scope, $modalInstance, $location, common, items) {
+        .controller(controllerId, function ($scope, $modalInstance, common, items) {
 
             //#region variable
             $scope.title = "Detailed search result";
@@ -150,9 +150,9 @@
 
 
                 //  $location.search('field', f);
-                $location.search.text = $scope.selected.item;
+                common.$location.search.text = $scope.selected.item;
                 //toastr.info($location.search.text);
-                $location.path('/els/');
+                common.$location.path('/els/');
                 $modalInstance.close($scope.selected.item);
             };
 
