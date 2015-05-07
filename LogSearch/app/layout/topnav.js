@@ -15,6 +15,7 @@
         vm.loading = true;
         vm.tabs = ["Dashboard", "ELS", "Agg", "TODO"];
         vm.selectedIndex = "";
+        vm.autocompleLoading = false;
         //#endregion
        
 
@@ -107,28 +108,15 @@
         //#region Auto-Fill
         //get auto-fill data
         function autoFill() {
+            vm.autocompleLoading = true;
             dataconfig.autoFill().then(function (resp) {
                 vm.ip = resp.data.AutoData;
-                //toastr.info("Auto Fill Update !");               
+                vm.autocompleLoading = false;
             });
 
 
         }
-
-        vm.getLocation = getLocation;
-
-        function getLocation(val) {
-            return common.$http.get('http://maps.googleapis.com/maps/api/geocode/json', {
-                params: {
-                    address: val,
-                    sensor: false
-                }
-            }).then(function (response) {
-                return response.data.results.map(function (item) {
-                    return item.formatted_address;
-                });
-            });
-        };
+    
         //#endregion
 
 
@@ -243,12 +231,10 @@
                     case "Last day":
                         $rootScope.st = moment(new Date()).subtract(1, 'days');
                         break;
-
                     default:
-                        // log(x);
                         break;
                 }
-
+                $mdSidenav('right').close();
                 common.$location.path(common.$location.path() + "/");
             }
             $scope.$on("$destroy", function () {
@@ -256,8 +242,7 @@
             });
             $scope.close = function () {
                 $mdSidenav('right').close()
-                  .then(function () {
-                     
+                  .then(function () {                     
                       toastr.info("close RIGHT is done");
                   });
             };

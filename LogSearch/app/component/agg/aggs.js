@@ -49,7 +49,8 @@
             vm.st = "";
             var terror = false;
             vm.token = false;
-
+            vm.process = true;
+            
 
             vm.dashboard = "dash";
             vm.range = "range";
@@ -70,6 +71,11 @@
             vm.refresh = refresh;
             vm.go = go;
             vm.clear = clear;
+            vm.aggFieldFilter = aggFieldFilter;
+            vm.removePieContainer = removePieContainer;
+            vm.addPieContainer = addPieContainer;
+            vm.startDrawTree = startDrawTree;
+            vm.treeAddData = treeAddData;
 
             //#endregion
 
@@ -107,8 +113,8 @@
                 //$route.reload();
                 //window.location.reload();
                 vm.isBusy = true;
-                activate();
                 common.$location.search.refresh = true;
+                activate();
                 log("Refreshed");
             }
 
@@ -121,12 +127,14 @@
 
             //clear searchtext
             function clear() {
+                vm.process = true;
                 vm.searchText = "*";
+                vm.aggName = "";
                 vm.refinedsearch = [
                        { key: 'Time', value: new Date() },
                        { key: 'School', value: 'TCU' }
                 ];
-                getFieldName();
+                aggShow(vm.aggName);
             }
             //#endregion
 
@@ -134,9 +142,10 @@
             //#region Draw-tree
             vm.fieldstree = [];
             vm.treestatus = true;
+            var tpromise = [];
             //get treemap data
-            function treeMap(index, aggName, datatree) {
-                return datasearch.termAggragation(index, vm.type, aggName, vm.size, vm.st, vm.ft)
+            function treeMap(aggName, datatree) {
+                return datasearch.termAggragation(vm.indicesName, vm.type, aggName, vm.size, vm.st, vm.ft)
                         .then(function (resp) {
                             //var tt = resp.aggregations.ag.agg.buckets;
                             var tt = resp.data.AggData;
@@ -152,6 +161,50 @@
                             terror = true;
                         });
 
+            }
+
+
+            function treeAddData(datatree) {
+
+
+                datatree.addRow(["Elasticsearch", null, 0, 0]);
+
+                vm.fieldstree.map(function (m) {
+
+                    var x = Math.random() * 100 - 50;
+                    datatree.addRow([m, "Elasticsearch", 0, 0]);
+
+                    tpromise.push(treeMap(m, datatree));
+
+                });
+                // return $q.all(promise);
+            }
+
+           
+            function startDrawTree(tree, datatree) {
+                tree.draw(datatree, {
+                    minColor: '#FFFFFF',
+                    midColor: '#2EFEF7',
+                    maxColor: '#00BFFF',
+                    headerHeight: 15,
+                    fontColor: 'black',
+                    showScale: true,
+                    showTooltips: true,
+                    generateTooltip: showStaticTooltip
+                });
+
+                function showStaticTooltip(row, size, value) {
+                    return '<div style="background:#fd9; padding:10px; border-style:solid">' +
+                        '<a> Tag:' + datatree.getValue(row, 0) + '<hr>' + '</b> Size:' + size + '</b> Value:' + value + '</a>.</div>';
+                }
+
+                google.visualization.events.addListener(tree, 'select',
+                    function () {
+                        tree.goUpAndDraw();
+                    });
+
+                vm.isBusy = false;
+                vm.process = false;
             }
 
             //draw tree map
@@ -178,30 +231,19 @@
                 datatree.addColumn('number', 'color');
 
 
-                vm.treeAddData = treeAddData;
-                var tpromise = [];
-                function treeAddData() {
+                /*if ($cookieStore.get('datatree') !== undefined && !common.$location.search.refresh) {
+                    datatree = $cookieStore.get('datatree');
+                    startDrawTree();
+                    common.$location.search.refresh = false;
+                    return;
+                }*/
+                tpromise = [];
 
-
-                    datatree.addRow(["Elasticsearch", null, 0, 0]);
-
-                    vm.fieldstree.map(function (m) {
-
-                        var x = Math.random() * 100 - 50;
-                        datatree.addRow([m, "Elasticsearch", 0, 0]);
-
-                        tpromise.push(treeMap(vm.indicesName, m, datatree));
-
-                    });
-                    // return $q.all(promise);
-                }
-
-
-                treeAddData();
+                treeAddData(datatree);
 
                 var tree = new google.visualization.TreeMap(document.getElementById('treemap_div'));
 
-                vm.startDrawTree = startDrawTree;
+
 
                 common.$q.all(tpromise).then(function () {
                     if (terror === true) {
@@ -210,36 +252,14 @@
                         //drawTreemap();
                     }
                     else {
-                        startDrawTree();
+                        startDrawTree(tree, datatree);
+                        //$cookieStore.put('datatree', datatree);
                     }
 
-                }, function (e) { log("TreeMap Promise Error" + e); });
+                }, function (e) {
+                    log("TreeMap Promise Error" + e);
+                });
 
-
-                function startDrawTree() {
-                    tree.draw(datatree, {
-                        minColor: '#FFFFFF',
-                        midColor: '#2EFEF7',
-                        maxColor: '#00BFFF',
-                        headerHeight: 15,
-                        fontColor: 'black',
-                        showScale: true,
-                        showTooltips: true,
-                        generateTooltip: showStaticTooltip
-                    });
-
-                    function showStaticTooltip(row, size, value) {
-                        return '<div style="background:#fd9; padding:10px; border-style:solid">' +
-                            '<a> Tag:' + datatree.getValue(row, 0) + '<hr>' + '</b> Size:' + size + '</b> Value:' + value + '</a>.</div>';
-                    }
-
-                    google.visualization.events.addListener(tree, 'select',
-                        function () {
-                            tree.goUpAndDraw();
-                        });
-
-                    vm.isBusy = false;
-                }
             }
             //#endregion
 
@@ -374,50 +394,61 @@
             //#endregion
 
 
-            //#region Draw chart
-            //get dashboard data
-            function aggShow(aggName) {
-
+            //#region PieLaout
+            function removePieContainer() {
                 var main = document.getElementById('div2');
                 var contain = document.getElementById('contain');
                 if (contain !== null && main.childNodes.length !== 0) {
                     main.removeChild(contain);
 
                 }
+            }
+
+            function addPieContainer(fields) {
+                var main = document.getElementById('div2');
+                var contain = document.createElement('div');
+
+                contain.setAttribute('id', 'contain');
+                main.appendChild(contain);
+
+                angular.forEach(fields, function (name) {
+                    dataconfig.createContainer(name);
+                });
+            }
+
+            function aggFieldFilter(aggField) {
+                var fieldFilter = ["geoip.timezone", "timestamp.raw", "@timestamp", "referrer", "referrer.raw",
+                    "timestamp", "request", "edata", "host", "action", "agent", "tags"];
+
+                fieldFilter.map(function (f) {
+                    var index = aggField.indexOf(f);
+                    if (index !== -1) {
+                        aggField.splice(index, 1);
+                    }
+                });
+
+                return aggField;
+            }
+            //#endregion
+
+
+            //#region Draw chart
+            //get dashboard data
+            function aggShow(aggName) {
+
+                vm.process = true;
+                removePieContainer();
 
                 if (vm.aggName === "" || vm.aggName === "all") {
                     vm.aggfield = vm.fieldsName;
                     vm.token = false;
 
-                    var fieldFilter = ["geoip.timezone", "timestamp.raw", "@timestamp", "referrer", "referrer.raw", "timestamp", "request", "edata", "host", "action", "agent"];
+                    vm.aggfield = aggFieldFilter(vm.aggfield);
 
-                    fieldFilter.map(function (f) {
+                    addPieContainer(vm.aggfield);
 
-                        var index = vm.aggfield.indexOf(f);
-                        vm.aggfield.splice(index, 1);
-                    });
-
-
-                    var flag;
-
-                    var main2 = document.getElementById('div2');
-                    var contain2 = document.createElement('div');
-
-                    contain2.setAttribute('id', 'contain');
-                    main2.appendChild(contain2);
-
+                    var flag = vm.aggfield.length <= 2 ? true : false;
                     angular.forEach(vm.aggfield, function (name) {
-                        dataconfig.createContainer(name);
-                    });
-
-                    angular.forEach(vm.aggfield, function (name) {
-                        //dataconfig.createContainer(name);
-
-                        if (vm.aggfield.length <= 2) {
-                            flag = true;
-                        } else {
-                            flag = false;
-                        }
                         ap.push(aggShows(name, flag));
                     });
 
@@ -436,12 +467,12 @@
                             log(err.message);
                             vm.indicesName = $rootScope.index;
                             //aggShow(aggName);
-
                         });
                 }
 
                 common.$q.all(ap).then(function () {
-                    vm.isBusy = false;
+                    vm.process = false;
+                    //vm.isBusy = false;
                 });
             }
 
@@ -605,7 +636,7 @@
 
                 datasearch.getSampledata(vm.indicesName, vm.type, 15, vm.st, vm.ft).then(function (resp) {
                     //vm.hit = resp.hits.hits;
-                   // drawMap(vm.hit);
+                    // drawMap(vm.hit);
                 }, function (err) {
                     log("sample data error " + err.message);
                 });

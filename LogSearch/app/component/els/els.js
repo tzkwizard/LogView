@@ -19,7 +19,7 @@
             $scope.trend2 = 'true';
             $scope.count = 0;
             vm.distance = 0;
-            vm.location = "";
+            vm.autocompleLoading = false;
 
             //#region variable
             vm.searchText = $routeParams.search || '';
@@ -80,7 +80,7 @@
             function tests(x) {
                 log("1");
             }
-           
+
 
             function test() {
                 //  bsDialog.deleteDialog('Session');
@@ -237,11 +237,11 @@
                 startingDay: 1
             };
 
-           /* //save time change on global
-            $scope.$on("$destroy", function () {
-                $rootScope.ft = vm.ft;
-                $rootScope.st = vm.st;
-            });*/
+            /* //save time change on global
+             $scope.$on("$destroy", function () {
+                 $rootScope.ft = vm.ft;
+                 $rootScope.st = vm.st;
+             });*/
             vm.timeChange = timeChange;
             function timeChange() {
                 $rootScope.ft = vm.ft;
@@ -478,8 +478,52 @@
             }
             //#endregion
 
-            vm.locationF = "";
-            vm.distanceF = "";
+
+            //#region Location
+            vm.locationF = {
+                lat: "",
+                lon :""
+            };
+            vm.distance = 0;
+            vm.getLocation = getLocation;
+            vm.asyncSelected = "";
+            function getLocation(val) {
+                return common.$http.get('http://maps.googleapis.com/maps/api/geocode/json', {
+                    params: {
+                        address: val,
+                        sensor: false
+                    }
+                }).then(function (response) {
+                    return response.data.results.map(function (item) {
+                        return item.formatted_address;
+                    });
+                });
+            };
+
+            vm.transferLocation = transferLocation;
+            function transferLocation() {
+                
+                common.$http.get('http://maps.googleapis.com/maps/api/geocode/json', {
+                    params: {
+                        address: vm.asyncSelected,
+                        sensor: false
+                    }
+                    })
+                   .success(function (mapData) {
+                    try {
+                        var cor = mapData.results[0].geometry.location;
+                        log(cor.lat + "---" + cor.lng);
+                        if (cor.lat !== undefined && cor.lng !== undefined) {
+                            vm.locationF.lat = cor.lat;
+                            vm.locationF.lon = cor.lng;
+                        }
+                    } catch (e) {
+                        log("cor"+e);
+                    }
+                });
+   
+            }
+            //#endregion
             //#region Search and Filter 
 
             function trySeach($event) {
@@ -500,13 +544,22 @@
                     log("Date error");
                     return;
                 }
-                vm.location = "";
-
 
                 vm.processSearch = true;
                 vm.hitSearch = "";
                 vm.condition = [];
                 addFilterdata();
+
+                vm.distanceF = vm.distance + "mi";
+                if (vm.distance === 0 ||vm.distance===null) {
+                    vm.distance = 0;
+                    vm.asyncSelected = "";
+                    vm.locationF.lat = "";
+                    vm.locationF.lon = "";
+                    log("No distance");
+                }
+
+
 
                 if (vm.searchText == undefined || vm.searchText === "") {
                     getSampleData().then(function () {
@@ -516,7 +569,7 @@
 
                 } else {
                     // autoFill();
-                    datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, vm.condition, vm.st, vm.ft,vm.locationF,vm.distanceF)
+                    datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, vm.condition, vm.st, vm.ft, vm.locationF, vm.distanceF)
                         .then(function (resp) {
                             if (resp.data.Total !== 0) {
                                 vm.hitSearch = resp.data.Data;
@@ -560,9 +613,10 @@
 
             //update auto-fill data
             function autoFill() {
+                vm.autocompleLoading = true;
                 dataconfig.autoFill().then(function (resp) {
                     vm.at = resp.data.AutoData;
-                    toastr.info("Auto Fill Update !");
+                    vm.autocompleLoading = false;
 
                 });
             }

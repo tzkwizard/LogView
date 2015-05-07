@@ -20,7 +20,7 @@
                        data-ng-model=" vm.searchText"
                        placeholder="  Search"
                        typeahead=" record for record in vm.at| filter:$viewValue | limitTo:5" typeahead-loading="loading" />
-                <i ng-show="loading" class="glyphicon glyphicon-refresh"></i>
+                <i ng-show="vm.autocompleLoading" class="glyphicon glyphicon-refresh"></i>
                 <!-- <button class="btn btn-large btn-info btn-notext ng-click-active" type="button" data-ng-click="vm.search()">
                      <i class="fa fa-search"> Search </i>
                  </button>
@@ -35,10 +35,13 @@
                      <option value="all">all</option>
                      <option value={{doc}} data-ng-repeat="doc in vm.fieldsName">{{doc}} </option>
                  </select>-->
-                <md-button class="md-raised md-primary" data-ng-click="vm.search()">
+                <md-button class="md-raised md-primary" data-ng-click="vm.search()" aria-label="search">
                     <i class="fa fa-search"> Search </i>
+                    <md-tooltip>
+                        {{vm.Syntax.title}}+{{vm.Syntax.Description}}
+                    </md-tooltip>
                 </md-button>
-                <md-button class="md-raised md-primary" data-ng-click="vm.refresh($event)">
+                <md-button class="md-raised md-primary" data-ng-click="vm.refresh($event)" aria-label="refresh">
                     <i class="fa fa-refresh"> Refresh </i>
                 </md-button>
                 <md-select placeholder="Pick" ng-model="vm.field">
@@ -51,8 +54,11 @@
                     <!--  <button type="button" class="btn btn-info dropdown-toggle " dropdown-toggle ng-disabled="disabled">
                           History <span class="caret"></span>
                       </button>-->
-                    <md-button class="btn btn-info dropdown-toggle " dropdown-toggle ng-disabled="disabled">
+                    <md-button class="btn btn-info dropdown-toggle " dropdown-toggle ng-disabled="disabled" aria-label="time">
                         History <span class="caret"></span>
+                        <md-tooltip>
+                            Choose Time Span
+                        </md-tooltip>
                     </md-button>
 
                     <ul class="dropdown-menu" role="menu" ng-model="vm.dadjust">
@@ -83,24 +89,40 @@
                                    date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  start date" ng-show="false" ng-change="vm.timeChange()" />
                             <!--<button type="button" class="btn btn-large btn-info btn-notext"
                             ng-click="vm.timeopen($event)"><i class="fa fa-calendar"> Ini Day </i></button>-->
-                            <md-button class="md-fab md-mini" data-ng-click="vm.timeopen($event)">
-                                <i class="fa fa-calendar"> S</i>
+                            <md-button class="md-fab md-mini" data-ng-click="vm.timeopen($event)" aria-label="st">
+                                <i class="fa fa-calendar"></i>
+                                <md-tooltip>
+                                    Start Date
+                                </md-tooltip>
                             </md-button>
                             <input type="text" class="form-control" datepicker-popup="{{vm.format}}" ng-model="vm.ft"
                                    is-open="vm.ftimeopened" min-date="vm.minDate" datepicker-options="vm.dateOptions"
                                    date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  end date" ng-show="false" ng-change="vm.timeChange()" />
                             <!-- <button type="button" class="btn btn-large btn-info btn-notext"
                             ng-click="vm.ftimeopen($event)"><i class="fa fa-calendar"> End Day </i></button>-->
-                            <md-button class="md-fab md-mini" data-ng-click="vm.ftimeopen($event)">
-                                <i class="fa fa-calendar"> F</i>
+                            <md-button class="md-fab md-mini" data-ng-click="vm.ftimeopen($event)" aria-label="ft">
+                                <i class="fa fa-calendar"></i>
+                                <md-tooltip>
+                                    End Date
+                                </md-tooltip>
                             </md-button>
                         </div>
                         <div layout="row" style="width: 20%">
                             <md-input-container>
                                 <label> Location </label>
-                                <input ng-model="vm.location">
+                                <input type="text" ng-model="vm.asyncSelected" placeholder="Location"
+                                       typeahead="address for address in vm.getLocation($viewValue)" typeahead-loading="loadingLocations"
+                                       class="form-control" style="width: 100%">
+                                <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
                             </md-input-container>
+
                         </div>
+                        <md-button class="md-raised md-primary" data-ng-click="vm.transferLocation()" aria-label="location">
+                            <i class="fa fa-globe"></i>
+                            <md-tooltip>
+                                Address to Cordinates
+                            </md-tooltip>
+                        </md-button>
                         <div layout="row" class="pull-right" style="width: 70%">
                             <span class="md-body-1" flex="10"> Distance </span>
                             <md-slider flex="60" ng-model="vm.distance" min="0" max="9999" aria-label="blue" id="blue-slider" class="md-primary"></md-slider>
@@ -136,16 +158,25 @@
                     <div id="Function2" class="row-fluid">
                         <div id="FilterButton">
 
-                            <md-button class="md-raised md-primary" data-ng-click="vm.addfilter()">
+                            <md-button class="md-raised md-primary" data-ng-click="vm.addfilter()" aria-label="add filter">
                                 <i class="fa fa-plus-square"></i>
+                                <md-tooltip>
+                                    Add Filter
+                                </md-tooltip>
                             </md-button>
-                            <md-button class="md-raised md-primary" data-ng-click="vm.removefilter()">
+                            <md-button class="md-raised md-primary" data-ng-click="vm.removefilter()" aria-label="remove filter">
                                 <i class="fa fa-minus-square"></i>
+                                <md-tooltip>
+                                    Remove Filter
+                                </md-tooltip>
                             </md-button>
-                            <md-button class="md-raised md-primary" data-ng-click="vm.filltext()">
+                            <md-button class="md-raised md-primary" data-ng-click="vm.filltext()" aria-label="fill">
                                 <i class="fa fa-apple"> Fill </i>
+                                <md-tooltip>
+                                    Fill SearchText
+                                </md-tooltip>
                             </md-button>
-                           
+
                             <!-- <button data-ng-click="vm.addfilter()" class="btn btn-info btn-notext " type="button">
                                 <i class="fa fa-plus-square"></i>
                             </button>
@@ -204,7 +235,7 @@
                          allow-collapse="true"
                          subtitle="{{vm.tt}} / {{vm.total}}"
                          right-text="Page {{vm.paging.currentPage}} of {{vm.paging.pageCount}}"></div>
-                    
+
                     <!--<div data-ng-repeat="doc in vm.hits.buckets" class="fader-animation" data-ng-style="vm.mystyle">
                         <h2>key: {{doc.key}} --- count: {{doc.doc_count}}</h2>
                     </div>-->
@@ -217,7 +248,7 @@
                                     <th class="message" width="200">Time&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend, 'glyphicon-chevron-up': !trend}" data-ng-click="predicate = '_source.timestamp'; reverse=!reverse;trend=!trend"></i></th>
                                     <th class="message">Message&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend1, 'glyphicon-chevron-up': !trend1}" data-ng-click=" predicate='_source.message' ; reverse=!reverse;trend1=!trend1"></i></th>
                                     <th class="message" width="100">Score&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend2, 'glyphicon-chevron-up': !trend2}" data-ng-click=" predicate='_score' ; reverse=!reverse;trend2=!trend2"></i></th>
-                                    <th class="message">Index&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend, 'glyphicon-chevron-up': !trend}" data-ng-click=" predicate='_index' ; reverse=!reverse;trend=!trend"></i></th>                                   
+                                    <th class="message">Index&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend, 'glyphicon-chevron-up': !trend}" data-ng-click=" predicate='_index' ; reverse=!reverse;trend=!trend"></i></th>
                                 </tr>
                             </thead>
 

@@ -22,10 +22,10 @@
             termAggragationwithQuery: termAggragationwithQuery,
             dateHistogramAggregation: dateHistogramAggregation,
             dashboardPieAggregation: dashboardPieAggregation,
-            termQueryAggragation: termQueryAggragation,
-            test: test
+            termQueryAggragation: termQueryAggragation
         }
         return service;
+
         //#endregion
 
 
@@ -34,24 +34,23 @@
 
 
             var info =
-             {
-                 MultiField: [f1, f2, f3],
-                 Start: start,
-                 End: end,
-                 SubSize: 10
-             }
+            {
+                MultiField: [f1, f2, f3],
+                Start: start,
+                End: end,
+                SubSize: 10
+            }
 
             var ii = angular.toJson(info);
 
             var remote = config.remoteApiUrl + "api/ElasticAggragation/DashBoardPie";
             var local = config.localApiUrl + "api/ElasticAggragation/DashBoardPie";
             return $http.post(local, ii)
-              .success(function (resp) {
-                  return resp;
-              }).error(function (e) {
-                  //toastr.info(e);
-              });
-
+                .success(function (resp) {
+                    return resp;
+                }).error(function (e) {
+                    //toastr.info(e);
+                });
 
 
             return client.search({
@@ -69,24 +68,23 @@
         function dateHistogramAggregation(index, type, aggfield, span, start, end) {
 
             var info =
-             {
-                 Span: span,
-                 Start: start,
-                 End: end,
-                 AggField: aggfield
-             }
+            {
+                Span: span,
+                Start: start,
+                End: end,
+                AggField: aggfield
+            }
 
             var ii = angular.toJson(info);
 
             var remote = config.remoteApiUrl + "api/ElasticAggragation/DateHistogram";
             var local = config.localApiUrl + "api/ElasticAggragation/DateHistogram";
             return $http.post(local, ii)
-              .success(function (resp) {
-                  return resp;
-              }).error(function (e) {
-                  //toastr.info(e);
-              });
-
+                .success(function (resp) {
+                    return resp;
+                }).error(function (e) {
+                    //toastr.info(e);
+                });
 
 
             return client.search({
@@ -103,27 +101,23 @@
 
 
             var info =
-             {
-                 SubSize: size,
-                 Start: start,
-                 End: end,
-                 AggField: aggfield
-             }
+            {
+                SubSize: size,
+                Start: start,
+                End: end,
+                AggField: aggfield
+            }
 
             var ii = angular.toJson(info);
 
             var remote = config.remoteApiUrl + "api/ElasticAggragation/Term";
             var local = config.localApiUrl + "api/ElasticAggragation/Term";
             return $http.post(local, ii)
-              .success(function (resp) {
-                  return resp;
-              }).error(function (e) {
-                  //toastr.info(e);
-              });
-
-
-
-            ;
+                .success(function (resp) {
+                    return resp;
+                }).error(function (e) {
+                    //toastr.info(e);
+                });;
 
 
             return client.search({
@@ -132,7 +126,7 @@
                 body:
                     ejs.Request()
                         .query(ejs.MatchAllQuery())
-                         .aggregation(ejs.FilterAggregation("ag").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size)))
+                        .aggregation(ejs.FilterAggregation("ag").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size)))
             });
 
         }
@@ -154,12 +148,11 @@
             var remote = config.remoteApiUrl + "api/ElasticAggragation/StringQuery";
             var local = config.localApiUrl + "api/ElasticAggragation/StringQuery";
             return $http.post(local, ii)
-              .success(function (resp) {
-                  return resp;
-              }).error(function (e) {
-                  //toastr.info(e);
-              });
-
+                .success(function (resp) {
+                    return resp;
+                }).error(function (e) {
+                    //toastr.info(e);
+                });
 
 
             return client.search({
@@ -167,7 +160,7 @@
                 type: type,
                 body: ejs.Request()
                     .query(ejs.QueryStringQuery(searchText))
-                     .aggregation(ejs.FilterAggregation("ag").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size)))
+                    .aggregation(ejs.FilterAggregation("ag").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size)))
 
 
             });
@@ -176,23 +169,23 @@
         function termQueryAggragation(indices, type, aggfield, size, start, end) {
 
             var info =
-          {
-              SubSize: size,
-              Start: start,
-              End: end,
-              AggField: aggfield
-          }
+            {
+                SubSize: size,
+                Start: start,
+                End: end,
+                AggField: aggfield
+            }
 
             var ii = angular.toJson(info);
 
             var remote = config.remoteApiUrl + "api/ElasticAggragation/TermQuery";
             var local = config.localApiUrl + "api/ElasticAggragation/TermQuery";
             return $http.post(local, ii)
-              .success(function (resp) {
-                  return resp;
-              }).error(function (e) {
-                  //toastr.info(e);
-              });
+                .success(function (resp) {
+                    return resp;
+                }).error(function (e) {
+                    //toastr.info(e);
+                });
 
 
             return client.search({
@@ -227,12 +220,11 @@
             var ii = angular.toJson(info);
 
             return $http.post(local, ii)
-              .success(function (resp) {
-                  return resp;
-              }).error(function (e) {
-                  // toastr.info(e);
-              });
-
+                .success(function (resp) {
+                    return resp;
+                }).error(function (e) {
+                    // toastr.info(e);
+                });
 
 
             return client.search({
@@ -270,21 +262,19 @@
                 url: local,
                 data: info
             })
-              .success(function (resp) {
-                  return resp;
-              }).error(function (e) {
-                  // toastr.info(e);
-              });
+                .success(function (resp) {
+                    return resp;
+                }).error(function (e) {
+                    // toastr.info(e);
+                });
 
 
             return $http.post(local, ii)
-              .success(function (resp) {
-                  return resp;
-              }).error(function (e) {
-                  toastr.info(e);
-              });
-
-
+                .success(function (resp) {
+                    return resp;
+                }).error(function (e) {
+                    toastr.info(e);
+                });
 
 
             return client.search({
@@ -293,7 +283,7 @@
                 size: pagecount,
                 body: ejs.Request()
                     .query(ejs.QueryStringQuery(searchText))
-                   .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
+                    .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
             });
 
         }
@@ -316,14 +306,11 @@
             var ii = angular.toJson(info);
 
             return $http.post(local, ii)
-              .success(function (resp) {
-                  return resp;
-              }).error(function (e) {
-                  //toastr.info(e);
-              });
-
-
-
+                .success(function (resp) {
+                    return resp;
+                }).error(function (e) {
+                    //toastr.info(e);
+                });
 
 
             return client.search({
@@ -332,16 +319,11 @@
                 size: pagecount,
                 body: ejs.Request()
                     .query(ejs.MatchQuery(field, searchText))
-                   .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
+                    .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
             });
         }
 
         function termQueryWithBoolFilter(indices, type, pagecount, field, searchText, condition, start, end, location, distance) {
-
-
-
-
-
 
 
             var info = {
@@ -361,17 +343,11 @@
             var ii = angular.toJson(info);
 
             return $http.post(local, ii)
-              .success(function (resp) {
-                  return resp;
-              }).error(function (e) {
-                  //toastr.info(e);
-              });
-
-
-
-
-
-
+                .success(function (resp) {
+                    return resp;
+                }).error(function (e) {
+                    //toastr.info(e);
+                });
 
 
             var m = [];
@@ -400,8 +376,6 @@
             var fshould = ejs.AndFilter(s);
 
 
-
-
             if (n.length < 1) {
                 fnot = ejs.NotFilter(ejs.MatchAllFilter());
             }
@@ -423,9 +397,6 @@
         function stringQueryWithBoolFilter(indices, type, pagecount, field, searchText, condition, start, end, location, distance) {
 
 
-
-
-
             var info = {
                 Type: type,
                 Size: pagecount,
@@ -443,11 +414,11 @@
             var ii = angular.toJson(info);
 
             return $http.post(local, ii)
-              .success(function (resp) {
-                  return resp;
-              }).error(function (e) {
-                  //toastr.info(e);
-              });
+                .success(function (resp) {
+                    return resp;
+                }).error(function (e) {
+                    //toastr.info(e);
+                });
 
 
             var m = [];
@@ -519,65 +490,6 @@
         //#endregion
 
 
-        //#region Deprecated
-
-        function test(indices, type, pagecount, field, searchText, filterField, filter, condition, choice) {
-
-            var stringQ = ejs.QueryStringQuery(searchText);
-
-            var matchallF = ejs.QueryStringQuery(filter);
-            var matchallFfalse = ejs.MatchAllQuery();
-            var matchallFfalse2 = ejs.QueryStringQuery("");
-            var termF = ejs.TermFilter(filterField, filter);
-            var termFfalse = ejs.NotFilter(ejs.TermFilter(filterField, ""));
-            var termFfalse2 = ejs.NotFilter(ejs.TermFilter(filterField, filter));
-            var qmust = "";
-            var qmust2 = "";
-            var qmustnot = "";
-            var fmust = "";
-
-            switch (choice) {
-
-                case 1:
-                    {
-                        qmust = stringQ;
-                        if (condition === "MUST") {
-                            qmust2 = matchallF;
-                            qmustnot = matchallFfalse2;
-                        } else {
-                            qmust2 = matchallFfalse;
-                            qmustnot = matchallF;
-                        }
-                        fmust = termFfalse;
-                        break;
-                    }
-
-                case 2:
-                    {
-                        qmust = stringQ;
-                        qmust2 = matchallFfalse;
-                        if (condition === "MUST") {
-                            fmust = termF;
-                        } else {
-                            fmust = termFfalse2;
-                        }
-                        qmustnot = matchallFfalse2;
-                        break;
-                    }
-
-
-            }
-
-            return client.search({
-                index: indices,
-                type: type,
-                size: pagecount,
-                body: ejs.Request()
-                    .query(ejs.BoolQuery().must(qmust).must(qmust2).mustNot(qmustnot))
-                    .filter(ejs.BoolFilter().must(fmust))
-            });
-        }
     }
-    //#endregion
 
 })();

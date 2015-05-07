@@ -15,7 +15,7 @@
                data-ng-keydown="vm.autoFill()" data-ng-keyup="vm.search($event)"
                typeahead=" record for record in vm.ip| filter:$viewValue | limitTo:5"
                typeahead-loading="loading" class="form-control">
-        <i ng-show="loading" class="glyphicon glyphicon-refresh"></i>
+        <i ng-show="vm.autocompleLoading" class="glyphicon glyphicon-refresh"></i>
         <!--
         <md-input-container>
             <label> Search </label>

@@ -9,7 +9,7 @@
             </div>
 
             <div id="Header" class="row-fluid">
-                <button data-ng-click="vm.aggShow(vm.aggName)" class="btn btn-info btn-notext" type="button">
+                <!--<button data-ng-click="vm.aggShow(vm.aggName)" class="btn btn-info btn-notext" type="button">
                     <i class="fa fa-pie-chart">Show</i>
                 </button>
 
@@ -21,7 +21,6 @@
                     <option selected value="all"> all</option>
                     <option value={{doc}} data-ng-repeat="doc in vm.typesName">{{doc}} </option>
                 </select>
-
                 <select ng-model="vm.aggName" class="form-control" style="width: 100px">
                     <option selected value="all">all</option>
                     <option value={{doc}} data-ng-repeat="doc in vm.fieldsName">{{doc}} </option>
@@ -31,18 +30,44 @@
                 </button>
                 <button class="btn btn-large btn-info btn-notext pull-right" type="button" data-ng-click="vm.go()">
                     <i class="fa fa-refresh"> Result </i>
-                </button>
+                </button>-->
+
+                <md-button class="md-raised md-primary" data-ng-click="vm.aggShow(vm.aggName)" ng-disabled="vm.process">
+                    <i class="fa fa-pie-chart"> Show </i>
+                </md-button>
+                <md-select placeholder="Pick" ng-model="vm.index" style="width: 20%">
+                    <md-option value="all">all</md-option>
+                    <md-option value={{doc}} data-ng-repeat="doc in vm.indicesName">{{doc}}</md-option>
+                </md-select>
+                <md-select placeholder="Pick" ng-model="vm.aggName">
+                    <md-option value="all">all</md-option>
+                    <md-option value={{doc}} data-ng-repeat="doc in vm.fieldsName">{{doc}}</md-option>
+                </md-select>
+
+                <md-button class="md-raised md-primary pull-right" data-ng-click="vm.refresh()" ng-disabled="vm.process">
+                    <i class="fa fa-refresh"> Refresh </i>
+                </md-button>
+                <md-button class="md-raised md-primary pull-right" data-ng-click="vm.go()" ng-disabled="vm.process">
+                    <i class="fa fa-wifi"> Result </i>
+                </md-button>
+               
             </div>
 
             <div id="Content1" class="row-fluid">
-                {{vm.searchText}}
-                <button class="btn btn-large btn-info btn-notext pull-right" type="button" data-ng-click="vm.clear()">
+                <!--<button class="btn btn-large btn-info btn-notext pull-right" type="button" data-ng-click="vm.clear()">
                     <i class="fa fa-trash-o"> Clear </i>
                 </button>
-                <div class="fader-animation" data-ng-repeat="doc in vm.refinedsearch">
-                    <li>{{doc.key}} : {{doc.value}}</li>
-                </div>
+                    -->
+                <md-button class="md-raised md-primary pull-right" data-ng-click="vm.clear()" ng-disabled="vm.process">
+                    <i class="fa fa-trash-o"> Clear </i>
+                </md-button>
 
+                <div class="fader-animation" data-ng-repeat="doc in vm.refinedsearch">
+                    <a>{{doc.key}} : {{doc.value}}</a>
+                </div>
+                <div layout="row" layout-sm="column" layout-align="space-around">
+                    <md-progress-circular md-mode="indeterminate" ng-show="vm.process"></md-progress-circular>
+                </div>
                 <div class="widget wblue">
                     <div data-cc-widget-header title="{{vm.title}}" subtitle="{{vm.total}}"
                          allow-collapse="true"></div>
@@ -68,8 +93,8 @@
 
                         <tbody>
                             <tr class="fader-animation" data-ng-repeat="doc in vm.hitSearch| orderBy:predicate:reverse" data-ng-click="vm.test()">
-                                <td>{{doc.key}}</td>
-                                <td>{{doc.doc_count}}</td>
+                                <td>{{doc.Key}}</td>
+                                <td>{{doc.DocCount}}</td>
                             </tr>
                         </tbody>
                     </table>
