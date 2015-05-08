@@ -12,7 +12,7 @@
             </a>
         </div>
         <input type="text" ng-model="vm.searchText" placeholder=" search "
-               data-ng-keydown="vm.autoFill()" data-ng-keyup="vm.search($event)"
+               data-ng-keydown="vm.autoFill($event)" data-ng-keyup="vm.search($event)"
                typeahead=" record for record in vm.ip| filter:$viewValue | limitTo:5"
                typeahead-loading="loading" class="form-control">
         <i ng-show="vm.autocompleLoading" class="glyphicon glyphicon-refresh"></i>
@@ -29,9 +29,15 @@
         </md-button>
         <md-button class="md-raised md-primary" data-ng-click="vm.refresh($event)">
             <i class="fa fa-refresh"> Refresh </i>
+            <md-tooltip>
+                Refresh Page
+            </md-tooltip>
         </md-button>
-        <md-button class="md-icon-button md-primary pull-right" aria-label="Settings" data-ng-click="vm.logout()">
+        <md-button class="md-icon-button md-primary pull-right" aria-label="out" data-ng-click="vm.logout()">
             <i class="fa fa-sign-out"></i>
+            <md-tooltip>
+                Log out
+            </md-tooltip>
         </md-button>
         <!--<button class="btn btn-large btn-info btn-notext ng-click-active" type="button" data-ng-click="vm.search($event)">
             <i class="fa fa-search"> Search </i>
@@ -76,6 +82,9 @@
             </ul>-->
             <md-button type="button" class="btn btn-info dropdown-toggle " dropdown-toggle ng-disabled="disabled" ng-click="toggleRight()">
                 History <span class="caret"></span>
+                <md-tooltip>
+                    Choose Time Span
+                </md-tooltip>
             </md-button>
 
 
@@ -92,20 +101,20 @@
             </ul>
         </div>
     </div>
-    <md-sidenav id="sidenav" class="md-sidenav-right md-whiteframe-z2" md-component-id="right">
+   <md-sidenav id="sidenav" class="md-sidenav-right md-whiteframe-z2" md-component-id="right">
         <md-toolbar class="md-theme-light">
             <h2 class="md-toolbar-tools">History</h2>
         </md-toolbar>
-        <md-content data-ng-controller="RightCtrl" layout-padding>
-            <section layout="row" layout-sm="column" layout-align="center center" ng-repeat="t in time" ng-click="nav(t)">
-                <md-button>{{t}}</md-button>
-                <div class="label">Flat</div>
-            </section>
+       <md-content data-ng-controller="timeSideNav" layout-padding>
+           <section layout="row" layout-sm="column" layout-align="center center" ng-repeat="t in time" ng-click="nav(t)">
+               <md-button>{{t}}</md-button>
+               <div class="label">Flat</div>
+           </section>
 
-            <md-button ng-click="close()" class="md-primary" layout-align="center center">
-                Close
-            </md-button>
-        </md-content>
+           <md-button ng-click="close()" class="md-primary" layout-align="center center">
+               Close
+           </md-button>
+       </md-content>
     </md-sidenav>
 
 

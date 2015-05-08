@@ -17,7 +17,7 @@
         vm.selectedIndex = "";
         vm.autocompleLoading = false;
         //#endregion
-       
+
 
         //#region function
         vm.path = path;
@@ -38,8 +38,6 @@
             formatYear: 'yy',
             startingDay: 1
         };
-
-
 
         vm.filterst = filterst;
         //change time span global
@@ -86,19 +84,21 @@
             // window.location.reload();
 
         }
+
         $scope.toggleRight = timeNav('right');
-        
-        function timeNav(navID) {          
+
+        function timeNav(navID) {
+
             var debounceFn = $mdUtil.debounce(function () {
                 $mdSidenav(navID)
-                  .toggle()
-                  .then(function () {
-                      //document.getElementById("nav").style.height = "10%";
-                      document.getElementById("nav").style.overflow = "visible";
-                      document.getElementById("sidenav").style.height= vm.it.length*50+"%";
-                      toastr.info("toggle " + navID + " is done");
-                  });
-            }, 300);
+                    .toggle()
+                    .then(function () {
+                        //document.getElementById("nav").style.height = "10%"; 
+                        document.getElementById("sidenav").style.height = vm.it.length * 60 + "%";
+                        document.getElementById("nav").style.overflow = "visible";
+                        toastr.info("toggle " + navID + " is done");
+                    });
+            }, 10);
             return debounceFn;
         }
 
@@ -107,16 +107,18 @@
 
         //#region Auto-Fill
         //get auto-fill data
-        function autoFill() {
-            vm.autocompleLoading = true;
-            dataconfig.autoFill().then(function (resp) {
-                vm.ip = resp.data.AutoData;
-                vm.autocompleLoading = false;
-            });
+        function autoFill($event) {
 
-
+            if ($event === undefined || config.input.indexOf($event.keyCode) !== -1) {
+                vm.autocompleLoading = true;
+                return dataconfig.autoFill().then(function (resp) {
+                    vm.ip = resp.data.AutoData;
+                    vm.autocompleLoading = false;
+                });
+            }
+            return null;
         }
-    
+
         //#endregion
 
 
@@ -145,7 +147,7 @@
                 vm.ft = new Date();
             }
 
-            dataconfig.autoFill(vm.searchText).then(function (resp) {
+            dataconfig.autoFill().then(function (resp) {
                 vm.ip = resp.data.AutoData;
                 toastr.info("Auto Fill Load");
             });
@@ -189,62 +191,4 @@
         //#endregion
 
     };
-})();
-
-(function () {
-    'use strict';
-
-    var controllerId = 'RightCtrl';
-
-    angular.module('app')
-        .controller(controllerId, function ($rootScope,$scope, $timeout, $mdSidenav, common) {
-            $scope.time = ["Last three months", "Last Month", "Last four weeks", "Last three weeks", "Last two weeks", "Last week",
-                "Last five days", "Last three days", "Last day"];
-
-            $scope.nav=function(x) {
-                $rootScope.ft = new Date();
-                switch (x) {
-                    case "Last three months":
-                        $rootScope.st = moment(new Date()).subtract(3, 'month');
-                        break;
-                    case "Last Month":
-                        $rootScope.st = moment(new Date()).subtract(1, 'month');
-                        break;
-                    case "Last four weeks":
-                        $rootScope.st = moment(new Date()).subtract(28, 'days');
-                        break;
-                    case "Last three weeks":
-                        $rootScope.st = moment(new Date()).subtract(21, 'days');
-                        break;
-                    case "Last two weeks":
-                        $rootScope.st = moment(new Date()).subtract(14, 'days');
-                        break;
-                    case "Last week":
-                        $rootScope.st = moment(new Date()).subtract(7, 'days');
-                        break;
-                    case "Last five days":
-                        $rootScope.st = moment(new Date()).subtract(5, 'days');
-                        break;
-                    case "Last three days":
-                        $rootScope.st = moment(new Date()).subtract(3, 'days');
-                        break;
-                    case "Last day":
-                        $rootScope.st = moment(new Date()).subtract(1, 'days');
-                        break;
-                    default:
-                        break;
-                }
-                $mdSidenav('right').close();
-                common.$location.path(common.$location.path() + "/");
-            }
-            $scope.$on("$destroy", function () {
-                document.getElementById("nav").style.height = "10%";
-            });
-            $scope.close = function () {
-                $mdSidenav('right').close()
-                  .then(function () {                     
-                      toastr.info("close RIGHT is done");
-                  });
-            };
-        });
 })();

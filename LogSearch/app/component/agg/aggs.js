@@ -50,7 +50,7 @@
             var terror = false;
             vm.token = false;
             vm.process = true;
-            
+
 
             vm.dashboard = "dash";
             vm.range = "range";
@@ -76,7 +76,7 @@
             vm.addPieContainer = addPieContainer;
             vm.startDrawTree = startDrawTree;
             vm.treeAddData = treeAddData;
-
+            vm.init = init;
             //#endregion
 
 
@@ -180,7 +180,7 @@
                 // return $q.all(promise);
             }
 
-           
+
             function startDrawTree(tree, datatree) {
                 tree.draw(datatree, {
                     minColor: '#FFFFFF',
@@ -231,12 +231,6 @@
                 datatree.addColumn('number', 'color');
 
 
-                /*if ($cookieStore.get('datatree') !== undefined && !common.$location.search.refresh) {
-                    datatree = $cookieStore.get('datatree');
-                    startDrawTree();
-                    common.$location.search.refresh = false;
-                    return;
-                }*/
                 tpromise = [];
 
                 treeAddData(datatree);
@@ -244,16 +238,13 @@
                 var tree = new google.visualization.TreeMap(document.getElementById('treemap_div'));
 
 
-
                 common.$q.all(tpromise).then(function () {
                     if (terror === true) {
                         terror = false;
-                        vm.indicesName = $rootScope.index;
-                        //drawTreemap();
+                        log("treedata error");
                     }
                     else {
                         startDrawTree(tree, datatree);
-                        //$cookieStore.put('datatree', datatree);
                     }
 
                 }, function (e) {
@@ -272,23 +263,13 @@
             function activate() {
                 common.activateController([getIndexName(), getFieldName()], controllerId)
                       .then(function () {
-                          if (vm.treestatus === true) {
-                              drawTreemap();
-                          }
-                          aggShow();
-
-                          vm.refinedsearch = [
-                          { key: 'Time', value: new Date() },
-                          { key: 'School', value: $rootScope.school }
-                          ];
+                          init();
                           log('Activated Aggs search View');
-
                       });
             }
 
-            //Load index
-            function getIndexName() {
 
+            function init() {
                 if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {
                     vm.ft = $rootScope.ft;
                     vm.st = $rootScope.st;
@@ -298,14 +279,21 @@
                 }
 
                 vm.type = $rootScope.logtype;
-
-                if ($cookieStore.get('index') !== undefined && $rootScope.index !== undefined) {
-                    if ($rootScope.index.length !== $cookieStore.get('index').length) {
-                        log("Index Changed");
-                        $cookieStore.remove('index');
-                    }
-
+                if (vm.treestatus === true) {
+                    drawTreemap();
                 }
+                aggShow();
+
+                vm.refinedsearch = [
+                { key: 'Time', value: new Date() },
+                { key: 'School', value: $rootScope.school }
+                ];
+            }
+
+
+            //Load index
+            function getIndexName() {
+                dataconfig.checkIndexCookie();
                 vm.indicesName = $cookieStore.get('index');
                 if ($cookieStore.get('index') === undefined) {
                     if ($rootScope.index !== undefined) {
@@ -345,13 +333,8 @@
             //Load field
             function getFieldName() {
 
-                if ($cookieStore.get('logfield') !== undefined && $rootScope.logfield !== undefined) {
-                    if ($rootScope.logfield.length !== $cookieStore.get('logfield').length) {
-                        log("Field Changed");
-                        $cookieStore.remove('logfield');
-                    }
+                dataconfig.checkFieldCookie();
 
-                }
                 vm.fieldsName = $cookieStore.get('logfield');
 
                 if ($cookieStore.get('logfield') === undefined) {
@@ -451,7 +434,6 @@
                     angular.forEach(vm.aggfield, function (name) {
                         ap.push(aggShows(name, flag));
                     });
-
                 } else {
                     vm.token = true;
                     datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft)
@@ -465,8 +447,6 @@
 
                         }, function (err) {
                             log(err.message);
-                            vm.indicesName = $rootScope.index;
-                            //aggShow(aggName);
                         });
                 }
 
@@ -513,8 +493,6 @@
 
                       }, function (err) {
                           // log("aggshows err "+err.message);
-                          vm.indicesName = $rootScope.index;
-                          //aggShows(aggName, flag);
                       });
 
             }

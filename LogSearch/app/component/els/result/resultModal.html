@@ -1,0 +1,45 @@
+﻿<div class="widget wlightblue">
+    <div data-cc-widget-header title="{{title}}" allow-collapse="true"></div>
+    <div class="widget-content">
+        <hr />
+        <div class="modal-body">
+            <table class="columns">
+                <col width="500">
+                <tr>
+                    <td width="500">
+                        <h3> All Message Field </h3>
+                        <div class="gridStyle2" ng-grid="gridOptions"></div>
+                    </td>
+
+                    <td width="500">
+                        <h3> User Basic Information </h3>
+                        <div class="gridStyle" ng-grid="gridOptions2"></div>
+                        <br><br> <hr />
+                        <h3> User Action Information </h3>
+                        <div class="gridStyle" ng-grid="gridOptions3"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="500"></td>
+                    <td width="500"></td>
+
+                </tr>
+            </table>
+            <hr />
+            {{mySelections}}
+
+            <ul>
+                <!--  <li ng-click="selected.item = items._source.timestamp"><h5>Time :  <a>{{items._source.timestamp}}</a></h5></li>-->
+                <!--<ul ng-repeat="item in items._source">
+                <li ng-click="selected.item = item">{{field}}{{ item|json }}</li>
+
+                </>-->
+            </ul>
+            Selected: <b>{{ selected.item |json }}</b>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">OK</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>

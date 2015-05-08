@@ -24,8 +24,9 @@
             document.getElementsByTagName("head")[0].appendChild(msViewportStyle);
         }
     </script>
-
-    <link rel="shortcut icon" href="/LogSearch/favicon.ico" />
+    <base href="/LogSearch/">
+   <!-- <link rel="shortcut icon" href="http://localhost/LogSearch/favicon.ico?v=2" />-->
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <link href="content/ie10mobile.css" rel="stylesheet" />
     <link href="content/bootstrap.min.css" rel="stylesheet" />
     <link href="content/font-awesome.min.css" rel="stylesheet" />
@@ -40,21 +41,7 @@
 
 </head>
 <body>
-    <div>
-        <div data-ng-include="'app/layout/shell.html'"></div>
-
-        <div id="splash-page" data-ng-show="false">
-            <div class="page-splash">
-                <div class="page-splash-message">
-                    Loading
-                </div>
-                <div class="progress progress-striped active page-progress-bar">
-                    <div class="bar"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <div data-ng-include="'app/layout/shell.html'"></div>
     <span data-cc-scroll-to-top></span>
     
     <!-- Vendor Scripts -->
@@ -103,12 +90,12 @@
     <script src="app/layout/topnav.js"></script>
     <script src="app/component/els/els.js"></script>
     <script src="app/component/els/client.js"></script>
-    <script src="app/component/els/resultModal.js"></script>
+    <script src="app/component/els/result/resultModal.js"></script>
     <script src="app/component/agg/aggs.js"></script>
     <script src="app/component/load/Loading.js"></script>
     <script src="app/component/load/TODO.js"></script>
-
-
+    <script src="app/component/login/loginModal.js"></script>
+    <script src="app/layout/timesidebar/timeSideNav.js"></script>
 
 
     <!-- app Services -->

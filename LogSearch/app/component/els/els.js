@@ -5,7 +5,7 @@
 
     angular.module('app')
         .controller(controllerId, function (bsDialog, $rootScope, $routeParams,
-           $scope, $modal, client, common, datasearch, dataconfig, $cookieStore, config) {
+           $scope, $modal, client, common, datasearch, dataconfig, $cookieStore, config, $timeout, $mdBottomSheet) {
 
 
             var vm = this;
@@ -13,6 +13,9 @@
             vm.title2 = "Function";
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
+
+
+            //#region variable
             $scope.predicate = '_source.timestamp';
             $scope.trend = 'true';
             $scope.trend1 = 'true';
@@ -20,8 +23,6 @@
             $scope.count = 0;
             vm.distance = 0;
             vm.autocompleLoading = false;
-
-            //#region variable
             vm.searchText = $routeParams.search || '';
             vm.processSearch = false;
             vm.hitSearch = "";
@@ -41,22 +42,21 @@
             vm.ft = "";
             vm.st = "";
             vm.at = [];
-            vm.showSplash = true;
             vm.filterfill = false;
             vm.condition = [];
             vm.Syntax = {
                 title: 'Help',
                 Description: "Terms Fields Escaping Special Characters"
             };
+            vm.dunit = 'mi';
             //#endregion
 
             //#region function
             vm.search = search;
-            vm.mSearch = mSearch;
             vm.trySeach = trySeach;
-            vm.filtertemp = filtertemp;
             vm.getSampleData = getSampleData;
             vm.test = test;
+            vm.init = init;
 
             vm.today = today;
             vm.pageChanged = pageChanged;
@@ -109,57 +109,6 @@
             //#endregion
 
 
-            //#region Paging 
-            vm.paging = {
-                currentPage: 1,
-                maxPagesToShow: 5,
-                pageSize: 5
-            };
-
-            Object.defineProperty(vm.paging, 'pageCount', {
-                get: function () {
-                    return Math.floor(vm.tt / vm.paging.pageSize) + 1;
-                }
-            });
-
-            //get current page data
-            function getCurrentPageData(res) {
-                vm.res = [];
-                vm.j = 0;
-                vm.pagenumber = vm.paging.pageSize * vm.paging.currentPage;
-                if (vm.pagenumber > vm.tt)
-                    vm.pagenumber = vm.tt;
-                for (vm.i = (vm.paging.currentPage - 1) * vm.paging.pageSize; vm.i < vm.pagenumber; vm.i++) {
-                    vm.res[vm.j] = res[vm.i];
-                    vm.j++;
-                }
-            }
-
-            //change page
-            function pageChanged() {
-                vm.getCurrentPageData(vm.hitSearch);
-            }
-
-            vm.refreshPage = refreshPage;
-
-            //refresh page
-            function refreshPage() {
-                if (vm.pagecount === "0") {
-                    vm.pagecount = vm.total;
-                }
-
-                if (vm.tt > vm.pagecount) {
-                    vm.tt = vm.pagecount;
-                } else {
-                    vm.tt = Math.min(vm.total, vm.pagecount);
-                }
-
-                vm.getCurrentPageData(vm.hitSearch);
-                random();
-            }
-            //#endregion
-
-
             //#region Processorbar
 
             vm.showWarning = "";
@@ -167,7 +116,6 @@
             vm.ptype = "";
 
             vm.random = random;
-
             //fill process bar
             function random() {
                 //var value = Math.floor((Math.random() * 100) + 1);
@@ -185,7 +133,6 @@
                 }
 
                 vm.showWarning = (ptype === 'danger' || ptype === 'warning');
-
                 vm.dynamic = value;
                 vm.ptype = ptype;
             };
@@ -193,45 +140,11 @@
             //#endregion
 
 
-            //#region ResultModal
-
-            vm.showModal = false;
-
-            vm.popdata = {
-                data: "",
-                field: []
-            };
-            vm.items = ['item1', 'item2', 'item3'];
-
-            //open result page
-            vm.open = function (doc) {
-                vm.popdata.data = doc;
-                vm.popdata.field = vm.fieldsName;
-                var modalInstance = $modal.open({
-                    templateUrl: 'resultModal.html',
-                    controller: 'resultModal',
-                    //size: 'lg',
-                    resolve: {
-                        items: function () {
-                            return vm.popdata;
-                        }
-                    }
-                });
-
-                modalInstance.result.then(function (selectedItem) {
-                    vm.selected = selectedItem;
-                }, function () {
-                    log.info('Modal dismissed at: ' + new Date());
-                });
-            };
-            //#endregion
-
-
             //#region Date-pick
 
             vm.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'yyyy.MM.dd'];
             vm.format = vm.formats[4];
-            vm.it = ["Last three months", "Last Month", "Last four weeks", "Last three weeks", "Last two weeks", "Last week"];
+            vm.it = ["Last 3 months", "Last Month", "Last 4 weeks", "Last 3 weeks", "Last 2 weeks", "Last week"];
             vm.dateOptions = {
                 formatYear: 'yy',
                 startingDay: 1
@@ -242,6 +155,8 @@
                  $rootScope.ft = vm.ft;
                  $rootScope.st = vm.st;
              });*/
+
+            //save time change on global
             vm.timeChange = timeChange;
             function timeChange() {
                 $rootScope.ft = vm.ft;
@@ -251,36 +166,70 @@
             //change time span on scope
             function filterst(x) {
                 switch (x) {
-                    case "Last three months":
+                    case "Last year":
+                        vm.st = moment(new Date()).subtract(1, 'year');
+                        break;
+                    case "Last 6 months":
+                        vm.st = moment(new Date()).subtract(6, 'month');
+                        break;
+                    case "Last 3 months":
                         vm.st = moment(new Date()).subtract(3, 'month');
                         break;
                     case "Last Month":
                         vm.st = moment(new Date()).subtract(1, 'month');
                         break;
-                    case "Last four weeks":
-                        vm.st = moment(new Date()).subtract(28, 'days');
+                    case "Last 4 weeks":
+                        vm.st = moment(new Date()).subtract(4, 'week');
                         break;
-                    case "Last three weeks":
-                        vm.st = moment(new Date()).subtract(21, 'days');
+                    case "Last 3 weeks":
+                        vm.st = moment(new Date()).subtract(3, 'week');
                         break;
-                    case "Last two weeks":
-                        vm.st = moment(new Date()).subtract(14, 'days');
+                    case "Last 2 weeks":
+                        vm.st = moment(new Date()).subtract(2, 'week');
                         break;
                     case "Last week":
-                        vm.st = moment(new Date()).subtract(7, 'days');
+                        vm.st = moment(new Date()).subtract(1, 'week');
+                        break;
+                    case "Last 5 days":
+                        vm.st = moment(new Date()).subtract(5, 'days');
+                        break;
+                    case "Last 3 days":
+                        vm.st = moment(new Date()).subtract(3, 'days');
+                        break;
+                    case "Last 2 days":
+                        vm.st = moment(new Date()).subtract(2, 'days');
+                        break;
+                    case "Last day":
+                        vm.st = moment(new Date()).subtract(1, 'day');
+                        break;
+                    case "Last 12 hours":
+                        vm.st = moment(new Date()).subtract(12, 'hour');
+                        break;
+                    case "Last 6 hours":
+                        vm.st = moment(new Date()).subtract(6, 'hour');
+                        break;
+                    case "Last hour":
+                        vm.st = moment(new Date()).subtract(1, 'hour');
                         break;
                     default:
                         // log(x);
                         break;
                 }
-
                 search();
-
             }
 
+            vm.showListBottomSheet = showListBottomSheet;
+            function showListBottomSheet() {
+                //$scope.alert = '';
+                $mdBottomSheet.show({
+                    templateUrl: 'app/component/els/BottomListSheet.html',
+                    controller: 'els'
+                }).then(function (clickedItem) {
+                    filterst(clickedItem);
+                });
+            };
+
             function today() {
-                //vm.maxDate = new Date();
-                // vm.dt=$filter('date')(vm.tempd, "yyyy.MM.dd");
                 vm.st = moment(new Date()).subtract(1, 'month');
                 vm.ft = new Date();
                 toggleMin();
@@ -310,14 +259,12 @@
                 $event.preventDefault();
                 $event.stopPropagation();
                 vm.timeopened = true;
-                $rootScope.st = vm.st;
             };
 
             //open end date calendar
             vm.ftimeopen = function ($event) {
                 $event.preventDefault();
                 $event.stopPropagation();
-                $rootScope.ft = vm.ft;
                 vm.ftimeopened = true;
             };
 
@@ -332,7 +279,6 @@
 
             //refreh page
             vm.refresh = function () {
-
                 BootstrapDialog.confirm({
                     message: 'Sure to Refresh?',
                     closable: true, // <-- Default value is false
@@ -359,26 +305,10 @@
 
             }
 
-
             //Load Index
             function getIndexName() {
-                if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {
-                    vm.ft = $rootScope.ft;
-                    vm.st = $rootScope.st;
-                } else {
-                    vm.st = moment(new Date()).subtract(2, 'month');
-                    vm.ft = new Date();
-                }
+                dataconfig.checkIndexCookie();
 
-
-
-                if ($cookieStore.get('index') !== undefined && $rootScope.index !== undefined) {
-                    if ($rootScope.index.length !== $cookieStore.get('index').length) {
-                        log("Index Changed");
-                        $cookieStore.remove('index');
-                    }
-
-                }
                 vm.indicesName = $cookieStore.get('index');
                 if ($cookieStore.get('index') === undefined) {
                     if ($rootScope.index !== undefined) {
@@ -391,15 +321,13 @@
                     }
                 }
 
-                /* if (ip === undefined) {
-                     getFieldName();
-                 } else {
-                     ip.then(function (data) {
-                         vm.indicesName = data;
-                         getFieldName();
-                     });
-                 }*/
+                if (ip !== undefined) {
+                    return ip.then(function (data) {
+                        vm.indicesName = data;
+                    });
+                }
 
+                return null;
 
             }
 
@@ -410,64 +338,71 @@
 
             //Load Field
             function getFieldName() {
+                dataconfig.checkFieldCookie();
 
-
-                if (vm.indicesName[0] !== "" && vm.indicesName[0] !== undefined) {
-                    vm.index = vm.indicesName[0];
+                vm.fieldsName = $cookieStore.get('logfield');
+                if ($cookieStore.get('logfield') === undefined) {
+                    if ($rootScope.logfield !== undefined) {
+                        $cookieStore.put('logfield', $rootScope.logfield);
+                        vm.fieldsName = $cookieStore.get('logfield');
+                    } else {
+                        fp = dataconfig.getFieldName("", "");
+                    }
                 }
-                if (vm.index !== "" && vm.index !== undefined) {
-                    fp = dataconfig.getFieldName(vm.index, $rootScope.logtype);
-                    // log(vm.fieldsName.length);
+
+                if (fp !== undefined) {
+                    return fp.then(function (data) {
+                        vm.fieldsName = data;
+                    });
                 }
 
-                fp.then(function (data) {
-                    vm.fieldsName = data;
-                });
+                return null;
 
             }
 
             activate();
             function activate() {
-                common.activateController([getIndexName(), getFieldName()], controllerId)
+                common.activateController([getIndexName(), getFieldName(), autoFill()], controllerId)
                     .then(function () {
-                        common.$location.search();
-                        if (common.$location.search.field === "" || common.$location.search.field === undefined) {
-                            if (common.$location.search.text !== "") {
-                                vm.searchText = common.$location.search.text;
-                                search();
-                            } else {
-                                search();
-                            }
-
-                        } else {
-                            vm.searchText = common.$location.search.field + " : " + common.$location.search.text;
-                            search();
-
-                        }
-
-
-                        common.$location.search.field = "";
-                        common.$location.search.text = "";
-                        vm.showSplash = false;
+                        init();
                         log('Activated ELS search View');
-
                     });
             }
 
+            function init() {
+                if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {
+                    vm.ft = $rootScope.ft;
+                    vm.st = $rootScope.st;
+                } else {
+                    vm.st = moment(new Date()).subtract(2, 'month');
+                    vm.ft = new Date();
+                }
+                common.$location.search();
+                if (common.$location.search.field === "" || common.$location.search.field === undefined) {
+                    if (common.$location.search.text !== "") {
+                        vm.searchText = common.$location.search.text;
+                    }
+                } else {
+                    vm.searchText = common.$location.search.field + " : " + common.$location.search.text;
+                }
+                search();
+                common.$location.search.field = "";
+                common.$location.search.text = "";
+            }
+
+
             //get sample search result
             function getSampleData() {
-
                 return datasearch.getSampledata(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.st, vm.ft, vm.locationF, vm.distanceF)
                       .then(function (resp) {
-
                           if (resp.data.Total !== 0) {
                               vm.hitSearch = resp.data.Data;
                           }
-
                           vm.total = resp.data.Total;
                           vm.tt = resp.total < vm.pagecount ? resp.total : vm.pagecount;
                           vm.getCurrentPageData(vm.hitSearch);
                           random();
+                          refreshPage();
                           /* vm.hitSearch = resp.hits.hits;
                            vm.total = resp.hits.total;
                            vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
@@ -479,10 +414,10 @@
             //#endregion
 
 
-            //#region Location
+            //#region GetLocation
             vm.locationF = {
                 lat: "",
-                lon :""
+                lon: ""
             };
             vm.distance = 0;
             vm.getLocation = getLocation;
@@ -502,28 +437,29 @@
 
             vm.transferLocation = transferLocation;
             function transferLocation() {
-                
                 common.$http.get('http://maps.googleapis.com/maps/api/geocode/json', {
                     params: {
                         address: vm.asyncSelected,
                         sensor: false
                     }
-                    })
+                })
                    .success(function (mapData) {
-                    try {
-                        var cor = mapData.results[0].geometry.location;
-                        log(cor.lat + "---" + cor.lng);
-                        if (cor.lat !== undefined && cor.lng !== undefined) {
-                            vm.locationF.lat = cor.lat;
-                            vm.locationF.lon = cor.lng;
-                        }
-                    } catch (e) {
-                        log("cor"+e);
-                    }
-                });
-   
+                       try {
+                           var cor = mapData.results[0].geometry.location;
+                           log(cor.lat + "---" + cor.lng);
+                           if (cor.lat !== undefined && cor.lng !== undefined) {
+                               vm.locationF.lat = cor.lat;
+                               vm.locationF.lon = cor.lng;
+                           }
+                       } catch (e) {
+                           log("cor" + e);
+                       }
+                   });
+
             }
             //#endregion
+
+
             //#region Search and Filter 
 
             function trySeach($event) {
@@ -544,14 +480,15 @@
                     log("Date error");
                     return;
                 }
-
+           
                 vm.processSearch = true;
                 vm.hitSearch = "";
                 vm.condition = [];
                 addFilterdata();
 
-                vm.distanceF = vm.distance + "mi";
-                if (vm.distance === 0 ||vm.distance===null) {
+                vm.distanceF = vm.distance + vm.dunit;
+                log(vm.distanceF);
+                if (vm.distance === 0 || vm.distance === null) {
                     vm.distance = 0;
                     vm.asyncSelected = "";
                     vm.locationF.lat = "";
@@ -579,6 +516,7 @@
                             vm.tt = vm.total < vm.pagecount ? vm.total : vm.pagecount;
                             vm.getCurrentPageData(vm.hitSearch);
                             random();
+                            refreshPage();
                             /*vm.hitSearch = resp.hits.hits;
                             vm.total = resp.hits.total;
                             vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
@@ -611,14 +549,19 @@
                 }
             }
 
-            //update auto-fill data
-            function autoFill() {
-                vm.autocompleLoading = true;
-                dataconfig.autoFill().then(function (resp) {
-                    vm.at = resp.data.AutoData;
-                    vm.autocompleLoading = false;
 
-                });
+
+            //update auto-fill data
+            function autoFill($event) {
+                if ($event === undefined || config.input.indexOf($event.keyCode) !== -1) {
+                    vm.autocompleLoading = true;
+                    return dataconfig.autoFill().then(function (resp) {
+                        vm.at = resp.data.AutoData;
+                        vm.autocompleLoading = false;
+
+                    });
+                }
+                return null;
             }
 
             //fill searchText with filter information
@@ -686,74 +629,104 @@
             //#endregion
 
 
-            //#region Deprecated
-            function filtertemp() {
-                client.search({
-                    index: 'mytest',
-                    type: 'post',
-                    body: {
-                        query: {
-                            /*match: {
-                                "message": searchText
-                            }*/
-                            "filtered": {
-                                "query": {
-                                    "match": {
-                                        "message": "hello"
-                                    }
-                                },
-                                "filter": {
-                                    "term": {
-                                        "id": 2
-                                    }
-                                }
-                            }
+            //#region ResultModal
+
+            vm.showModal = false;
+
+            vm.popdata = {
+                data: "",
+                field: []
+            };
+            vm.items = ['item1', 'item2', 'item3'];
+
+            //open result page
+            vm.open = function (doc) {
+                vm.popdata.data = doc;
+                vm.popdata.field = vm.fieldsName;
+                var modalInstance = $modal.open({
+                    templateUrl: 'app/component/els/result/resultModal.html',
+                    controller: 'resultModal',
+                    //size: 'lg',
+                    resolve: {
+                        items: function () {
+                            return vm.popdata;
                         }
                     }
-                }
-                ).then(function (resp) {
-                    vm.hits = resp.hits.hits;
-                    // $scope.acount = $scope.hits.total;
-                }, function (err) {
-                    log(err.message);
                 });
 
+                modalInstance.result.then(function (selectedItem) {
+                    vm.selected = selectedItem;
+                }, function () {
+                    log('Modal dismissed at: ' + new Date());
+                });
+            };
+            //#endregion
 
+
+            //#region Paging 
+            vm.paging = {
+                currentPage: 1,
+                maxPagesToShow: 5,
+                pageSize: 5
+            };
+
+            Object.defineProperty(vm.paging, 'pageCount', {
+                get: function () {
+                    return Math.floor(vm.tt / vm.paging.pageSize) + 1;
+                }
+            });
+
+            //get current page data
+            function getCurrentPageData(res) {
+                vm.res = [];
+                vm.j = 0;
+                vm.pagenumber = vm.paging.pageSize * vm.paging.currentPage;
+                if (vm.pagenumber > vm.tt)
+                    vm.pagenumber = vm.tt;
+                for (vm.i = (vm.paging.currentPage - 1) * vm.paging.pageSize; vm.i < vm.pagenumber; vm.i++) {
+                    vm.res[vm.j] = res[vm.i];
+                    vm.j++;
+                }
             }
-            function mSearch(searchText) {
-                client.search({
-                    index: 'logs',
-                    type: vm.type,
-                    size: 100,
-                    body: {
-                        query: {
-                            "filtered": {
-                                "query": {
-                                    "multi_match": {
-                                        "query": searchText,
-                                        "fields": ["username", "response", "message", "ip"]
-                                    }
 
-                                }
+            //change page
+            function pageChanged() {
+                vm.getCurrentPageData(vm.hitSearch);
+            }
 
-                            }
+            vm.refreshPage = refreshPage;
 
-                        }
-                    }
+            //refresh page
+            function refreshPage() {
+                if (vm.pagecount === "0") {
+                    vm.pagecount = vm.total;
                 }
-                ).then(function (resp) {
-                    vm.hitSearch = resp.hits.hits;
-                }, function (err) {
-                    log(err.message);
-                });
 
+                if (vm.tt > vm.pagecount) {
+                    vm.tt = vm.pagecount;
+                } else {
+                    vm.tt = Math.min(vm.total, vm.pagecount);
+                }
+
+                vm.getCurrentPageData(vm.hitSearch);
+                random();
             }
             //#endregion
 
+
+            //#region BottomSheet
+            //#region BottomSheet
+            $scope.ts = ["Last year", "Last 6 months", "Last 3 months", "Last Month",
+            "Last 4 weeks", "Last 3 weeks", "Last 2 weeks", "Last week",
+            "Last 5 days", "Last 3 days", "Last 2 days", "Last day",
+             "Last 12 hours", "Last 6 hours", "Last hour"];
+            $scope.listItemClick = function ($index) {
+                var clickedItem = $scope.ts[$index];
+                $mdBottomSheet.hide(clickedItem);
+            };
         });
+           //#endregion
+
 
 })();
-
-
-
 

@@ -88,12 +88,7 @@
 
         //Load index
         function getIndexName() {
-            if ($cookieStore.get('index') !== undefined && $rootScope.index !== undefined) {
-                if ($rootScope.index.length !== $cookieStore.get('index').length) {
-                    log("Index Changed");
-                    $cookieStore.remove('index');
-                }
-            }
+            dataconfig.checkIndexCookie();
             vm.indicesName = $cookieStore.get('index');
 
             if ($cookieStore.get('index') === undefined) {
@@ -130,8 +125,6 @@
                      drawMap(resp.aggregations.ag.agg.buckets, vm.tt);*/
                 }, function (err) {
                     //log("geoMap data error " + err.message);
-                    vm.indicesName = $rootScope.index;
-                    //geoMap();
                 });
 
         }
@@ -203,82 +196,51 @@
                drawpie(resp.data);
            }, function (err) {
                //log("pieChart data error " + err.message);
-               vm.indicesName = $rootScope.index;
-               //pieChart();
            });
         }
 
         //draw piechart
         function drawpie(agg) {
             google.setOnLoadCallback(drawpie);
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'key');
-            data.addColumn('number', 'Number');
 
-            /* angular.forEach(agg.ag1.agg1.buckets, function (n) {
-                 data.addRow([n.key.toString(), n.doc_count]);
- 
-             });*/
-            angular.forEach(agg[1], function (n) {
-                data.addRow([n.Key.toString(), n.DocCount]);
+            for (var x = 1; x <= 3; x++) {
+                var pdata = new google.visualization.DataTable();
+              
+                pdata.addColumn('string', 'key');
+                pdata.addColumn('number', 'Number');
 
-            });
-            var piechart = new google.visualization.PieChart(document.getElementById('pie_div1'));
-            var options = {
-                is3D: true,
-                backgroundColor: '#00FFFF',
-                //legend: 'none',
-                //'width': 440,
-                'height': 300,
-                forceIFrame: true,
-                tooltip:
+                /* angular.forEach(agg.ag1.agg1.buckets, function (n) {
+                     data.addRow([n.key.toString(), n.doc_count]);
+     
+                 });*/
+                angular.forEach(agg[x], function (n) {
+                    pdata.addRow([n.Key.toString(), n.DocCount]);
+
+                });
+                var piechart = new google.visualization.PieChart(document.getElementById('pie_div' + x));
+                var options = {
+                    is3D: true,
+                    backgroundColor: '#00FFFF',
+                    //legend: 'none',
+                    //'width': 440,
+                    'height': 300,
+                    forceIFrame: true,
+                    tooltip:
                     {
                         isHtml: true
                     }
-                // pieSliceText: 'label','value',
-                // 'title': "verb"
-            };
-            piechart.draw(data, options);
-
-
-
-
-            var data1 = new google.visualization.DataTable();
-            data1.addColumn('string', 'key');
-            data1.addColumn('number', 'Number');
-            /* angular.forEach(agg.ag2.agg2.buckets, function (n) {
-                 data1.addRow([n.key.toString(), n.doc_count]);
- 
-             });*/
-            angular.forEach(agg[2], function (n) {
-                data1.addRow([n.Key.toString(), n.DocCount]);
-
-            });
-            var piechart1 = new google.visualization.PieChart(document.getElementById('pie_div2'));
-            piechart1.draw(data1, options);
-
-
-            var data2 = new google.visualization.DataTable();
-            data2.addColumn('string', 'key');
-            data2.addColumn('number', 'Number');
-            /* angular.forEach(agg.ag3.agg3.buckets, function (n) {
-                 data2.addRow([n.key.toString(), n.doc_count]);
- 
-             });*/
-            angular.forEach(agg[3], function (n) {
-                data2.addRow([n.Key.toString(), n.DocCount]);
-
-            });
-            var piechart2 = new google.visualization.PieChart(document.getElementById('pie_div3'));
-            piechart2.draw(data2, options);
-
-            google.visualization.events.addListener(piechart, 'select',
+                    // pieSliceText: 'label','value',
+                    // 'title': "verb"
+                };
+                piechart.draw(pdata, options);
+                /* google.visualization.events.addListener(piechart, 'select',
                function () {
                    var row = piechart.getSelection()[0].row;
-                   log(data.getValue(row, 0) + data.getValue(row, 1))
+                   log(pdata.getValue(row, 0) + data.getValue(row, 1))
+ 
+               });*/
 
-               });
-
+            }
 
         }
         //#endregion
@@ -298,8 +260,6 @@
                      drawTimwLine(resp.aggregations.ag.agg.buckets);*/
                 }, function (err) {
                     //log("timelineGram data error " + err.message);
-                    vm.indicesName = $rootScope.index;
-                    //timeLineGram();
                 });
         }
 
@@ -408,8 +368,6 @@
                     //drawMap2(resp.aggregations.ag.agg.buckets);
                 }, function (err) {
                     //log("geoMap2 data error" + err.message);
-                    vm.indicesName = $rootScope.index;
-                    //geoMap2();
                 });
         }
 
@@ -432,9 +390,6 @@
 
             };
 
-            if (document.getElementById('gmap_div') == undefined) {
-                log("1");
-            }
             var chart = new google.visualization.GeoChart(document.getElementById('gmap_div'));
 
             chart.draw(geoData2, options);
@@ -459,8 +414,6 @@
                        ///drawUSmap(resp.aggregations.ag.agg.buckets);                      
                    }, function (err) {
                        //log("geoMap2 data error" + err.message);
-                       vm.indicesName = $rootScope.index;
-                       drawUSmap();
                    });
         }
 
@@ -482,11 +435,6 @@
                 resolution: 'provinces'
             };
 
-
-
-            if (document.getElementById('gmap_div') == undefined) {
-                log("1");
-            }
             var chart = new google.visualization.GeoChart(document.getElementById('gmap_div'));
 
             chart.draw(geoDataus, options);
@@ -505,6 +453,7 @@
         function changeMap() {
             if (vm.geomap2selection == "World") {
                 geoMap2();
+                pieChart();
             }
             if (vm.geomap2selection == "USA") {
                 usGeomap();

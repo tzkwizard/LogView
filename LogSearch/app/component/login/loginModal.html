@@ -1,0 +1,24 @@
+﻿<div class="widget wlightblue">
+        <div data-cc-widget-header title="{{title}}"></div>
+    </div>
+    &nbsp;UserName:
+    <input type="text" class="form-control"
+           data-ng-model="username"
+           data-ng-keyup=try($event)
+           placeholder="   " />
+    <br>
+    &nbsp;Password:&nbsp;&nbsp;
+    <input type="password" class="form-control"
+           data-ng-model="password"
+           data-ng-keyup=try($event)
+           placeholder="  " />
+
+    <div class="modal-body">
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">Sign In</button>
+        <!--<button class="btn btn-warning" ng-click="cancel()">Cancel</button>-->
+    </div>
+
+

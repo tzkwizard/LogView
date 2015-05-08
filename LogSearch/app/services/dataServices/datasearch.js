@@ -2,13 +2,11 @@
     'use strict';
 
     var serviceId = 'datasearch';
-    angular.module('app').factory(serviceId, ['common', 'client', '$http', 'config', datasearch]);
+    angular.module('app').factory(serviceId, ['client', '$http', 'config', datasearch]);
 
-    function datasearch(common, client, $http, config) {
+    function datasearch(client, $http, config) {
 
         var vm = this;
-        var getLogFn = common.logger.getLogFn;
-        var log = getLogFn(serviceId);
 
         //#region service
         var service = {

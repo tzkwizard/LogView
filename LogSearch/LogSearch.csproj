@@ -14,7 +14,7 @@
     <RootNamespace>LogSearch</RootNamespace>
     <AssemblyName>LogSearch</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -62,8 +62,15 @@
   <ItemGroup>
     <Content Include="app\component\agg\aggs.html" />
     <Content Include="app\component\agg\aggs.js" />
-    <Content Include="app\component\els\resultModal.js" />
-    <Content Include="app\layout\bottom-time-list.html" />
+    <Content Include="app\component\els\BottomListSheet.html" />
+    <Content Include="app\component\els\elsBottomList.js" />
+    <Content Include="app\component\els\result\resultModal.html" />
+    <Content Include="app\component\els\result\resultModal.js" />
+    <Content Include="app\component\load\BottomGridSheet.html" />
+    <Content Include="app\component\load\BottomListSheet.html" />
+    <Content Include="app\component\login\loginModal.js" />
+    <Content Include="app\component\login\loginModal.html" />
+    <Content Include="app\layout\timesidebar\timeSideNav.js" />
     <Content Include="app\services\dataServices\dataconfig.js" />
     <Content Include="app\services\dataServices\datasearch.js" />
     <Content Include="app\component\els\els.html" />
@@ -265,7 +272,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>51034</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:51234/</IISUrl>
+          <IISUrl>http://localhost/LogSearch</IISUrl>
           <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
           <IISAppRootUrl>http://localhost:51234/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

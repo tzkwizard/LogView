@@ -1,18 +1,20 @@
 ﻿<section id="dashboard-view" class="mainbar" data-ng-controller="dashboard as vm">
     <section class="matter">
         <div class="container">
-            <div data-ng-show="vm.isBusy" class="page-splash dissolve-animation">
-                <div data-cc-spinner="vm.spinnerOptions"></div>
-                <div class="page-splash-message page-splash-message-subtle">{{vm.busyMessage}}</div>
+            <div id="dashSpinner">
+                <div data-ng-show="vm.isBusy" class="page-splash dissolve-animation">
+                    <div data-cc-spinner="vm.spinnerOptions"></div>
+                    <div class="page-splash-message page-splash-message-subtle">{{vm.busyMessage}}</div>
+                </div>
+                <!-- <select class="form-control pull-right" style="width: 70px" ng-model="vm.geomap2selection" ng-click="vm.changeMap()">
+                    <option value=1>World</option>
+                    <option value=2>United states</option>
+                </select>-->
+                <md-select class="pull-right" placeholder="Pick" ng-model="vm.geomap2selection" ng-change="vm.changeMap()">
+                    <md-option value="USA">USA</md-option>
+                    <md-option value="World">World</md-option>
+                </md-select>
             </div>
-           <!-- <select class="form-control pull-right" style="width: 70px" ng-model="vm.geomap2selection" ng-click="vm.changeMap()">
-                <option value=1>World</option>
-                <option value=2>United states</option>
-            </select>-->
-            <md-select class="pull-right" placeholder="Pick" ng-model="vm.geomap2selection" ng-change="vm.changeMap()">
-                <md-option value="USA">USA</md-option>
-                <md-option value="World">World</md-option>                
-            </md-select>
             <div class="widget wlightblue">
                 <div data-cc-widget-header title=" Region Map" allow-collapse="true"></div>
                 <div class="widget-content">
@@ -46,10 +48,7 @@
                     <div id="dtable_div"></div>
                 </div>
             </div>
+            <button data-ng-click="vm.filterindex()" class="btn btn-info btn-notext" type="button">TT</button>
         </div>
-
-     
-
-        <button data-ng-click="vm.filterindex()" class="btn btn-info btn-notext" type="button">TT</button>
     </section>
 </section>

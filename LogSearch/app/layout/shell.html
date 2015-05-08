@@ -1,55 +1,16 @@
 ﻿<div data-ng-controller="shell as vm">
-
-    <div id="splash-page" data-ng-show="vm.showSplash" class="dissolve-animation">
-        <div class="page-splash">
-            <div class="page-splash-message">
-                Loading...Loading...
-            </div>
-            <div class="progress progress-striped active page-progress-bar">
-                <div class="bar"></div>
-            </div>
-        </div>
-    </div>
-
-
-    <script type="text/ng-template" id="loginModal.html">
-        <div class="widget wlightblue">
-            <div data-cc-widget-header title="{{title}}"></div>
-        </div>
-        &nbsp;UserName:
-        <input type="text" class="form-control"
-               data-ng-model="username"
-               data-ng-keyup=try($event)
-               placeholder="   " />
-        <br>
-        &nbsp;Password:&nbsp;&nbsp;
-        <input type="password" class="form-control"
-               data-ng-model="password"
-               data-ng-keyup= try($event)
-               placeholder="  " />
-
-        <div class="modal-body">
-
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="ok()">Sign In</button>
-            <!--<button class="btn btn-warning" ng-click="cancel()">Cancel</button>-->
-        </div>
-    </script>
-
-
-    <header class="clearfix">
-        <div data-ng-include="'app/layout/topnav.html'"></div>
-    </header>
-    <br><br><br>
-    <section id="content" class="content">
+    <div id="loadSpinner">
         <div data-ng-show="vm.isBusy" class="page-splash dissolve-animation">
             <div data-cc-spinner="vm.spinnerOptions"></div>
             <div class="page-splash-message page-splash-message-subtle">{{vm.busyMessage}}</div>
         </div>
-
+    </div>
+    <header class="clearfix">       
+        <div data-ng-include="'app/layout/topnav.html'"></div>
+    </header>
+    <br><br><br>
+    <section id="content" class="content">
         <div data-ng-include="'app/layout/sidebar.html'"></div>
-      
         <div data-ng-view class="fader-animation"></div>
     </section>
 

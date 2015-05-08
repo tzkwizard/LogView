@@ -7,7 +7,18 @@
     toastr.options.timeOut = 4000;
     toastr.options.positionClass = 'toast-bottom-right';
 
+    var input = [];
+    function fill() {
+        input.push(32);
+        for (var x = 48; x < 58; x++) {
+            input.push(x);
+        }
+        for (var x = 65; x < 91; x++) {
+            input.push(x);
+        }
+    }
 
+    fill();
     var keyCodes = {
         backspace: 8,
         tab: 9,
@@ -48,7 +59,8 @@
         version: '2.1.0',
         keyCodes:keyCodes,
         remoteApiUrl:remoteApiUrl,
-        localApiUrl:localApiUrl
+        localApiUrl: localApiUrl,
+        input:input
     };
     app.config([
     "$routeProvider",

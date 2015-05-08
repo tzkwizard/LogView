@@ -2,16 +2,16 @@
     'use strict';
 
     var serviceId = 'dataconfig';
-    angular.module('app').factory(serviceId, ['$http', '$rootScope', '$cookieStore', 'common', 'client', 'datasearch', 'config', dataconfig]);
+    angular.module('app').factory(serviceId, ['$http', '$rootScope', '$cookieStore', 'common', 'client', 'config', dataconfig]);
 
-    function dataconfig($http, $rootScope, $cookieStore, common, client, datasearch, config) {
+    function dataconfig($http, $rootScope, $cookieStore, common, client, config) {
 
         var vm = this;
-        var getLogFn = common.logger.getLogFn;
-        var log = getLogFn(serviceId);
         
         //#region Service
         var service = {
+            checkIndexCookie: checkIndexCookie,
+            checkFieldCookie:checkFieldCookie,
             getIndexName: getIndexName,
             getTypeName: getTypeName,
             getFieldName: getFieldName,
@@ -37,12 +37,10 @@
             var field;
             index.then(function (data) {
                 $rootScope.index = data;
-                //log("Load Global Index");
                 field = getFieldName($rootScope.index[0], $rootScope.logtype);
             }).then(function () {
                 field.then(function (data2) {
                     $rootScope.logfield = data2;
-                    //log("Load Global Field");
                 });
             });
         }
@@ -68,7 +66,7 @@
 
 
 
-            var word = [];
+           /* var word = [];
             var apromise = [];
             vm.pfx = ["geoip.timezone.raw", "ident.raw", "auth.raw", "geoip.city_name.raw", "request.raw", "geoip.country_name.raw", "geoip.region_name.raw", "geoip.postal_code.raw"];
             angular.forEach(vm.pfx, function (agg) {
@@ -87,8 +85,28 @@
 
             return common.$q.all(apromise).then(function () {
                 return word;
-            });
+            });*/
         }
+
+        function checkIndexCookie() {
+            if ($cookieStore.get('index') !== undefined && $rootScope.index !== undefined) {
+                if ($rootScope.index.length !== $cookieStore.get('index').length) {
+                    toastr.info("Index Changed");
+                    $cookieStore.remove('index');
+                }
+            }
+
+        }
+        function checkFieldCookie() {
+            if ($cookieStore.get('logfield') !== undefined && $rootScope.logfield !== undefined) {
+                if ($rootScope.logfield.length !== $cookieStore.get('logfield').length) {
+                    toastr.info("Field Changed");
+                    $cookieStore.remove('logfield');
+                }
+
+            }
+        }
+
         //#endregion
 
 
@@ -299,7 +317,7 @@
 
                 }
             }, function (err) {
-                log("get Index Name" + err.message);
+                toastr.info("get Index Name" + err.message);
             });
             return indicesName;
         }
@@ -326,7 +344,7 @@
                 });
 
             }, function (err) {
-                log(err.message);
+                toastr.info(err.message);
             });
             return typesName;
         }
@@ -378,7 +396,7 @@
                 });
 
             }, function (err) {
-                // log("get Field Name" + err.message);
+                // toastr.info("get Field Name" + err.message);
             });
 
             return fpromise.then(function () {

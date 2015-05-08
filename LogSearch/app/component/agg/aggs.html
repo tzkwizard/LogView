@@ -1,7 +1,7 @@
 ﻿<section class="mainbar" data-ng-controller="aggs as vm">
     <section class="matter">
         <div class="container-fluid">
-            <div id="spinner">
+            <div id="aggSpinner">
                 <div data-ng-show="vm.isBusy" class="page-splash dissolve-animation">
                     <div data-cc-spinner="vm.spinnerOptions"></div>
                     <div class="page-splash-message page-splash-message-subtle">{{vm.busyMessage}}</div>
@@ -50,14 +50,13 @@
                 <md-button class="md-raised md-primary pull-right" data-ng-click="vm.go()" ng-disabled="vm.process">
                     <i class="fa fa-wifi"> Result </i>
                 </md-button>
-               
+
             </div>
 
-            <div id="Content1" class="row-fluid">
+            <div id="Content1">
                 <!--<button class="btn btn-large btn-info btn-notext pull-right" type="button" data-ng-click="vm.clear()">
                     <i class="fa fa-trash-o"> Clear </i>
-                </button>
-                    -->
+                </button>-->
                 <md-button class="md-raised md-primary pull-right" data-ng-click="vm.clear()" ng-disabled="vm.process">
                     <i class="fa fa-trash-o"> Clear </i>
                 </md-button>
@@ -68,17 +67,17 @@
                 <div layout="row" layout-sm="column" layout-align="space-around">
                     <md-progress-circular md-mode="indeterminate" ng-show="vm.process"></md-progress-circular>
                 </div>
-                <div class="widget wblue">
-                    <div data-cc-widget-header title="{{vm.title}}" subtitle="{{vm.total}}"
-                         allow-collapse="true"></div>
-                    <div class="widget-content">
-                        <div id="treemap_div" style="height: 65%;" ng-show="vm.treestatus"></div>
-                    </div>
-                </div>
-
             </div>
 
-            <div id="Content2" class="widget wlightblue">
+            <div id="Content2" class="widget wblue">
+                <div data-cc-widget-header title="{{vm.title}}" subtitle="{{vm.total}}"
+                     allow-collapse="true"></div>
+                <div class="widget-content">
+                    <div id="treemap_div" style="height: 65%;" ng-show="vm.treestatus"></div>
+                </div>
+            </div>
+
+            <div id="Content3" class="widget wlightblue">
                 <div data-cc-widget-header title="{{vm.title2}}"
                      allow-collapse="true"></div>
                 <div class="widget-content" style="display: none;">
@@ -124,25 +123,6 @@
 
         </div>
     </section>
-
-
 </section>
 
 
-
-
-
-<!-- <div data-ng-attr-id={{vm.dashboard}}>
-    Divs that will hold each control and chart
-    <table class="columns">
-        <tr>
-            <td>
-                <div data-ng-attr-id={{vm.range}}></div>
-                <div data-ng-attr-id={{vm.barchart}} class="fader-animation"></div>
-            </td>
-            <td>
-                <div data-ng-attr-id={{vm.tablechart}}></div>
-            </td>
-        </tr>
-    </table>
-</div>-->
