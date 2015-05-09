@@ -27,7 +27,7 @@
         <md-button class="md-raised md-primary" data-ng-click="vm.search($event)">
             <i class="fa fa-search"> Search </i>
         </md-button>
-        <md-button class="md-raised md-primary" data-ng-click="vm.refresh($event)">
+        <md-button class="md-raised md-primary" data-ng-click="vm.refresh($event)" aria-label="refresh">
             <i class="fa fa-refresh"> Refresh </i>
             <md-tooltip>
                 Refresh Page
@@ -50,24 +50,22 @@
         </button>-->
     </div>
 
-    <div class="navbar-collapse collapse">
-        <div class="row-fluid">
-            <div class="col-md-4 pull-left">
-                <div class="navbar-collapse collapse">
-                    <!-- <tabset justified="true" type="pills">
-                        <tab heading="Dashboard" data-ng-click="vm.path(1)"></tab>
-                        <tab heading="ELS" data-ng-click="vm.path(2)"></tab>
-                        <tab heading="Aggragation" data-ng-click="vm.path(3)"></tab>
-                        <tab heading="TODO" data-ng-click="vm.path(4)"></tab>
-                    </tabset>-->
-                    <md-tabs md-selected="vm.selectedIndex" md-border-bottom data-ng-click="vm.path()">
-                        <md-tab id="tab1" ng-repeat="tab in vm.tabs">
-                            <md-tab-label>{{tab}}</md-tab-label>
-                        </md-tab>
-                    </md-tabs>
-
-                </div>
-            </div>
+    <div layout="row" class="navbar-collapse collapse">
+        <div class="col-md-6">
+            <!-- <tabset justified="true" type="pills">
+                <tab heading="Dashboard" data-ng-click="vm.path(1)"></tab>
+                <tab heading="ELS" data-ng-click="vm.path(2)"></tab>
+                <tab heading="Aggragation" data-ng-click="vm.path(3)"></tab>
+                <tab heading="TODO" data-ng-click="vm.path(4)"></tab>
+            </tabset>-->
+            <md-tabs md-selected="vm.selectedIndex" md-border-bottom data-ng-click="vm.path()">
+                <md-tab id="tab1" ng-repeat="tab in vm.tabs">
+                    <md-tab-label>{{tab}}</md-tab-label>
+                    <md-tooltip>
+                        {{tab}}
+                    </md-tooltip>
+                </md-tab>
+            </md-tabs>
         </div>
 
         <div class="btn-group pull-right" dropdown is-open="status.isopen">
@@ -87,7 +85,6 @@
                 </md-tooltip>
             </md-button>
 
-
         </div>
 
 
@@ -101,20 +98,21 @@
             </ul>
         </div>
     </div>
-   <md-sidenav id="sidenav" class="md-sidenav-right md-whiteframe-z2" md-component-id="right">
+
+    <md-sidenav id="timeSidenav" class="md-sidenav-right md-whiteframe-z2" md-component-id="right">
         <md-toolbar class="md-theme-light">
             <h2 class="md-toolbar-tools">History</h2>
         </md-toolbar>
-       <md-content data-ng-controller="timeSideNav" layout-padding>
-           <section layout="row" layout-sm="column" layout-align="center center" ng-repeat="t in time" ng-click="nav(t)">
-               <md-button>{{t}}</md-button>
-               <div class="label">Flat</div>
-           </section>
+        <md-content data-ng-controller="timeSideNav" layout-padding>
+            <section layout="row" layout-sm="column" layout-align="center center" ng-repeat="t in time" ng-click="nav(t)">
+                <md-button>{{t}}</md-button>
+                <div class="label">Flat</div>
+            </section>
 
-           <md-button ng-click="close()" class="md-primary" layout-align="center center">
-               Close
-           </md-button>
-       </md-content>
+            <md-button ng-click="close()" class="md-primary" layout-align="center center">
+                Close
+            </md-button>
+        </md-content>
     </md-sidenav>
 
 

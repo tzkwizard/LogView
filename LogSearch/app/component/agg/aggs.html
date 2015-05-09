@@ -8,7 +8,7 @@
                 </div>
             </div>
 
-            <div id="Header" class="row-fluid">
+            <div id="Header">
                 <!--<button data-ng-click="vm.aggShow(vm.aggName)" class="btn btn-info btn-notext" type="button">
                     <i class="fa fa-pie-chart">Show</i>
                 </button>
@@ -59,16 +59,15 @@
                 </button>-->
                 <md-button class="md-raised md-primary pull-right" data-ng-click="vm.clear()" ng-disabled="vm.process">
                     <i class="fa fa-trash-o"> Clear </i>
-                </md-button>
-
-                <div class="fader-animation" data-ng-repeat="doc in vm.refinedsearch">
+                </md-button>                
+                <div id="aggResult" layout="column" class="fader-animation" data-ng-repeat="doc in vm.refinedsearch">
                     <a>{{doc.key}} : {{doc.value}}</a>
                 </div>
-                <div layout="row" layout-sm="column" layout-align="space-around">
+                <div id="aggprocesser" layout="row" layout-sm="column" layout-align="space-around">
                     <md-progress-circular md-mode="indeterminate" ng-show="vm.process"></md-progress-circular>
                 </div>
             </div>
-
+                
             <div id="Content2" class="widget wblue">
                 <div data-cc-widget-header title="{{vm.title}}" subtitle="{{vm.total}}"
                      allow-collapse="true"></div>
@@ -81,8 +80,8 @@
                 <div data-cc-widget-header title="{{vm.title2}}"
                      allow-collapse="true"></div>
                 <div class="widget-content" style="display: none;">
-                    <div id="div2"></div>
-                    <table class=" table table-striped table-condensed table-hover" ng-show="vm.token">
+                    <div id="div2" layout="column"></div>
+                    <table id="aggtable" class=" table table-striped table-condensed table-hover" ng-show="vm.token">
                         <thead>
                             <tr>
                                 <th class="Token" data-ng-click="predicate = '_source.ip'; reverse=!reverse">Token&nbsp;</th>
@@ -116,10 +115,7 @@
                     </div>
                     <div id="table2_div"></div>
                 </div>
-
-
             </div>
-
 
         </div>
     </section>

@@ -94,7 +94,7 @@
                     .toggle()
                     .then(function () {
                         //document.getElementById("nav").style.height = "10%"; 
-                        document.getElementById("sidenav").style.height = vm.it.length * 60 + "%";
+                        document.getElementById("timeSidenav").style.height = vm.it.length * 60 + "%";
                         document.getElementById("nav").style.overflow = "visible";
                         toastr.info("toggle " + navID + " is done");
                     });

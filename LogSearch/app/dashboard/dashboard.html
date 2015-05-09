@@ -15,40 +15,43 @@
                     <md-option value="World">World</md-option>
                 </md-select>
             </div>
-            <div class="widget wlightblue">
+            <div id="gMap" class="widget wlightblue">
                 <div data-cc-widget-header title=" Region Map" allow-collapse="true"></div>
                 <div class="widget-content">
                     <div id="gmap_div" style="height: 75%; width: 100%"></div>
                 </div>
             </div>
-            <div class="widget waqua">
+            <div id="dMap" class="widget waqua">
                 <div data-cc-widget-header title=" City Map" allow-collapse="true"></div>
                 <div class="widget-content">
                     <div id="dmap_div" style="height: 70%; width: 100%"></div>
                 </div>
             </div>
-            <div class="widget wgreen">
+            <div id="dChart" class="widget wgreen">
                 <div data-cc-widget-header title=" Chart" allow-collapse="true"></div>
                 <div class="widget-content">
-                    <table class="columns" style="height: 22%; width: 100%">
-                        <tr>
-                            <td width="33%">
-                                <div id="pie_div1" ng-click="vm.test()"></div>
-                            </td>
-                            <td width="33%">
-                                <div id="pie_div2"></div>
-                            </td>
-                            <td width="34%">
-                                <div id="pie_div3"></div>
-                            </td>
-                        </tr>
-                    </table>
-                    <div id='DateHist_div' style='width: 100%; height: 22%;'></div>
-                    <div id='TimeLine_div' style='width: 100%; height: 22%;'></div>
-                    <div id="dtable_div"></div>
+                    <div layout="row" style="height: 33%; width: 100%">
+                        <div id="pie_div1" flex="33" ng-click="vm.test()"></div>
+                        <div id="pie_div2" flex="33"></div>
+                        <div id="pie_div3" flex="33"></div>
+                        <!--<tr>
+                    <td width="33%">
+                        <div id="pie_div1" ng-click="vm.test()"></div>
+                    </td>
+                    <td width="33%">
+                        <div id="pie_div2"></div>
+                    </td>
+                    <td width="34%">
+                        <div id="pie_div3"></div>
+                    </td>
+                </tr>-->
+                    </div>
+                    <div layout="row" id='DateHist_div' style='width: 100%; height: 33%;'></div>
+                    <div layout="row" id='TimeLine_div' style='width: 100%; height: 33%;'></div>
+                    <div layout="column" id="dtable_div"></div>
                 </div>
             </div>
-            <button data-ng-click="vm.filterindex()" class="btn btn-info btn-notext" type="button">TT</button>
+            <button layout="row" data-ng-click="vm.filterindex()" class="btn btn-info btn-notext" type="button">TT</button>
         </div>
     </section>
 </section>

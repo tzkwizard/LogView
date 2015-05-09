@@ -13,18 +13,14 @@
             </md-button>
         </div>
         <ul class="navi" collapse="collapse">
+
             <li class="nlightblue fade-selection-animation" data-ng-class="vm.isCurrent(r)"
                 data-ng-repeat="r in vm.navRoutes">
                 <a href="#{{r.url}}" data-ng-bind-html="r.config.settings.content"></a>
             </li>
 
-            <li class="nlightblue fade-selection-animation" data-ng-repeat="r in vm.agg ">
-                <a><i class="fa fa-cloud"></i> {{r}}</a>
-            </li>
-
 
             <li class="nlightblue fade-selection-animation" ng-click="vm.showUser()"> <a><i class="fa fa-user"></i> User</a></li>
-
             <ul collapse="vm.isCollapsed4" class="nlightblue fade-selection-animation">
                 <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.ident.raw')"
                     data-ng-repeat="r in vm.user">
@@ -75,7 +71,6 @@
                     <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
                 </li>
             </ul>
-
 
             <accordion close-others="oneAtATime">
                 <accordion-group is-open="status.open" style="background-color: transparent; color: white">

@@ -1,12 +1,11 @@
 ﻿﻿<!DOCTYPE html>
 <html data-ng-app="app">
-<!--<html lang="en">-->
 <head>
-    <!-- <base href="/" />-->
     <style>
         /* This helps the ng-show/ng-hide animations start at the right place. */
         /* Since Angular has this but needs to load, this gives us the class early. */
-        .ng-hide {
+        .ng-hide 
+        {
             display: none !important;
         }
     </style>
@@ -25,7 +24,6 @@
         }
     </script>
     <base href="/LogSearch/">
-   <!-- <link rel="shortcut icon" href="http://localhost/LogSearch/favicon.ico?v=2" />-->
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <link href="content/ie10mobile.css" rel="stylesheet" />
     <link href="content/bootstrap.min.css" rel="stylesheet" />
@@ -33,17 +31,17 @@
     <link href="content/toastr.css" rel="stylesheet" />
     <link href="content/customtheme.css" rel="stylesheet">
     <link href="content/styles.css" rel="stylesheet" />
-    <link href="content/bootstrap-dialog.css" rel="stylesheet" />
+    <!--<link href="content/bootstrap-dialog.css" rel="stylesheet" />-->
     <!--<link href="content/breeze.directives.css" rel="stylesheet"/>-->
     <!--<link href="content/ui-grid-stable.css" rel="stylesheet"/>-->
     <link href="content/ng-grid.css" rel="stylesheet"/>
-    <link href="content/angular-material.css" rel="stylesheet" />
+    <link href="content/angular-material.css" rel="stylesheet"/>
 
 </head>
 <body>
     <div data-ng-include="'app/layout/shell.html'"></div>
     <span data-cc-scroll-to-top></span>
-    
+    <!-- #region Scripts -->
     <!-- Vendor Scripts -->
     <script src="Scripts/jquery/jquery-2.1.1.js"></script>
     <script src="Scripts/angularjs/angular.js"></script>
@@ -103,9 +101,6 @@
     <script src="app/services/dataServices/datasearch.js"></script>
     <script src="app/services/directives.js"></script>
     <script src="app/services/routeMediator.js"></script>
-
-
-
-
+    <!-- #endregion -->
 </body>
 </html>

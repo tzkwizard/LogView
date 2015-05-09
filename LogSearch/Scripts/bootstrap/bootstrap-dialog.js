@@ -15,7 +15,7 @@
 
     "use strict";
 
-    // CommonJS module is defined
+    // CommonJS module is defined   
     if (typeof module !== 'undefined' && module.exports) {
         module.exports = factory(require('jquery')(root));
     }
