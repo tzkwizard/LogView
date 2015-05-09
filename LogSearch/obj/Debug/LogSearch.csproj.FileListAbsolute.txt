@@ -169,4 +169,3 @@ C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogSearch\bin
 C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogSearch\bin\LogSearch.pdb
 C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogSearch\obj\Debug\LogSearch.dll
 C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogSearch\obj\Debug\LogSearch.pdb
-C:\Users\aotuo.zhang\Documents\Visual Studio 2013\Projects\LogView\LogSearch\obj\Debug\LogSearch.csprojResolveAssemblyReference.cache
