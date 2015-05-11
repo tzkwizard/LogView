@@ -7,8 +7,7 @@
                     <div class="page-splash-message page-splash-message-subtle">{{vm.busyMessage}}</div>
                 </div>
             </div>
-
-            <div id="Header">
+            <div id="function1">
                 <!--<button data-ng-click="vm.aggShow(vm.aggName)" class="btn btn-info btn-notext" type="button">
                     <i class="fa fa-pie-chart">Show</i>
                 </button>
@@ -52,14 +51,13 @@
                 </md-button>
 
             </div>
-
-            <div id="Content1">
+            <div id="function2">
                 <!--<button class="btn btn-large btn-info btn-notext pull-right" type="button" data-ng-click="vm.clear()">
                     <i class="fa fa-trash-o"> Clear </i>
                 </button>-->
                 <md-button class="md-raised md-primary pull-right" data-ng-click="vm.clear()" ng-disabled="vm.process">
                     <i class="fa fa-trash-o"> Clear </i>
-                </md-button>                
+                </md-button>
                 <div id="aggResult" layout="column" class="fader-animation" data-ng-repeat="doc in vm.refinedsearch">
                     <a>{{doc.key}} : {{doc.value}}</a>
                 </div>
@@ -67,16 +65,14 @@
                     <md-progress-circular md-mode="indeterminate" ng-show="vm.process"></md-progress-circular>
                 </div>
             </div>
-                
-            <div id="Content2" class="widget wblue">
+            <div id="Content1" class="widget wblue">
                 <div data-cc-widget-header title="{{vm.title}}" subtitle="{{vm.total}}"
                      allow-collapse="true"></div>
                 <div class="widget-content">
                     <div id="treemap_div" style="height: 65%;" ng-show="vm.treestatus"></div>
                 </div>
             </div>
-
-            <div id="Content3" class="widget wlightblue">
+            <div id="Content2" class="widget wlightblue">
                 <div data-cc-widget-header title="{{vm.title2}}"
                      allow-collapse="true"></div>
                 <div class="widget-content" style="display: none;">
@@ -105,18 +101,14 @@
                                 </td>
                                 <td>
                                     <div id="table_div"></div>
-
-
                                     <div id="map_div" style="width: 400px; height: 300px;"></div>
                                     <div id="table"></div>
                                 </td>
                             </tr>
                         </table>
                     </div>
-                    <div id="table2_div"></div>
                 </div>
             </div>
-
         </div>
     </section>
 </section>

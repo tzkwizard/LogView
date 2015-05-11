@@ -29,6 +29,7 @@
         vm.geomap2selection = "USA";
         //#endregion
 
+
         //#region function
         //  vm.getFieldName = getFieldName;
         vm.getIndexName = getIndexName;
@@ -205,7 +206,7 @@
 
             for (var x = 1; x <= 3; x++) {
                 var pdata = new google.visualization.DataTable();
-              
+
                 pdata.addColumn('string', 'key');
                 pdata.addColumn('number', 'Number');
 
@@ -398,7 +399,6 @@
                 var row = chart.getSelection()[0];
                 log(row);
             });
-
             vm.isBusy = false;
         }
 

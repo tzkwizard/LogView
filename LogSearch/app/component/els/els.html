@@ -1,12 +1,11 @@
 ﻿<section class="mainbar" data-ng-controller="els as vm">
     <section class="matter">
         <div class="container-fluid">
-            <div id="Header" class="input-append row-fluid">
 
+            <div id="Header" class="input-append row-fluid">
                 <input type="text" class="form-control"
                        data-ng-keydown="vm.autoFill($event)" data-ng-keyup="vm.trySeach($event)"
-                       data-ng-model=" vm.searchText"
-                       placeholder="  Search"
+                       data-ng-model=" vm.searchText" placeholder="  Search"
                        typeahead=" record for record in vm.at| filter:$viewValue | limitTo:5" typeahead-loading="loading" />
                 <i ng-show="vm.autocompleLoading" class="glyphicon glyphicon-refresh"></i>
                 <!-- <button class="btn btn-large btn-info btn-notext ng-click-active" type="button" data-ng-click="vm.search()">
@@ -58,7 +57,7 @@
                                 <div class="md-grid-text"> {{ choice }} </div>
                             </md-button>
                         </md-list-item>
-                        <li class="divider"></li>
+                        <md-divider></md-divider>
                         <md-button class="md-grid-item-content">
                             <div class="md-grid-text" data-ng-click="vm.showListBottomSheet()"> More Span ?</div>
                         </md-button>
@@ -69,33 +68,30 @@
                     </ul>
                 </div>
 
-
-
-
             </div>
             <div id="function" class="widget wlightblue" collapse="false">
                 <div data-cc-widget-header title="{{vm.title2}}"
                      allow-collapse="true"></div>
                 <div class="widget-content" style="display: none;">
                     <div layout="row" class="input-group-pull">
-                        <select class="form-control" ng-model="vm.format" ng-options="f for f in vm.formats" ng-show="false"><option></option></select>
+                        <select flex="10" class="form-control dissolve-animation" ng-model="vm.format" ng-options="f for f in vm.formats" ng-show="vm.timeShow"><option></option></select>
 
-                        <input type="text" class="form-control" datepicker-popup="{{vm.format}}" ng-model="vm.st"
+                        <input flex="10" type="text" class="form-control dissolve-animation" datepicker-popup="{{vm.format}}" ng-model="vm.st"
                                is-open="vm.timeopened" min-date="vm.minDate" datepicker-options="vm.dateOptions"
-                               date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  start date" ng-show="false" ng-change="vm.timeChange()" />
+                               date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  start date" ng-show="vm.timeShow" ng-change="vm.timeChange()" />
                         <!--<button type="button" class="btn btn-large btn-info btn-notext"
-                        ng-click="vm.timeopen($event)"><i class="fa fa-calendar"> Ini Day </i></button>-->
+                                    ng-click="vm.timeopen($event)"><i class="fa fa-calendar"> Ini Day </i></button>-->
                         <md-button class="md-fab md-mini" data-ng-click="vm.timeopen($event)" aria-label="st">
                             <i class="fa fa-calendar"></i>
                             <md-tooltip>
                                 Start Date
                             </md-tooltip>
                         </md-button>
-                        <input type="text" class="form-control" datepicker-popup="{{vm.format}}" ng-model="vm.ft"
+                        <input flex="10" type="text" class="form-control dissolve-animation" datepicker-popup="{{vm.format}}" ng-model="vm.ft"
                                is-open="vm.ftimeopened" min-date="vm.minDate" datepicker-options="vm.dateOptions"
-                               date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  end date" ng-show="false" ng-change="vm.timeChange()" />
+                               date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  end date" ng-show="vm.timeShow" ng-change="vm.timeChange()" />
                         <!-- <button type="button" class="btn btn-large btn-info btn-notext"
-                        ng-click="vm.ftimeopen($event)"><i class="fa fa-calendar"> End Day </i></button>-->
+                                     ng-click="vm.ftimeopen($event)"><i class="fa fa-calendar"> End Day </i></button>-->
                         <md-button class="md-fab md-mini" data-ng-click="vm.ftimeopen($event)" aria-label="ft">
                             <i class="fa fa-calendar"></i>
                             <md-tooltip>
@@ -113,17 +109,23 @@
                         </md-input-container>
 
                     </div>
-                    <div id="distance type">
-                        <md-radio-group ng-model="vm.dunit" class="pull-right">
-                            <md-radio-button value="mi" class="md-primary">mi</md-radio-button>
-                            <md-radio-button value="km"> km </md-radio-button>
+                    <div id="distance Unit">
+                        <md-radio-group ng-model="vm.dunit" class="pull-right" ng-change="vm.distanceUnitChange()">
+                            <md-radio-button value="mi" class="md-primary"> Mile </md-radio-button>
+                            <md-radio-button value="km"> Kilometer </md-radio-button>
                         </md-radio-group>
                     </div>
-                    <div layout="row">
+                    <div layout="row" layout-align="space-between center">
                         <md-button class="md-raised md-primary" data-ng-click="vm.transferLocation()" aria-label="location">
                             <i class="fa fa-globe"></i>
                             <md-tooltip>
                                 Address to Cordinates
+                            </md-tooltip>
+                        </md-button>
+                        <md-button class="md-raised md-primary" data-ng-click="vm.timeShow=!vm.timeShow" aria-label="show">
+                            <i ng-class="{'fa fa-arrow-right': !vm.timeShow, 'fa fa-arrow-left': vm.timeShow}"></i>
+                            <md-tooltip>
+                                Show Time
                             </md-tooltip>
                         </md-button>
                         <md-button class="md-primary md-hue-1"> Distance </md-button>
@@ -189,7 +191,7 @@
             <div id="processbar" layout="row">
                 <progressbar flex="80" class="progress-striped active" value="vm.dynamic" type="{{vm.ptype}}">{{vm.ptype}} <i ng-show="showWarning">!!! Watch out !!!</i></progressbar>
             </div>
-            <div class="pull-right">
+            <div id="ResultCount" class="pull-right">
                 <md-select placeholder="Pick" ng-model="vm.paging.pageSize" ng-change="vm.refreshPage()">
                     <md-option value=5>5</md-option>
                     <md-option value=10>10</md-option>
@@ -238,7 +240,7 @@
 
                 </div>
             </div>
-            <div id="elsPage" layout="row" class="widget-foot">
+            <div id="elsPaging" layout="row" class="widget-foot">
                 <div class="clearfix"></div>
                 <pagination boundary-links="true"
                             total-items="vm.tt"
@@ -253,8 +255,7 @@
                             last-text="Last"></pagination>
                 <div class="clearfix"></div>
             </div>
+
         </div>
-
     </section>
-
 </section>

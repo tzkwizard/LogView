@@ -13,7 +13,7 @@
             vm.title2 = "Function";
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
-
+            $scope.collapse = true;
 
             //#region variable
             $scope.predicate = '_source.timestamp';
@@ -49,6 +49,7 @@
                 Description: "Terms Fields Escaping Special Characters"
             };
             vm.dunit = 'mi';
+            vm.timeShow = false;
             //#endregion
 
             //#region function
@@ -142,8 +143,8 @@
 
             //#region Date-pick
 
-            vm.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'yyyy.MM.dd'];
-            vm.format = vm.formats[4];
+            vm.formats = ['yyyy.MM.dd','dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+            vm.format = vm.formats[0];
             vm.it = ["Last 3 months", "Last Month", "Last 4 weeks", "Last 3 weeks", "Last 2 weeks", "Last week"];
             vm.dateOptions = {
                 formatYear: 'yy',
@@ -457,6 +458,11 @@
                    });
 
             }
+
+            vm.distanceUnitChange = distanceUnitChange;
+            function distanceUnitChange() {
+                log("Length Unit Change to "+vm.dunit);
+            }
             //#endregion
 
 
@@ -480,20 +486,20 @@
                     log("Date error");
                     return;
                 }
-           
+
                 vm.processSearch = true;
                 vm.hitSearch = "";
                 vm.condition = [];
                 addFilterdata();
 
                 vm.distanceF = vm.distance + vm.dunit;
-                log(vm.distanceF);
+                //log(vm.distanceF);
                 if (vm.distance === 0 || vm.distance === null) {
                     vm.distance = 0;
                     vm.asyncSelected = "";
                     vm.locationF.lat = "";
                     vm.locationF.lon = "";
-                    log("No distance");
+                    //log("No distance");
                 }
 
 
@@ -725,7 +731,7 @@
                 $mdBottomSheet.hide(clickedItem);
             };
         });
-           //#endregion
+    //#endregion
 
 
 })();

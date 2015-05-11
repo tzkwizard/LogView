@@ -181,11 +181,11 @@
 
         //log out
         function logout() {
-
+            $rootScope.logged = false;
             $cookieStore.remove("useranme");
             $cookieStore.remove("password");
             $cookieStore.remove("key");
-            common.$location.path("/");
+            //common.$location.path("/");
             window.location.reload();
         }
         //#endregion

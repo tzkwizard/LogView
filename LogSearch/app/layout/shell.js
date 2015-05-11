@@ -3,9 +3,9 @@
 
     var controllerId = 'shell';
     angular.module('app').controller(controllerId,
-        ['$window', '$rootScope', '$modal', 'common', 'config', 'client', shell]);
+        ['$window', '$rootScope', '$modal', 'common', 'config', 'client', 'dataconfig', shell]);
 
-    function shell($window, $rootScope, $modal, common, config, client) {
+    function shell($window, $rootScope, $modal, common, config, client,dataconfig) {
         var vm = this;
         var logSuccess = common.logger.getLogFn(controllerId, 'success');
         var events = config.events;
@@ -28,49 +28,12 @@
         //#endregion
 
 
-        //#region Login
-        //open login page
-        vm.open = function () {
-            var modalInstance = $modal.open({
-                templateUrl: 'app/component/login/loginModal.html',
-                controller: 'loginModal',
-                size: 'sm',
-                keyboard: true,
-                resolve: {
-                    items: function () {
-                        return "";
-                    }
-                }
-            });
-
-        };
-
-        vm.login = login;
-
-        //log in
-        function login() {
-            return client.ping({
-                requestTimeout: 1000,
-                hello: "elasticsearch!"
-            }, function (error) {
-                if (error) {
-                    toastr.info("Username or Password Error!");
-                    vm.open();
-                } else {
-                    toastr.info('elasticsearch cluster is connected');
-                }
-            });
-        }
-
-        //#endregion
-        
-
         //#region Shell Load
         activate();
 
         function activate() {
             // logSuccess('Breezezz Angular loaded!', null, true);
-            common.activateController([login()], controllerId).then(function () {
+            common.activateController([], controllerId).then(function () {
                 vm.showSplash = false;
             });
         }
@@ -90,7 +53,6 @@
         $rootScope.$on(events.controllerActivateSuccess,
             function (data) {
                 toggleSpinner(false);
-                //toastr.info("try");
             }
         );
 

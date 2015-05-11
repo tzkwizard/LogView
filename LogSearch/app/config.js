@@ -4,21 +4,20 @@
     var app = angular.module('app');
 
     // Configure Toastr
-    toastr.options.timeOut = 4000;
+    toastr.options.timeOut = 1000;
     toastr.options.positionClass = 'toast-bottom-right';
 
     var input = [];
-    function fill() {
+    function fillInput() {
         input.push(32);
         for (var x = 48; x < 58; x++) {
             input.push(x);
         }
-        for (var x = 65; x < 91; x++) {
+        for (x = 65; x < 91; x++) {
             input.push(x);
         }
     }
-
-    fill();
+    fillInput();
     var keyCodes = {
         backspace: 8,
         tab: 9,
@@ -41,8 +40,8 @@
 
     var imageSettings = {
         imageBasepath: '../content/images/photos/',
-        unknownPersonImageSource:'unknown_person.jpg'
-};
+        unknownPersonImageSource: 'unknown_person.jpg'
+    };
     var events = {
         controllerActivateSuccess: 'controller.activateSuccess',
         spinnerToggle: 'spinner.toggle'
@@ -52,34 +51,34 @@
     var localApiUrl = "http://localhost/MessageHandleApi/";
     var remoteApiUrl = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/";
     var config = {
-        appErrorPrefix: '[ES Error] ', //Configure the exceptionHandler decorator
+        appErrorPrefix: '[ELS Error] ', //Configure the exceptionHandler decorator
         docTitle: 'Elasticsearch:',
         events: events,
-        imageSettings:imageSettings,
+        imageSettings: imageSettings,
         remoteServiceName: remoteServiceName,
         version: '2.1.0',
-        keyCodes:keyCodes,
-        remoteApiUrl:remoteApiUrl,
+        keyCodes: keyCodes,
+        remoteApiUrl: remoteApiUrl,
         localApiUrl: localApiUrl,
-        input:input
+        input: input
     };
     app.config([
     "$routeProvider",
     "$httpProvider",
-    function($routeProvider, $httpProvider){
+    function ($routeProvider, $httpProvider) {
         $httpProvider.defaults.useXDomain = true;
         delete $httpProvider.defaults.headers.common['X-Requested-With'];
     }
     ]);
     app.value('config', config);
-    
+
     app.config(['$logProvider', function ($logProvider) {
         // turn debugging off/on (no info or warn)
         if ($logProvider.debugEnabled) {
             $logProvider.debugEnabled(true);
         }
     }]);
-    
+
     //#region Configure the common services via commonConfig
     app.config(['commonConfigProvider', function (cfg) {
         cfg.config.controllerActivateSuccessEvent = config.events.controllerActivateSuccess;

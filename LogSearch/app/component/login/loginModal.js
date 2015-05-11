@@ -3,7 +3,7 @@
 
     var controllerId = 'loginModal';
     angular.module('app')
-        .controller(controllerId, function ($cookieStore, $scope, $modalInstance, items, config) {
+        .controller(controllerId, function ($cookieStore, $scope, $modalInstance, items, config,common) {
 
             $scope.title = "Elasticsarch Login";
             $scope.username = "";
@@ -26,7 +26,7 @@
                 $cookieStore.put('password', y);
                 $cookieStore.put('key', z);
                 window.location.reload();
-
+                //common.$location.path(common.$location.path() + "/");
                 $modalInstance.close();
             };
 

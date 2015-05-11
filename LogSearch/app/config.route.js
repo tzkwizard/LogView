@@ -77,7 +77,6 @@
     // Define the routes 
     function getRoutes() {
         return [
-
             {
                 url: '/',
                 config: {
@@ -88,8 +87,6 @@
                     }
                 }
             },
-
-
             {
                 url: '/dashboard',
                 config: {
@@ -132,7 +129,7 @@
                          content: '<i class="fa fa-cloud"></i> TODO'
                      }
                  }
-             },           
+             },
              {
                  url: '/els/:search',
                  config: {

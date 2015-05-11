@@ -2,9 +2,9 @@
     'use strict';
 
     var serviceId = 'dataconfig';
-    angular.module('app').factory(serviceId, ['$http', '$rootScope', '$cookieStore', 'common', 'client', 'config', dataconfig]);
+    angular.module('app').factory(serviceId, ['$modal', '$http', '$rootScope', '$cookieStore', 'common', 'client', 'config', dataconfig]);
 
-    function dataconfig($http, $rootScope, $cookieStore, common, client, config) {
+    function dataconfig($modal,$http, $rootScope, $cookieStore, common, client, config) {
 
         var vm = this;
         
@@ -20,7 +20,10 @@
             removeFilter: removeFilter,
             initIndex: initIndex,
             autoFill: autoFill,
-            prime: prime
+            prime: prime,
+            login: login,
+            openLoginPage: openLoginPage,
+            checkIdent: checkIdent
         }
         return service;
         //#endregion
@@ -30,19 +33,21 @@
         //Load index and field
         function prime() {
             var index = initIndex();
-            //$rootScope.index = dataconfig.initIndex();
+            //$rootScope.index = initIndex();
             $rootScope.logtype = "logs";
             $rootScope.ip = [];
 
             var field;
-            index.then(function (data) {
-                $rootScope.index = data;
+            index.then(function (indexData) {
+                $rootScope.index = indexData;
                 field = getFieldName($rootScope.index[0], $rootScope.logtype);
             }).then(function () {
-                field.then(function (data2) {
-                    $rootScope.logfield = data2;
+                field.then(function (fieldData) {
+                    $rootScope.logfield = fieldData;
                 });
             });
+            if ($rootScope.logged) return;
+            checkIdent();
         }
         // get auto fill data
         function autoFill(text) {
@@ -105,6 +110,41 @@
                 }
 
             }
+        }
+
+        function openLoginPage() {
+            var modalInstance = $modal.open({
+                templateUrl: 'app/component/login/loginModal.html',
+                controller: 'loginModal',
+                size: 'sm',
+                keyboard: false,
+                backdrop: 'static',
+                resolve: {
+                    items: function () {
+                        return "";
+                    }
+                }
+            });
+
+        };
+
+
+        //log in
+        function checkIdent() {
+            return login().then(function (resp) {
+                if (resp.data === "error identity") {
+                    toastr.info("Username or Password Error!");
+                    openLoginPage();
+                } else {
+                    $rootScope.token = resp.data;
+                    $rootScope.logged = true;
+                    toastr.info('elasticsearch cluster is connected');
+                }
+            }, function (err) {
+                toastr.info("Username or Password Error!");
+                openLoginPage();
+            });
+
         }
 
         //#endregion
@@ -407,6 +447,34 @@
         //#endregion
 
 
+        //#region Login
+        function login() {
+            var x = $cookieStore.get('username');
+            var y = $cookieStore.get('password');
+            var z = $cookieStore.get('key');
+            var username;
+            var password;
+            try {
+                username = sjcl.decrypt(z, x);
+                password = sjcl.decrypt(z, y);
+            } catch (e) {
+                password = "";
+                username = "";
+            }
+
+            var remote = config.remoteApiUrl + "api/ElasticMapping/Login/"+username+"/"+password;
+            var local = config.localApiUrl + "api/ElasticMapping/Login/"+username+"/"+password;
+
+            return $http.get(local)
+              .success(function (resp) {
+                  return resp;
+              }).error(function (e) {
+                  return "error identity";
+                   toastr.info(e);
+              });
+
+        }
+        //#endregion
 
     }
 })();

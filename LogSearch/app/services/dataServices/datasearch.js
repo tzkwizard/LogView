@@ -2,9 +2,9 @@
     'use strict';
 
     var serviceId = 'datasearch';
-    angular.module('app').factory(serviceId, ['client', '$http', 'config', datasearch]);
+    angular.module('app').factory(serviceId, ['$rootScope', 'client', '$http', 'config', datasearch]);
 
-    function datasearch(client, $http, config) {
+    function datasearch($rootScope, client, $http, config) {
 
         var vm = this;
 
@@ -215,13 +215,23 @@
 
             var remote = config.remoteApiUrl + "api/ElasticSearch/SampleData";
             var local = config.localApiUrl + "api/ElasticSearch/SampleData";
-            var ii = angular.toJson(info);
+            //var ii = angular.toJson(info);
 
-            return $http.post(local, ii)
+            var r = {
+                method: 'POST',
+                url: local,
+                data: info,
+                params: {
+                    token: $rootScope.token
+                }
+            }
+
+
+            return $http(r)
                 .success(function (resp) {
                     return resp;
                 }).error(function (e) {
-                    // toastr.info(e);
+                    toastr.info(e.Message);
                 });
 
 
@@ -254,16 +264,21 @@
             var local = config.localApiUrl + "api/ElasticSearch";
             var ii = angular.toJson(info);
 
-
-            return $http({
+            var r = {
                 method: 'POST',
                 url: local,
-                data: info
-            })
+                data: ii,
+                params: {
+                    token: $rootScope.token
+                }
+            }
+
+
+            return $http(r)
                 .success(function (resp) {
                     return resp;
                 }).error(function (e) {
-                    // toastr.info(e);
+                    toastr.info(e.Message);
                 });
 
 
@@ -303,11 +318,21 @@
             var local = config.localApiUrl + "api/ElasticSearch/Term";
             var ii = angular.toJson(info);
 
-            return $http.post(local, ii)
+            var r = {
+                method: 'POST',
+                url: local,
+                data: ii,
+                params: {
+                    token: $rootScope.token
+                }
+            }
+
+
+            return $http(r)
                 .success(function (resp) {
                     return resp;
                 }).error(function (e) {
-                    //toastr.info(e);
+                    toastr.info(e.Message);
                 });
 
 
@@ -340,11 +365,20 @@
             var local = config.localApiUrl + "api/ElasticSearch/TermBool";
             var ii = angular.toJson(info);
 
-            return $http.post(local, ii)
+            var r = {
+                method: 'POST',
+                url: local,
+                data: ii,
+                params: {
+                    token: $rootScope.token
+                }
+            }
+
+            return $http(r)
                 .success(function (resp) {
                     return resp;
                 }).error(function (e) {
-                    //toastr.info(e);
+                    toastr.info(e.Message);
                 });
 
 
@@ -411,11 +445,20 @@
             var local = config.localApiUrl + "api/ElasticSearch/StringBool";
             var ii = angular.toJson(info);
 
-            return $http.post(local, ii)
+            var r = {
+                method: 'POST',
+                url: local,
+                data: ii,
+                params: {
+                    token: $rootScope.token
+                }
+            }
+
+            return $http(r)
                 .success(function (resp) {
                     return resp;
                 }).error(function (e) {
-                    //toastr.info(e);
+                    toastr.info(e.Message);
                 });
 
 
