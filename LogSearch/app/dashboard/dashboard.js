@@ -27,6 +27,8 @@
         vm.indicesName = [];
         vm.type = "";
         vm.geomap2selection = "USA";
+        vm.geoCount = 50;
+        vm.mapCount = 15;
         //#endregion
 
 
@@ -40,6 +42,8 @@
         vm.geoMap2 = geoMap2;
         vm.usGeomap = usGeomap;
         vm.changeMap = changeMap;
+        vm.usCitymap = usCitymap;
+        vm.changeMap2 = changeMap2;
         //#endregion
 
 
@@ -74,14 +78,14 @@
                 vm.ft = $rootScope.ft;
                 vm.st = $rootScope.st;
             } else {
-                vm.st = moment(new Date()).subtract(2, 'month');
+                vm.st = moment(new Date()).subtract(2, 'month').toDate();
                 vm.ft = new Date();
             }
 
             timeLineGram();
             pieChart();
             geoMap();
-            histGram();
+            //histGram();
             // geoMap2();
             usGeomap();
 
@@ -117,10 +121,11 @@
         vm.location = [];
         //get geomap data
         function geoMap() {
-            datasearch.termAggragation(vm.indicesName, vm.type, "geoip.city_name.raw", vm.size, vm.st, vm.ft).
+            datasearch.termAggragation(vm.indicesName, vm.type, "geoip.city_name.raw", vm.mapCount, vm.st, vm.ft).
                 then(function (resp) {
                     if (resp.data.Total !== 0) {
-                        drawMap(resp.data.AggData);
+                        var vv = drawMap(resp.data.AggData);
+                        var x = 4;
                     }
                     /* vm.tt = resp.hits.total;
                      drawMap(resp.aggregations.ag.agg.buckets, vm.tt);*/
@@ -138,7 +143,7 @@
             geoData.addColumn('string', 'Name');
             // geoData.addColumn('number', 'Lat');
             //  geoData.addColumn('number', 'Lon');           
-            geoData.addColumn('number', 'Number');
+            geoData.addColumn('string', 'Number');
             //geoData.addRow([n._source.geoip.city_name, 1, n._source.geoip.latitude, n._source.geoip.longitude]);
             vm.j = -1;
             angular.forEach(r, function (n) {
@@ -146,7 +151,7 @@
                       geoData.addRow([n.key.toString(), n.doc_count]);
                   }*/
                 if (n.DocCount > 10) {
-                    geoData.addRow([n.Key, n.DocCount]);
+                    geoData.addRow([n.Key, n.Key + " : " + n.DocCount]);
                 }
 
 
@@ -181,6 +186,8 @@
             // When the map is selected, we set the selection on the table.
             google.visualization.events.addListener(map, 'select',
                 function () {
+                    /*var row = map.getSelection()[0].row;
+                    var x = geoData.getValue(row,0);*/
                     table.setSelection(map.getSelection());
                 });
 
@@ -204,44 +211,53 @@
         function drawpie(agg) {
             google.setOnLoadCallback(drawpie);
 
-            for (var x = 1; x <= 3; x++) {
-                var pdata = new google.visualization.DataTable();
+            var options = {
+                is3D: true,
+                backgroundColor: '#00FFFF',
+                //legend: 'none',
+                //'width': 440,
+                'height': 300,
+                forceIFrame: true,
+                tooltip:
+                {
+                    isHtml: true
+                }
+                // pieSliceText: 'label','value',
+                // 'title': "verb"
+            };
 
-                pdata.addColumn('string', 'key');
-                pdata.addColumn('number', 'Number');
 
-                /* angular.forEach(agg.ag1.agg1.buckets, function (n) {
-                     data.addRow([n.key.toString(), n.doc_count]);
-     
-                 });*/
-                angular.forEach(agg[x], function (n) {
-                    pdata.addRow([n.Key.toString(), n.DocCount]);
+            var pdata1 = new google.visualization.DataTable();
+            pdata1.addColumn('string', 'key');
+            pdata1.addColumn('number', 'Number');
+            angular.forEach(agg[1], function (n) {
+                pdata1.addRow([n.Key.toString(), n.DocCount]);
 
-                });
-                var piechart = new google.visualization.PieChart(document.getElementById('pie_div' + x));
-                var options = {
-                    is3D: true,
-                    backgroundColor: '#00FFFF',
-                    //legend: 'none',
-                    //'width': 440,
-                    'height': 300,
-                    forceIFrame: true,
-                    tooltip:
-                    {
-                        isHtml: true
-                    }
-                    // pieSliceText: 'label','value',
-                    // 'title': "verb"
-                };
-                piechart.draw(pdata, options);
-                /* google.visualization.events.addListener(piechart, 'select',
-               function () {
-                   var row = piechart.getSelection()[0].row;
-                   log(pdata.getValue(row, 0) + data.getValue(row, 1))
- 
-               });*/
+            });
+            var piechart1 = new google.visualization.PieChart(document.getElementById('pie_div1'));
+            piechart1.draw(pdata1, options);
 
-            }
+
+            var pdata2 = new google.visualization.DataTable();
+            pdata2.addColumn('string', 'key');
+            pdata2.addColumn('number', 'Number');
+            angular.forEach(agg[2], function (n) {
+                pdata2.addRow([n.Key.toString(), n.DocCount]);
+
+            });
+            var piechart2 = new google.visualization.PieChart(document.getElementById('pie_div2'));
+            piechart2.draw(pdata2, options);
+
+            var pdata3 = new google.visualization.DataTable();
+            pdata3.addColumn('string', 'key');
+            pdata3.addColumn('number', 'Number');
+            angular.forEach(agg[3], function (n) {
+                pdata3.addRow([n.Key.toString(), n.DocCount]);
+
+            });
+            var piechart3 = new google.visualization.PieChart(document.getElementById('pie_div3'));
+            piechart3.draw(pdata3, options);
+
 
         }
         //#endregion
@@ -255,6 +271,7 @@
                 .then(function (resp) {
                     if (resp.data.Total !== 0) {
                         drawTimwLine(resp.data.DateHistData);
+                        drawHist(resp.data.DateHistData);
                     }
                     /* vm.total = resp.aggregations;
                      vm.hitSearch = resp.aggregations.ag.agg.buckets;
@@ -360,7 +377,7 @@
         //#region Draw Map2
         //get geomap2 data
         function geoMap2() {
-            datasearch.termAggragation(vm.indicesName, vm.type, "geoip.country_name.raw", 200, vm.st, vm.ft).
+            datasearch.termAggragation(vm.indicesName, vm.type, "geoip.country_name.raw", vm.geoCount, vm.st, vm.ft).
                 then(function (resp) {
                     if (resp.data.Total !== 0) {
                         drawMap2(resp.data.AggData);
@@ -396,15 +413,16 @@
             chart.draw(geoData2, options);
 
             google.visualization.events.addListener(chart, 'select', function () {
-                var row = chart.getSelection()[0];
-                log(row);
+                var row = chart.getSelection()[0].row;
+                var x = geoData2.getValue(row, 0);
+                log(x);
             });
             vm.isBusy = false;
         }
 
         function usGeomap() {
 
-            datasearch.termQueryAggragation(vm.indicesName, vm.type, "geoip.real_region_name.raw", 50, vm.st, vm.ft).
+            datasearch.termQueryAggragation(vm.indicesName, vm.type, "geoip.country_code3.raw", "USA", "geoip.real_region_name.raw", vm.geoCount, vm.st, vm.ft).
                    then(function (resp) {
                        if (resp.data.Total !== 0) {
                            drawUSmap(resp.data.AggData);
@@ -440,12 +458,57 @@
             chart.draw(geoDataus, options);
 
             google.visualization.events.addListener(chart, 'select', function () {
-                var row = chart.getSelection()[0];
-                log(row);
+                var row = chart.getSelection()[0].row;
+                var x = geoDataus.getValue(row, 0);
+                log(x);
             });
             vm.isBusy = false;
         }
 
+
+
+        function usCitymap() {
+
+            datasearch.termQueryAggragation(vm.indicesName, vm.type, "geoip.country_code3.raw", "USA", "geoip.city_name.raw", vm.geoCount, vm.st, vm.ft).
+                   then(function (resp) {
+                       if (resp.data.Total !== 0) {
+                           drawoCitymap(resp.data.AggData);
+                       }
+                   }, function (err) {
+                       //log("geoMap2 data error" + err.message);
+                   });
+        }
+
+        function drawoCitymap(r) {
+            google.setOnLoadCallback(drawoCitymap);
+
+            var geoDataus = new google.visualization.DataTable();
+            geoDataus.addColumn('string', 'State');
+            geoDataus.addColumn('number', 'Count');
+
+            angular.forEach(r, function (n) {
+                //geoDataus.addRow([n.key.toString(), n.doc_count]);
+                geoDataus.addRow([n.Key, n.DocCount]);
+            });
+            var options = {
+                colorAxis: { colors: ['#B2B2FF', '#0000FF', '#00004C'] },
+                backgroundColor: '#FFF0F5',
+                region: 'US',
+                resolution: 'provinces',
+                displayMode: 'markers'
+            };
+
+            var chart = new google.visualization.GeoChart(document.getElementById('gmap_div'));
+
+            chart.draw(geoDataus, options);
+
+            google.visualization.events.addListener(chart, 'select', function () {
+                var row = chart.getSelection()[0].row;
+                var x = geoDataus.getValue(row, 0);
+                log(x);
+            });
+            vm.isBusy = false;
+        }
         //#endregion
 
 
@@ -453,14 +516,21 @@
         function changeMap() {
             if (vm.geomap2selection == "World") {
                 geoMap2();
-                pieChart();
             }
             if (vm.geomap2selection == "USA") {
                 usGeomap();
             }
+            if (vm.geomap2selection == "City") {
+                usCitymap();
+            }
+            pieChart();
+        }
+
+        function changeMap2() {
+            geoMap();
+            pieChart();
         }
         //#endregion
-
 
 
     }

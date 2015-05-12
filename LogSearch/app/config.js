@@ -47,8 +47,8 @@
         spinnerToggle: 'spinner.toggle'
     };
 
-    //var localApiUrl = "http://localhost:1972/";
-    var localApiUrl = "http://localhost/MessageHandleApi/";
+    var localApiUrl = "http://localhost:1972/";
+    //var localApiUrl = "http://localhost/MessageHandleApi/";
     var remoteApiUrl = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/";
     var config = {
         appErrorPrefix: '[ELS Error] ', //Configure the exceptionHandler decorator

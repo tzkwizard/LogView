@@ -25,7 +25,7 @@
                 <md-button class="md-raised md-primary" data-ng-click="vm.search()" aria-label="search">
                     <i class="fa fa-search"> Search </i>
                     <md-tooltip>
-                        {{vm.Syntax.title}}+{{vm.Syntax.Description}}
+                        {{vm.Syntax.title}}  {{vm.Syntax.Description}}
                     </md-tooltip>
                 </md-button>
                 <md-button class="md-raised md-primary" data-ng-click="vm.refresh($event)" aria-label="refresh">
@@ -67,7 +67,6 @@
                         <li data-ng-click="vm.showListBottomSheet()"><a>More Span ?</a></li>-->
                     </ul>
                 </div>
-
             </div>
             <div id="function" class="widget wlightblue" collapse="false">
                 <div data-cc-widget-header title="{{vm.title2}}"
@@ -102,9 +101,9 @@
                     <div layout="row" style="width: 20%">
                         <md-input-container>
                             <label> Location </label>
-                            <input type="text" ng-model="vm.asyncSelected"
-                                   typeahead="address for address in vm.getLocation($viewValue)" typeahead-loading="loadingLocations"
-                                   class="form-control" style="width: 100%">
+                            <textarea ng-model="vm.asyncSelected"
+                                      typeahead="address for address in vm.getLocation($viewValue)" typeahead-loading="loadingLocations"
+                                      class="form-control" style="width: 100%"></textarea>
                             <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
                         </md-input-container>
 
@@ -191,6 +190,21 @@
             <div id="processbar" layout="row">
                 <progressbar flex="80" class="progress-striped active" value="vm.dynamic" type="{{vm.ptype}}">{{vm.ptype}} <i ng-show="showWarning">!!! Watch out !!!</i></progressbar>
             </div>
+            <div id="elsPaging" layout="row" class="widget-foot">
+                <div class="clearfix"></div>
+                <pagination boundary-links="true"
+                            total-items="vm.tt"
+                            items-per-page="vm.paging.pageSize"
+                            data-ng-model="vm.paging.currentPage"
+                            data-ng-change="vm.pageChanged()"
+                            max-size="vm.paging.maxPagesToShow"
+                            class="pagination-sm"
+                            previous-text="Prev"
+                            next-text="Next"
+                            first-text="First"
+                            last-text="Last"></pagination>
+                <div class="clearfix"></div>
+            </div>
             <div id="ResultCount" class="pull-right">
                 <md-select placeholder="Pick" ng-model="vm.paging.pageSize" ng-change="vm.refreshPage()">
                     <md-option value=5>5</md-option>
@@ -216,45 +230,46 @@
                     <table class="table table-striped table-condensed table-hover">
                         <thead>
                             <tr>
-                                <th class="message" width="200">Time&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend, 'glyphicon-chevron-up': !trend}" data-ng-click="predicate = '_source.timestamp'; reverse=!reverse;trend=!trend"></i></th>
+                                <th class="message" width="15%">Time&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend, 'glyphicon-chevron-up': !trend}" data-ng-click="predicate = '_source.timestamp'; reverse=!reverse;trend=!trend"></i></th>
                                 <th class="message">Message&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend1, 'glyphicon-chevron-up': !trend1}" data-ng-click=" predicate='_source.message' ; reverse=!reverse;trend1=!trend1"></i></th>
-                                <th class="message" width="100">Score&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend2, 'glyphicon-chevron-up': !trend2}" data-ng-click=" predicate='_score' ; reverse=!reverse;trend2=!trend2"></i></th>
-                                <th class="message">Index&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend, 'glyphicon-chevron-up': !trend}" data-ng-click=" predicate='_index' ; reverse=!reverse;trend=!trend"></i></th>
+                                <th class="message" width="5%">Score&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend2, 'glyphicon-chevron-up': !trend2}" data-ng-click=" predicate='_score' ; reverse=!reverse;trend2=!trend2"></i></th>
+                                <!--<th class="message">Index&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend, 'glyphicon-chevron-up': !trend}" data-ng-click=" predicate='_index' ; reverse=!reverse;trend=!trend"></i></th>-->
                             </tr>
                         </thead>
-
-
                         <tbody>
                             <tr class="fader-animation" data-ng-repeat="doc in vm.res| orderBy:predicate:reverse" data-ng-click="vm.open(doc)">
-                                <td>{{doc._source['timestamp']| date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
+                                <td>{{doc._source['UTCtimestamp']| date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
                                 <td>{{doc._source.message}}</td>
                                 <td>{{doc._score}}</td>
-                                <td>{{doc._index}}</td>
+                                <!-- <td>{{doc._index}}</td>-->
                             </tr>
                         </tbody>
-
                     </table>
-                    <div layout="column" class="fader-animation" data-ng-repeat="doc in vm.res| orderBy:predicate:reverse" data-ng-click="vm.open(doc)">
+                    <md-toolbar md-scroll-shrink>
+                        <div class="md-toolbar-tools">
+                            <h3 style="color:whitesmoke">
+                                <span>Google List</span>
+                            </h3>
+                        </div>
+                    </md-toolbar>
+                    <md-content style="height: 600px;">
+                        <md-list>
+                            <md-list-item class="md-3-line" ng-repeat="doc in vm.res| orderBy:predicate:reverse">
+                                <div class="md-list-item-text" data-ng-dblclick="vm.open(doc)">
+                                    <h3> {{doc._source['timestamp']}} </h3>
+                                    <h6> {{doc._source.message}} </h6>
+                                </div>
+                                <md-divider inset></md-divider>
+                            </md-list-item>
+                        </md-list>
+                    </md-content>
+                    <!-- <div layout="column" class="fader-animation" data-ng-repeat="doc in vm.res| orderBy:predicate:reverse" data-ng-click="vm.open(doc)">
                         <hr> <a>{{doc._source['timestamp']}}</a> ---- {{doc._source.message}}
-                    </div>
+                    </div>-->
 
                 </div>
             </div>
-            <div id="elsPaging" layout="row" class="widget-foot">
-                <div class="clearfix"></div>
-                <pagination boundary-links="true"
-                            total-items="vm.tt"
-                            items-per-page="vm.paging.pageSize"
-                            data-ng-model="vm.paging.currentPage"
-                            data-ng-change="vm.pageChanged()"
-                            max-size="vm.paging.maxPagesToShow"
-                            class="pagination-sm"
-                            previous-text="Prev"
-                            next-text="Next"
-                            first-text="First"
-                            last-text="Last"></pagination>
-                <div class="clearfix"></div>
-            </div>
+
 
         </div>
     </section>

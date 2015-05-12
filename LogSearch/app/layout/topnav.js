@@ -46,31 +46,31 @@
 
             switch (x) {
                 case "Last three months":
-                    $rootScope.st = moment(new Date()).subtract(3, 'month');
+                    $rootScope.st = moment(new Date()).subtract(3, 'month').toDate();
                     break;
                 case "Last Month":
-                    $rootScope.st = moment(new Date()).subtract(1, 'month');
+                    $rootScope.st = moment(new Date()).subtract(1, 'month').toDate();
                     break;
                 case "Last four weeks":
-                    $rootScope.st = moment(new Date()).subtract(28, 'days');
+                    $rootScope.st = moment(new Date()).subtract(28, 'days').toDate();
                     break;
                 case "Last three weeks":
-                    $rootScope.st = moment(new Date()).subtract(21, 'days');
+                    $rootScope.st = moment(new Date()).subtract(21, 'days').toDate();
                     break;
                 case "Last two weeks":
-                    $rootScope.st = moment(new Date()).subtract(14, 'days');
+                    $rootScope.st = moment(new Date()).subtract(14, 'days').toDate();
                     break;
                 case "Last week":
-                    $rootScope.st = moment(new Date()).subtract(7, 'days');
+                    $rootScope.st = moment(new Date()).subtract(7, 'days').toDate();
                     break;
                 case "Last five days":
-                    $rootScope.st = moment(new Date()).subtract(5, 'days');
+                    $rootScope.st = moment(new Date()).subtract(5, 'days').toDate();
                     break;
                 case "Last three days":
-                    $rootScope.st = moment(new Date()).subtract(3, 'days');
+                    $rootScope.st = moment(new Date()).subtract(3, 'days').toDate();
                     break;
                 case "Last day":
-                    $rootScope.st = moment(new Date()).subtract(1, 'days');
+                    $rootScope.st = moment(new Date()).subtract(1, 'days').toDate();
                     break;
 
                 default:
@@ -143,7 +143,7 @@
                 vm.ft = $rootScope.ft;
                 vm.st = $rootScope.st;
             } else {
-                vm.st = moment(new Date()).subtract(2, 'month');
+                vm.st = moment(new Date()).subtract(2, 'month').toDate();
                 vm.ft = new Date();
             }
 

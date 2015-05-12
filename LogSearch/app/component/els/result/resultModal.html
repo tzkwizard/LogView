@@ -1,45 +1,56 @@
 ﻿<div class="widget wlightblue">
     <div data-cc-widget-header title="{{title}}" allow-collapse="true"></div>
     <div class="widget-content">
-        <hr />
         <div class="modal-body">
-            <table class="columns">
-                <col width="500">
-                <tr>
-                    <td width="500">
-                        <h3> All Message Field </h3>
+            <div layout="row">
+                <div>
+                    <md-toolbar>
+                        <div class="md-toolbar-tools">
+                            <h3 style="color:whitesmoke"> <span>All Message Field</span></h3>
+                        </div>
+                    </md-toolbar>
+                    <md-content>
                         <div class="gridStyle2" ng-grid="gridOptions"></div>
-                    </td>
-
-                    <td width="500">
-                        <h3> User Basic Information </h3>
+                    </md-content>
+                </div>
+                <div layout="column" layout-align="space-between center">
+                    <md-toolbar>
+                        <div class="md-toolbar-tools">
+                            <h3 style="color:whitesmoke"> <span>User Basic Information</span></h3>
+                        </div>
+                    </md-toolbar>
+                    <md-content>
                         <div class="gridStyle" ng-grid="gridOptions2"></div>
-                        <br><br> <hr />
-                        <h3> User Action Information </h3>
+                    </md-content>
+
+                    <md-toolbar>
+                        <div class="md-toolbar-tools">
+                            <h3 style="color:whitesmoke"> <span>User Action Information</span></h3>
+                        </div>
+                    </md-toolbar>
+                    <md-content>
                         <div class="gridStyle" ng-grid="gridOptions3"></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td width="500"></td>
-                    <td width="500"></td>
-
-                </tr>
-            </table>
-            <hr />
-            {{mySelections}}
-
-            <ul>
-                <!--  <li ng-click="selected.item = items._source.timestamp"><h5>Time :  <a>{{items._source.timestamp}}</a></h5></li>-->
-                <!--<ul ng-repeat="item in items._source">
-                <li ng-click="selected.item = item">{{field}}{{ item|json }}</li>
-
-                </>-->
-            </ul>
+                    </md-content>
+                </div>
+            </div>
+            <md-list>
+                <md-list-item class="md-1-line" ng-repeat="item in mySelections">
+                    <div class="md-list-item-text">
+                        {{item.Field}} : {{item.Value}}
+                    </div>
+                    <md-divider inset></md-divider>
+                </md-list-item>
+            </md-list>
             Selected: <b>{{ selected.item |json }}</b>
         </div>
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="ok()">OK</button>
-    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    <md-button class="md-raised md-primary" data-ng-click="ok()" aria-label="ok"
+               tooltip="Search" tooltip-trigger="mouseenter" tooltip-placement="top">
+        <i> OK </i>
+    </md-button>
+    <md-button class="md-raised md-warn" data-ng-click="cancel()" aria-label="cancel">
+        <i> Cancel </i>
+    </md-button>
 </div>

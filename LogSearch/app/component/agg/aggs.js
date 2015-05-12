@@ -274,7 +274,7 @@
                     vm.ft = $rootScope.ft;
                     vm.st = $rootScope.st;
                 } else {
-                    vm.st = moment(new Date()).subtract(2, 'month');
+                    vm.st = moment(new Date()).subtract(2, 'month').toDate();
                     vm.ft = new Date();
                 }
 
@@ -401,7 +401,8 @@
 
             function aggFieldFilter(aggField) {
                 var fieldFilter = ["geoip.timezone", "timestamp.raw", "@timestamp", "referrer", "referrer.raw",
-                    "timestamp", "request", "edata", "host", "action", "agent", "tags"];
+                    "timestamp", "request", "edata", "host", "action", "agent", "tags", "message",
+                    "geoip.country_name", "geoip.coordinates", "geoip.latitude", "geoip.longitude"];
 
                 fieldFilter.map(function (f) {
                     var index = aggField.indexOf(f);

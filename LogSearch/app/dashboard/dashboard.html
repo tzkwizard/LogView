@@ -13,6 +13,12 @@
                 <md-select class="pull-right" placeholder="Pick" ng-model="vm.geomap2selection" ng-change="vm.changeMap()">
                     <md-option value="USA">USA</md-option>
                     <md-option value="World">World</md-option>
+                    <md-option value="City">City</md-option>
+                </md-select>
+                <md-select class="pull-right" placeholder="Pick" ng-model="vm.geoCount" ng-change="vm.changeMap()">
+                    <md-option value="50">50</md-option>
+                    <md-option value="100">100</md-option>
+                    <md-option value="200">200</md-option>
                 </md-select>
             </div>
             <div id="gMap" class="widget wlightblue">
@@ -21,6 +27,11 @@
                     <div id="gmap_div" style="height: 75%; width: 100%"></div>
                 </div>
             </div>
+            <md-select class="pull-right" placeholder="Pick" ng-model="vm.mapCount" ng-change="vm.changeMap2()">
+                <md-option value="15">15</md-option>
+                <md-option value="30">30</md-option>
+                <md-option value="50">50</md-option>
+            </md-select>
             <div id="dMap" class="widget waqua">
                 <div data-cc-widget-header title=" City Map" allow-collapse="true"></div>
                 <div class="widget-content">

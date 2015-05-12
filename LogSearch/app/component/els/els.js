@@ -45,11 +45,12 @@
             vm.filterfill = false;
             vm.condition = [];
             vm.Syntax = {
-                title: 'Help',
-                Description: "Terms Fields Escaping Special Characters"
+                title: 'Search : ',
+                Description: " Field(verb?) : Text(GET?)"
             };
             vm.dunit = 'mi';
             vm.timeShow = false;
+            vm.maxDistance = 24900;
             //#endregion
 
             //#region function
@@ -168,49 +169,49 @@
             function filterst(x) {
                 switch (x) {
                     case "Last year":
-                        vm.st = moment(new Date()).subtract(1, 'year');
+                        vm.st = moment(new Date()).subtract(1, 'year').toDate();
                         break;
                     case "Last 6 months":
-                        vm.st = moment(new Date()).subtract(6, 'month');
+                        vm.st = moment(new Date()).subtract(6, 'month').toDate();
                         break;
                     case "Last 3 months":
-                        vm.st = moment(new Date()).subtract(3, 'month');
+                        vm.st = moment(new Date()).subtract(3, 'month').toDate();
                         break;
                     case "Last Month":
-                        vm.st = moment(new Date()).subtract(1, 'month');
+                        vm.st = moment(new Date()).subtract(1, 'month').toDate();
                         break;
                     case "Last 4 weeks":
-                        vm.st = moment(new Date()).subtract(4, 'week');
+                        vm.st = moment(new Date()).subtract(4, 'week').toDate();
                         break;
                     case "Last 3 weeks":
-                        vm.st = moment(new Date()).subtract(3, 'week');
+                        vm.st = moment(new Date()).subtract(3, 'week').toDate();
                         break;
                     case "Last 2 weeks":
-                        vm.st = moment(new Date()).subtract(2, 'week');
+                        vm.st = moment(new Date()).subtract(2, 'week').toDate();
                         break;
                     case "Last week":
-                        vm.st = moment(new Date()).subtract(1, 'week');
+                        vm.st = moment(new Date()).subtract(1, 'week').toDate();
                         break;
                     case "Last 5 days":
-                        vm.st = moment(new Date()).subtract(5, 'days');
+                        vm.st = moment(new Date()).subtract(5, 'days').toDate();
                         break;
                     case "Last 3 days":
-                        vm.st = moment(new Date()).subtract(3, 'days');
+                        vm.st = moment(new Date()).subtract(3, 'days').toDate();
                         break;
                     case "Last 2 days":
-                        vm.st = moment(new Date()).subtract(2, 'days');
+                        vm.st = moment(new Date()).subtract(2, 'days').toDate();
                         break;
                     case "Last day":
-                        vm.st = moment(new Date()).subtract(1, 'day');
+                        vm.st = moment(new Date()).subtract(1, 'day').toDate();
                         break;
                     case "Last 12 hours":
-                        vm.st = moment(new Date()).subtract(12, 'hour');
+                        vm.st = moment(new Date()).subtract(12, 'hour').toDate();
                         break;
                     case "Last 6 hours":
-                        vm.st = moment(new Date()).subtract(6, 'hour');
+                        vm.st = moment(new Date()).subtract(6, 'hour').toDate();
                         break;
                     case "Last hour":
-                        vm.st = moment(new Date()).subtract(1, 'hour');
+                        vm.st = moment(new Date()).subtract(1, 'hour').toDate();
                         break;
                     default:
                         // log(x);
@@ -227,11 +228,12 @@
                     controller: 'els'
                 }).then(function (clickedItem) {
                     filterst(clickedItem);
+                   timeChange();
                 });
             };
 
             function today() {
-                vm.st = moment(new Date()).subtract(1, 'month');
+                vm.st = moment(new Date()).subtract(1, 'month').toDate();
                 vm.ft = new Date();
                 toggleMin();
             }
@@ -375,7 +377,7 @@
                     vm.ft = $rootScope.ft;
                     vm.st = $rootScope.st;
                 } else {
-                    vm.st = moment(new Date()).subtract(2, 'month');
+                    vm.st = moment(new Date()).subtract(2, 'month').toDate();
                     vm.ft = new Date();
                 }
                 common.$location.search();
@@ -461,6 +463,8 @@
 
             vm.distanceUnitChange = distanceUnitChange;
             function distanceUnitChange() {
+                if (vm.dunit === "mi") vm.maxDistance = 24900;
+                if (vm.dunit === "km") vm.maxDistance = 40075;
                 log("Length Unit Change to "+vm.dunit);
             }
             //#endregion

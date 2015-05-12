@@ -164,10 +164,12 @@
             });
         }
 
-        function termQueryAggragation(indices, type, aggfield, size, start, end) {
+        function termQueryAggragation(indices, type,field, searchText, aggfield, size, start, end) {
 
             var info =
             {
+                SearchText: searchText,
+                Field: field,
                 SubSize: size,
                 Start: start,
                 End: end,
@@ -209,20 +211,30 @@
                 Size: pagecount,
                 Start: start,
                 End: end,
-                Location: location,
+                Lat: location.lat,
+                Lon: location.lon,
+                Location :location,
                 GeoDistance: distance
             }
 
             var remote = config.remoteApiUrl + "api/ElasticSearch/SampleData";
             var local = config.localApiUrl + "api/ElasticSearch/SampleData";
-            //var ii = angular.toJson(info);
+            var ii = angular.toJson(info);
 
             var r = {
                 method: 'POST',
                 url: local,
-                data: info,
+                data: ii,
                 params: {
-                    token: $rootScope.token
+                    token: $rootScope.token,
+                    Type: type,
+                    Size: pagecount,
+                    Start: start,
+                    End: end,
+                    Lat: location.lat,
+                    Lon:location.lon,
+                    GeoDistance: distance,
+                    Location: [location.lat, location.lat]
                 }
             }
 
@@ -256,7 +268,8 @@
                 SearchText: searchText,
                 Start: start,
                 End: end,
-                Location: location,
+                Lat: location.lat,
+                Lon: location.lon,
                 GeoDistance: distance
             }
 
@@ -310,7 +323,8 @@
                 Field: field,
                 Start: start,
                 End: end,
-                Location: location,
+                Lat: location.lat,
+                Lon: location.lon,
                 GeoDistance: distance
             }
 
@@ -356,7 +370,8 @@
                 Field: field,
                 Start: start,
                 End: end,
-                Location: location,
+                Lat: location.lat,
+                Lon: location.lon,
                 GeoDistance: distance,
                 Filterdata: condition
             }
@@ -436,7 +451,8 @@
                 Field: field,
                 Start: start,
                 End: end,
-                Location: location,
+                Lat: location.lat,
+                Lon: location.lon,
                 GeoDistance: distance,
                 Filterdata: condition
             }
