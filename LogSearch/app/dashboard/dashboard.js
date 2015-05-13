@@ -13,7 +13,6 @@
         //#region variable
         vm.st = "";
         vm.ft = "";
-        vm.size = 15;
         vm.isBusy = true;
         vm.busyMessage = "wait";
         vm.spinnerOptions = {
@@ -66,23 +65,17 @@
                 });
         }
 
-        //bootstrap 
         function init() {
             vm.type = $rootScope.logtype;
-            if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {
-                vm.ft = $rootScope.ft;
-                vm.st = $rootScope.st;
-            } else {
-                vm.st = moment(new Date()).subtract(2, 'month').toDate();
-                vm.ft = new Date();
-            }
+            vm.ft = $rootScope.ft;
+            vm.st = $rootScope.st;
+
             // worldGeoMap();
             common.$q.all(usGeoMap(), geoMap(), pieChart(), timeLineGram()).then(function () {
                 vm.isBusy = false;
             });
         }
 
-        //Load index
         function getIndexName() {
             var ip = dataconfig.loadIndex();
             try {
@@ -98,7 +91,6 @@
 
 
         //#region Draw Map1
-        //get geomap2 data
         function worldGeoMap() {
             datasearch.termAggragation(vm.indicesName, vm.type, "geoip.country_name.raw", vm.geoCount, vm.st, vm.ft).
                 then(function (resp) {
@@ -155,13 +147,13 @@
         //#region map selector
         function changeMap() {
             if (vm.geomap2selection === "World") {
-                geoMap2();
+                worldGeoMap();
             }
             if (vm.geomap2selection === "USA") {
-                usGeomap();
+                usGeoMap();
             }
             if (vm.geomap2selection === "City") {
-                usCitymap();
+                usCityMap();
             }
             pieChart();
         }
@@ -174,7 +166,6 @@
 
 
         //#region Draw Pie 
-        //get piechart data
         function pieChart() {
             return datasearch.dashboardPieAggregation("verb", "geoip.city_name.raw", "request.raw", vm.st, vm.ft)
            .then(function (resp) {
@@ -189,7 +180,6 @@
 
 
         //#region Time Chart
-        //get timelineGram data
         function timeLineGram() {
             return datasearch.dateHistogramAggregation(vm.indicesName, vm.type, "@timestamp", "day", vm.st, vm.ft)
                 .then(function (resp) {
@@ -205,7 +195,6 @@
         }
         //#endregion
 
-
     }
-
 })();
+

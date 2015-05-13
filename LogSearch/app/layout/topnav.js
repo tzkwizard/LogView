@@ -32,8 +32,8 @@
         //#region Time
         vm.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'yyyy.MM.dd'];
         vm.format = vm.formats[4];
-        vm.it = ["Last three months", "Last Month", "Last four weeks", "Last three weeks", "Last two weeks", "Last week",
-            "Last five days", "Last three days", "Last day"];
+        vm.it = ["Last 3 months", "Last Month", "Last 4 weeks", "Last 3 weeks", "Last 2 weeks", "Last week",
+            "Last 5 days", "Last 3 days", "Last 2 days", "Last day" ];
         vm.dateOptions = {
             formatYear: 'yy',
             startingDay: 1
@@ -41,48 +41,13 @@
 
         vm.filterst = filterst;
         //change time span global
-        function filterst(x, $event) {
+        function filterst(span) {
             $rootScope.ft = new Date();
-
-            switch (x) {
-                case "Last three months":
-                    $rootScope.st = moment(new Date()).subtract(3, 'month').toDate();
-                    break;
-                case "Last Month":
-                    $rootScope.st = moment(new Date()).subtract(1, 'month').toDate();
-                    break;
-                case "Last four weeks":
-                    $rootScope.st = moment(new Date()).subtract(28, 'days').toDate();
-                    break;
-                case "Last three weeks":
-                    $rootScope.st = moment(new Date()).subtract(21, 'days').toDate();
-                    break;
-                case "Last two weeks":
-                    $rootScope.st = moment(new Date()).subtract(14, 'days').toDate();
-                    break;
-                case "Last week":
-                    $rootScope.st = moment(new Date()).subtract(7, 'days').toDate();
-                    break;
-                case "Last five days":
-                    $rootScope.st = moment(new Date()).subtract(5, 'days').toDate();
-                    break;
-                case "Last three days":
-                    $rootScope.st = moment(new Date()).subtract(3, 'days').toDate();
-                    break;
-                case "Last day":
-                    $rootScope.st = moment(new Date()).subtract(1, 'days').toDate();
-                    break;
-
-                default:
-                    // log(x);
-                    break;
-            }
-
+            $rootScope.st = dataconfig.changeTimeSpan(span);
             /*$rootScope.reload = true;
             $route.reload();*/
             common.$location.path(common.$location.path() + "/");
             // window.location.reload();
-
         }
 
         $scope.toggleRight = timeNav('right');

@@ -9,7 +9,6 @@
             //#region variable
             $scope.title = "Detailed search result";
             $scope.items = items.data;
-            $scope.field = items.field;
 
             $scope.selected = {
                 item: ""

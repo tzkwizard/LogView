@@ -36,7 +36,7 @@
             // Include $route to kick start the router.
             routeMediator.setRoutingHandlers();
             $rootScope.school = "TCU";
-            $rootScope.st = moment(new Date()).subtract(2, 'month').toDate();
+            $rootScope.st = moment(new Date()).subtract(3, 'month').toDate();
             $rootScope.ft = new Date();
             // dataconfig.prime();
             $templateCache.put('e.html','app/component/els/els.html');

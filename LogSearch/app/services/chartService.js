@@ -4,7 +4,7 @@
 
 
     angular.module('app')
-        .factory(serviceId, function (datasearch,common) {
+        .factory(serviceId, function (datasearch, common) {
             var vm = this;
 
             //#region service
@@ -39,17 +39,13 @@
 
                 var geoView = new google.visualization.DataView(geoData);
                 geoView.setColumns([0, 1]);
-
-
-                var table =
-                    new google.visualization.Table(document.getElementById(tabletag));
+                var table = new google.visualization.Table(document.getElementById(tabletag));
 
 
                 // google.visualization.data.group(table, keys, columns)
                 table.draw(geoData, { showRowNumber: true });
 
-                var map =
-                    new google.visualization.Map(document.getElementById(maptag));
+                var map = new google.visualization.Map(document.getElementById(maptag));
                 map.draw(geoView, {
                     showTip: true,
                     //enableScrollWheel: true,
@@ -70,7 +66,6 @@
                         var x = geoData.getValue(row,0);*/
                         table.setSelection(map.getSelection());
                     });
-
             }
 
             function drawTimeLine(agg, timelinetag) {
@@ -93,29 +88,24 @@
             }
 
             function drawHist(agg, datahistag) {
-
                 google.setOnLoadCallback(drawHist);
                 /*  var Data = new google.visualization.DataTable();
                  Data.addColumn('date', 'Date');
                   Data.addColumn('number', 'Number');
-                 // Data.addColumn('date', 'Date');
-      
-      
+                 // Data.addColumn('date', 'Date');    
                   angular.forEach(agg, function (n) {
                       Data.addRow([new Date(n.key_as_string.substring(0,4), n.key_as_string.substring(5,7), n.key_as_string.substring(8,10)), n.doc_count]);
                      // Data.addRow([n.doc_count, new Date(n.key_as_string.substring(0,4), n.key_as_string.substring(5,7), n.key_as_string.substring(8,10))]);
                   });
       
-      
                   var options = {
                 //      title: 'Lengths of dinosaurs, in meters',
                 //      legend: { position: 'none' },
                       //histogram: { bucketSize: 100 }
-                  };
-      
+                  };   
                   var chart = new google.visualization.Histogram(document.getElementById('DateHist_div'));
-                  chart.draw(Data, options);
-      */
+                  chart.draw(Data, options);*/
+
                 var data = new google.visualization.DataTable();
                 data.addColumn('date', 'Date');
                 data.addColumn('number', 'Request');
@@ -134,8 +124,8 @@
                 var options = google.charts.Bar.convertOptions({
                     title: 'Total Request Received Throughout the Day',
                     hAxis: {
-                        format: 'MM/dd/yyyy',
-                    },
+                        format: 'MM/dd/yyyy'
+                    }
                 });
 
 
@@ -148,17 +138,16 @@
             }
 
             function drawWorldMap(r, maptag) {
-
                 google.setOnLoadCallback(drawWorldMap);
 
                 var geoData2 = new google.visualization.DataTable();
                 geoData2.addColumn('string', 'Country');
                 geoData2.addColumn('number', 'Count');
-
                 angular.forEach(r, function (n) {
                     //geoData2.addRow([n.key.toString(), n.doc_count]);
                     geoData2.addRow([n.Key, n.DocCount]);
                 });
+
                 var options = {
                     colorAxis: { colors: ['#B2B2FF', '#0000FF', '#00004C'] },
                     backgroundColor: '#FFF0F5'
@@ -166,15 +155,13 @@
                 };
 
                 var chart = new google.visualization.GeoChart(document.getElementById(maptag));
-
                 chart.draw(geoData2, options);
 
                 google.visualization.events.addListener(chart, 'select', function () {
                     var row = chart.getSelection()[0].row;
                     var x = geoData2.getValue(row, 0);
-                    log(x);
+                    toastr.info(x);
                 });
-                vm.isBusy = false;
             }
 
             function drawUSmap(r, maptag) {
@@ -183,11 +170,11 @@
                 var geoDataus = new google.visualization.DataTable();
                 geoDataus.addColumn('string', 'City');
                 geoDataus.addColumn('number', 'Count');
-
                 angular.forEach(r, function (n) {
                     //geoDataus.addRow([n.key.toString(), n.doc_count]);
                     geoDataus.addRow([n.Key, n.DocCount]);
                 });
+
                 var options = {
                     colorAxis: { colors: ['#B2B2FF', '#0000FF', '#00004C'] },
                     backgroundColor: '#FFF0F5',
@@ -196,15 +183,13 @@
                 };
 
                 var chart = new google.visualization.GeoChart(document.getElementById(maptag));
-
                 chart.draw(geoDataus, options);
 
                 google.visualization.events.addListener(chart, 'select', function () {
                     var row = chart.getSelection()[0].row;
                     var x = geoDataus.getValue(row, 0);
-                    log(x);
+                    toastr.info(x);
                 });
-                vm.isBusy = false;
             }
 
             function drawoUSCitymap(r, maptag) {
@@ -213,11 +198,11 @@
                 var geoDataus = new google.visualization.DataTable();
                 geoDataus.addColumn('string', 'State');
                 geoDataus.addColumn('number', 'Count');
-
                 angular.forEach(r, function (n) {
                     //geoDataus.addRow([n.key.toString(), n.doc_count]);
                     geoDataus.addRow([n.Key, n.DocCount]);
                 });
+
                 var options = {
                     colorAxis: { colors: ['#B2B2FF', '#0000FF', '#00004C'] },
                     backgroundColor: '#FFF0F5',
@@ -227,15 +212,13 @@
                 };
 
                 var chart = new google.visualization.GeoChart(document.getElementById(maptag));
-
                 chart.draw(geoDataus, options);
 
                 google.visualization.events.addListener(chart, 'select', function () {
                     var row = chart.getSelection()[0].row;
                     var x = geoDataus.getValue(row, 0);
-                    log(x);
+                    toastr.info(x);
                 });
-                vm.isBusy = false;
             }
 
             function drawDashPie(agg, tag1, tag2, tag3) {
@@ -328,13 +311,7 @@
                     }
                 });
 
-
-                //drawTable(data, tableTag, aggName);
-
-                // Establish dependencies
                 dashboard.bind(donutRangeSlider, [pieChart]);
-
-                // Draw the dashboard.
                 dashboard.draw(data);
 
                 google.visualization.events.addListener(pieChart, 'select', function () {
@@ -390,98 +367,85 @@
                     'options': {
                         'width': '300px'
                     }
-                });
-*/
+                });*/
 
                 // var name = "table" + y;
                 //drawTable(data, name, y);
 
-                // Establish dependencies
                 dashboard.bind(donutRangeSlider, [pieChart]);
-
-                // Draw the dashboard.
                 dashboard.draw(data);
                 return data;
             }
 
-            
-            //get treemap data
-            function treeMap(aggName, datatree, size, start, end) {
-                return datasearch.termAggragation("", "", aggName, size, start, end)
-                        .then(function (resp) {
-                            var tt = resp.data.AggData;
-                            tt.map(function (y) {
-                                var x = Math.random() * y.DocCount - 50;
-                                datatree.addRow([y.Key + "\n" + aggName, aggName, y.DocCount, x]);
-                            });
-                        }, function (err) {
-                            //log("Tree data Load " + err.message);
-                });
-            }
-
-            function treeAddData(datatree, fieldstree, tpromise, size, start, end) {
-                datatree.addRow(["Elasticsearch", null, 0, 0]);
-                fieldstree.map(function (m) {
-                    datatree.addRow([m, "Elasticsearch", 0, 0]);
-                    tpromise.push(treeMap(m, datatree, size, start, end));
-                });
-            }
-
-            function startDrawTree(tree, datatree) {
-                tree.draw(datatree, {
-                    minColor: '#FFFFFF',
-                    midColor: '#2EFEF7',
-                    maxColor: '#00BFFF',
-                    headerHeight: 15,
-                    fontColor: 'black',
-                    showScale: true,
-                    showTooltips: true,
-                    generateTooltip: showStaticTooltip
-                });
-
-                function showStaticTooltip(row, size, value) {
-                    return '<div style="background:#fd9; padding:10px; border-style:solid">' +
-                        '<a> Tag:' + datatree.getValue(row, 0) + '<hr>' + '</b> Size:' + size + '</b> Value:' + value + '</a>.</div>';
-                }
-
-                google.visualization.events.addListener(tree, 'select',
-                    function () {
-                        tree.goUpAndDraw();
-                    });
-            }
-
-            //draw tree map
-            function drawTreeMap(fieldsName,size,start,end) {
+            function drawTreeMap(fieldsName, size, start, end) {
                 google.setOnLoadCallback(drawTreeMap);
                 var datatree = new google.visualization.DataTable();
                 var fieldstree = [];
                 angular.forEach(fieldsName, function (x) {
-                    if (x.substring(x.length - 3, x.length) === "raw") {
+                    if (x.substring(x.length - 3, x.length) === "raw" && x !== "timestamp.raw" && x !== "tags.raw") {
                         fieldstree.push(x);
                     }
                 });
-                var field = fieldstree.indexOf("timestamp.raw");
-                fieldstree.splice(field, 1);
-                field = fieldstree.indexOf("tags.raw");
-                fieldstree.splice(field, 1);
-
+                
                 datatree.addColumn('string', 'Name');
                 datatree.addColumn('string', 'Parent');
                 datatree.addColumn('number', 'count');
                 datatree.addColumn('number', 'color');
 
                 var tpromise = [];
-                var terror = false;
-                treeAddData(datatree,fieldstree, tpromise,size,start,end);
+                treeAddData(datatree, fieldstree, tpromise, size, start, end);
 
                 var tree = new google.visualization.TreeMap(document.getElementById('treemap_div'));
 
-                
-                return common.$q.all(tpromise).then(function () {                    
-                        startDrawTree(tree, datatree);
+                return common.$q.all(tpromise).then(function () {
+                    startDrawTree(tree, datatree);
                 }, function (e) {
                     log("TreeMap Promise Error" + e);
                 });
+
+                function treeAddData(datatree, fieldstree, tpromise, size, start, end) {
+                    datatree.addRow(["Elasticsearch", null, 0, 0]);
+                    fieldstree.map(function (m) {
+                        datatree.addRow([m, "Elasticsearch", 0, 0]);
+                        tpromise.push(treeMap(m, datatree, size, start, end));
+                    });
+                }
+
+                function startDrawTree(tree, datatree) {
+                    tree.draw(datatree, {
+                        minColor: '#FFFFFF',
+                        midColor: '#2EFEF7',
+                        maxColor: '#00BFFF',
+                        headerHeight: 15,
+                        fontColor: 'black',
+                        showScale: true,
+                        showTooltips: true,
+                        generateTooltip: showStaticTooltip
+                    });
+
+                    function showStaticTooltip(row, size, value) {
+                        return '<div style="background:#fd9; padding:10px; border-style:solid">' +
+                            '<a> Tag:' + datatree.getValue(row, 0) + '<hr>' + '</b> Size:' + size + '</b> Value:' + value + '</a>.</div>';
+                    }
+
+                    google.visualization.events.addListener(tree, 'select',
+                        function () {
+                            tree.goUpAndDraw();
+                        });
+                }
+
+                function treeMap(aggName, datatree, size, start, end) {
+                    return datasearch.termAggragation("", "", aggName, size, start, end)
+                            .then(function (resp) {
+                                var tt = resp.data.AggData;
+                                tt.map(function (y) {
+                                    var x = Math.random() * y.DocCount - 50;
+                                    datatree.addRow([y.Key + "\n" + aggName, aggName, y.DocCount, x]);
+                                });
+                            }, function (err) {
+                                //log("Tree data Load " + err.message);
+                            });
+                }
             }
 
         });

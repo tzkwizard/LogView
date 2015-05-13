@@ -6,13 +6,11 @@
     angular.module('app')
         .controller(controllerId, function ($cookieStore, $rootScope, $scope,
             common, datasearch, dataconfig, chartservice) {
-
             var vm = this;
             vm.title = "Aggragations";
             vm.title2 = "PieChart";
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
-
 
             //#region variable
             vm.isBusy = true;
@@ -48,11 +46,6 @@
             vm.token = false;
             vm.process = true;
             vm.treestatus = true;
-
-            vm.dashboard = "dash";
-            vm.range = "range";
-            vm.barchart = "bar";
-            vm.tablechart = "table";
             //#endregion
 
 
@@ -96,15 +89,13 @@
             }
 
             function init() {
-                if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {
-                    vm.ft = $rootScope.ft;
-                    vm.st = $rootScope.st;
-                } else {
-                    vm.st = moment(new Date()).subtract(2, 'month').toDate();
-                    vm.ft = new Date();
-                }
-
+                vm.ft = $rootScope.ft;
+                vm.st = $rootScope.st;
                 vm.type = $rootScope.logtype;
+                vm.refinedsearch = [
+                    { key: 'Time', value: new Date() },
+                    { key: 'School', value: $rootScope.school }
+                ];
                 if (vm.treestatus === true) {
                     //drawTreemap();
                     chartservice.drawTreeMap(vm.fieldsName, vm.treesize, vm.st, vm.ft).then(function () {
@@ -113,11 +104,6 @@
                     });
                 }
                 aggShow();
-
-                vm.refinedsearch = [
-                { key: 'Time', value: new Date() },
-                { key: 'School', value: $rootScope.school }
-                ];
             }
 
             //Load index
@@ -203,17 +189,14 @@
                 var contain = document.createElement('div');
                 contain.setAttribute('id', 'contain');
                 main.appendChild(contain);
-
                 angular.forEach(fields, function (name) {
                     dataconfig.createContainer(name);
                 });
             }
 
             function aggFieldFilter(aggField) {
-                var fieldFilter = ["geoip.timezone", "timestamp.raw", "@timestamp", "referrer", "referrer.raw",
-                    "timestamp", "request", "edata", "host", "action", "agent", "tags", "message",
-                    "geoip.country_name", "geoip.coordinates", "geoip.latitude", "geoip.longitude"];
-
+                var fieldFilter = ["geoip.timezone", "timestamp.raw", "@timestamp", "referrer", "referrer.raw", "timestamp", "request", "edata",
+                    "host","action", "agent", "tags", "message", "geoip.country_name", "geoip.coordinates", "geoip.latitude", "geoip.longitude"];
                 fieldFilter.map(function (f) {
                     var index = aggField.indexOf(f);
                     if (index !== -1) {
@@ -231,13 +214,13 @@
                 vm.process = true;
                 removePieContainer();
                 if (vm.aggName === "" || vm.aggName === "all") {
-                    vm.aggfield = vm.fieldsName;
+                    var aggfield = vm.fieldsName;
                     vm.token = false;
-                    vm.aggfield = aggFieldFilter(vm.aggfield);
-                    addPieContainer(vm.aggfield);
-                    var flag = vm.aggfield.length <= 2 ? true : false;
+                    aggfield = aggFieldFilter(aggfield);
+                    addPieContainer(aggfield);
+                    var flag = aggfield.length <= 2 ? true : false;
 
-                    angular.forEach(vm.aggfield, function (name) {
+                    angular.forEach(aggfield, function (name) {
                         ap.push(aggShows(name, flag));
                     });
                 } else {
@@ -261,17 +244,8 @@
 
             //get multi-field dashboard2 data
             function aggShows(aggName, flag) {
-                vm.dashboard = "dash";
-                vm.range = "range";
-                vm.barchart = "bar";
-                vm.tablechart = "table";
-
                 return datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft)
                       .then(function (resp) {
-                          vm.dashboard = vm.dashboard + aggName;
-                          vm.range = vm.range + aggName;
-                          vm.barchart = vm.barchart + aggName;
-                          vm.tablechart = vm.tablechart + aggName;
                           vm.total = resp.data.Total;
                           var data;
                           if (!flag) {
@@ -321,8 +295,6 @@
             }
             //#endregion
 
-
         });
 })();
-
 

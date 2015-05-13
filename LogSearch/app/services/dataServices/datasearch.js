@@ -27,7 +27,7 @@
         //#endregion
 
 
-        //#region Aggragation
+        //#region Aggragation search
         function dashboardPieAggregation(f1, f2, f3, start, end) {
 
 
@@ -201,7 +201,7 @@
         //#endregion
 
 
-        //#region Filter
+        //#region Filter search
 
         function getSampledata(indices, type, pagecount, start, end, location, distance) {
 

@@ -14,8 +14,7 @@
             var log = getLogFn(controllerId);
             $scope.collapse = true;
 
-            vm.pagesizeArr = ["5", "10", "25", "50", "100"];
-            vm.pagecountArr = ["100", "500", "1000", "5000", "10000"];
+            
             //#region variable
             $scope.predicate = '_source.timestamp';
             $scope.trend = 'true';
@@ -47,8 +46,9 @@
             };
             vm.dunit = 'mi';
             vm.timeShow = false;
-            vm.maxDistance = 24900;
             vm.im = 1;
+            vm.pagesizeArr = ["5", "10", "25", "50", "100"];
+            vm.pagecountArr = ["100", "500", "1000", "5000", "10000"];
             //#endregion
 
             //#region function
@@ -72,6 +72,8 @@
             vm.transferLocation = transferLocation;
             vm.getLocation = getLocation;
             vm.refreshPage = refreshPage;
+            vm.showListBottomSheet = showListBottomSheet;
+            vm.timeChange = timeChange;
             //#endregion
 
 
@@ -119,13 +121,8 @@
             }
 
             function init() {
-                if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {
-                    vm.ft = $rootScope.ft;
-                    vm.st = $rootScope.st;
-                } else {
-                    vm.st = moment(new Date()).subtract(2, 'month').toDate();
-                    vm.ft = new Date();
-                }
+                vm.ft = $rootScope.ft;
+                vm.st = $rootScope.st;
                 common.$location.search();
                 if (common.$location.search.field === "" || common.$location.search.field === undefined) {
                     if (common.$location.search.text !== "") {
@@ -252,7 +249,7 @@
                                 removefilter();
                             }
                             log("Refresh");
-                        } 
+                        }
                     }
                 });
             }
@@ -268,78 +265,16 @@
                 startingDay: 1
             };
 
-            //save time change on global
-            vm.timeChange = timeChange;
             function timeChange() {
                 $rootScope.ft = vm.ft;
                 $rootScope.st = vm.st;
             }
 
             //change time span on scope
-            function filterst(x) {
-                switch (x) {
-                    case "Last year":
-                        vm.st = moment(new Date()).subtract(1, 'year').toDate();
-                        break;
-                    case "Last 6 months":
-                        vm.st = moment(new Date()).subtract(6, 'month').toDate();
-                        break;
-                    case "Last 3 months":
-                        vm.st = moment(new Date()).subtract(3, 'month').toDate();
-                        break;
-                    case "Last Month":
-                        vm.st = moment(new Date()).subtract(1, 'month').toDate();
-                        break;
-                    case "Last 4 weeks":
-                        vm.st = moment(new Date()).subtract(4, 'week').toDate();
-                        break;
-                    case "Last 3 weeks":
-                        vm.st = moment(new Date()).subtract(3, 'week').toDate();
-                        break;
-                    case "Last 2 weeks":
-                        vm.st = moment(new Date()).subtract(2, 'week').toDate();
-                        break;
-                    case "Last week":
-                        vm.st = moment(new Date()).subtract(1, 'week').toDate();
-                        break;
-                    case "Last 5 days":
-                        vm.st = moment(new Date()).subtract(5, 'days').toDate();
-                        break;
-                    case "Last 3 days":
-                        vm.st = moment(new Date()).subtract(3, 'days').toDate();
-                        break;
-                    case "Last 2 days":
-                        vm.st = moment(new Date()).subtract(2, 'days').toDate();
-                        break;
-                    case "Last day":
-                        vm.st = moment(new Date()).subtract(1, 'day').toDate();
-                        break;
-                    case "Last 12 hours":
-                        vm.st = moment(new Date()).subtract(12, 'hour').toDate();
-                        break;
-                    case "Last 6 hours":
-                        vm.st = moment(new Date()).subtract(6, 'hour').toDate();
-                        break;
-                    case "Last hour":
-                        vm.st = moment(new Date()).subtract(1, 'hour').toDate();
-                        break;
-                    default:
-                        // log(x);
-                        break;
-                }
+            function filterst(span) {
+                vm.st = dataconfig.changeTimeSpan(span);
                 search();
-            }
-
-            vm.showListBottomSheet = showListBottomSheet;
-            function showListBottomSheet() {
-                $mdBottomSheet.show({
-                    templateUrl: 'app/component/els/BottomListSheet.html',
-                    controller: 'els'
-                }).then(function (clickedItem) {
-                    filterst(clickedItem);
-                    timeChange();
-                });
-            };
+            }     
 
             function today() {
                 vm.st = moment(new Date()).subtract(1, 'month').toDate();
@@ -349,7 +284,7 @@
 
             //disable after today
             vm.toggleMin = toggleMin;
-            // vm.minDate = true;
+            
             function toggleMin() {
                 vm.tmind = new Date();
                 vm.minDate = vm.minDate ? null : vm.tmind;
@@ -425,46 +360,11 @@
             //fill searchText with filter information
             function filltext() {
                 if (vm.im > 1) {
-                    vm.searchText = "";
-
-                    for (var i = 1; i < vm.im; i++) {
-                        var s1 = document.getElementById('jselect' + i.toString());
-                        var s2 = document.getElementById('fselect' + i.toString());
-                        var s3 = document.getElementById('input' + i.toString());
-
-                        if (s1.value === "MUST") {
-                            if (s3.value !== "") {
-                                if (i === 1) {
-                                    vm.searchText += s2.value + " : \"" + s3.value + "\"^2";
-                                } else {
-                                    vm.searchText += " AND " + s2.value + " : \"" + s3.value + "\"^2";
-                                }
-                            }
-                        }
-                        else if (s1.value === "MUST_NOT") {
-                            if (s3.value !== "") {
-                                if (i === 1) {
-                                    vm.searchText += " NOT " + s2.value + " : \"" + s3.value + "\"";
-                                } else {
-                                    vm.searchText += " NOT " + s2.value + " : \"" + s3.value + "\"";
-                                }
-                            }
-                        } else {
-                            if (s3.value !== "") {
-                                if (i === 1) {
-                                    vm.searchText += s2.value + " : \"" + s3.value + "\"";
-                                } else {
-                                    vm.searchText += " AND " + s2.value + " : \"" + s3.value + "\"";
-                                }
-                            }
-                        }
-
-                    }
+                    vm.searchText = dataconfig.fillSearchText(vm.im);              
                     vm.filterfill = true;
                     vm.field = "all";
                     search();
                 }
-
             }
             //#endregion
 
@@ -540,19 +440,14 @@
 
 
             //#region ResultModal
-
-            vm.showModal = false;
-
             vm.popdata = {
-                data: "",
-                field: []
+                data: ""
             };
             vm.items = ['item1', 'item2', 'item3'];
 
             //open result page
             vm.open = function (doc) {
                 vm.popdata.data = doc;
-                vm.popdata.field = vm.fieldsName;
                 var modalInstance = $modal.open({
                     templateUrl: 'app/component/els/result/resultModal.html',
                     controller: 'resultModal',
@@ -570,21 +465,20 @@
                     log('Modal dismissed at: ' + new Date());
                 });
             };
-
-            vm.listCollpase = listCollpase;
-            function listCollpase() {
-                if (document.getElementById("google").style.display === "none") {
-                    document.getElementById("google").style.display = "block";
-                } else {
-                    document.getElementById("google").style.display = "none";
-                }
-
-            }
-
             //#endregion
 
 
             //#region BottomSheet
+            function showListBottomSheet() {
+                $mdBottomSheet.show({
+                    templateUrl: 'app/component/els/BottomListSheet.html',
+                    controller: 'els'
+                }).then(function (clickedItem) {
+                    filterst(clickedItem);
+                    timeChange();
+                });
+            };
+
             $scope.ts = ["Last year", "Last 6 months", "Last 3 months", "Last Month", "Last 4 weeks", "Last 3 weeks", "Last 2 weeks", "Last week",
             "Last 5 days", "Last 3 days", "Last 2 days", "Last day", "Last 12 hours", "Last 6 hours", "Last hour"];
             $scope.listItemClick = function ($index) {
@@ -592,7 +486,7 @@
                 $mdBottomSheet.hide(clickedItem);
             };
         });
-            //#endregion
+    //#endregion
 
 
 })();

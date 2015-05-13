@@ -27,13 +27,15 @@
             getLocation: getLocation,
             transferLocation: transferLocation,
             loadIndex: loadIndex,
-            loadField: loadField
+            loadField: loadField,
+            fillSearchText: fillSearchText,
+            changeTimeSpan: changeTimeSpan
         }
         return service;
         //#endregion
 
 
-        //#region Startup 
+        //#region Startup service
         //Load index and field
         function prime() {
             var index = initIndex();
@@ -145,23 +147,6 @@
             return fieldName;
         }
 
-        function openLoginPage() {
-            var modalInstance = $modal.open({
-                templateUrl: 'app/component/login/loginModal.html',
-                controller: 'loginModal',
-                size: 'sm',
-                keyboard: false,
-                backdrop: 'static',
-                resolve: {
-                    items: function () {
-                        return "";
-                    }
-                }
-            });
-
-        };
-
-
         //log in
         function checkIdent() {
             return login().then(function (resp) {
@@ -179,135 +164,10 @@
             });
 
         }
-
         //#endregion
 
 
-        //#region Layout
-        //create container for chart
-        function createContainer(aggName) {
-            var main = document.getElementById('contain');
-
-            var contain = document.createElement('div');
-            var containName = 'contain' + aggName;
-            contain.setAttribute('id', containName);
-            main.appendChild(contain);
-
-
-
-
-            var diva = document.createElement('div');
-            var dashName = 'dash' + aggName;
-            diva.setAttribute('id', dashName);
-            contain.appendChild(diva);
-
-            var dash = document.getElementById(dashName);
-            var tb = document.createElement('table');
-            var tbname = 'table1';
-            tb.setAttribute('id', tbname);
-            dash.appendChild(tb);
-
-            var table = document.getElementById(tbname);
-            var row = table.insertRow(0);
-            var cell1 = row.insertCell(0);
-            var cell2 = row.insertCell(1);
-
-
-
-            //var dash = document.getElementById(dashName);
-            var divb = document.createElement('div');
-            var rangeName = 'range' + aggName;
-            divb.setAttribute('id', rangeName);
-            cell1.appendChild(divb);
-
-            var divc = document.createElement('div');
-            var barName = 'bar' + aggName;
-            divc.setAttribute('id', barName);
-            cell1.appendChild(divc);
-
-
-            var divd = document.createElement('div');
-            var tableName = 'table' + aggName;
-            divd.setAttribute('id', tableName);
-            cell2.appendChild(divd);
-        }
-
-        //add filter button
-        function addFilter(n, fieldsName) {
-            var para = document.createElement("p");
-            /*  var node = document.createTextNode("filter:" + n);
-
-              para.appendChild(node);*/
-
-            var element = document.getElementById("filter");
-            element.appendChild(para);
-
-            //var main = document.getElementById('filter');
-
-            var contain = document.createElement('div');
-            var cname = 'contain' + n;
-            contain.setAttribute('id', cname);
-            element.appendChild(contain);
-
-
-
-            var input = document.createElement('input');
-            var iname = 'input' + n;
-            input.setAttribute("data-ng-model", "vm.fi" + n.toString());
-            input.setAttribute('id', iname);
-            contain.appendChild(input);
-
-
-
-            var xx = document.getElementById(iname);
-            /*var el = angular.element(xx);
-            $scope = el.scope();
-            $injector = el.injector();
-            $injector.invoke(function ($compile) {
-                $compile(el)($scope);
-            });*/
-
-
-
-            var fselect = document.createElement('select');
-            var sname = 'fselect' + n;
-            fselect.setAttribute('id', sname);
-            contain.appendChild(fselect);
-
-            angular.forEach(fieldsName, function (name) {
-                var opt = document.createElement('option');
-                opt.value = name;
-                opt.innerHTML = name;
-                fselect.appendChild(opt);
-            });
-
-
-
-            var jselect = document.createElement('select');
-            var jname = 'jselect' + n;
-            jselect.setAttribute('id', jname);
-            contain.appendChild(jselect);
-
-            var j = ['MUST', 'MUST_NOT', 'SHOULD'];
-            angular.forEach(j, function (name) {
-                var opt = document.createElement('option');
-                opt.value = name;
-                opt.innerHTML = name;
-                jselect.appendChild(opt);
-            });
-        }
-
-        //delete filter button
-        function removeFilter(n) {
-            var main = document.getElementById('filter');
-            var cname = 'contain' + n;
-            var contain = document.getElementById(cname);
-            main.removeChild(contain);
-        }
-        //#endregion
-
-
-        //#region Get Maping
+        //#region Get Maping service
         //get logstash index from cluster
         function initIndex() {
             var indicesName = [];
@@ -480,7 +340,7 @@
         //#endregion
 
 
-        //#region Login
+        //#region Login service
         function login() {
             var x = $cookieStore.get('username');
             var y = $cookieStore.get('password');
@@ -507,10 +367,26 @@
               });
 
         }
+
+        function openLoginPage() {
+            var modalInstance = $modal.open({
+                templateUrl: 'app/component/login/loginModal.html',
+                controller: 'loginModal',
+                size: 'sm',
+                keyboard: false,
+                backdrop: 'static',
+                resolve: {
+                    items: function () {
+                        return "";
+                    }
+                }
+            });
+
+        };
         //#endregion
 
 
-        //#region Location
+        //#region Location service
         function getLocation(val) {
             return common.$http.get('http://maps.googleapis.com/maps/api/geocode/json', {
                 params: {
@@ -531,6 +407,226 @@
                     sensor: false
                 }
             });
+        }
+        //#endregion
+
+
+        //#region els service
+        function fillSearchText(n) {
+            var searchText = "";
+            for (var i = 1; i < n; i++) {
+                var s1 = document.getElementById('jselect' + i.toString());
+                var s2 = document.getElementById('fselect' + i.toString());
+                var s3 = document.getElementById('input' + i.toString());
+                if (s1.value === "MUST") {
+                    if (s3.value !== "") {
+                        if (i === 1) {
+                            searchText += s2.value + " : \"" + s3.value + "\"^2";
+                        } else {
+                            searchText += " AND " + s2.value + " : \"" + s3.value + "\"^2";
+                        }
+                    }
+                }
+                else if (s1.value === "MUST_NOT") {
+                    if (s3.value !== "") {
+                        if (i === 1) {
+                            searchText += " NOT " + s2.value + " : \"" + s3.value + "\"";
+                        } else {
+                            searchText += " NOT " + s2.value + " : \"" + s3.value + "\"";
+                        }
+                    }
+                } else {
+                    if (s3.value !== "") {
+                        if (i === 1) {
+                            searchText += s2.value + " : \"" + s3.value + "\"";
+                        } else {
+                            searchText += " AND " + s2.value + " : \"" + s3.value + "\"";
+                        }
+                    }
+                }
+
+            }
+            return searchText;
+        }
+
+        //add filter button
+        function addFilter(n, fieldsName) {
+            var para = document.createElement("p");
+            /*  var node = document.createTextNode("filter:" + n);
+
+              para.appendChild(node);*/
+
+            var element = document.getElementById("filter");
+            element.appendChild(para);
+
+            //var main = document.getElementById('filter');
+
+            var contain = document.createElement('div');
+            var cname = 'contain' + n;
+            contain.setAttribute('id', cname);
+            element.appendChild(contain);
+
+
+
+            var input = document.createElement('input');
+            var iname = 'input' + n;
+            input.setAttribute("data-ng-model", "vm.fi" + n.toString());
+            input.setAttribute('id', iname);
+            contain.appendChild(input);
+
+
+
+            var xx = document.getElementById(iname);
+            /*var el = angular.element(xx);
+            $scope = el.scope();
+            $injector = el.injector();
+            $injector.invoke(function ($compile) {
+                $compile(el)($scope);
+            });*/
+
+
+
+            var fselect = document.createElement('select');
+            var sname = 'fselect' + n;
+            fselect.setAttribute('id', sname);
+            contain.appendChild(fselect);
+
+            angular.forEach(fieldsName, function (name) {
+                var opt = document.createElement('option');
+                opt.value = name;
+                opt.innerHTML = name;
+                fselect.appendChild(opt);
+            });
+
+
+
+            var jselect = document.createElement('select');
+            var jname = 'jselect' + n;
+            jselect.setAttribute('id', jname);
+            contain.appendChild(jselect);
+
+            var j = ['MUST', 'MUST_NOT', 'SHOULD'];
+            angular.forEach(j, function (name) {
+                var opt = document.createElement('option');
+                opt.value = name;
+                opt.innerHTML = name;
+                jselect.appendChild(opt);
+            });
+        }
+
+        //delete filter button
+        function removeFilter(n) {
+            var main = document.getElementById('filter');
+            var cname = 'contain' + n;
+            var contain = document.getElementById(cname);
+            main.removeChild(contain);
+        }
+        //#endregion
+
+
+        //#region agg service
+        //create container for chart
+        function createContainer(aggName) {
+            var main = document.getElementById('contain');
+
+            var contain = document.createElement('div');
+            var containName = 'contain' + aggName;
+            contain.setAttribute('id', containName);
+            main.appendChild(contain);
+
+
+
+
+            var diva = document.createElement('div');
+            var dashName = 'dash' + aggName;
+            diva.setAttribute('id', dashName);
+            contain.appendChild(diva);
+
+            var dash = document.getElementById(dashName);
+            var tb = document.createElement('table');
+            var tbname = 'table1';
+            tb.setAttribute('id', tbname);
+            dash.appendChild(tb);
+
+            var table = document.getElementById(tbname);
+            var row = table.insertRow(0);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+
+
+
+            //var dash = document.getElementById(dashName);
+            var divb = document.createElement('div');
+            var rangeName = 'range' + aggName;
+            divb.setAttribute('id', rangeName);
+            cell1.appendChild(divb);
+
+            var divc = document.createElement('div');
+            var barName = 'bar' + aggName;
+            divc.setAttribute('id', barName);
+            cell1.appendChild(divc);
+
+
+            var divd = document.createElement('div');
+            var tableName = 'table' + aggName;
+            divd.setAttribute('id', tableName);
+            cell2.appendChild(divd);
+        }
+        //#endregion
+
+        //#Time history service
+        function changeTimeSpan(span) {
+            var st;
+            switch (span) {
+                case "Last year":
+                    st = moment(new Date()).subtract(1, 'year').toDate();
+                    break;
+                case "Last 6 months":
+                    st = moment(new Date()).subtract(6, 'month').toDate();
+                    break;
+                case "Last 3 months":
+                    st = moment(new Date()).subtract(3, 'month').toDate();
+                    break;
+                case "Last Month":
+                    st = moment(new Date()).subtract(1, 'month').toDate();
+                    break;
+                case "Last 4 weeks":
+                    st = moment(new Date()).subtract(4, 'week').toDate();
+                    break;
+                case "Last 3 weeks":
+                    st = moment(new Date()).subtract(3, 'week').toDate();
+                    break;
+                case "Last 2 weeks":
+                    st = moment(new Date()).subtract(2, 'week').toDate();
+                    break;
+                case "Last week":
+                    st = moment(new Date()).subtract(1, 'week').toDate();
+                    break;
+                case "Last 5 days":
+                    st = moment(new Date()).subtract(5, 'days').toDate();
+                    break;
+                case "Last 3 days":
+                    st = moment(new Date()).subtract(3, 'days').toDate();
+                    break;
+                case "Last 2 days":
+                    st = moment(new Date()).subtract(2, 'days').toDate();
+                    break;
+                case "Last day":
+                    st = moment(new Date()).subtract(1, 'day').toDate();
+                    break;
+                case "Last 12 hours":
+                    st = moment(new Date()).subtract(12, 'hour').toDate();
+                    break;
+                case "Last 6 hours":
+                    st = moment(new Date()).subtract(6, 'hour').toDate();
+                    break;
+                case "Last hour":
+                    st = moment(new Date()).subtract(1, 'hour').toDate();
+                    break;
+                default:
+                    break;
+            }
+            return st;
         }
         //#endregion
 
