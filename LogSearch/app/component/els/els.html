@@ -72,14 +72,22 @@
                 <div data-cc-widget-header title="{{vm.title2}}"
                      allow-collapse="true"></div>
                 <div class="widget-content" style="display: none;">
-                    <div layout="row" class="input-group-pull">
+                    <div layout="row">
+                        <md-input-container flex="10">
+                            <label> Location </label>
+                            <textarea ng-model="vm.asyncSelected"
+                                      typeahead="address for address in vm.getLocation($viewValue)" typeahead-loading="loadingLocations"
+                                      class="form-control" style="width: 100%"></textarea>
+                            <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+                        </md-input-container>
+                        <span flex></span>
                         <select flex="10" class="form-control dissolve-animation" ng-model="vm.format" ng-options="f for f in vm.formats" ng-show="vm.timeShow"><option></option></select>
 
                         <input flex="10" type="text" class="form-control dissolve-animation" datepicker-popup="{{vm.format}}" ng-model="vm.st"
                                is-open="vm.timeopened" min-date="vm.minDate" datepicker-options="vm.dateOptions"
                                date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  start date" ng-show="vm.timeShow" ng-change="vm.timeChange()" />
                         <!--<button type="button" class="btn btn-large btn-info btn-notext"
-                                    ng-click="vm.timeopen($event)"><i class="fa fa-calendar"> Ini Day </i></button>-->
+                        ng-click="vm.timeopen($event)"><i class="fa fa-calendar"> Ini Day </i></button>-->
                         <md-button class="md-fab md-mini" data-ng-click="vm.timeopen($event)" aria-label="st">
                             <i class="fa fa-calendar"></i>
                             <md-tooltip>
@@ -90,7 +98,7 @@
                                is-open="vm.ftimeopened" min-date="vm.minDate" datepicker-options="vm.dateOptions"
                                date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  end date" ng-show="vm.timeShow" ng-change="vm.timeChange()" />
                         <!-- <button type="button" class="btn btn-large btn-info btn-notext"
-                                     ng-click="vm.ftimeopen($event)"><i class="fa fa-calendar"> End Day </i></button>-->
+                        ng-click="vm.ftimeopen($event)"><i class="fa fa-calendar"> End Day </i></button>-->
                         <md-button class="md-fab md-mini" data-ng-click="vm.ftimeopen($event)" aria-label="ft">
                             <i class="fa fa-calendar"></i>
                             <md-tooltip>
@@ -98,18 +106,8 @@
                             </md-tooltip>
                         </md-button>
                     </div>
-                    <div layout="row" style="width: 20%">
-                        <md-input-container>
-                            <label> Location </label>
-                            <textarea ng-model="vm.asyncSelected"
-                                      typeahead="address for address in vm.getLocation($viewValue)" typeahead-loading="loadingLocations"
-                                      class="form-control" style="width: 100%"></textarea>
-                            <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
-                        </md-input-container>
-
-                    </div>
                     <div id="distance Unit">
-                        <md-radio-group ng-model="vm.dunit" class="pull-right" ng-change="vm.distanceUnitChange()">
+                        <md-radio-group ng-model="vm.dunit" class="pull-right">
                             <md-radio-button value="mi" class="md-primary"> Mile </md-radio-button>
                             <md-radio-button value="km"> Kilometer </md-radio-button>
                         </md-radio-group>
@@ -177,17 +175,16 @@
                         <button data-ng-click="vm.filltext()" class="btn btn-info btn-notext " type="button">
                             <i class="fa fa-apple"> Fill </i>
                         </button>-->
-
                     </div>
-                    <br><br>
+                    <br>
                     {{vm.st}}
                     {{vm.ft}}
                 </div>
             </div>
-            <div id="sprocess" layout="row" layout-sm="column" layout-align="space-around">
+            <div id="sprocess" layout="row" layout-sm="column" layout-align="space-around" ng-show="vm.processSearch">
                 <md-progress-circular md-mode="indeterminate" ng-show="vm.processSearch"></md-progress-circular>
             </div>
-            <div id="processbar" layout="row">
+            <div id="processbar" layout="row" >
                 <progressbar flex="80" class="progress-striped active" value="vm.dynamic" type="{{vm.ptype}}">{{vm.ptype}} <i ng-show="showWarning">!!! Watch out !!!</i></progressbar>
             </div>
             <div id="elsPaging" layout="row" class="widget-foot">
@@ -204,6 +201,43 @@
                             first-text="First"
                             last-text="Last"></pagination>
                 <div class="clearfix"></div>
+            </div>
+            <div id="google list">
+                <md-toolbar md-scroll-shrink>
+                    <div class="md-toolbar-tools">
+                        <md-button class="md-icon-button" aria-label="Settings" ng-click="collapse=!collapse">
+                            <md-icon md-svg-icon="content/images/icon/ic_menu_18px.svg"></md-icon>
+                        </md-button>
+                        <h3 style="color: whitesmoke">
+                            <span>Google List</span> ({{vm.tt}} / {{vm.total}})
+                        </h3>
+                        <span flex></span>
+                        <span>Page {{vm.paging.currentPage}} of {{vm.paging.pageCount}}</span>
+                        <span flex="5"></span>
+                        <md-select placeholder="Pick" ng-model="vm.paging.pageSize" ng-change="vm.refreshPage()">
+                            <md-optgroup label="PageSize">
+                                <md-option ng-value={{p}} ng-repeat="p in vm.pagesizeArr">{{p}}</md-option>
+                            </md-optgroup>
+                        </md-select>
+                        <md-select placeholder="Pick" ng-model="vm.pagecount" ng-change="vm.refreshPage()">
+                            <md-optgroup label="PageSize">
+                                <md-option ng-value={{p}} ng-repeat="p in vm.pagecountArr"><h5>{{p}}</h5></md-option>
+                            </md-optgroup>
+                            <md-option value={{vm.total}}>{{vm.total}}</md-option>
+                        </md-select>
+                    </div>
+                </md-toolbar>
+                <md-content id="google" style="height: 600px;" ng-show="collapse">
+                    <md-list>
+                        <md-list-item class="md-3-line fader-animation" ng-repeat="doc in vm.res| orderBy:predicate:reverse">
+                            <div class="md-list-item-text" data-ng-dblclick="vm.open(doc)">
+                                <h3> {{doc._source['timestamp']}} </h3>
+                                <h6> {{doc._source.message}} </h6>
+                            </div>
+                            <md-divider inset></md-divider>
+                        </md-list-item>
+                    </md-list>
+                </md-content>
             </div>
             <div id="ResultCount" class="pull-right">
                 <md-select placeholder="Pick" ng-model="vm.paging.pageSize" ng-change="vm.refreshPage()">
@@ -241,36 +275,14 @@
                                 <td>{{doc._source['UTCtimestamp']| date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
                                 <td>{{doc._source.message}}</td>
                                 <td>{{doc._score}}</td>
-                                <!-- <td>{{doc._index}}</td>-->
+                                <!-- <td>{{doc
+                                ._index}}</td>-->
+                                </tr>
                             </tr>
                         </tbody>
                     </table>
-                    <md-toolbar md-scroll-shrink>
-                        <div class="md-toolbar-tools">
-                            <h3 style="color:whitesmoke">
-                                <span>Google List</span>
-                            </h3>
-                        </div>
-                    </md-toolbar>
-                    <md-content style="height: 600px;">
-                        <md-list>
-                            <md-list-item class="md-3-line" ng-repeat="doc in vm.res| orderBy:predicate:reverse">
-                                <div class="md-list-item-text" data-ng-dblclick="vm.open(doc)">
-                                    <h3> {{doc._source['timestamp']}} </h3>
-                                    <h6> {{doc._source.message}} </h6>
-                                </div>
-                                <md-divider inset></md-divider>
-                            </md-list-item>
-                        </md-list>
-                    </md-content>
-                    <!-- <div layout="column" class="fader-animation" data-ng-repeat="doc in vm.res| orderBy:predicate:reverse" data-ng-click="vm.open(doc)">
-                        <hr> <a>{{doc._source['timestamp']}}</a> ---- {{doc._source.message}}
-                    </div>-->
-
                 </div>
             </div>
-
-
         </div>
     </section>
 </section>

@@ -23,7 +23,11 @@
             prime: prime,
             login: login,
             openLoginPage: openLoginPage,
-            checkIdent: checkIdent
+            checkIdent: checkIdent,
+            getLocation: getLocation,
+            transferLocation: transferLocation,
+            loadIndex: loadIndex,
+            loadField: loadField
         }
         return service;
         //#endregion
@@ -102,6 +106,7 @@
             }
 
         }
+
         function checkFieldCookie() {
             if ($cookieStore.get('logfield') !== undefined && $rootScope.logfield !== undefined) {
                 if ($rootScope.logfield.length !== $cookieStore.get('logfield').length) {
@@ -110,6 +115,34 @@
                 }
 
             }
+        }
+
+        function loadIndex() {
+            checkIndexCookie();
+            var indicesName = $cookieStore.get('index');
+            if ($cookieStore.get('index') === undefined) {
+                if ($rootScope.index !== undefined) {
+                    $cookieStore.put('index', $rootScope.index);
+                    indicesName = $cookieStore.get('index');
+                } else {
+                    indicesName = initIndex();
+                }
+            }
+            return indicesName;
+        }
+
+        function loadField() {
+            checkFieldCookie();
+            var fieldName = $cookieStore.get('logfield');
+            if ($cookieStore.get('logfield') === undefined) {
+                if ($rootScope.logfield !== undefined) {
+                    $cookieStore.put('logfield', $rootScope.logfield);
+                    fieldName = $cookieStore.get('logfield');
+                } else {
+                    fieldName = getFieldName();
+                }
+            }
+            return fieldName;
         }
 
         function openLoginPage() {
@@ -473,6 +506,40 @@
                    toastr.info(e);
               });
 
+        }
+        //#endregion
+
+
+        //#region Location
+        function getLocation(val) {
+            return common.$http.get('http://maps.googleapis.com/maps/api/geocode/json', {
+                params: {
+                    address: val,
+                    sensor: false
+                }
+            }).then(function (response) {
+                return response.data.results.map(function (item) {
+                    return item.formatted_address;
+                });
+            });
+        }
+
+        function transferLocation(add) {
+            return common.$http.get('http://maps.googleapis.com/maps/api/geocode/json', {
+                params: {
+                    address: add,
+                    sensor: false
+                }
+            }).success(function (mapData) {
+                try {
+                    var cor = mapData.results[0].geometry.location;
+                    toastr.info(cor.lat + "---" + cor.lng);
+                    return cor;                  
+                } catch (e) {
+                    toastr.info("cor" + e);
+                }
+                return null;
+            });
         }
         //#endregion
 

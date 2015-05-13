@@ -15,6 +15,8 @@
             var log = getLogFn(controllerId);
             $scope.collapse = true;
 
+            vm.pagesizeArr = ["5", "10", "25", "50", "100"];
+            vm.pagecountArr = ["100", "500", "1000", "5000", "10000"];
             //#region variable
             $scope.predicate = '_source.timestamp';
             $scope.trend = 'true';
@@ -65,25 +67,18 @@
             vm.getCurrentPageData = getCurrentPageData;
             vm.getFieldName = getFieldName;
             vm.getIndexName = getIndexName;
-            vm.getTypeName = getTypeName;
             vm.filltext = filltext;
             vm.addfilter = addfilter;
             vm.removefilter = removefilter;
             vm.filterst = filterst;
             vm.autoFill = autoFill;
             vm.addFilterdata = addFilterdata;
-
+            vm.transferLocation = transferLocation;
+            vm.getLocation = getLocation;
             //#endregion
 
 
             //#region Test
-            vm.tests = tests;
-
-            function tests(x) {
-                log("1");
-            }
-
-
             function test() {
                 //  bsDialog.deleteDialog('Session');
                 //  bsDialog.confirmationDialog('Session');
@@ -144,19 +139,13 @@
 
             //#region Date-pick
 
-            vm.formats = ['yyyy.MM.dd','dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+            vm.formats = ['yyyy.MM.dd', 'dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
             vm.format = vm.formats[0];
             vm.it = ["Last 3 months", "Last Month", "Last 4 weeks", "Last 3 weeks", "Last 2 weeks", "Last week"];
             vm.dateOptions = {
                 formatYear: 'yy',
                 startingDay: 1
             };
-
-            /* //save time change on global
-             $scope.$on("$destroy", function () {
-                 $rootScope.ft = vm.ft;
-                 $rootScope.st = vm.st;
-             });*/
 
             //save time change on global
             vm.timeChange = timeChange;
@@ -222,13 +211,12 @@
 
             vm.showListBottomSheet = showListBottomSheet;
             function showListBottomSheet() {
-                //$scope.alert = '';
                 $mdBottomSheet.show({
                     templateUrl: 'app/component/els/BottomListSheet.html',
                     controller: 'els'
                 }).then(function (clickedItem) {
                     filterst(clickedItem);
-                   timeChange();
+                    timeChange();
                 });
             };
 
@@ -275,10 +263,7 @@
 
 
             //#region View Load
-
             vm.im = 1;
-            var ip;
-            var fp;
 
             //refreh page
             vm.refresh = function () {
@@ -310,57 +295,27 @@
 
             //Load Index
             function getIndexName() {
-                dataconfig.checkIndexCookie();
-
-                vm.indicesName = $cookieStore.get('index');
-                if ($cookieStore.get('index') === undefined) {
-                    if ($rootScope.index !== undefined) {
-                        $cookieStore.put('index', $rootScope.index);
-                        vm.indicesName = $cookieStore.get('index');
-                    } else {
-
-                        //vm.indicesName = dataconfig.initIndex();
-                        ip = dataconfig.initIndex();
-                    }
-                }
-
-                if (ip !== undefined) {
+                var ip = dataconfig.loadIndex();
+                try {
                     return ip.then(function (data) {
                         vm.indicesName = data;
                     });
+                } catch (e) {
+                    vm.indicesName = ip;
+                    return null;
                 }
-
-                return null;
-
             }
-
-            //Load Type
-            function getTypeName() {
-                vm.typesName = dataconfig.getTypeName(vm.index, vm.pagecount);
-            }
-
             //Load Field
             function getFieldName() {
-                dataconfig.checkFieldCookie();
-
-                vm.fieldsName = $cookieStore.get('logfield');
-                if ($cookieStore.get('logfield') === undefined) {
-                    if ($rootScope.logfield !== undefined) {
-                        $cookieStore.put('logfield', $rootScope.logfield);
-                        vm.fieldsName = $cookieStore.get('logfield');
-                    } else {
-                        fp = dataconfig.getFieldName("", "");
-                    }
-                }
-
-                if (fp !== undefined) {
+                var fp = dataconfig.loadField();
+                try {
                     return fp.then(function (data) {
                         vm.fieldsName = data;
                     });
+                } catch (e) {
+                    vm.fieldsName = fp;
+                    return null;
                 }
-
-                return null;
-
             }
 
             activate();
@@ -393,7 +348,6 @@
                 common.$location.search.text = "";
             }
 
-
             //get sample search result
             function getSampleData() {
                 return datasearch.getSampledata(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.st, vm.ft, vm.locationF, vm.distanceF)
@@ -405,13 +359,8 @@
                           vm.tt = resp.total < vm.pagecount ? resp.total : vm.pagecount;
                           vm.getCurrentPageData(vm.hitSearch);
                           random();
+                          vm.processSearch = false;
                           refreshPage();
-                          /* vm.hitSearch = resp.hits.hits;
-                           vm.total = resp.hits.total;
-                           vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
-                           vm.getCurrentPageData(vm.hitSearch);
-                           vm.type = "";
-                           log('Loaded sample document');*/
                       });
             }
             //#endregion
@@ -423,49 +372,16 @@
                 lon: ""
             };
             vm.distance = 0;
-            vm.getLocation = getLocation;
             vm.asyncSelected = "";
             function getLocation(val) {
-                return common.$http.get('http://maps.googleapis.com/maps/api/geocode/json', {
-                    params: {
-                        address: val,
-                        sensor: false
-                    }
-                }).then(function (response) {
-                    return response.data.results.map(function (item) {
-                        return item.formatted_address;
-                    });
-                });
-            };
-
-            vm.transferLocation = transferLocation;
-            function transferLocation() {
-                common.$http.get('http://maps.googleapis.com/maps/api/geocode/json', {
-                    params: {
-                        address: vm.asyncSelected,
-                        sensor: false
-                    }
-                })
-                   .success(function (mapData) {
-                       try {
-                           var cor = mapData.results[0].geometry.location;
-                           log(cor.lat + "---" + cor.lng);
-                           if (cor.lat !== undefined && cor.lng !== undefined) {
-                               vm.locationF.lat = cor.lat;
-                               vm.locationF.lon = cor.lng;
-                           }
-                       } catch (e) {
-                           log("cor" + e);
-                       }
-                   });
-
+                return dataconfig.getLocation(val);
             }
-
-            vm.distanceUnitChange = distanceUnitChange;
-            function distanceUnitChange() {
-                if (vm.dunit === "mi") vm.maxDistance = 24900;
-                if (vm.dunit === "km") vm.maxDistance = 40075;
-                log("Length Unit Change to "+vm.dunit);
+            function transferLocation() {
+                var cor = dataconfig.transferLocation(vm.asyncSelected);
+                if (cor !== null && cor !== undefined && cor.lat !== undefined && cor.lng !== undefined) {
+                    vm.locationF.lat = cor.lat;
+                    vm.locationF.lon = cor.lng;
+                }
             }
             //#endregion
 
@@ -490,14 +406,12 @@
                     log("Date error");
                     return;
                 }
-
                 vm.processSearch = true;
                 vm.hitSearch = "";
                 vm.condition = [];
                 addFilterdata();
 
                 vm.distanceF = vm.distance + vm.dunit;
-                //log(vm.distanceF);
                 if (vm.distance === 0 || vm.distance === null) {
                     vm.distance = 0;
                     vm.asyncSelected = "";
@@ -505,17 +419,9 @@
                     vm.locationF.lon = "";
                     //log("No distance");
                 }
-
-
-
                 if (vm.searchText == undefined || vm.searchText === "") {
-                    getSampleData().then(function () {
-                        vm.processSearch = false;
-                        random();
-                    });
-
+                    getSampleData();
                 } else {
-                    // autoFill();
                     datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, vm.condition, vm.st, vm.ft, vm.locationF, vm.distanceF)
                         .then(function (resp) {
                             if (resp.data.Total !== 0) {
@@ -527,23 +433,15 @@
                             vm.getCurrentPageData(vm.hitSearch);
                             random();
                             refreshPage();
-                            /*vm.hitSearch = resp.hits.hits;
-                            vm.total = resp.hits.total;
-                            vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
-                            vm.getCurrentPageData(vm.hitSearch);
-                            random();*/
                         }, function (err) {
                             // log("search data error " + err.message);
                         });
                 }
-
             }
 
 
             //fill condition with filter information
             function addFilterdata() {
-
-
                 if (!vm.filterfill) {
                     for (var i = 1; i < vm.im; i++) {
                         var s1 = document.getElementById('jselect' + i.toString());
@@ -568,7 +466,6 @@
                     return dataconfig.autoFill().then(function (resp) {
                         vm.at = resp.data.AutoData;
                         vm.autocompleLoading = false;
-
                     });
                 }
                 return null;
@@ -628,7 +525,6 @@
 
             //delete filter button
             function removefilter() {
-
                 var x = vm.im - 1;
                 if (x >= 1) {
                     dataconfig.removeFilter(x);
@@ -670,6 +566,17 @@
                     log('Modal dismissed at: ' + new Date());
                 });
             };
+
+            vm.listCollpase = listCollpase;
+            function listCollpase() {
+                if (document.getElementById("google").style.display === "none") {
+                    document.getElementById("google").style.display = "block";
+                } else {
+                    document.getElementById("google").style.display = "none";
+                }
+
+            }
+
             //#endregion
 
 

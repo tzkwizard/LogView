@@ -74,6 +74,7 @@
     <Content Include="app\layout\timesidebar\timeSideNav.js" />
     <Content Include="app\common\logger.js" />
     <Content Include="app\layout\widgetheader.html" />
+    <Content Include="app\services\chartService.js" />
     <Content Include="app\services\dataServices\dataconfig.js" />
     <Content Include="app\services\dataServices\datasearch.js" />
     <Content Include="app\component\els\els.html" />
@@ -87,6 +88,8 @@
     <Content Include="app\services\routeMediator.js" />
     <Content Include="app\common\spinner.js" />
     <Content Include="content\angular-material.css" />
+    <Content Include="content\images\icon\ic_menu_18px.svg" />
+    <Content Include="content\images\icon\ic_menu_24px.svg" />
     <Content Include="Scripts\angular-ui\angular-aria.js" />
     <Content Include="Scripts\angular-ui\angular-material.js" />
     <Content Include="Scripts\angularjs\angular-animate.js" />
