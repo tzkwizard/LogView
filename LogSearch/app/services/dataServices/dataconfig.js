@@ -530,15 +530,6 @@
                     address: add,
                     sensor: false
                 }
-            }).success(function (mapData) {
-                try {
-                    var cor = mapData.results[0].geometry.location;
-                    toastr.info(cor.lat + "---" + cor.lng);
-                    return cor;                  
-                } catch (e) {
-                    toastr.info("cor" + e);
-                }
-                return null;
             });
         }
         //#endregion

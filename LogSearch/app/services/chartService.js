@@ -4,7 +4,7 @@
 
 
     angular.module('app')
-        .factory(serviceId, function () {
+        .factory(serviceId, function (datasearch,common) {
             var vm = this;
 
             //#region service
@@ -17,7 +17,8 @@
                 drawoUSCitymap: drawoUSCitymap,
                 drawDashPie: drawDashPie,
                 drawaggDashboard1: drawaggDashboard1,
-                drawaggDashboard2:drawaggDashboard2
+                drawaggDashboard2: drawaggDashboard2,
+                drawTreeMap: drawTreeMap
             }
             return service;
 
@@ -290,7 +291,6 @@
 
             }
 
-
             function drawaggDashboard1(agg, aggName, dashboardTag, sliderTag, pieTag) {
                 google.setOnLoadCallback(drawaggDashboard1);
                 var data = new google.visualization.DataTable();
@@ -345,7 +345,6 @@
 
                 return data;
             }
-
 
             function drawaggDashboard2(agg, y) {
                 google.setOnLoadCallback(drawaggDashboard2);
@@ -403,6 +402,86 @@
                 // Draw the dashboard.
                 dashboard.draw(data);
                 return data;
+            }
+
+            
+            //get treemap data
+            function treeMap(aggName, datatree, size, start, end) {
+                return datasearch.termAggragation("", "", aggName, size, start, end)
+                        .then(function (resp) {
+                            var tt = resp.data.AggData;
+                            tt.map(function (y) {
+                                var x = Math.random() * y.DocCount - 50;
+                                datatree.addRow([y.Key + "\n" + aggName, aggName, y.DocCount, x]);
+                            });
+                        }, function (err) {
+                            //log("Tree data Load " + err.message);
+                });
+            }
+
+            function treeAddData(datatree, fieldstree, tpromise, size, start, end) {
+                datatree.addRow(["Elasticsearch", null, 0, 0]);
+                fieldstree.map(function (m) {
+                    datatree.addRow([m, "Elasticsearch", 0, 0]);
+                    tpromise.push(treeMap(m, datatree, size, start, end));
+                });
+            }
+
+            function startDrawTree(tree, datatree) {
+                tree.draw(datatree, {
+                    minColor: '#FFFFFF',
+                    midColor: '#2EFEF7',
+                    maxColor: '#00BFFF',
+                    headerHeight: 15,
+                    fontColor: 'black',
+                    showScale: true,
+                    showTooltips: true,
+                    generateTooltip: showStaticTooltip
+                });
+
+                function showStaticTooltip(row, size, value) {
+                    return '<div style="background:#fd9; padding:10px; border-style:solid">' +
+                        '<a> Tag:' + datatree.getValue(row, 0) + '<hr>' + '</b> Size:' + size + '</b> Value:' + value + '</a>.</div>';
+                }
+
+                google.visualization.events.addListener(tree, 'select',
+                    function () {
+                        tree.goUpAndDraw();
+                    });
+            }
+
+            //draw tree map
+            function drawTreeMap(fieldsName,size,start,end) {
+                google.setOnLoadCallback(drawTreeMap);
+                var datatree = new google.visualization.DataTable();
+                var fieldstree = [];
+                angular.forEach(fieldsName, function (x) {
+                    if (x.substring(x.length - 3, x.length) === "raw") {
+                        fieldstree.push(x);
+                    }
+                });
+                var field = fieldstree.indexOf("timestamp.raw");
+                fieldstree.splice(field, 1);
+                field = fieldstree.indexOf("tags.raw");
+                fieldstree.splice(field, 1);
+
+                datatree.addColumn('string', 'Name');
+                datatree.addColumn('string', 'Parent');
+                datatree.addColumn('number', 'count');
+                datatree.addColumn('number', 'color');
+
+                var tpromise = [];
+                var terror = false;
+                treeAddData(datatree,fieldstree, tpromise,size,start,end);
+
+                var tree = new google.visualization.TreeMap(document.getElementById('treemap_div'));
+
+                
+                return common.$q.all(tpromise).then(function () {                    
+                        startDrawTree(tree, datatree);
+                }, function (e) {
+                    log("TreeMap Promise Error" + e);
+                });
             }
 
         });

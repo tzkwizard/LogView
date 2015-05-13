@@ -7,7 +7,6 @@
         .controller(controllerId, function (bsDialog, $rootScope, $routeParams,
            $scope, $modal, client, common, datasearch, dataconfig, $cookieStore, config, $timeout, $mdBottomSheet) {
 
-
             var vm = this;
             vm.title = "Elasticsearch";
             vm.title2 = "Function";
@@ -28,8 +27,6 @@
             vm.searchText = $routeParams.search || '';
             vm.processSearch = false;
             vm.hitSearch = "";
-            vm.acount = 4;
-            vm.hits = "2";
             vm.total = 0;
             vm.mystyle = { 'color': 'blue' };
             vm.field = "";
@@ -37,9 +34,7 @@
             vm.type = "";
             vm.pagecount = 1000;
             vm.fieldsName = [];
-            vm.typesName = [];
             vm.indicesName = [];
-            vm.t = [];
             vm.tt = 0;
             vm.ft = "";
             vm.st = "";
@@ -53,6 +48,7 @@
             vm.dunit = 'mi';
             vm.timeShow = false;
             vm.maxDistance = 24900;
+            vm.im = 1;
             //#endregion
 
             //#region function
@@ -75,70 +71,195 @@
             vm.addFilterdata = addFilterdata;
             vm.transferLocation = transferLocation;
             vm.getLocation = getLocation;
+            vm.refreshPage = refreshPage;
             //#endregion
 
 
             //#region Test
             function test() {
                 //  bsDialog.deleteDialog('Session');
-                //  bsDialog.confirmationDialog('Session');
-                var x = ejs.RangeQuery("bytes").gte(17);
-                var y = ejs.TermQuery("verb.raw", "GET");
-                client.search({
-                    index: vm.indicesName,
-                    type: 'logs',
-                    size: vm.pagecount,
-                    body: ejs.Request()
-
-                        .query(y)
-                        .filter(ejs.RangeFilter("@timestamp").lte(vm.ft).gte(vm.st))
-
-                }).then(function (resp) {
-                    vm.hitSearch = resp.hits.hits;
-                    vm.total = resp.hits.total;
-                    vm.tt = resp.hits.total < vm.pagecount ? resp.hits.total : vm.pagecount;
-                    vm.getCurrentPageData(vm.hitSearch);
-                }, function (err) {
-                    log(err.message);
-                });
-
+                //  bsDialog.confirmationDialog('Session');       
             }
             //#endregion
 
 
-            //#region Processorbar
-
-            vm.showWarning = "";
-            vm.dynamic = "";
-            vm.ptype = "";
-
-            vm.random = random;
-            //fill process bar
-            function random() {
-                //var value = Math.floor((Math.random() * 100) + 1);
-                var value = vm.tt / vm.total * 100;
-                var ptype;
-                //log(value);
-                if (value < 20) {
-                    ptype = 'idle';
-                } else if (value < 60) {
-                    ptype = 'regular';
-                } else if (value < 85) {
-                    ptype = 'warning';
-                } else {
-                    ptype = 'danger';
+            //#region View Load
+            //Load Index
+            function getIndexName() {
+                var ip = dataconfig.loadIndex();
+                try {
+                    return ip.then(function (data) {
+                        vm.indicesName = data;
+                    });
+                } catch (e) {
+                    vm.indicesName = ip;
+                    return null;
                 }
+            }
+            //Load Field
+            function getFieldName() {
+                var fp = dataconfig.loadField();
+                try {
+                    return fp.then(function (data) {
+                        vm.fieldsName = data;
+                    });
+                } catch (e) {
+                    vm.fieldsName = fp;
+                    return null;
+                }
+            }
 
-                vm.showWarning = (ptype === 'danger' || ptype === 'warning');
-                vm.dynamic = value;
-                vm.ptype = ptype;
-            };
+            activate();
+            function activate() {
+                common.activateController([getIndexName(), getFieldName(), autoFill()], controllerId)
+                    .then(function () {
+                        init();
+                        log('Activated ELS search View');
+                    });
+            }
 
+            function init() {
+                if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {
+                    vm.ft = $rootScope.ft;
+                    vm.st = $rootScope.st;
+                } else {
+                    vm.st = moment(new Date()).subtract(2, 'month').toDate();
+                    vm.ft = new Date();
+                }
+                common.$location.search();
+                if (common.$location.search.field === "" || common.$location.search.field === undefined) {
+                    if (common.$location.search.text !== "") {
+                        vm.searchText = common.$location.search.text;
+                    }
+                } else {
+                    vm.searchText = common.$location.search.field + " : " + common.$location.search.text;
+                }
+                search();
+                common.$location.search.field = "";
+                common.$location.search.text = "";
+            }
+
+            //get sample search result
+            function getSampleData() {
+                return datasearch.getSampledata(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.st, vm.ft, vm.locationF, vm.distanceF)
+                      .then(function (resp) {
+                          if (resp.data.Total !== 0) {
+                              vm.hitSearch = resp.data.Data;
+                          }
+                          vm.total = resp.data.Total;
+                          vm.tt = resp.total < vm.pagecount ? resp.total : vm.pagecount;
+                          vm.getCurrentPageData(vm.hitSearch);
+                          random();
+                          vm.processSearch = false;
+                          refreshPage();
+                      });
+            }
+            //#endregion
+
+
+            //#region main search
+            function trySeach($event) {
+                if ($event.keyCode === config.keyCodes.esc) {
+                    vm.searchText = '';
+                    return;
+                }
+                if ($event.keyCode === config.keyCodes.enter) {
+                    search();
+                }
+            }
+
+            //core search function
+            function search() {
+                if (vm.st > vm.ft) {
+                    log("Date error");
+                    return;
+                }
+                vm.processSearch = true;
+                vm.hitSearch = "";
+                vm.condition = [];
+                addFilterdata();
+
+                vm.distanceF = vm.distance + vm.dunit;
+                if (vm.distance === 0 || vm.distance === null) {
+                    vm.distance = 0;
+                    vm.asyncSelected = "";
+                    vm.locationF.lat = "";
+                    vm.locationF.lon = "";
+                    //log("No distance");
+                }
+                if (vm.searchText == undefined || vm.searchText === "") {
+                    getSampleData();
+                } else {
+                    datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, vm.condition, vm.st, vm.ft, vm.locationF, vm.distanceF)
+                        .then(function (resp) {
+                            if (resp.data.Total !== 0) {
+                                vm.hitSearch = resp.data.Data;
+                            }
+                            vm.processSearch = false;
+                            vm.total = resp.data.Total;
+                            vm.tt = vm.total < vm.pagecount ? vm.total : vm.pagecount;
+                            vm.getCurrentPageData(vm.hitSearch);
+                            random();
+                            refreshPage();
+                        }, function (err) {
+                            // log("search data error " + err.message);
+                        });
+                }
+            }
+
+            //update auto-fill data
+            function autoFill($event) {
+                if ($event === undefined || config.input.indexOf($event.keyCode) !== -1) {
+                    vm.autocompleLoading = true;
+                    return dataconfig.autoFill().then(function (resp) {
+                        vm.at = resp.data.AutoData;
+                        vm.autocompleLoading = false;
+                    });
+                }
+                return null;
+            }
+
+            //fill condition with filter information
+            function addFilterdata() {
+                if (!vm.filterfill) {
+                    for (var i = 1; i < vm.im; i++) {
+                        var s1 = document.getElementById('jselect' + i.toString());
+                        var s2 = document.getElementById('fselect' + i.toString());
+                        var s3 = document.getElementById('input' + i.toString());
+                        var filterdata = {
+                            text: s3.value,
+                            field: s2.value,
+                            condition: s1.value
+                        }
+                        vm.condition.push(filterdata);
+                    }
+                }
+            }
+
+            //refreh page
+            vm.refresh = function () {
+                BootstrapDialog.confirm({
+                    message: 'Sure to Refresh?',
+                    closable: true, // <-- Default value is false
+                    draggable: true, // <-- Default value is false
+                    btnOKClass: 'btn-warning', // <-- If you didn't specify it, dialog type will be used,
+                    callback: function (result) {
+                        if (result) {
+                            vm.searchText = "";
+                            search();
+                            vm.filterfill = false;
+                            while (vm.im > 1) {
+                                removefilter();
+                            }
+                            log("Refresh");
+                        } 
+                    }
+                });
+            }
             //#endregion
 
 
             //#region Date-pick
-
             vm.formats = ['yyyy.MM.dd', 'dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
             vm.format = vm.formats[0];
             vm.it = ["Last 3 months", "Last Month", "Last 4 weeks", "Last 3 weeks", "Last 2 weeks", "Last week"];
@@ -231,10 +352,8 @@
             // vm.minDate = true;
             function toggleMin() {
                 vm.tmind = new Date();
-                //vm.tmind.setMonth(vm.tmind.getMonth() - 1);
                 vm.minDate = vm.minDate ? null : vm.tmind;
             };
-
 
             vm.clear = function () {
                 vm.st = null;
@@ -262,218 +381,49 @@
             //#endregion
 
 
-            //#region View Load
-            vm.im = 1;
-
-            //refreh page
-            vm.refresh = function () {
-                BootstrapDialog.confirm({
-                    message: 'Sure to Refresh?',
-                    closable: true, // <-- Default value is false
-                    draggable: true, // <-- Default value is false
-                    btnCancelLabel: 'No thanks', // <-- Default value is 'Cancel',
-                    btnOKLabel: 'Sure!', // <-- Default value is 'OK',
-                    btnOKClass: 'btn-warning', // <-- If you didn't specify it, dialog type will be used,
-                    callback: function (result) {
-                        // result will be true if button was click, while it will be false if users close the dialog directly.
-                        if (result) {
-                            vm.searchText = "";
-                            search();
-                            vm.filterfill = false;
-                            while (vm.im > 1) {
-                                removefilter();
-
-                            }
-                            log("Refresh");
-                        } else {
-                            log('Nope.');
-                        }
-                    }
-                });
-
-            }
-
-            //Load Index
-            function getIndexName() {
-                var ip = dataconfig.loadIndex();
-                try {
-                    return ip.then(function (data) {
-                        vm.indicesName = data;
-                    });
-                } catch (e) {
-                    vm.indicesName = ip;
-                    return null;
-                }
-            }
-            //Load Field
-            function getFieldName() {
-                var fp = dataconfig.loadField();
-                try {
-                    return fp.then(function (data) {
-                        vm.fieldsName = data;
-                    });
-                } catch (e) {
-                    vm.fieldsName = fp;
-                    return null;
-                }
-            }
-
-            activate();
-            function activate() {
-                common.activateController([getIndexName(), getFieldName(), autoFill()], controllerId)
-                    .then(function () {
-                        init();
-                        log('Activated ELS search View');
-                    });
-            }
-
-            function init() {
-                if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {
-                    vm.ft = $rootScope.ft;
-                    vm.st = $rootScope.st;
-                } else {
-                    vm.st = moment(new Date()).subtract(2, 'month').toDate();
-                    vm.ft = new Date();
-                }
-                common.$location.search();
-                if (common.$location.search.field === "" || common.$location.search.field === undefined) {
-                    if (common.$location.search.text !== "") {
-                        vm.searchText = common.$location.search.text;
-                    }
-                } else {
-                    vm.searchText = common.$location.search.field + " : " + common.$location.search.text;
-                }
-                search();
-                common.$location.search.field = "";
-                common.$location.search.text = "";
-            }
-
-            //get sample search result
-            function getSampleData() {
-                return datasearch.getSampledata(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.st, vm.ft, vm.locationF, vm.distanceF)
-                      .then(function (resp) {
-                          if (resp.data.Total !== 0) {
-                              vm.hitSearch = resp.data.Data;
-                          }
-                          vm.total = resp.data.Total;
-                          vm.tt = resp.total < vm.pagecount ? resp.total : vm.pagecount;
-                          vm.getCurrentPageData(vm.hitSearch);
-                          random();
-                          vm.processSearch = false;
-                          refreshPage();
-                      });
-            }
-            //#endregion
-
-
-            //#region GetLocation
+            //#region function block
             vm.locationF = {
                 lat: "",
                 lon: ""
             };
             vm.distance = 0;
             vm.asyncSelected = "";
+            //get address
             function getLocation(val) {
                 return dataconfig.getLocation(val);
             }
+
+            //transfer address to cordinate
             function transferLocation() {
-                var cor = dataconfig.transferLocation(vm.asyncSelected);
-                if (cor !== null && cor !== undefined && cor.lat !== undefined && cor.lng !== undefined) {
-                    vm.locationF.lat = cor.lat;
-                    vm.locationF.lon = cor.lng;
-                }
-            }
-            //#endregion
-
-
-            //#region Search and Filter 
-
-            function trySeach($event) {
-                if ($event.keyCode === config.keyCodes.esc) {
-                    vm.searchText = '';
-                    return;
-                }
-
-                if ($event.keyCode === config.keyCodes.enter) {
-                    search();
-                }
-
-            }
-
-            //core search function
-            function search() {
-                if (vm.st > vm.ft) {
-                    log("Date error");
-                    return;
-                }
-                vm.processSearch = true;
-                vm.hitSearch = "";
-                vm.condition = [];
-                addFilterdata();
-
-                vm.distanceF = vm.distance + vm.dunit;
-                if (vm.distance === 0 || vm.distance === null) {
-                    vm.distance = 0;
-                    vm.asyncSelected = "";
-                    vm.locationF.lat = "";
-                    vm.locationF.lon = "";
-                    //log("No distance");
-                }
-                if (vm.searchText == undefined || vm.searchText === "") {
-                    getSampleData();
-                } else {
-                    datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, vm.condition, vm.st, vm.ft, vm.locationF, vm.distanceF)
-                        .then(function (resp) {
-                            if (resp.data.Total !== 0) {
-                                vm.hitSearch = resp.data.Data;
-                            }
-                            vm.processSearch = false;
-                            vm.total = resp.data.Total;
-                            vm.tt = vm.total < vm.pagecount ? vm.total : vm.pagecount;
-                            vm.getCurrentPageData(vm.hitSearch);
-                            random();
-                            refreshPage();
-                        }, function (err) {
-                            // log("search data error " + err.message);
-                        });
-                }
-            }
-
-
-            //fill condition with filter information
-            function addFilterdata() {
-                if (!vm.filterfill) {
-                    for (var i = 1; i < vm.im; i++) {
-                        var s1 = document.getElementById('jselect' + i.toString());
-                        var s2 = document.getElementById('fselect' + i.toString());
-                        var s3 = document.getElementById('input' + i.toString());
-                        var filterdata = {
-                            text: s3.value,
-                            field: s2.value,
-                            condition: s1.value
-                        }
-                        vm.condition.push(filterdata);
+                dataconfig.transferLocation(vm.asyncSelected).then(function (data) {
+                    try {
+                        var cor = data.data.results[0].geometry.location;
+                        toastr.info(cor.lat + "---" + cor.lng);
+                        vm.locationF.lat = cor.lat;
+                        vm.locationF.lon = cor.lng;
+                    } catch (e) {
+                        toastr.info("cor" + e);
                     }
-                }
+                });
             }
 
+            //add filter button
+            function addfilter() {
+                dataconfig.addFilter(vm.im, vm.fieldsName);
+                vm.im++;
+            }
 
-
-            //update auto-fill data
-            function autoFill($event) {
-                if ($event === undefined || config.input.indexOf($event.keyCode) !== -1) {
-                    vm.autocompleLoading = true;
-                    return dataconfig.autoFill().then(function (resp) {
-                        vm.at = resp.data.AutoData;
-                        vm.autocompleLoading = false;
-                    });
+            //delete filter button
+            function removefilter() {
+                var x = vm.im - 1;
+                if (x >= 1) {
+                    dataconfig.removeFilter(x);
+                    vm.im--;
                 }
-                return null;
             }
 
             //fill searchText with filter information
             function filltext() {
-
                 if (vm.im > 1) {
                     vm.searchText = "";
 
@@ -516,22 +466,76 @@
                 }
 
             }
+            //#endregion
 
-            //add filter button
-            function addfilter() {
-                dataconfig.addFilter(vm.im, vm.fieldsName);
-                vm.im++;
-            }
 
-            //delete filter button
-            function removefilter() {
-                var x = vm.im - 1;
-                if (x >= 1) {
-                    dataconfig.removeFilter(x);
-                    vm.im--;
+            //#region Paging 
+            vm.paging = {
+                currentPage: 1,
+                maxPagesToShow: 5,
+                pageSize: 5
+            };
+
+            Object.defineProperty(vm.paging, 'pageCount', {
+                get: function () {
+                    return Math.floor(vm.tt / vm.paging.pageSize) + 1;
+                }
+            });
+
+            //get current page data
+            function getCurrentPageData(res) {
+                vm.res = [];
+                vm.j = 0;
+                vm.pagenumber = vm.paging.pageSize * vm.paging.currentPage;
+                if (vm.pagenumber > vm.tt)
+                    vm.pagenumber = vm.tt;
+                for (vm.i = (vm.paging.currentPage - 1) * vm.paging.pageSize; vm.i < vm.pagenumber; vm.i++) {
+                    vm.res[vm.j] = res[vm.i];
+                    vm.j++;
                 }
             }
 
+            //change page
+            function pageChanged() {
+                vm.getCurrentPageData(vm.hitSearch);
+            }
+
+            //refresh page
+            function refreshPage() {
+                if (vm.tt > vm.pagecount) {
+                    vm.tt = vm.pagecount;
+                } else {
+                    vm.tt = Math.min(vm.total, vm.pagecount);
+                }
+                vm.getCurrentPageData(vm.hitSearch);
+                random();
+            }
+            //#endregion
+
+
+            //#region Processorbar
+            vm.showWarning = "";
+            vm.dynamic = "";
+            vm.ptype = "";
+            vm.random = random;
+            //fill process bar
+            function random() {
+                var value = vm.tt / vm.total * 100;
+                var ptype;
+                //log(value);
+                if (value < 20) {
+                    ptype = 'idle';
+                } else if (value < 60) {
+                    ptype = 'regular';
+                } else if (value < 85) {
+                    ptype = 'warning';
+                } else {
+                    ptype = 'danger';
+                }
+                vm.showWarning = (ptype === 'danger' || ptype === 'warning');
+                vm.dynamic = value;
+                vm.ptype = ptype;
+            };
             //#endregion
 
 
@@ -580,69 +584,15 @@
             //#endregion
 
 
-            //#region Paging 
-            vm.paging = {
-                currentPage: 1,
-                maxPagesToShow: 5,
-                pageSize: 5
-            };
-
-            Object.defineProperty(vm.paging, 'pageCount', {
-                get: function () {
-                    return Math.floor(vm.tt / vm.paging.pageSize) + 1;
-                }
-            });
-
-            //get current page data
-            function getCurrentPageData(res) {
-                vm.res = [];
-                vm.j = 0;
-                vm.pagenumber = vm.paging.pageSize * vm.paging.currentPage;
-                if (vm.pagenumber > vm.tt)
-                    vm.pagenumber = vm.tt;
-                for (vm.i = (vm.paging.currentPage - 1) * vm.paging.pageSize; vm.i < vm.pagenumber; vm.i++) {
-                    vm.res[vm.j] = res[vm.i];
-                    vm.j++;
-                }
-            }
-
-            //change page
-            function pageChanged() {
-                vm.getCurrentPageData(vm.hitSearch);
-            }
-
-            vm.refreshPage = refreshPage;
-
-            //refresh page
-            function refreshPage() {
-                if (vm.pagecount === "0") {
-                    vm.pagecount = vm.total;
-                }
-
-                if (vm.tt > vm.pagecount) {
-                    vm.tt = vm.pagecount;
-                } else {
-                    vm.tt = Math.min(vm.total, vm.pagecount);
-                }
-
-                vm.getCurrentPageData(vm.hitSearch);
-                random();
-            }
-            //#endregion
-
-
             //#region BottomSheet
-            //#region BottomSheet
-            $scope.ts = ["Last year", "Last 6 months", "Last 3 months", "Last Month",
-            "Last 4 weeks", "Last 3 weeks", "Last 2 weeks", "Last week",
-            "Last 5 days", "Last 3 days", "Last 2 days", "Last day",
-             "Last 12 hours", "Last 6 hours", "Last hour"];
+            $scope.ts = ["Last year", "Last 6 months", "Last 3 months", "Last Month", "Last 4 weeks", "Last 3 weeks", "Last 2 weeks", "Last week",
+            "Last 5 days", "Last 3 days", "Last 2 days", "Last day", "Last 12 hours", "Last 6 hours", "Last hour"];
             $scope.listItemClick = function ($index) {
                 var clickedItem = $scope.ts[$index];
                 $mdBottomSheet.hide(clickedItem);
             };
         });
-    //#endregion
+            //#endregion
 
 
 })();
