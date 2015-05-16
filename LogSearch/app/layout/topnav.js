@@ -3,21 +3,20 @@
 
     var controllerId = 'topnav';
     angular.module('app').controller(controllerId,
-        ['$cookieStore', '$rootScope', '$route', '$scope', 'dataconfig', 'config', 'common', '$timeout', '$mdSidenav', '$mdUtil', '$mdBottomSheet', topnav]);
+        ['$cookieStore', '$rootScope', '$route', '$scope', 'dataconfig', 'config', 'common', '$timeout', '$mdSidenav', '$mdUtil', topnav]);
 
-    function topnav($cookieStore, $rootScope, $route, $scope, dataconfig, config, common, $timeout, $mdSidenav, $mdUtil, $mdBottomSheet) {
+    function topnav($cookieStore, $rootScope, $route, $scope, dataconfig, config, common, $timeout, $mdSidenav, $mdUtil) {
         var vm = this;
         // var keyCodes = config.keyCodes;
 
         //#region variable   
         vm.searchText = '';
-        vm.ip = [];
+        vm.autoText = [];
         vm.loading = true;
         vm.tabs = ["Dashboard", "ELS", "Agg", "TODO"];
         vm.selectedIndex = "";
-        vm.autocompleLoading = false;
+        vm.autocompleLoading = true;
         //#endregion
-
 
         //#region function
         vm.path = path;
@@ -33,7 +32,7 @@
         vm.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'yyyy.MM.dd'];
         vm.format = vm.formats[4];
         vm.it = ["Last 3 months", "Last Month", "Last 4 weeks", "Last 3 weeks", "Last 2 weeks", "Last week",
-            "Last 5 days", "Last 3 days", "Last 2 days", "Last day" ];
+            "Last 5 days", "Last 3 days", "Last 2 days", "Last day"];
         vm.dateOptions = {
             formatYear: 'yy',
             startingDay: 1
@@ -44,8 +43,7 @@
         function filterst(span) {
             $rootScope.ft = new Date();
             $rootScope.st = dataconfig.changeTimeSpan(span);
-            /*$rootScope.reload = true;
-            $route.reload();*/
+            //$route.reload();
             common.$location.path(common.$location.path() + "/");
             // window.location.reload();
         }
@@ -53,7 +51,6 @@
         $scope.toggleRight = timeNav('right');
 
         function timeNav(navID) {
-
             var debounceFn = $mdUtil.debounce(function () {
                 $mdSidenav(navID)
                     .toggle()
@@ -71,17 +68,27 @@
 
 
         //#region Auto-Fill
-        //get auto-fill data
-        function autoFill($event) {
+        var appre = "";
+        var apre = "";
+        var anow = "";
 
-            if ($event === undefined || config.input.indexOf($event.keyCode) !== -1) {
-                vm.autocompleLoading = true;
-                return dataconfig.autoFill().then(function (resp) {
-                    vm.ip = resp.data.AutoData;
-                    vm.autocompleLoading = false;
-                });
-            }
-            return null;
+        //get auto-fill data
+        function autoFill(force) {
+            vm.autocompleLoading = true;
+            if (force !== true && vm.searchText === "") return null;
+            return dataconfig.autoFill(vm.searchText).then(function (resp) {
+                appre = apre; apre = anow;
+                anow = resp.data.AutoData;
+                if (vm.autoText.length < 1000 && vm.autoText.length !== 0) {
+                    vm.autoText = dataconfig.arrayUnique(anow.concat(dataconfig.arrayUnique(apre.concat(appre))));
+                } else {
+                    vm.autoText = anow.concat(apre.concat(appre));
+                }
+                //vm.autoText = resp.data.AutoData;
+                toastr.info(vm.autoText.length);
+                vm.autocompleLoading = false;
+                return resp.data.AutoData;
+            });
         }
 
         //#endregion
@@ -97,25 +104,23 @@
                 case 3: common.$location.path("/todo"); break;
                 default: common.$location.path("/"); break;
             }
-
         }
+
+
 
         vm.st = "";
         vm.ft = "";
         activate();
         function activate() {
-            if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {
-                vm.ft = $rootScope.ft;
-                vm.st = $rootScope.st;
-            } else {
-                vm.st = moment(new Date()).subtract(2, 'month').toDate();
-                vm.ft = new Date();
-            }
-
-            dataconfig.autoFill().then(function (resp) {
-                vm.ip = resp.data.AutoData;
+            vm.ft = $rootScope.ft;
+            vm.st = $rootScope.st;
+            autoFill(true);
+            toastr.info("Auto Fill Load");
+            /*dataconfig.autoFill().then(function (resp) {               
+                vm.autoText = resp.data.AutoData;
+                vm.autocompleLoading = false;
                 toastr.info("Auto Fill Load");
-            });
+            });*/
         }
 
         //search 
@@ -156,4 +161,6 @@
         //#endregion
 
     };
+
 })();
+

@@ -196,7 +196,7 @@
 
             function aggFieldFilter(aggField) {
                 var fieldFilter = ["geoip.timezone", "timestamp.raw", "@timestamp", "referrer", "referrer.raw", "timestamp", "request", "edata",
-                    "host","action", "agent", "tags", "message", "geoip.country_name", "geoip.coordinates", "geoip.latitude", "geoip.longitude"];
+                    "host", "action", "agent", "tags", "message", "geoip.country_name", "geoip.coordinates", "geoip.latitude", "geoip.longitude"];
                 fieldFilter.map(function (f) {
                     var index = aggField.indexOf(f);
                     if (index !== -1) {
@@ -232,8 +232,8 @@
                             //drawDashboard(resp.data.AggData, aggName);
                             var data = chartservice.drawaggDashboard1(resp.data.AggData, aggName, 'dashboard', 'filter_div', 'chart_div');
                             drawTable(data, 'table_div', aggName);
-                        }, function (err) {
-                            log(err.message);
+                        }, function (e) {
+                            log(e.data.Message);
                         });
                 }
                 common.$q.all(ap).then(function () {
@@ -259,8 +259,8 @@
                               data = chartservice.drawaggDashboard2(resp.data.AggData, aggName);
                               drawTable(data, "table" + aggName, aggName);
                           }
-                      }, function (err) {
-                          // log("aggshows err "+err.message);
+                      }, function (e) {
+                          log("aggshows err " + e.data.Message);
                       });
             }
 

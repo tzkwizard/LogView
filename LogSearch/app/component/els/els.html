@@ -1,12 +1,11 @@
 ﻿<section class="mainbar" data-ng-controller="els as vm">
     <section class="matter">
         <div class="container-fluid">
-
             <div id="Header" class="input-append row-fluid">
                 <input type="text" class="form-control"
-                       data-ng-keydown="vm.autoFill($event)" data-ng-keyup="vm.trySeach($event)"
+                       data-ng-change="vm.autoFill()" data-ng-keyup="vm.trySeach($event)"
                        data-ng-model=" vm.searchText" placeholder="  Search"
-                       typeahead=" record for record in vm.at| filter:$viewValue | limitTo:5" typeahead-loading="loading" />
+                       typeahead=" auto for auto in vm.autoText| filter:$viewValue | limitTo:8" typeahead-loading="loading" />
                 <i ng-show="vm.autocompleLoading" class="glyphicon glyphicon-refresh"></i>
                 <!-- <button class="btn btn-large btn-info btn-notext ng-click-active" type="button" data-ng-click="vm.search()">
                     <i class="fa fa-search"> Search </i>
@@ -184,7 +183,7 @@
             <div id="sprocess" layout="row" layout-sm="column" layout-align="space-around" ng-show="vm.processSearch">
                 <md-progress-circular md-mode="indeterminate" ng-show="vm.processSearch"></md-progress-circular>
             </div>
-            <div id="processbar" layout="row" >
+            <div id="processbar" layout="row">
                 <progressbar flex="80" class="progress-striped active" value="vm.dynamic" type="{{vm.ptype}}">{{vm.ptype}} <i ng-show="showWarning">!!! Watch out !!!</i></progressbar>
             </div>
             <div id="elsPaging" layout="row" class="widget-foot">
@@ -239,23 +238,21 @@
                     </md-list>
                 </md-content>
             </div>
-            <div id="ResultCount" class="pull-right">
-                <md-select placeholder="Pick" ng-model="vm.paging.pageSize" ng-change="vm.refreshPage()">
-                    <md-option value=5>5</md-option>
-                    <md-option value=10>10</md-option>
-                    <md-option value=25>25</md-option>
-                    <md-option value=50>50</md-option>
-                    <md-option value=100>100</md-option>
-                </md-select>
-                <md-select placeholder="Pick" ng-model="vm.pagecount" ng-change="vm.refreshPage()">
+            <div id="resultShow" class="widget wgreen">
+                <md-select class="pull-right" placeholder="Pick" ng-model="vm.pagecount" ng-change="vm.refreshPage()">
                     <md-option value=100>100</md-option>
                     <md-option value=500>500</md-option>
                     <md-option value=1000>1000</md-option>
                     <md-option value=10000>10000</md-option>
                     <md-option value={{vm.total}}>{{vm.total}}</md-option>
                 </md-select>
-            </div>
-            <div id="resultShow" class="widget wgreen">
+                <md-select class="pull-right" placeholder="Pick" ng-model="vm.paging.pageSize" ng-change="vm.refreshPage()">
+                    <md-option value=5>5</md-option>
+                    <md-option value=10>10</md-option>
+                    <md-option value=25>25</md-option>
+                    <md-option value=50>50</md-option>
+                    <md-option value=100>100</md-option>
+                </md-select>
                 <div data-cc-widget-header title="{{vm.title}}"
                      allow-collapse="true"
                      subtitle="{{vm.tt}} / {{vm.total}}"
@@ -274,10 +271,18 @@
                             <tr class="fader-animation" data-ng-repeat="doc in vm.res| orderBy:predicate:reverse" data-ng-click="vm.open(doc)">
                                 <td>{{doc._source['UTCtimestamp']| date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
                                 <td>{{doc._source.message}}</td>
-                                <td>{{doc._score}}</td>
-                                <!-- <td>{{doc
-                                ._index}}</td>-->
-                                </tr>
+                                <td>
+                                    {{doc._score}}</
+                                    td>
+                                    <!-- <t
+                                    d></td>
+                                    </
+                                    <!-- <t
+                                    d>
+                                    {{doc
+                                    ._index}}</td>-->
+                            </tr>
+                            </tr>
                             </tr>
                         </tbody>
                     </table>

@@ -10,6 +10,7 @@ using ElasticSearch;
 using LogView.model;
 using Nest;
 
+
 namespace LogView
 {
     class Program
@@ -19,6 +20,7 @@ namespace LogView
         private static ElasticClient _client;
         static void Main(string[] args)
         {
+            
 
             Program p = new Program();
 

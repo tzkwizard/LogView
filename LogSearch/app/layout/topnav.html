@@ -11,10 +11,10 @@
                 <span class="icon-bar">3</span>
             </a>
         </div>
-        <input type="text" ng-model="vm.searchText" placeholder=" search "
-               data-ng-keydown="vm.autoFill($event)" data-ng-keyup="vm.search($event)"
-               typeahead=" record for record in vm.ip| filter:$viewValue | limitTo:5"
-               typeahead-loading="loading" class="form-control">
+       <input type="text" ng-model="vm.searchText" placeholder=" search "
+       data-ng-change="vm.autoFill()" data-ng-keyup="vm.search($event)"
+       typeahead=" auto for auto in vm.autoText | filter:$viewValue | limitTo:8"
+       typeahead-loading="loading" class="form-control">
         <i ng-show="vm.autocompleLoading" class="glyphicon glyphicon-refresh"></i>
         <!--
         <md-input-container>

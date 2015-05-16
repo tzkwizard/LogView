@@ -31,13 +31,14 @@
     ]);
 
     // Handle routing errors and success events
-    app.run(['$rootScope', '$route', 'dataconfig', 'routeMediator', 'client', '$templateCache',
-        function ($rootScope, $route, dataconfig, routeMediator, client, $templateCache) {
+    app.run(['$cookieStore', '$rootScope', '$route', 'dataconfig', 'routeMediator', 'client', '$templateCache',
+        function ($cookieStore,$rootScope, $route, dataconfig, routeMediator, client, $templateCache) {
             // Include $route to kick start the router.
             routeMediator.setRoutingHandlers();
             $rootScope.school = "TCU";
             $rootScope.st = moment(new Date()).subtract(3, 'month').toDate();
             $rootScope.ft = new Date();
+            $rootScope.token=$cookieStore.get('EsToken');
             // dataconfig.prime();
             $templateCache.put('e.html','app/component/els/els.html');
             //#region Ping           

@@ -6,7 +6,6 @@
 
     function datasearch($rootScope, client, $http, config) {
 
-        var vm = this;
 
         //#region service
         var service = {
@@ -29,8 +28,6 @@
 
         //#region Aggragation search
         function dashboardPieAggregation(f1, f2, f3, start, end) {
-
-
             var info =
             {
                 MultiField: [f1, f2, f3],
@@ -47,24 +44,11 @@
                 .success(function (resp) {
                     return resp;
                 }).error(function (e) {
-                    //toastr.info(e);
+                    return e;
                 });
-
-
-            return client.search({
-                index: vm.indicesName,
-                type: vm.type,
-                body: ejs.Request()
-                    .aggregation(ejs.FilterAggregation("ag1").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).agg(ejs.TermsAggregation("agg1").field(f1)))
-                    .aggregation(ejs.FilterAggregation("ag2").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).agg(ejs.TermsAggregation("agg2").field(f2)))
-                    .aggregation(ejs.FilterAggregation("ag3").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).agg(ejs.TermsAggregation("agg3").field(f3)))
-
-            });
         }
 
-
         function dateHistogramAggregation(index, type, aggfield, span, start, end) {
-
             var info =
             {
                 Span: span,
@@ -81,23 +65,11 @@
                 .success(function (resp) {
                     return resp;
                 }).error(function (e) {
-                    //toastr.info(e);
+                    return e;
                 });
-
-
-            return client.search({
-                index: index,
-                type: type,
-                body: ejs.Request()
-                    .aggregation(ejs.FilterAggregation("ag").aggregation(ejs.DateHistogramAggregation("agg").field(aggfield).interval(span)).filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)))
-                //.format("yyyy-MM-dd")
-
-            });
         }
 
         function termAggragation(indices, type, aggfield, size, start, end) {
-
-
             var info =
             {
                 SubSize: size,
@@ -114,24 +86,11 @@
                 .success(function (resp) {
                     return resp;
                 }).error(function (e) {
-                    //toastr.info(e);
-                });;
-
-
-            return client.search({
-                index: indices,
-                type: type,
-                body:
-                    ejs.Request()
-                        .query(ejs.MatchAllQuery())
-                        .aggregation(ejs.FilterAggregation("ag").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size)))
-            });
-
+                    return e;
+                });
         }
 
         function termAggragationwithQuery(indices, type, aggfield, size, searchText, start, end) {
-
-
             var info =
             {
                 SearchText: searchText,
@@ -149,22 +108,11 @@
                 .success(function (resp) {
                     return resp;
                 }).error(function (e) {
-                    //toastr.info(e);
+                    return e;
                 });
-
-
-            return client.search({
-                index: indices,
-                type: type,
-                body: ejs.Request()
-                    .query(ejs.QueryStringQuery(searchText))
-                    .aggregation(ejs.FilterAggregation("ag").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size)))
-
-
-            });
         }
 
-        function termQueryAggragation(indices, type,field, searchText, aggfield, size, start, end) {
+        function termQueryAggragation(indices, type, field, searchText, aggfield, size, start, end) {
 
             var info =
             {
@@ -184,18 +132,8 @@
                 .success(function (resp) {
                     return resp;
                 }).error(function (e) {
-                    //toastr.info(e);
+                    return e;
                 });
-
-
-            return client.search({
-                index: indices,
-                type: type,
-                body: ejs.Request()
-                    .query(ejs.TermQuery("geoip.country_code3.raw", "USA"))
-                    .aggregation(ejs.FilterAggregation("ag").filter(ejs.RangeFilter("@timestamp").lte(end).gte(start)).aggregation(ejs.TermsAggregation("agg").field(aggfield).size(size)))
-
-            });
         }
 
         //#endregion
@@ -204,8 +142,6 @@
         //#region Filter search
 
         function getSampledata(indices, type, pagecount, start, end, location, distance) {
-
-
             var info = {
                 Type: type,
                 Size: pagecount,
@@ -213,7 +149,7 @@
                 End: end,
                 Lat: location.lat,
                 Lon: location.lon,
-                Location :location,
+                Location: location,
                 GeoDistance: distance
             }
 
@@ -224,7 +160,10 @@
             var r = {
                 method: 'POST',
                 url: local,
-                data: ii,
+                data: info,
+                /* headers: {
+                     'Content-Type': 'application/x-www-form-urlencoded'
+                 },*/
                 params: {
                     token: $rootScope.token,
                     Type: type,
@@ -232,7 +171,7 @@
                     Start: start,
                     End: end,
                     Lat: location.lat,
-                    Lon:location.lon,
+                    Lon: location.lon,
                     GeoDistance: distance,
                     Location: [location.lat, location.lat]
                 }
@@ -245,23 +184,9 @@
                 }).error(function (e) {
                     toastr.info(e.Message);
                 });
-
-
-            return client.search({
-                index: indices,
-                //type: type,
-                size: pagecount,
-                body:
-                    ejs.Request()
-                        .query(ejs.MatchAllQuery())
-                        .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
-
-            });
         }
 
-
         function stringQuery(indices, type, pagecount, searchText, start, end, location, distance) {
-
             var info = {
                 Type: type,
                 Size: pagecount,
@@ -291,31 +216,11 @@
                 .success(function (resp) {
                     return resp;
                 }).error(function (e) {
-                    toastr.info(e.Message);
+                    return e;
                 });
-
-
-            return $http.post(local, ii)
-                .success(function (resp) {
-                    return resp;
-                }).error(function (e) {
-                    toastr.info(e);
-                });
-
-
-            return client.search({
-                index: indices,
-                type: type,
-                size: pagecount,
-                body: ejs.Request()
-                    .query(ejs.QueryStringQuery(searchText))
-                    .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
-            });
-
         }
 
         function termQuery(indices, type, pagecount, field, searchText, start, end, location, distance) {
-
             var info = {
                 Type: type,
                 Size: pagecount,
@@ -346,23 +251,11 @@
                 .success(function (resp) {
                     return resp;
                 }).error(function (e) {
-                    toastr.info(e.Message);
+                    return e;
                 });
-
-
-            return client.search({
-                index: indices,
-                type: type,
-                size: pagecount,
-                body: ejs.Request()
-                    .query(ejs.MatchQuery(field, searchText))
-                    .filter(ejs.RangeFilter("@timestamp").lte(end).gte(start))
-            });
         }
 
         function termQueryWithBoolFilter(indices, type, pagecount, field, searchText, condition, start, end, location, distance) {
-
-
             var info = {
                 Type: type,
                 Size: pagecount,
@@ -393,57 +286,11 @@
                 .success(function (resp) {
                     return resp;
                 }).error(function (e) {
-                    toastr.info(e.Message);
+                    return e;
                 });
-
-
-            var m = [];
-            var n = [];
-            var s = [];
-            var time = ejs.RangeFilter("@timestamp").lte(end).gte(start);
-            m.push(time);
-            angular.forEach(condition, function (cc) {
-                if (cc.condition === "MUST") {
-                    var x = ejs.TermFilter(cc.field, cc.text);
-                    m.push(x);
-                }
-                if (cc.condition === "MUST_NOT") {
-                    var y = ejs.TermFilter(cc.field, cc.text);
-                    n.push(y);
-                }
-                if (cc.condition === "SHOULD") {
-                    var z = ejs.TermFilter(cc.field, cc.text);
-                    s.push(z);
-                }
-            });
-
-
-            var fmust = ejs.AndFilter(m);
-            var fnot = ejs.AndFilter(n);
-            var fshould = ejs.AndFilter(s);
-
-
-            if (n.length < 1) {
-                fnot = ejs.NotFilter(ejs.MatchAllFilter());
-            }
-            if (s.length < 1) {
-                fshould = ejs.MatchAllFilter();
-            }
-
-
-            return client.search({
-                index: indices,
-                type: type,
-                size: pagecount,
-                body: ejs.Request()
-                    .query(ejs.MatchQuery(field, searchText))
-                    .filter(ejs.BoolFilter().must(fmust).mustNot(fnot).should(fshould))
-            });
         }
 
         function stringQueryWithBoolFilter(indices, type, pagecount, field, searchText, condition, start, end, location, distance) {
-
-
             var info = {
                 Type: type,
                 Size: pagecount,
@@ -474,51 +321,8 @@
                 .success(function (resp) {
                     return resp;
                 }).error(function (e) {
-                    toastr.info(e.Message);
+                    return e;
                 });
-
-
-            var m = [];
-            var n = [];
-            var s = [];
-            var time = ejs.RangeFilter("@timestamp").lte(end).gte(start);
-            m.push(time);
-            angular.forEach(condition, function (cc) {
-                if (cc.condition === "MUST") {
-                    var x = ejs.TermFilter(cc.field, cc.text);
-                    m.push(x);
-                }
-                if (cc.condition === "MUST_NOT") {
-                    var y = ejs.TermFilter(cc.field, cc.text);
-                    n.push(y);
-                }
-                if (cc.condition === "SHOULD") {
-                    var z = ejs.TermFilter(cc.field, cc.text);
-                    s.push(z);
-                }
-            });
-
-
-            var fmust = ejs.AndFilter(m);
-            var fnot = ejs.AndFilter(n);
-            var fshould = ejs.AndFilter(s);
-
-            if (n.length < 1) {
-                fnot = ejs.NotFilter(ejs.TermFilter("", ""));
-            }
-            if (s.length < 1) {
-                fshould = ejs.MatchAllFilter();
-            }
-
-
-            return client.search({
-                index: indices,
-                type: type,
-                size: pagecount,
-                body: ejs.Request()
-                    .query(ejs.QueryStringQuery(searchText))
-                    .filter(ejs.BoolFilter().must(fmust).mustNot(fnot).should(fshould))
-            });
         }
 
         //#endregion

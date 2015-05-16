@@ -4,14 +4,14 @@
     var serviceId = 'dataconfig';
     angular.module('app').factory(serviceId, ['$modal', '$http', '$rootScope', '$cookieStore', 'common', 'client', 'config', dataconfig]);
 
-    function dataconfig($modal,$http, $rootScope, $cookieStore, common, client, config) {
+    function dataconfig($modal, $http, $rootScope, $cookieStore, common, client, config) {
 
         var vm = this;
-        
+
         //#region Service
         var service = {
             checkIndexCookie: checkIndexCookie,
-            checkFieldCookie:checkFieldCookie,
+            checkFieldCookie: checkFieldCookie,
             getIndexName: getIndexName,
             getTypeName: getTypeName,
             getFieldName: getFieldName,
@@ -29,7 +29,8 @@
             loadIndex: loadIndex,
             loadField: loadField,
             fillSearchText: fillSearchText,
-            changeTimeSpan: changeTimeSpan
+            changeTimeSpan: changeTimeSpan,
+            arrayUnique: arrayUnique
         }
         return service;
         //#endregion
@@ -46,57 +47,47 @@
             var field;
             index.then(function (indexData) {
                 $rootScope.index = indexData;
-                field = getFieldName($rootScope.index[0], $rootScope.logtype);
-            }).then(function () {
-                field.then(function (fieldData) {
-                    $rootScope.logfield = fieldData;
+                field = getFieldName();
+            }, function (e) {
+                field = getFieldName();
+                toastr.info("index " + e.Message);
+            })
+                .then(function () {
+                    field.then(function (fieldData) {
+                        $rootScope.logfield = fieldData;
+                    });
+                }, function (e) {
+                    toastr.info("field " + e.Message);
                 });
-            });
             if ($rootScope.logged) return;
             checkIdent();
         }
         // get auto fill data
         function autoFill(text) {
-
             var info = {
                 SearchText: text,
                 Start: $rootScope.st,
                 End: $rootScope.ft
             }
-
             var remote = config.remoteApiUrl + "api/ElasticMapping/AutoFill";
             var local = config.localApiUrl + "api/ElasticMapping/AutoFill";
             var ii = angular.toJson(info);
 
-            return $http.post(local, ii)
+            var r = {
+                method: 'POST',
+                url: local,
+                data: ii,
+                params: {
+                    token: $rootScope.token
+                }
+            }
+
+            return $http(r)
               .success(function (resp) {
                   return resp;
               }).error(function (e) {
-                  // toastr.info(e);
+                  toastr.info("auto-fill " + e.Message);
               });
-
-
-
-           /* var word = [];
-            var apromise = [];
-            vm.pfx = ["geoip.timezone.raw", "ident.raw", "auth.raw", "geoip.city_name.raw", "request.raw", "geoip.country_name.raw", "geoip.region_name.raw", "geoip.postal_code.raw"];
-            angular.forEach(vm.pfx, function (agg) {
-                var aSubp = datasearch.termAggragation($rootScope.index, 'logs', agg, 1000, $rootScope.st, $rootScope.ft)
-                   .then(function (resp) {
-                       var tt = resp.aggregations.ag.agg.buckets;
-                       angular.forEach(tt, function (y) {
-                           word.push(y.key);
-                       });
-
-                   }, function (err) {
-                       // toastr.info("Auto Fill Load error" + err.message);
-                   });
-                apromise.push(aSubp);
-            });
-
-            return common.$q.all(apromise).then(function () {
-                return word;
-            });*/
         }
 
         function checkIndexCookie() {
@@ -106,7 +97,6 @@
                     $cookieStore.remove('index');
                 }
             }
-
         }
 
         function checkFieldCookie() {
@@ -115,7 +105,6 @@
                     toastr.info("Field Changed");
                     $cookieStore.remove('logfield');
                 }
-
             }
         }
 
@@ -146,24 +135,6 @@
             }
             return fieldName;
         }
-
-        //log in
-        function checkIdent() {
-            return login().then(function (resp) {
-                if (resp.data === "error identity") {
-                    toastr.info("Username or Password Error!");
-                    openLoginPage();
-                } else {
-                    $rootScope.token = resp.data;
-                    $rootScope.logged = true;
-                    toastr.info('elasticsearch cluster is connected');
-                }
-            }, function (err) {
-                toastr.info("Username or Password Error!");
-                openLoginPage();
-            });
-
-        }
         //#endregion
 
 
@@ -174,7 +145,14 @@
 
             var remote = config.remoteApiUrl + "api/ElasticMapping/LogstashMap";
             var local = config.localApiUrl + "api/ElasticMapping/LogstashMap";
-            var ipromise = $http.get(local)
+            var r = {
+                method: 'GET',
+                url: local,
+                params: {
+                    token: $rootScope.token
+                }
+            }
+            var ipromise = $http(r)
               .success(function (resp) {
                   indicesName = resp.Index;
               }).error(function (e) {
@@ -183,50 +161,13 @@
             return ipromise.then(function () {
                 return indicesName;
             });
-
-
-            /* var ipromise = client.cluster.state({
-                 flatSettings: true
- 
-             }).then(function (resp) {
-                 var hit = resp.routing_table.indices;
-                 var j = 0;
-                 var temp = [];
-                 var tempindices = [];
-                 angular.forEach(hit, function (name) {
- 
-                     temp[j] = name.shards;
-                     angular.forEach(temp[j], function (shard) {
-                         tempindices[j] = shard[0].index;
- 
-                     });
-                     j++;
-                 });
-                 j = 0;
-                 for (var i = 0; i < tempindices.length; i++) {
-                     if (tempindices[i].substring(0, 8) === "logstash") {
-                         indicesName[j] = tempindices[i];
-                         j++;
-                     }
- 
-                 }
-             }, function (err) {
-                 // log("get Logstash Index" + err.message);
-             });
-             //return indicesName;
-             return ipromise.then(function () {
-                 return indicesName;
-             });*/
         }
 
         //get index from cluster
         function getIndexName() {
-
             var indicesName = [];
-
             client.cluster.state({
                 flatSettings: true
-
             }).then(function (resp) {
                 var hit = resp.routing_table.indices;
                 var j = 0;
@@ -283,11 +224,18 @@
         }
 
         //get field from cluster
-        function getFieldName(index, type) {
+        function getFieldName() {
             var fieldsName = [];
             var remote = config.remoteApiUrl + "api/ElasticMapping/LogstashMap";
             var local = config.localApiUrl + "api/ElasticMapping/LogstashMap";
-            var ipromise = $http.get(local)
+            var r = {
+                method: 'GET',
+                url: local,
+                params: {
+                    token: $rootScope.token
+                }
+            }
+            var ipromise = $http(r)
               .success(function (resp) {
                   fieldsName = resp.Field;
                   angular.forEach(fieldsName, function (name) {
@@ -296,46 +244,12 @@
                           fieldsName.splice(index, 1);
                       }
                   });
-
               }).error(function (e) {
                   //toastr.info(e);
               });
             return ipromise.then(function () {
                 return fieldsName;
             });
-
-
-            /* if (type === "all" || type === "")
-                //|| vm.typesName.indexOf(type) === -1
-                return "";
-            var fieldsName = [];
-            var fpromise = client.indices.getFieldMapping({
-                index: index,
-                type: type,
-                field: '*'
-            }).then(function (resp) {
-                angular.forEach(resp, function (m) {
-                    var map = m.mappings;
-                    angular.forEach(map, function (n) {
-                        var j = 0;
-                        angular.forEach(n, function (name) {
-                            if (name.full_name.substring(0, 1) !== '_' && name.full_name !== 'constant_score.filter.exists.field') {
-                                fieldsName[j] = name.full_name;
-                                j++;
-                            }
-                        }
-                        );
-                    });
-                });
-
-            }, function (err) {
-                // toastr.info("get Field Name" + err.message);
-            });
-
-            return fpromise.then(function () {
-                return fieldsName;
-            });
-            //return fieldsName;*/
         }
         //#endregion
 
@@ -350,22 +264,24 @@
             try {
                 username = sjcl.decrypt(z, x);
                 password = sjcl.decrypt(z, y);
+                if (username === "" || password === "") {
+                    password = "1";
+                    username = "1";
+                }
             } catch (e) {
-                password = "";
-                username = "";
+                password = "1";
+                username = "1";
             }
 
-            var remote = config.remoteApiUrl + "api/ElasticMapping/Login/"+username+"/"+password;
-            var local = config.localApiUrl + "api/ElasticMapping/Login/"+username+"/"+password;
+            var remote = config.remoteApiUrl + "api/ElasticMapping/Login/" + username + "/" + password;
+            var local = config.localApiUrl + "api/ElasticMapping/Login/" + username + "/" + password;
 
             return $http.get(local)
               .success(function (resp) {
                   return resp;
               }).error(function (e) {
-                  return "error identity";
-                   toastr.info(e);
+                  return e;
               });
-
         }
 
         function openLoginPage() {
@@ -381,8 +297,18 @@
                     }
                 }
             });
+        }
 
-        };
+        function checkIdent() {
+            return login().then(function (resp) {
+                $cookieStore.put('EsToken', resp.data);
+                $rootScope.logged = true;
+                toastr.info('elasticsearch cluster is connected');
+            }, function (e) {
+                toastr.info(e.data.Message);
+                openLoginPage();
+            });
+        }
         //#endregion
 
 
@@ -453,20 +379,15 @@
         function addFilter(n, fieldsName) {
             var para = document.createElement("p");
             /*  var node = document.createTextNode("filter:" + n);
-
               para.appendChild(node);*/
 
             var element = document.getElementById("filter");
             element.appendChild(para);
 
-            //var main = document.getElementById('filter');
-
             var contain = document.createElement('div');
             var cname = 'contain' + n;
             contain.setAttribute('id', cname);
             element.appendChild(contain);
-
-
 
             var input = document.createElement('input');
             var iname = 'input' + n;
@@ -474,16 +395,13 @@
             input.setAttribute('id', iname);
             contain.appendChild(input);
 
-
-
-            var xx = document.getElementById(iname);
-            /*var el = angular.element(xx);
+            /*var xx = document.getElementById(iname);
+            var el = angular.element(xx);
             $scope = el.scope();
             $injector = el.injector();
             $injector.invoke(function ($compile) {
                 $compile(el)($scope);
             });*/
-
 
 
             var fselect = document.createElement('select');
@@ -497,8 +415,6 @@
                 opt.innerHTML = name;
                 fselect.appendChild(opt);
             });
-
-
 
             var jselect = document.createElement('select');
             var jname = 'jselect' + n;
@@ -528,13 +444,10 @@
         //create container for chart
         function createContainer(aggName) {
             var main = document.getElementById('contain');
-
             var contain = document.createElement('div');
             var containName = 'contain' + aggName;
             contain.setAttribute('id', containName);
             main.appendChild(contain);
-
-
 
 
             var diva = document.createElement('div');
@@ -552,8 +465,6 @@
             var row = table.insertRow(0);
             var cell1 = row.insertCell(0);
             var cell2 = row.insertCell(1);
-
-
 
             //var dash = document.getElementById(dashName);
             var divb = document.createElement('div');
@@ -574,7 +485,8 @@
         }
         //#endregion
 
-        //#Time history service
+
+        //#region Time history service
         function changeTimeSpan(span) {
             var st;
             switch (span) {
@@ -630,5 +542,17 @@
         }
         //#endregion
 
+        //#region regular service
+        function arrayUnique(array) {
+            var a = array.concat();
+            for (var i = 0; i < a.length; ++i) {
+                for (var j = i + 1; j < a.length; ++j) {
+                    if (a[i] === a[j])
+                        a.splice(j--, 1);
+                }
+            }
+            return a;
+        };
+        //#endregion
     }
 })();

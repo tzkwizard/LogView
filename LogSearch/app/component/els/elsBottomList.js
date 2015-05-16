@@ -2,7 +2,6 @@
     'use strict';
 
     var controllerId = 'elsBottomList';
-
     angular.module('app')
       .controller(controllerId, function ($scope, $mdBottomSheet) {
 

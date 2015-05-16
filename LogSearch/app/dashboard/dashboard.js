@@ -98,8 +98,8 @@
                         //drawMap2(resp.data.AggData);
                         chartservice.drawWorldMap(resp.data.AggData, 'gmap_div');
                     }
-                }, function (err) {
-                    //log("geoMap2 data error" + err.message);
+                }, function (e) {
+                    log("geoMap2 data error" + e.data.Message);
                 });
         }
 
@@ -110,8 +110,8 @@
                            //drawUSmap(resp.data.AggData);
                            chartservice.drawUSmap(resp.data.AggData, 'gmap_div');
                        }
-                   }, function (err) {
-                       //log("geoMap2 data error" + err.message);
+                   }, function (e) {
+                       log("geoMap2 data error" + e.data.Message);
                    });
         }
 
@@ -122,8 +122,8 @@
                             //drawoCitymap(resp.data.AggData);
                             chartservice.drawoUSCitymap(resp.data.AggData, 'gmap_div');
                         }
-                    }, function (err) {
-                        //log("geoMap2 data error" + err.message);
+                    }, function (e) {
+                        log("geoMap2 data error" + e.data.Message);
                     });
         }
         //#endregion
@@ -137,8 +137,8 @@
                         //drawMap(resp.data.AggData);
                         chartservice.drawCityMap(resp.data.AggData, 'dtable_div', 'dmap_div');
                     }
-                }, function (err) {
-                    //log("geoMap data error " + err.message);
+                }, function (e) {
+                    log("geoMap data error " + e.data.Message);
                 });
         }
         //#endregion
@@ -155,12 +155,10 @@
             if (vm.geomap2selection === "City") {
                 usCityMap();
             }
-            pieChart();
         }
 
         function changeMap2() {
             geoMap();
-            pieChart();
         }
         //#endregion
 
@@ -170,9 +168,9 @@
             return datasearch.dashboardPieAggregation("verb", "geoip.city_name.raw", "request.raw", vm.st, vm.ft)
            .then(function (resp) {
                //drawpie(resp.data);
-               chartservice.drawDashPie(resp.data, 'pie_div1', 'pie_div2', 'pie_div3');
-           }, function (err) {
-               //log("pieChart data error " + err.message);
+               chartservice.drawDashPie(resp.data, 'pie_div');
+           }, function (e) {
+               log("pieChart data error " + e.data.Message);
            });
         }
 
@@ -189,8 +187,8 @@
                         chartservice.drawHist(resp.data.DateHistData, 'DateHist_div');
                         chartservice.drawTimeLine(resp.data.DateHistData, 'TimeLine_div');
                     }
-                }, function (err) {
-                    //log("timelineGram data error " + err.message);
+                }, function (e) {
+                    log("timelineGram data error " + e.data.Message);
                 });
         }
         //#endregion

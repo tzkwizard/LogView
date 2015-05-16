@@ -14,7 +14,7 @@
             var log = getLogFn(controllerId);
             $scope.collapse = true;
 
-            
+
             //#region variable
             $scope.predicate = '_source.timestamp';
             $scope.trend = 'true';
@@ -37,7 +37,7 @@
             vm.tt = 0;
             vm.ft = "";
             vm.st = "";
-            vm.at = [];
+            vm.autoText = [];
             vm.filterfill = false;
             vm.condition = [];
             vm.Syntax = {
@@ -113,7 +113,7 @@
 
             activate();
             function activate() {
-                common.activateController([getIndexName(), getFieldName(), autoFill()], controllerId)
+                common.activateController([getIndexName(), getFieldName(), autoFill(true)], controllerId)
                     .then(function () {
                         init();
                         log('Activated ELS search View');
@@ -149,6 +149,8 @@
                           random();
                           vm.processSearch = false;
                           refreshPage();
+                      }, function (e) {
+                          log("sampledata " + e.data.Message);
                       });
             }
             //#endregion
@@ -198,22 +200,32 @@
                             vm.getCurrentPageData(vm.hitSearch);
                             random();
                             refreshPage();
-                        }, function (err) {
-                            // log("search data error " + err.message);
+                        }, function (e) {
+                            log("search data error " + e.data.Message);
                         });
                 }
             }
 
             //update auto-fill data
-            function autoFill($event) {
-                if ($event === undefined || config.input.indexOf($event.keyCode) !== -1) {
-                    vm.autocompleLoading = true;
-                    return dataconfig.autoFill().then(function (resp) {
-                        vm.at = resp.data.AutoData;
-                        vm.autocompleLoading = false;
-                    });
-                }
-                return null;
+            var appre = "";
+            var apre = "";
+            var anow = "";
+            function autoFill(force) {
+                vm.autocompleLoading = true;
+                if (force !== true && vm.searchText === "") return null;
+                return dataconfig.autoFill(vm.searchText).then(function (resp) {
+                    appre = apre; apre = anow;
+                    anow = resp.data.AutoData;
+                    if (vm.autoText.length < 1000 && vm.autoText.length !== 0) {
+                        vm.autoText = dataconfig.arrayUnique(anow.concat(dataconfig.arrayUnique(apre.concat(appre))));
+                    } else {
+                        vm.autoText = anow.concat(apre.concat(appre));
+                    }
+                    //vm.autoText = resp.data.AutoData;
+                    toastr.info(vm.autoText.length);
+                    vm.autocompleLoading = false;
+                    return resp.data.AutoData;
+                });
             }
 
             //fill condition with filter information
@@ -274,7 +286,7 @@
             function filterst(span) {
                 vm.st = dataconfig.changeTimeSpan(span);
                 search();
-            }     
+            }
 
             function today() {
                 vm.st = moment(new Date()).subtract(1, 'month').toDate();
@@ -284,7 +296,7 @@
 
             //disable after today
             vm.toggleMin = toggleMin;
-            
+
             function toggleMin() {
                 vm.tmind = new Date();
                 vm.minDate = vm.minDate ? null : vm.tmind;
@@ -360,7 +372,7 @@
             //fill searchText with filter information
             function filltext() {
                 if (vm.im > 1) {
-                    vm.searchText = dataconfig.fillSearchText(vm.im);              
+                    vm.searchText = dataconfig.fillSearchText(vm.im);
                     vm.filterfill = true;
                     vm.field = "all";
                     search();

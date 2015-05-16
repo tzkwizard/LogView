@@ -10,9 +10,7 @@
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
 
-        //#region variable
-        vm.isCurrent = isCurrent;
-        vm.search = search;
+        //#region variable       
         vm.searchText = '';
         var keyCodes = config.keyCodes;
         vm.isCollapsed = false;
@@ -22,7 +20,6 @@
         vm.isCollapsed5 = false;
         vm.fieldsName = [];
         vm.size = 10;
-
         vm.location = "";
         vm.httpmethod = "";
         vm.apiaddress = "";
@@ -39,7 +36,7 @@
 
 
         //#region function
-        vm.getFieldName = getFieldName;
+        vm.isCurrent = isCurrent;
         vm.sidebarNav = sidebarNav;
         //#endregion
 
@@ -58,15 +55,6 @@
                         vm.ft = new Date();
                     }
                 });
-        }
-
-        //Load field
-        function getFieldName() {
-            if (vm.fieldsName.length === 0) {
-                vm.fieldsName = dataconfig.getFieldName("logstash-2015.04.01", "logs");
-                vm.isCollapsed = true;
-            }
-            vm.isCollapsed = !vm.isCollapsed;
         }
 
         //get nav
@@ -93,14 +81,13 @@
         //get and show location facet
         vm.showLocation = function () {
             if (vm.location === "" || vm.location === undefined || common.$location.search.refresh) {
-
                 datasearch.termAggragation($rootScope.index, $rootScope.logtype, "geoip.city_name.raw", vm.size, vm.st, vm.ft).then(function (resp) {
                     //vm.location = resp.aggregations.ag.agg.buckets;
                     vm.location = resp.data.AggData;
                     common.$location.search.refresh = false;
                     // log("re");
                 }, function (err) {
-                    log(err.message);
+                    log(err.data.Message);
                 });
             } else {
                 vm.isCollapsed = !vm.isCollapsed;
@@ -116,7 +103,7 @@
                     common.$location.search.refresh = false;
                     //log("re");
                 }, function (err) {
-                    log(err.message);
+                    log(err.data.Message);
                 });
             } else {
                 vm.isCollapsed2 = !vm.isCollapsed2;
@@ -132,7 +119,7 @@
                     common.$location.search.refresh = false;
                     //log("re");
                 }, function (err) {
-                    log(err.message);
+                    log(err.data.Message);
                 });
             }
             else { vm.isCollapsed3 = !vm.isCollapsed3; }
@@ -147,7 +134,7 @@
                     common.$location.search.refresh = false;
                     //  log("re");
                 }, function (err) {
-                    log(err.message);
+                    log(err.data.Message);
                 });
             }
             else { vm.isCollapsed4 = !vm.isCollapsed4; }
@@ -162,7 +149,7 @@
                     common.$location.search.refresh = false;
                     //  log("re");
                 }, function (err) {
-                    log(err.message);
+                    log(err.data.Message);
                 });
             }
             else { vm.isCollapsed5 = !vm.isCollapsed5; }
@@ -173,32 +160,14 @@
             //$location.search();
             common.$location.search.field = f;
             common.$location.search('field', f);
-            //$location.search('text', r.key.toString());
-            //$location.search.text = "\"" + r.key.toString() + "\"";
             common.$location.search('text', r.Key.toString());
             common.$location.search.text = "\"" + r.Key.toString() + "\"";
-            common.$location.path('/els/')
+            common.$location.path('/els/');
             //$location.path('/els/' + r.key.toString());
         }
         //#endregion
 
-
-        //#region deprecated
-        function search($event) {
-            if ($event.keyCode === config.keyCodes.esc) {
-                vm.searchText = '';
-
-                return;
-            }
-
-            if ($event.type === 'click' || $event.keyCode === config.keyCodes.enter) {
-                var route = '/sessions/search/';
-
-                common.$location.path(route + vm.searchText);
-            }
-        }
-
-        //#endregion
-
     };
 })();
+
+

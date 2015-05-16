@@ -103,6 +103,7 @@
     <Content Include="Scripts\angularjs\angular-sanitize.min.js" />
     <Content Include="Scripts\angularjs\angular.js" />
     <Content Include="Scripts\angularjs\angular.min.js" />
+    <Content Include="Scripts\base64\angular-base64.min.js" />
     <Content Include="Scripts\bootstrap\bootstrap-dialog.js" />
     <Content Include="Scripts\bootstrap\bootstrap.js" />
     <Content Include="Scripts\bootstrap\bootstrap.min.js" />
