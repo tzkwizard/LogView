@@ -165,7 +165,7 @@
 
         //#region Draw Pie 
         function pieChart() {
-            return datasearch.dashboardPieAggregation("verb", "geoip.city_name.raw", "request.raw", vm.st, vm.ft)
+            return datasearch.dashboardPieAggregation("verb.raw", "geoip.city_name.raw", "action.raw", vm.st, vm.ft)
            .then(function (resp) {
                //drawpie(resp.data);
                chartservice.drawDashPie(resp.data, 'pie_div');

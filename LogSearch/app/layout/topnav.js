@@ -16,6 +16,8 @@
         vm.tabs = ["Dashboard", "ELS", "Agg", "TODO"];
         vm.selectedIndex = "";
         vm.autocompleLoading = true;
+        vm.st = "";
+        vm.ft = "";
         //#endregion
 
         //#region function
@@ -29,15 +31,6 @@
 
 
         //#region Time
-        vm.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'yyyy.MM.dd'];
-        vm.format = vm.formats[4];
-        vm.it = ["Last 3 months", "Last Month", "Last 4 weeks", "Last 3 weeks", "Last 2 weeks", "Last week",
-            "Last 5 days", "Last 3 days", "Last 2 days", "Last day"];
-        vm.dateOptions = {
-            formatYear: 'yy',
-            startingDay: 1
-        };
-
         vm.filterst = filterst;
         //change time span global
         function filterst(span) {
@@ -48,22 +41,22 @@
             // window.location.reload();
         }
 
-        $scope.toggleRight = timeNav('right');
+        $scope.toggleRight = sideNav('right');
+        $scope.toggleLeft = sideNav('left');
 
-        function timeNav(navID) {
+        function sideNav(navID) {
             var debounceFn = $mdUtil.debounce(function () {
                 $mdSidenav(navID)
                     .toggle()
                     .then(function () {
                         //document.getElementById("nav").style.height = "10%"; 
-                        document.getElementById("timeSidenav").style.height = vm.it.length * 60 + "%";
-                        document.getElementById("nav").style.overflow = "visible";
+                        //document.getElementById("timeSidenav").style.height = vm.it.length * 60 + "%";
+                       // document.getElementById("nav").style.overflow = "visible";
                         toastr.info("toggle " + navID + " is done");
                     });
             }, 10);
             return debounceFn;
         }
-
         //#endregion
 
 
@@ -84,8 +77,6 @@
                 } else {
                     vm.autoText = anow.concat(apre.concat(appre));
                 }
-                //vm.autoText = resp.data.AutoData;
-                toastr.info(vm.autoText.length);
                 vm.autocompleLoading = false;
                 return resp.data.AutoData;
             });
@@ -94,7 +85,7 @@
         //#endregion
 
 
-        //#region View
+        //#region View and Button
         //navi to other page
         function path() {
             switch (vm.selectedIndex) {
@@ -105,11 +96,7 @@
                 default: common.$location.path("/"); break;
             }
         }
-
-
-
-        vm.st = "";
-        vm.ft = "";
+        
         activate();
         function activate() {
             vm.ft = $rootScope.ft;
@@ -155,6 +142,7 @@
             $cookieStore.remove("useranme");
             $cookieStore.remove("password");
             $cookieStore.remove("key");
+            $cookieStore.remove("SiderBarFacet");
             //common.$location.path("/");
             window.location.reload();
         }

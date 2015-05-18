@@ -1,0 +1,15 @@
+﻿<md-sidenav id="timeSidenav" class="md-sidenav-right md-whiteframe-z2" md-component-id="right">
+    <md-toolbar class="md-theme-light">
+        <h2 class="md-toolbar-tools">History</h2>
+    </md-toolbar>
+    <md-content data-ng-controller="timeSideNav" layout-padding>
+        <section layout="row" layout-sm="column" layout-align="center center" ng-repeat="t in time" ng-click="nav(t)">
+            <md-button>{{t}}</md-button>
+            <div class="label">Flat</div>
+        </section>
+
+        <md-button ng-click="close()" class="md-primary" layout-align="center center">
+            Close
+        </md-button>
+    </md-content>
+</md-sidenav>

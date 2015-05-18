@@ -3,13 +3,15 @@
 
     var controllerId = 'sidebar';
     angular.module('app').controller(controllerId,
-        ['$rootScope', 'config', 'routes', 'dataconfig', 'datasearch', 'client', 'common', sidebar]);
+        ['$rootScope', 'config', 'routes', 'dataconfig', 'datasearch', 'client', 'common', '$timeout', '$mdBottomSheet', sidebar]);
 
-    function sidebar($rootScope, config, routes, dataconfig, datasearch, client, common) {
+    function sidebar($rootScope, config, routes, dataconfig, datasearch, client, common, $timeout, $mdBottomSheet) {
         var vm = this;
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
 
+
+       
         //#region variable       
         vm.searchText = '';
         var keyCodes = config.keyCodes;
@@ -18,7 +20,6 @@
         vm.isCollapsed3 = false;
         vm.isCollapsed4 = false;
         vm.isCollapsed5 = false;
-        vm.fieldsName = [];
         vm.size = 10;
         vm.location = "";
         vm.httpmethod = "";
@@ -27,17 +28,14 @@
         vm.useraction = "";
         vm.st = "";
         vm.ft = "";
-
-        vm.content = [];
-        vm.content[0] = 4;
-        vm.content[1] = 5;
-        vm.agg = ["Ace"];
+        vm.facet = $rootScope.facet;
         //#endregion
 
 
         //#region function
         vm.isCurrent = isCurrent;
         vm.sidebarNav = sidebarNav;
+        vm.showFacet = showFacet;
         //#endregion
 
 
@@ -79,6 +77,28 @@
 
         //#region Siderbar Facet
         //get and show location facet
+
+        
+
+        function showFacet(facet) {
+            var x = vm.facet.indexOf(facet);
+            if (vm.facet[x].data === "" || vm.facetdata[0] === undefined || common.$location.search.refresh) {
+                datasearch.termAggragation($rootScope.index, $rootScope.logtype, vm.facet[x].field, vm.size, vm.st, vm.ft).then(function (resp) {
+                    vm.facet[x].data = resp.data.AggData;
+                    common.$location.search.refresh = false;
+                    // log("re");
+                }, function (err) {
+                    log(err.data.Message);
+                });
+            } else {
+                vm.facet[x].collapse = !vm.facet[x].collapse;
+            }
+
+        }
+
+
+
+
         vm.showLocation = function () {
             if (vm.location === "" || vm.location === undefined || common.$location.search.refresh) {
                 datasearch.termAggragation($rootScope.index, $rootScope.logtype, "geoip.city_name.raw", vm.size, vm.st, vm.ft).then(function (resp) {
@@ -156,15 +176,31 @@
         }
 
         //nav to els page
-        function sidebarNav(r, f) {
+        function sidebarNav(text, f) {
             //$location.search();
             common.$location.search.field = f;
             common.$location.search('field', f);
-            common.$location.search('text', r.Key.toString());
-            common.$location.search.text = "\"" + r.Key.toString() + "\"";
+            common.$location.search('text', text.Key.toString());
+            common.$location.search.text = "\"" + text.Key.toString() + "\"";
             common.$location.path('/els/');
             //$location.path('/els/' + r.key.toString());
         }
+        //#endregion
+
+        //#region Settings
+        vm.showSettingBottomSheet = showSettingBottomSheet;
+
+        vm.alert = '';
+        function showSettingBottomSheet($event) {
+            vm.alert = '';
+            $mdBottomSheet.show({
+                templateUrl: 'app/layout/settingbottomsheet/settingBottomSheet.html',
+                controller: 'settingBottomSheet',
+                targetEvent: $event
+            }).then(function (clickedItem) {
+                vm.alert = clickedItem.name + ' clicked!';
+            });
+        };
         //#endregion
 
     };

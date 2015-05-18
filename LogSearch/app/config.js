@@ -18,6 +18,19 @@
         }
     }
     fillInput();
+
+    var facet = [
+               { title: "User", field: "ident.raw", collapse: false, data: "", icon: "user" },
+               { title: "Location_City", field: "geoip.city_name.raw", collapse: false, data: "", icon: "map" },
+               { title: "Api", field: "request.raw", collapse: false, data: "", icon: "windows" },
+               { title: "Action", field: "action.raw", collapse: false, data: "", icon: "android" },
+               { title: "Method", field: "verb.raw", collapse: false, data: "", icon: "dashboard" },
+                { title: "Location_Country", field: "geoip.country_name.raw", collapse: false, data: "", icon: "map" },
+                { title: "Location_Region", field: "geoip.real_region_name.raw", collapse: false, data: "", icon: "map" }
+
+    ];
+
+
     var keyCodes = {
         backspace: 8,
         tab: 9,
@@ -60,7 +73,8 @@
         keyCodes: keyCodes,
         remoteApiUrl: remoteApiUrl,
         localApiUrl: localApiUrl,
-        input: input
+        input: input,
+        facet: facet
     };
     app.config([
     "$routeProvider",

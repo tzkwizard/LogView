@@ -3,9 +3,9 @@
 
     var controllerId = 'shell';
     angular.module('app').controller(controllerId,
-        ['$window', '$rootScope', '$modal', 'common', 'config', 'client', 'dataconfig', shell]);
+        ['$scope', '$window', '$rootScope', '$modal', 'common', 'config', '$timeout', '$mdSidenav', '$mdUtil', shell]);
 
-    function shell($window, $rootScope, $modal, common, config, client,dataconfig) {
+    function shell($scope, $window, $rootScope, $modal, common, config, $timeout, $mdSidenav, $mdUtil) {
         var vm = this;
         var logSuccess = common.logger.getLogFn(controllerId, 'success');
         var events = config.events;
@@ -39,7 +39,6 @@
         }
 
         //#endregion
-
 
         //#region spinner
         function toggleSpinner(on) {

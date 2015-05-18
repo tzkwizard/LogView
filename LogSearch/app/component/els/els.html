@@ -7,20 +7,6 @@
                        data-ng-model=" vm.searchText" placeholder="  Search"
                        typeahead=" auto for auto in vm.autoText| filter:$viewValue | limitTo:8" typeahead-loading="loading" />
                 <i ng-show="vm.autocompleLoading" class="glyphicon glyphicon-refresh"></i>
-                <!-- <button class="btn btn-large btn-info btn-notext ng-click-active" type="button" data-ng-click="vm.search()">
-                    <i class="fa fa-search"> Search </i>
-                </button>
-                <button class="btn btn-large btn-info btn-notext ng-click-active" type="button" data-ng-click="vm.refresh($event)">
-                    <i class="fa fa-refresh"> Refresh </i>
-                </button>
-                <button class="btn-group-sm" type="button">
-                    <i class="fa fa-question-circle" tooltip="{{vm.Syntax.title}}+{{vm.Syntax.Description}}" tooltip-trigger="click" tooltip-placement="right"> </i>
-                </button>
-                <select ng-model="vm.field" class="form-control" style="width: 120px">
-                    <option value="" disabled selected>Select your Field</option>
-                    <option value="all">all</option>
-                    <option value={{doc}} data-ng-repeat="doc in vm.fieldsName">{{doc}} </option>
-                </select>-->
                 <md-button class="md-raised md-primary" data-ng-click="vm.search()" aria-label="search">
                     <i class="fa fa-search"> Search </i>
                     <md-tooltip>
@@ -203,7 +189,7 @@
             </div>
             <div id="google list">
                 <md-toolbar md-scroll-shrink>
-                    <div class="md-toolbar-tools">
+                    <div class=" md-toolbar-tools" style="font-size: 15px">
                         <md-button class="md-icon-button" aria-label="Settings" ng-click="collapse=!collapse">
                             <md-icon md-svg-icon="content/images/icon/ic_menu_18px.svg"></md-icon>
                         </md-button>
@@ -219,7 +205,7 @@
                             </md-optgroup>
                         </md-select>
                         <md-select placeholder="Pick" ng-model="vm.pagecount" ng-change="vm.refreshPage()">
-                            <md-optgroup label="PageSize">
+                            <md-optgroup label="ResultSize">
                                 <md-option ng-value={{p}} ng-repeat="p in vm.pagecountArr"><h5>{{p}}</h5></md-option>
                             </md-optgroup>
                             <md-option value={{vm.total}}>{{vm.total}}</md-option>
@@ -239,24 +225,12 @@
                 </md-content>
             </div>
             <div id="resultShow" class="widget wgreen">
-                <md-select class="pull-right" placeholder="Pick" ng-model="vm.pagecount" ng-change="vm.refreshPage()">
-                    <md-option value=100>100</md-option>
-                    <md-option value=500>500</md-option>
-                    <md-option value=1000>1000</md-option>
-                    <md-option value=10000>10000</md-option>
-                    <md-option value={{vm.total}}>{{vm.total}}</md-option>
-                </md-select>
-                <md-select class="pull-right" placeholder="Pick" ng-model="vm.paging.pageSize" ng-change="vm.refreshPage()">
-                    <md-option value=5>5</md-option>
-                    <md-option value=10>10</md-option>
-                    <md-option value=25>25</md-option>
-                    <md-option value=50>50</md-option>
-                    <md-option value=100>100</md-option>
-                </md-select>
+                
                 <div data-cc-widget-header title="{{vm.title}}"
                      allow-collapse="true"
                      subtitle="{{vm.tt}} / {{vm.total}}"
                      right-text="Page {{vm.paging.currentPage}} of {{vm.paging.pageCount}}"></div>
+
                 <div class="widget-content">
                     <table class="table table-striped table-condensed table-hover">
                         <thead>

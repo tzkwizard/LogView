@@ -221,8 +221,6 @@
                     } else {
                         vm.autoText = anow.concat(apre.concat(appre));
                     }
-                    //vm.autoText = resp.data.AutoData;
-                    toastr.info(vm.autoText.length);
                     vm.autocompleLoading = false;
                     return resp.data.AutoData;
                 });

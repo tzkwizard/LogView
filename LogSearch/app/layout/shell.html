@@ -2,14 +2,18 @@
     <header class="clearfix">
         <div data-ng-include="'app/layout/topnav.html'"></div>
     </header>
-    <br><br><br>
-    <section class="content">
+    <span>
+        <br><br><br>
+    </span>
+    <section class="content" id="shell">
         <div data-ng-include="'app/layout/sidebar.html'"></div>
         <div data-ng-view class="fader-animation"></div>
+        <div data-ng-include="'app/layout/timesidebar/timeSideNav.html'"></div>
+        <div data-ng-include="'app/layout/menusidebar/menuSideNav.html'"></div>        
     </section>
     <div data-ng-show="vm.isBusy" class="page-splash dissolve-animation">
         <div data-cc-spinner="vm.spinnerOptions"></div>
-        <div class="page-splash-message page-splash-message-subtle">{{vm.busyMessage}}</div>
     </div>
+   
 </div>
 

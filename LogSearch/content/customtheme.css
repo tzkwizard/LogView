@@ -553,7 +553,7 @@ form {
 /* Sidebar */
 
 .sidebar {
-    width: 230px;
+    width: 200px;
     float: left;
     display: block;
     background: #111;
@@ -781,7 +781,7 @@ form {
 
 .mainbar {
     position: relative;
-    margin-left: 230px;
+    margin-left: 200px;
     margin-right: 0;
     width: auto;
     background: #fff;
@@ -830,7 +830,7 @@ form {
 /* Matter */
 
 .mainbar .matter {
-    border-top: 0px solid #ddd;
+    border-top: 2px solid #ddd;
     margin: 2em;
 }
 

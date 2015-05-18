@@ -5844,9 +5844,9 @@ md-optgroup {
 md-sidenav {
   box-sizing: border-box;
   position: absolute;
-  width: 304px;
-  min-width: 304px;
-  max-width: 304px;
+  width: 244px;
+  min-width: 244px;
+  max-width: 244px;
   bottom: 0;
   z-index: 60;
   background-color: white;
@@ -5909,6 +5909,7 @@ md-sidenav {
 .md-sidenav-left, md-sidenav {
   left: 0;
   top: 0;
+  z-index: 9999;
   -webkit-transform: translate3d(0%, 0, 0);
           transform: translate3d(0%, 0, 0); }
   .md-sidenav-left.md-closed, md-sidenav.md-closed {
@@ -5918,6 +5919,7 @@ md-sidenav {
 .md-sidenav-right {
   left: 100%;
   top: 0;
+    z-index: 9999;
   -webkit-transform: translate3d(-100%, 0, 0);
           transform: translate3d(-100%, 0, 0); }
   .md-sidenav-right.md-closed {
