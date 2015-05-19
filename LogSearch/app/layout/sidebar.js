@@ -3,18 +3,15 @@
 
     var controllerId = 'sidebar';
     angular.module('app').controller(controllerId,
-        ['$rootScope', 'config', 'routes', 'dataconfig', 'datasearch', 'client', 'common', '$timeout', '$mdBottomSheet', sidebar]);
+        ['$rootScope', 'config', 'routes', 'dataconfig', 'datasearch', 'common', '$timeout', '$mdBottomSheet', sidebar]);
 
-    function sidebar($rootScope, config, routes, dataconfig, datasearch, client, common, $timeout, $mdBottomSheet) {
+    function sidebar($rootScope, config, routes, dataconfig, datasearch, common, $timeout, $mdBottomSheet) {
         var vm = this;
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
 
-
-       
         //#region variable       
         vm.searchText = '';
-        var keyCodes = config.keyCodes;
         vm.isCollapsed = false;
         vm.isCollapsed2 = false;
         vm.isCollapsed3 = false;
@@ -77,25 +74,19 @@
 
         //#region Siderbar Facet
         //get and show location facet
-
-        
-
         function showFacet(facet) {
             var x = vm.facet.indexOf(facet);
             if (vm.facet[x].data === "" || vm.facet[x].data === undefined || common.$location.search.refresh) {
                 datasearch.termAggragation($rootScope.index, $rootScope.logtype, vm.facet[x].field, vm.size, vm.st, vm.ft).then(function (resp) {
                     vm.facet[x].data = resp.data.AggData;
                     common.$location.search.refresh = false;
-                    // log("re");
                 }, function (err) {
                     log(err.data.Message);
                 });
             } else {
                 vm.facet[x].collapse = !vm.facet[x].collapse;
             }
-
         }
-
 
 
 
@@ -189,7 +180,6 @@
 
         //#region Settings
         vm.showSettingBottomSheet = showSettingBottomSheet;
-
         vm.alert = '';
         function showSettingBottomSheet($event) {
             vm.alert = '';

@@ -3,15 +3,13 @@
 
     var controllerId = 'shell';
     angular.module('app').controller(controllerId,
-        ['$scope', '$window', '$rootScope', '$modal', 'common', 'config', '$timeout', '$mdSidenav', '$mdUtil', shell]);
+        ['$scope', '$rootScope', '$modal', 'common', 'config', shell]);
 
-    function shell($scope, $window, $rootScope, $modal, common, config, $timeout, $mdSidenav, $mdUtil) {
+    function shell($scope, $rootScope, $modal, common, config) {
         var vm = this;
-        var logSuccess = common.logger.getLogFn(controllerId, 'success');
         var events = config.events;
 
         //#region variable
-        vm.busyMessage = 'Please wait ...';
         vm.isBusy = true;
         vm.spinnerOptions = {
             radius: 60,
@@ -26,7 +24,6 @@
         vm.showSplash = true;
 
         //#endregion
-
 
         //#region Shell Load
         activate();
@@ -72,21 +69,8 @@
                     return;
                 }
             });*/
-
-        /* $rootScope.$on('$viewContentLoaded',
-             function (event, current, previous) {
-                 var answer = $window.confirm('Leave?');
- 
-                 if (!answer) {
-                     event.preventDefault();
-                     return;
-                 }
-             });
-     };*/
-
         //#endregion
+
     }
-
-
 })();
 

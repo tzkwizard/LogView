@@ -4,8 +4,8 @@
     var controllerId = 'els';
 
     angular.module('app')
-        .controller(controllerId, function (bsDialog, $rootScope, $routeParams,
-           $scope, $modal, client, common, datasearch, dataconfig, $cookieStore, config, $timeout, $mdBottomSheet) {
+        .controller(controllerId, function ($rootScope, $routeParams,
+           $scope, $modal, common, datasearch, dataconfig, $cookieStore, config, $timeout, $mdBottomSheet) {
 
             var vm = this;
             vm.title = "Elasticsearch";

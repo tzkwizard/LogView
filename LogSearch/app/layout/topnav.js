@@ -103,11 +103,6 @@
             vm.st = $rootScope.st;
             autoFill(true);
             toastr.info("Auto Fill Load");
-            /*dataconfig.autoFill().then(function (resp) {               
-                vm.autoText = resp.data.AutoData;
-                vm.autocompleLoading = false;
-                toastr.info("Auto Fill Load");
-            });*/
         }
 
         //search 

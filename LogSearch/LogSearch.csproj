@@ -128,20 +128,12 @@
     <Content Include="Scripts\bootstrap\bootstrap-dialog.js" />
     <Content Include="Scripts\bootstrap\bootstrap.js" />
     <Content Include="Scripts\bootstrap\bootstrap.min.js" />
-    <Content Include="Scripts\breeze\breeze.angular.js" />
-    <Content Include="Scripts\breeze\breeze.bridge.angular.js" />
-    <Content Include="Scripts\breeze\breeze.debug.js" />
     <Content Include="Scripts\breeze\breeze.directives.js" />
-    <Content Include="Scripts\breeze\breeze.min.js" />
     <Content Include="Scripts\elasticsearch\elastic.js" />
     <Content Include="Scripts\elasticsearch\elastic.min.js" />
     <Content Include="Scripts\elasticsearch\elasticsearch.angular.js" />
     <Content Include="Scripts\elasticsearch\elasticsearch.angular.min.js" />
-    <Content Include="Scripts\elasticsearch\elasticsearch.jquery.js" />
-    <Content Include="Scripts\elasticsearch\elasticsearch.jquery.min.js" />
-    <Content Include="Scripts\elasticsearch\elasticsearch.js" />
-    <Content Include="Scripts\elasticsearch\elasticsearch.min.js" />
-    <Content Include="Scripts\google chart\googleapi.js" />
+    <Content Include="Scripts\google\google-chart.js" />
     <Content Include="Scripts\jquery\jquery-2.1.1.js" />
     <None Include="Properties\PublishProfiles\azapi.pubxml" />
     <None Include="Properties\PublishProfiles\elscall.pubxml" />
@@ -265,8 +257,6 @@
     <Content Include="Scripts\spinner\spin.min.js" />
     <Content Include="Scripts\toastr\toastr.js" />
     <Content Include="Scripts\toastr\toastr.min.js" />
-    <Content Include="Scripts\ui-bootstrap\ui-bootstrap-tpls-0.10.0.js" />
-    <Content Include="Scripts\ui-bootstrap\ui-bootstrap-tpls-0.10.0.min.js" />
     <Content Include="Scripts\ui-grid-stable.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

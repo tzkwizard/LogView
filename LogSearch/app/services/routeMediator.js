@@ -17,8 +17,6 @@
         return service;
 
         function setRoutingHandlers() {
-
-           // $rootScope.x = "4";
             updateDocTitle();
             handleRoutingErrors();  
         }

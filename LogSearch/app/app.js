@@ -26,7 +26,6 @@
         'elasticsearch',
         'ngGrid'
 
-
         //'ui.grid', 'ui.grid.edit', 'ui.grid.selection'
     ]);
 
@@ -66,7 +65,5 @@
             } else {
                 $rootScope.facet = $cookieStore.get('SiderBarFacet');
             }
-
-            // dataconfig.prime();
         }]);
 })();

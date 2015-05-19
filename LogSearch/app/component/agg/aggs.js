@@ -97,7 +97,6 @@
                     { key: 'School', value: $rootScope.school }
                 ];
                 if (vm.treestatus === true) {
-                    //drawTreemap();
                     chartservice.drawTreeMap(vm.fieldsName, vm.treesize, vm.st, vm.ft).then(function () {
                         vm.isBusy = false;
                         vm.process = false;
@@ -139,8 +138,6 @@
             //#region button and function
             //refresh page
             function refresh() {
-                //$route.reload();
-                //window.location.reload();
                 vm.isBusy = true;
                 common.$location.search.refresh = true;
                 activate();
@@ -238,7 +235,6 @@
                 }
                 common.$q.all(ap).then(function () {
                     vm.process = false;
-                    //vm.isBusy = false;
                 });
             }
 
