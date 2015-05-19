@@ -1,5 +1,5 @@
 ﻿<nav id="nav" class="navbar navbar-fixed-top navbar-inverse" data-ng-controller="topnav as vm">
-    <div id="HeaderTop" layout="row" layout-align="center center" style="height: 50px">
+    <div id="1" layout="row" layout-align="center center" style="height: 50px">
         <div id="icon" class=" navbar-header">
             <a href="#/" class="navbar-brand"><span class="brand-title" ng-click="toggleLeft()">Enterprise Logging System</span></a>
             <!--<img style="max-width:100px; margin-top: -7px;"
@@ -12,34 +12,33 @@
         </div>
         <input type="text" ng-model="vm.searchText" placeholder=" search "
                data-ng-change="vm.autoFill()" data-ng-keyup="vm.search($event)"
-               typeahead=" auto for auto in vm.autoText | filter:$viewValue | limitTo:8"
+               typeahead=" auto for auto in vm.autoText | filter:$viewValue | limitTo:4"
                typeahead-loading="loading" class="form-control">
         <i ng-show="vm.autocompleLoading" class="glyphicon glyphicon-refresh"></i>
         <!--<md-input-container flex="50" class="md-default-theme" style="background-color: white;height: inherit">
             <input ng-model="project.rate" placeholder=" search ">
         </md-input-container>-->
         <md-button class="md-raised md-primary" data-ng-click="vm.search($event)">
-            <i class="fa fa-search"> Search </i>
+            <md-icon md-svg-src="search" style="color: white"></md-icon> Search
         </md-button>
         <md-button class="md-raised md-primary" data-ng-click="vm.refresh($event)" aria-label="refresh">
-            <i class="fa fa-refresh"> Refresh </i>
+            <md-icon md-svg-src="refresh" style="color: white"></md-icon> Refesh
             <md-tooltip>
                 Refresh Page
             </md-tooltip>
         </md-button>
         <span flex></span>
         <md-button class="md-icon-button md-primary pull-right" aria-label="out" data-ng-click="vm.logout()">
-            <i class="fa fa-sign-out"></i>
+            <md-icon md-svg-src="logout" style="color: white"></md-icon>
             <md-tooltip>
                 Log out
             </md-tooltip>
         </md-button>
     </div>
-
-    <div layout="row" layout-align="space-between center" style="height: 50px">
+    <div id="2" layout="row" layout-align="space-between center" style="height: 50px">
         <span flex="10"></span>
         <md-button class="md-icon-button" aria-label="Setting1" ng-click="toggleLeft()" style="background-color: transparent">
-            <md-icon md-svg-icon="content/images/icon/ic_menu_18px.svg"></md-icon>
+            <md-icon md-svg-icon="menu" style="color: white"></md-icon>
             <md-tooltip>
                 Menu
             </md-tooltip>
@@ -55,17 +54,11 @@
             </md-tabs>
         </div>
         <md-button class="md-icon-button" aria-label="Setting2" ng-click="toggleRight()" style="background-color: transparent">
-            <md-icon md-svg-icon="content/images/icon/ic_menu_18px.svg"></md-icon>
+            <md-icon md-svg-icon="menu" style="color: white"></md-icon>
             <md-tooltip>
                 Choose Time Span
             </md-tooltip>
         </md-button>
-      <!--  <md-button type="button" class="btn btn-info dropdown-toggle" ng-click="toggleRight()">
-            History <span class="caret"></span>
-            <md-tooltip>
-                Choose Time Span
-            </md-tooltip>
-        </md-button>-->
         <div class="navbar-logo">
             <ul class="nav navbar-nav pull-right">
                 <li>

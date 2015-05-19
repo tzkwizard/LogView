@@ -44,7 +44,7 @@
                     showTip: true,
                     //enableScrollWheel: true,
                     useMapTypeControl: true,
-                    zoomLevel: 3
+                    zoomLevel: 2
                 });
 
                 // When the table is selected, we set the selection on the map.

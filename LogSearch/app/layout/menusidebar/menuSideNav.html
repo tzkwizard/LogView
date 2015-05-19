@@ -3,18 +3,17 @@
         <h2 class="md-toolbar-tools"> Menu </h2>
     </md-toolbar>
     <md-content data-ng-controller="menuSideNav" layout-padding>
-        <!--<section layout="row" layout-sm="column" layout-align="center center" ng-repeat="t in time">-->
         <md-list-item layout-align="center center"  ng-repeat="t in menuNav">
-            <md-button class="md-grid-item-content" ng-click="nav(t.name)">
-                <md-icon md-svg-src="{{t.icon}}"></md-icon>
-                <div class="md-grid-text"> {{ t.name }} </div>
+            <md-button class="md-grid-item-content" ng-click="nav(t.name)" style="min-width: 90%">
+                <md-icon md-svg-src={{t.icon}} class="pull-left"> 
+                </md-icon> {{ t.name }}
+                <!--<div class="md-grid-text">  </div>-->
             </md-button>
             <md-tooltip>
                 {{t.tooltip}}
             </md-tooltip>
             <div class="label">Flat</div>
         </md-list-item>
-<!--</section>-->
         <md-button ng-click="close()" class="md-primary" layout-align="center center">
             Close
         </md-button>

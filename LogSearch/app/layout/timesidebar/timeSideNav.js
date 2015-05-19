@@ -21,7 +21,7 @@
             $scope.close = function () {
                 $mdSidenav('right').close()
                   .then(function () {
-                      toastr.info("close RIGHT is done");
+                      //toastr.info("close RIGHT is done");
                   });
             };
         });

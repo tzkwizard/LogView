@@ -7,7 +7,9 @@
                     <div class="page-splash-message page-splash-message-subtle">{{vm.busyMessage}}</div>
                 </div>
             </div>
-            <div layout="row" layout-align="center start" style="height: 30%">
+
+
+            <div id="1" layout="row" layout-align="center start" style="height: 30%">
                 <div id="dChart" flex="60" class="widget wgreen">
                     <div data-cc-widget-header title=" PieChart" allow-collapse="true"></div>
                     <div class="widget-content">
@@ -25,7 +27,7 @@
                     </div>
                 </div>
             </div>
-            <div layout="row" layout-align="center start" style="height: 60%; width: 100%">
+            <div id="2" layout="row" layout-align="center start" style="height: 60%; width: 100%">
                 <div id="gMap" flex="50" class="widget wlightblue">
                     <md-select class="pull-right" placeholder="Pick" ng-model="vm.geomap2selection" ng-change="vm.changeMap()" aria-label="s1">
                         <md-option value="USA">USA</md-option>
@@ -54,7 +56,7 @@
                     </div>
                 </div>
             </div>
-            <div layout="row" layout-align="center start" style="height: 30%">
+            <div id="3" layout="row" layout-align="center start" style="height: 30%">
                 <div id="dChart3" flex="100" class="widget wblue">
                     <div data-cc-widget-header title=" TimeLine" allow-collapse="true"></div>
                     <div class="widget-content">
@@ -62,7 +64,7 @@
                     </div>
                 </div>
             </div>
-            <div layout="row" id="dtable_div">
+            <div layout="row" id="dtable_div" ng-show="false">
             </div>
         </div>
     </section>

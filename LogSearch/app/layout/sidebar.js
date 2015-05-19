@@ -20,7 +20,7 @@
         vm.isCollapsed3 = false;
         vm.isCollapsed4 = false;
         vm.isCollapsed5 = false;
-        vm.size = 10;
+        vm.size = 6;
         vm.location = "";
         vm.httpmethod = "";
         vm.apiaddress = "";
@@ -82,7 +82,7 @@
 
         function showFacet(facet) {
             var x = vm.facet.indexOf(facet);
-            if (vm.facet[x].data === "" || vm.facetdata[0] === undefined || common.$location.search.refresh) {
+            if (vm.facet[x].data === "" || vm.facet[x].data === undefined || common.$location.search.refresh) {
                 datasearch.termAggragation($rootScope.index, $rootScope.logtype, vm.facet[x].field, vm.size, vm.st, vm.ft).then(function (resp) {
                     vm.facet[x].data = resp.data.AggData;
                     common.$location.search.refresh = false;

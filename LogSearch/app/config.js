@@ -26,7 +26,9 @@
                { title: "Action", field: "action.raw", collapse: false, data: "", icon: "android" },
                { title: "Method", field: "verb.raw", collapse: false, data: "", icon: "dashboard" },
                 { title: "Location_Country", field: "geoip.country_name.raw", collapse: false, data: "", icon: "map" },
-                { title: "Location_Region", field: "geoip.real_region_name.raw", collapse: false, data: "", icon: "map" }
+                { title: "Location_Region", field: "geoip.real_region_name.raw", collapse: false, data: "", icon: "map" },
+                { title: "PostCode", field: "geoip.postal_code.raw", collapse: false, data: "", icon: "envelope" },
+                { title: "TimeZone", field: "geoip.timezone.raw", collapse: false, data: "", icon: "timezone" }
 
     ];
 
@@ -60,7 +62,7 @@
         spinnerToggle: 'spinner.toggle'
     };
 
-    //var localApiUrl = "http://localhost:1972/";
+    //var localApiUrl = "http://localhost:2000/";
     var localApiUrl = "http://localhost/MessageHandleApi/";
     var remoteApiUrl = "https://microsoft-apiapp463245e7d2084cb79dbc3d162e7b94cb.azurewebsites.net/";
     var config = {

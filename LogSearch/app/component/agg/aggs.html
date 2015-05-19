@@ -7,76 +7,54 @@
                     <div class="page-splash-message page-splash-message-subtle">{{vm.busyMessage}}</div>
                 </div>
             </div>
-            <div layout="row" layout-align="center center" style="height: 45px">
-                <!--<button data-ng-click="vm.aggShow(vm.aggName)" class="btn btn-info btn-notext" type="button">
-                    <i class="fa fa-pie-chart">Show</i>
-                </button>
 
-                <select ng-model="vm.index" class="form-control" data-ng-click="vm.getTypeName()" style="width: 150px">
-                    <option selected value="all">all</option>
-                    <option value={{doc}} data-ng-repeat="doc in vm.indicesName">{{doc}} </option>
-                </select>
-                <select ng-model="vm.type" class="form-control" style="width: 50px" ng-show="false">
-                    <option selected value="all"> all</option>
-                    <option value={{doc}} data-ng-repeat="doc in vm.typesName">{{doc}} </option>
-                </select>
-                <select ng-model="vm.aggName" class="form-control" style="width: 100px">
-                    <option selected value="all">all</option>
-                    <option value={{doc}} data-ng-repeat="doc in vm.fieldsName">{{doc}} </option>
-                </select>
-                <button class="btn btn-large btn-info btn-notext pull-right" type="button" data-ng-click="vm.refresh()">
-                    <i class="fa fa-refresh"> Refresh </i>
-                </button>
-                <button class="btn btn-large btn-info btn-notext pull-right" type="button" data-ng-click="vm.go()">
-                    <i class="fa fa-refresh"> Result </i>
-                </button>-->
 
-                <md-button class="md-raised md-primary" data-ng-click="vm.show()" ng-disabled="vm.process">
-                    <i class="fa fa-pie-chart"> Show </i>
-                </md-button>
-                <md-select placeholder="Pick" ng-model="vm.index" style="width: 20%">
-                    <md-option value="all">all</md-option>
-                    <md-option value={{doc}} data-ng-repeat="doc in vm.indicesName">{{doc}}</md-option>
-                </md-select>
-                <md-select placeholder="Pick" ng-model="vm.aggName">
-                    <md-option value="all">all</md-option>
-                    <md-option value={{doc}} data-ng-repeat="doc in vm.fieldsName">{{doc}}</md-option>
-                </md-select>
-                <div id="aggprocesser" layout="row" layout-sm="column" layout-align="space-around">
-                    <md-progress-circular md-mode="indeterminate" ng-show="vm.process"></md-progress-circular>
+            <div id="header">
+                <div layout="row" layout-align="center center" style="height: 45px">
+                    <md-button class="md-raised md-primary" data-ng-click="vm.show()" ng-disabled="vm.process">
+                        <i class="fa fa-pie-chart"> Show </i>
+                    </md-button>
+                    <md-select placeholder="Pick" ng-model="vm.index" style="width: 20%">
+                        <md-option value="all">all</md-option>
+                        <md-option value={{doc}} data-ng-repeat="doc in vm.indicesName">{{doc}}</md-option>
+                    </md-select>
+                    <md-select placeholder="Pick" ng-model="vm.aggName">
+                        <md-option value="all">all</md-option>
+                        <md-option value={{doc}} data-ng-repeat="doc in vm.fieldsName">{{doc}}</md-option>
+                    </md-select>
+                    <div id="aggprocesser" layout="row" layout-sm="column" layout-align="space-around">
+                        <md-progress-circular md-mode="indeterminate" ng-show="vm.process"></md-progress-circular>
+                    </div>
+                    <span flex></span>
+
+                    <md-button class="md-raised md-primary" data-ng-click="vm.go()" ng-disabled="vm.process">
+                        <i class="fa fa-wifi"> Result </i>
+                    </md-button>
+                    <md-button class="md-raised md-primary" data-ng-click="vm.refresh()" ng-disabled="vm.process">
+                        <i class="fa fa-refresh"> Refresh </i>
+                    </md-button>
+                    <md-button class="md-raised md-primary" data-ng-click="vm.clear()" ng-disabled="vm.process">
+                        <i class="fa fa-trash-o"> Clear </i>
+                    </md-button>
                 </div>
-                <span flex></span>
-
-                <md-button class="md-raised md-primary" data-ng-click="vm.go()" ng-disabled="vm.process">
-                    <i class="fa fa-wifi"> Result </i>
-                </md-button>
-                <md-button class="md-raised md-primary" data-ng-click="vm.refresh()" ng-disabled="vm.process">
-                    <i class="fa fa-refresh"> Refresh </i>
-                </md-button>
-                <md-button class="md-raised md-primary" data-ng-click="vm.clear()" ng-disabled="vm.process">
-                    <i class="fa fa-trash-o"> Clear </i>
-                </md-button>
+                <div layout="column" layout-align="center start" class="fader-animation" data-ng-repeat="doc in vm.refinedsearch">
+                    <a>{{doc.key}} : {{doc.value}}</a>
+                </div>
             </div>
-            <div id="aggResult" layout="column" layout-align="center start" class="fader-animation" data-ng-repeat="doc in vm.refinedsearch">
-                <a>{{doc.key}} : {{doc.value}}</a>
-            </div>
-
-            <div id="treeSelect" class="pull-right">
-                <md-select placeholder="Pick" ng-model="vm.treesize" ng-change="vm.treesizeChange()">
+            <div id="treemap" class="widget wblue">
+                <md-select placeholder="Pick" class="pull-right" ng-model="vm.treesize" ng-change="vm.treesizeChange()">
                     <md-option value=10>10</md-option>
                     <md-option value=20>20</md-option>
                     <md-option value=50>50</md-option>
                     <md-option value=100>100</md-option>
                 </md-select>
-            </div>
-            <div id="Content1" class="widget wblue">
                 <div data-cc-widget-header title="{{vm.title}}" subtitle="{{vm.total}}"
                      allow-collapse="true"></div>
                 <div class="widget-content">
                     <div id="treemap_div" style="height: 65%;" ng-show="vm.treestatus"></div>
                 </div>
             </div>
-            <div id="Content2" class="widget wlightblue">
+            <div id="piechart" class="widget wlightblue">
                 <div data-cc-widget-header title="{{vm.title2}}"
                      allow-collapse="true"></div>
                 <div class="widget-content" style="display: none;">

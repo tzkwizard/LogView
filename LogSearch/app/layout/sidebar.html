@@ -7,20 +7,15 @@
 
     <div class="sidebar-inner">
         <div class="sidebar-widget">
-            <md-button class="btn btn-large btn-notext " style="width: 80%; background-color: transparent;
+            <md-button class="btn btn-large btn-notext " style="width: 100%; margin-left: 0px; background-color: transparent;
                                      color: skyblue" ng-click="collapse=!collapse" aria-label="sidebar">
-                <i class="fa fa-align-justify fa-2x"></i>
+                <md-icon md-svg-src="menu" style="color: white"></md-icon>
             </md-button>
         </div>
-        <ul class="navi" collapse="collapse">
-
-            <!-- <li class="nlightblue fade-selection-animation" data-ng-class="vm.isCurrent(r)"
-                 data-ng-repeat="r in vm.navRoutes">
-                 <a href="#{{r.url}}" data-ng-bind-html="r.config.settings.content"></a>
-             </li>-->
+        <ul id="facet" class="navi" collapse="collapse">
 
             <ul class="md-menu-item" ng-repeat="f in vm.facet">
-                <md-button  ng-click="vm.showFacet(f)" style="width: 100%;margin-left: 0px">
+                <md-button ng-click="vm.showFacet(f)" style="width: 100%;margin-left: 0px">
                     <md-icon md-svg-src={{f.icon}} class="pull-left" style="color: white"></md-icon> <span>  {{f.title}}  </span>
                 </md-button>
                 <ul collapse="f.collapse" class="nlightblue fade-selection-animation">
@@ -31,25 +26,16 @@
                     </li>
                 </ul>
             </ul>
-            <!-- <md-list-item class=" md-3-line" ng-repeat="f in vm.facet">
-                 <md-button layout-align="start center" ng-click="vm.showFacet(f)" style="width: 200px">
-                     <md-icon md-svg-src={{f.icon}}></md-icon>{{f.title}}
-                 </md-button>
-                 $1$ <li class="nlightblue fade-selection-animation" ng-click="vm.showFacet(f)"> <a><i class="fa fa-user fa-2x"></i> {{f.title}}</a></li>#1#
-                 <ul collapse="f.collapse" class="nlightblue fade-selection-animation">
-                     <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,f.field)"
-                         data-ng-repeat="r in f.data">
-                         $1$<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>#1#
-                         <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
-                     </li>
-                 </ul>
-             </md-list-item>-->
 
+            <!--<li class="nlightblue fade-selection-animation" data-ng-class="vm.isCurrent(r)"
+                data-ng-repeat="r in vm.navRoutes">
+                <a href="#{{r.url}}" data-ng-bind-html="r.config.settings.content"></a>
+            </li>
             <li class="nlightblue fade-selection-animation" ng-click="vm.showUser()"> <a><i class="fa fa-user fa-2x"></i> User</a></li>
             <ul collapse="vm.isCollapsed4" class="nlightblue fade-selection-animation">
                 <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.ident.raw')"
                     data-ng-repeat="r in vm.user">
-                    <!--<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>-->
+                    $1$<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>#1#
                     <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
                 </li>
             </ul>
@@ -60,7 +46,7 @@
             <ul collapse="vm.isCollapsed" class="nlightblue fade-selection-animation">
                 <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.geoip.city_name.raw')"
                     data-ng-repeat="r in vm.location">
-                    <!--<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>-->
+                    $1$<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>#1#
                     <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
                 </li>
             </ul>
@@ -70,7 +56,7 @@
             <ul collapse="vm.isCollapsed2" class="nlightblue fade-selection-animation">
                 <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.request.raw')"
                     data-ng-repeat="r in vm.apiaddress">
-                    <!--<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>-->
+                    $1$<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>#1#
                     <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
                 </li>
             </ul>
@@ -81,7 +67,7 @@
             <ul collapse="vm.isCollapsed3" class="nlightblue fade-selection-animation">
                 <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.verb.raw')"
                     data-ng-repeat="r in vm.httpmethod">
-                    <!--<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>-->
+                    $1$<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>#1#
                     <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
                 </li>
             </ul>
@@ -92,10 +78,10 @@
             <ul collapse="vm.isCollapsed5" class="nlightblue fade-selection-animation">
                 <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.action.raw')"
                     data-ng-repeat="r in vm.useraction">
-                    <!-- <a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>-->
+                    $1$ <a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>#1#
                     <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
                 </li>
-            </ul>
+            </ul>-->
 
             <li class="nlightblue fade-selection-animation" ng-click="vm.showSettingBottomSheet($event)"> <a><i class="fa fa-cog fa-2x"></i>  Settings </a></li>
 
