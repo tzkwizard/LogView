@@ -2,13 +2,18 @@
     'use strict';
 
     var serviceId = 'datasearch';
-    angular.module('app').factory(serviceId, ['$rootScope', 'client', '$http', 'config', datasearch]);
+    angular.module('app').factory(serviceId, ['$rootScope', '$http', 'config', datasearch]);
 
-    function datasearch($rootScope, client, $http, config) {
+    function datasearch($rootScope, $http, config) {
 
 
         //#region service
         var service = {
+            getMap: getMap,
+            autoFill: autoFill,
+            checkID: checkID,
+            getLocation: getLocation,
+            transferLocation: transferLocation,
             basicSearch: basicSearch,
             getSampledata: getSampledata,
             stringSearch: stringQuery,
@@ -23,6 +28,92 @@
         }
         return service;
 
+        //#endregion
+
+        //#region map
+        function getMap() {
+            var remote = config.remoteApiUrl + "api/ElasticMapping/LogstashMap";
+            var local = config.localApiUrl + "api/ElasticMapping/LogstashMap";
+            var r = {
+                method: 'GET',
+                url: local,
+                params: {
+                    token: $rootScope.token
+                }
+            }
+            return $http(r).success(function (resp) {
+                return resp;
+            }).error(function (e) {
+                // toastr.info(e);
+            });
+        }
+
+        // get auto fill data
+        function autoFill(text) {
+            var info = {
+                SearchText: text,
+                Start: $rootScope.st,
+                End: $rootScope.ft
+            }
+            var remote = config.remoteApiUrl + "api/ElasticMapping/AutoFill";
+            var local = config.localApiUrl + "api/ElasticMapping/AutoFill";
+            var ii = angular.toJson(info);
+
+            var r = {
+                method: 'POST',
+                url: local,
+                data: ii,
+                params: {
+                    token: $rootScope.token
+                }
+            }
+
+            return $http(r)
+              .success(function (resp) {
+                  return resp;
+              }).error(function (e) {
+                  toastr.info("auto-fill " + e.Message);
+              });
+        }
+
+
+        function checkID(username, password) {
+            var remote = config.remoteApiUrl + "api/ElasticMapping/Login/" + username + "/" + password;
+            var local = config.localApiUrl + "api/ElasticMapping/Login/" + username + "/" + password;
+
+            return $http.get(local)
+              .success(function (resp) {
+                  return resp;
+              }).error(function (e) {
+                  return e;
+              });
+        }
+
+        //#endregion
+
+
+        //#region Location service
+        function getLocation(val) {
+            return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {
+                params: {
+                    address: val,
+                    sensor: false
+                }
+            }).then(function (response) {
+                return response.data.results.map(function (item) {
+                    return item.formatted_address;
+                });
+            });
+        }
+
+        function transferLocation(add) {
+            return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {
+                params: {
+                    address: add,
+                    sensor: false
+                }
+            });
+        }
         //#endregion
 
 

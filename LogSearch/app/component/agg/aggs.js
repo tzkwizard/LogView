@@ -192,15 +192,13 @@
             }
 
             function aggFieldFilter(aggField) {
-                var fieldFilter = ["geoip.timezone", "timestamp.raw", "@timestamp", "referrer", "referrer.raw", "timestamp", "request", "edata",
-                    "host", "action", "agent", "tags", "message", "geoip.country_name", "geoip.coordinates", "geoip.latitude", "geoip.longitude"];
-                fieldFilter.map(function (f) {
-                    var index = aggField.indexOf(f);
-                    if (index !== -1) {
-                        aggField.splice(index, 1);
+                var filtered = [];
+                angular.forEach(aggField, function (x) {
+                    if (x.substring(x.length - 3, x.length) === "raw" && x !== "timestamp.raw" && x !== "tags.raw") {
+                        filtered.push(x);
                     }
                 });
-                return aggField;
+                return filtered;               
             }
             //#endregion
 
@@ -211,9 +209,8 @@
                 vm.process = true;
                 removePieContainer();
                 if (vm.aggName === "" || vm.aggName === "all") {
-                    var aggfield = vm.fieldsName;
-                    vm.token = false;
-                    aggfield = aggFieldFilter(aggfield);
+                    var aggfield = dataconfig.aggFieldFilter(vm.fieldsName);
+                    vm.token = false; 
                     addPieContainer(aggfield);
                     var flag = aggfield.length <= 2 ? true : false;
 

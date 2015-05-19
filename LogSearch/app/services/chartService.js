@@ -4,7 +4,7 @@
 
 
     angular.module('app')
-        .factory(serviceId, function (datasearch, common) {
+        .factory(serviceId, function (common, datasearch, dataconfig) {
 
             //#region service
             var service = {
@@ -227,47 +227,47 @@
                     // 'title': "verb"
                 };
 
-                    var pdata = new google.visualization.DataTable();
-                    pdata.addColumn('string', 'key');
-                    pdata.addColumn('number', 'Number');
-                    angular.forEach(agg[1], function (n) {
-                        pdata.addRow([n.Key.toString(), n.DocCount]);
-                    });
-                    var piechart = new google.visualization.PieChart(document.getElementById(tag + 1));
-                    piechart.draw(pdata, options);
-                    google.visualization.events.addListener(piechart, 'select', function () {
-                        var row = piechart.getSelection()[0].row;
-                        var x = pdata.getValue(row, 0)+" : " + pdata.getValue(row, 1);
-                        toastr.info(x);
-                    });
+                var pdata = new google.visualization.DataTable();
+                pdata.addColumn('string', 'key');
+                pdata.addColumn('number', 'Number');
+                angular.forEach(agg[1], function (n) {
+                    pdata.addRow([n.Key.toString(), n.DocCount]);
+                });
+                var piechart = new google.visualization.PieChart(document.getElementById(tag + 1));
+                piechart.draw(pdata, options);
+                google.visualization.events.addListener(piechart, 'select', function () {
+                    var row = piechart.getSelection()[0].row;
+                    var x = pdata.getValue(row, 0) + " : " + pdata.getValue(row, 1);
+                    toastr.info(x);
+                });
 
-                    var pdata1 = new google.visualization.DataTable();
-                    pdata1.addColumn('string', 'key');
-                    pdata1.addColumn('number', 'Number');
-                    angular.forEach(agg[2], function (n) {
-                        pdata1.addRow([n.Key.toString(), n.DocCount]);
-                    });
-                    var piechart1 = new google.visualization.PieChart(document.getElementById(tag + 2));
-                    piechart1.draw(pdata1, options);
-                    google.visualization.events.addListener(piechart1, 'select', function () {
-                        var row1 = piechart1.getSelection()[0].row;
-                        var x1 = pdata1.getValue(row1, 0) + " : " + pdata1.getValue(row1, 1);
-                        toastr.info(x1);
-                    });
+                var pdata1 = new google.visualization.DataTable();
+                pdata1.addColumn('string', 'key');
+                pdata1.addColumn('number', 'Number');
+                angular.forEach(agg[2], function (n) {
+                    pdata1.addRow([n.Key.toString(), n.DocCount]);
+                });
+                var piechart1 = new google.visualization.PieChart(document.getElementById(tag + 2));
+                piechart1.draw(pdata1, options);
+                google.visualization.events.addListener(piechart1, 'select', function () {
+                    var row1 = piechart1.getSelection()[0].row;
+                    var x1 = pdata1.getValue(row1, 0) + " : " + pdata1.getValue(row1, 1);
+                    toastr.info(x1);
+                });
 
-                    var pdata2 = new google.visualization.DataTable();
-                    pdata2.addColumn('string', 'key');
-                    pdata2.addColumn('number', 'Number');
-                    angular.forEach(agg[3], function (n) {
-                        pdata2.addRow([n.Key.toString(), n.DocCount]);
-                    });
-                    var piechart2 = new google.visualization.PieChart(document.getElementById(tag + 3));
-                    piechart2.draw(pdata2, options);
-                    google.visualization.events.addListener(piechart2, 'select', function () {
-                        var row2 = piechart2.getSelection()[0].row;
-                        var x2 = pdata2.getValue(row2, 0) + " : " + pdata2.getValue(row2, 1);
-                        toastr.info(x2);
-                    });
+                var pdata2 = new google.visualization.DataTable();
+                pdata2.addColumn('string', 'key');
+                pdata2.addColumn('number', 'Number');
+                angular.forEach(agg[3], function (n) {
+                    pdata2.addRow([n.Key.toString(), n.DocCount]);
+                });
+                var piechart2 = new google.visualization.PieChart(document.getElementById(tag + 3));
+                piechart2.draw(pdata2, options);
+                google.visualization.events.addListener(piechart2, 'select', function () {
+                    var row2 = piechart2.getSelection()[0].row;
+                    var x2 = pdata2.getValue(row2, 0) + " : " + pdata2.getValue(row2, 1);
+                    toastr.info(x2);
+                });
             }
 
             function drawaggDashboard1(agg, aggName, dashboardTag, sliderTag, pieTag) {
@@ -373,12 +373,8 @@
             function drawTreeMap(fieldsName, size, start, end) {
                 google.setOnLoadCallback(drawTreeMap);
                 var datatree = new google.visualization.DataTable();
-                var fieldstree = [];
-                angular.forEach(fieldsName, function (x) {
-                    if (x.substring(x.length - 3, x.length) === "raw" && x !== "timestamp.raw" && x !== "tags.raw") {
-                        fieldstree.push(x);
-                    }
-                });
+
+                var fieldstree = dataconfig.aggFieldFilter(fieldsName);
                 datatree.addColumn('string', 'Name');
                 datatree.addColumn('string', 'Parent');
                 datatree.addColumn('number', 'count');

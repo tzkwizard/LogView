@@ -20,15 +20,26 @@
     fillInput();
 
     var facet = [
-                { title: "User", field: "ident.raw", collapse: false, data: "", icon: "user" },
-                { title: "Location_City", field: "geoip.city_name.raw", collapse: false, data: "", icon: "map" },
-                { title: "Api", field: "request.raw", collapse: false, data: "", icon: "windows" },
-                { title: "Action", field: "action.raw", collapse: false, data: "", icon: "android" },
-                { title: "Method", field: "verb.raw", collapse: false, data: "", icon: "dashboard" },
-                { title: "Location_Country", field: "geoip.country_name.raw", collapse: false, data: "", icon: "map" },
-                { title: "Location_Region", field: "geoip.real_region_name.raw", collapse: false, data: "", icon: "map" },
-                { title: "PostCode", field: "geoip.postal_code.raw", collapse: false, data: "", icon: "envelope" },
-                { title: "TimeZone", field: "geoip.timezone.raw", collapse: false, data: "", icon: "timezone" }
+                { title: "User", field: "ident.raw", collapse: false, data: "", icon: "user", analyze: "string" },
+                { title: "Location_City", field: "geoip.city_name.raw", collapse: false, data: "", icon: "map", analyze: "string" },
+                { title: "Api", field: "request.raw", collapse: false, data: "", icon: "windows", analyze: "string" },
+                { title: "Action", field: "action.raw", collapse: false, data: "", icon: "android", analyze: "string" },
+                { title: "Method", field: "verb.raw", collapse: false, data: "", icon: "dashboard", analyze: "string" },
+                { title: "Location_Country", field: "geoip.country_name.raw", collapse: false, data: "", icon: "map", analyze: "string" },
+                { title: "Location_Region", field: "geoip.real_region_name.raw", collapse: false, data: "", icon: "map", analyze: "string" },
+                { title: "PostCode", field: "geoip.postal_code.raw", collapse: false, data: "", icon: "envelope", analyze: "string" },
+                { title: "TimeZone", field: "geoip.timezone.raw", collapse: false, data: "", icon: "timezone", analyze: "string" },
+
+                { title: "User", field: "ident", collapse: false, data: "", icon: "user", analyze: "word" },
+                { title: "Location_City", field: "geoip.city_name", collapse: false, data: "", icon: "map", analyze: "word" },
+                { title: "Api", field: "request", collapse: false, data: "", icon: "windows", analyze: "word" },
+                { title: "Action", field: "action", collapse: false, data: "", icon: "android", analyze: "word" },
+                { title: "Method", field: "verb", collapse: false, data: "", icon: "dashboard", analyze: "word" },
+                { title: "Location_Country", field: "geoip.country_name", collapse: false, data: "", icon: "map", analyze: "word" },
+                { title: "Location_Region", field: "geoip.real_region_name", collapse: false, data: "", icon: "map", analyze: "word" },
+                { title: "PostCode", field: "geoip.postal_code", collapse: false, data: "", icon: "envelope", analyze: "word" },
+                { title: "TimeZone", field: "geoip.timezone", collapse: false, data: "", icon: "timezone", analyze: "word" }
+
     ];
 
 

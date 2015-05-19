@@ -4,7 +4,7 @@
     <md-chips ng-model="oldfacet" readonly="true">
         <md-chip-template>
             <strong>{{$chip.title}}</strong>
-            <em>(Facet)</em>
+            <em>({{$chip.analyze}})</em>
         </md-chip-template>
     </md-chips>
     <a> Selected Facet :</a>
@@ -14,12 +14,12 @@
                          md-items="item in querySearch(searchText)"
                          md-item-text="item.title"
                          placeholder="Search for a Facet">
-            <span md-highlight-text="searchText">{{item.title}} :: {{item.field}}</span>
+            <span md-highlight-text="searchText">{{item.title}} :: {{item.analyze}}</span>
         </md-autocomplete>
         <md-chip-template>
             <span>
                 <strong>{{$chip.title}}</strong>
-                <em>({{$chip.field}})</em>
+                <em>({{$chip.analyze}})</em>
             </span>
         </md-chip-template>
     </md-chips>

@@ -27,7 +27,7 @@
     commonModule.factory('common',
         ['$http', '$location', '$route', '$q', '$rootScope', '$timeout', 'commonConfig', 'logger', common]);
 
-    function common($http,$location, $route, $q, $rootScope, $timeout, commonConfig, logger) {
+    function common($http, $location, $route, $q, $rootScope, $timeout, commonConfig, logger) {
         var throttles = {};
 
         var service = {
@@ -37,7 +37,7 @@
             $timeout: $timeout,
             $route: $route,
             $location: $location,
-            $http : $http,
+            $http: $http,
             // generic
             activateController: activateController,
             createSearchThrottle: createSearchThrottle,

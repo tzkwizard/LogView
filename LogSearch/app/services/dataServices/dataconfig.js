@@ -2,9 +2,9 @@
     'use strict';
 
     var serviceId = 'dataconfig';
-    angular.module('app').factory(serviceId, ['$modal', '$http', '$rootScope', '$cookieStore', 'common', 'client', 'config', dataconfig]);
+    angular.module('app').factory(serviceId, ['$modal', '$rootScope', '$cookieStore', 'datasearch', dataconfig]);
 
-    function dataconfig($modal, $http, $rootScope, $cookieStore, common, client, config) {
+    function dataconfig($modal, $rootScope, $cookieStore, datasearch) {
 
         var vm = this;
 
@@ -12,25 +12,21 @@
         var service = {
             checkIndexCookie: checkIndexCookie,
             checkFieldCookie: checkFieldCookie,
-            getIndexName: getIndexName,
-            getTypeName: getTypeName,
+            initIndex: initIndex,
             getFieldName: getFieldName,
             createContainer: createContainer,
             addFilter: addFilter,
             removeFilter: removeFilter,
-            initIndex: initIndex,
-            autoFill: autoFill,
             prime: prime,
             login: login,
             openLoginPage: openLoginPage,
             checkIdent: checkIdent,
-            getLocation: getLocation,
-            transferLocation: transferLocation,
             loadIndex: loadIndex,
             loadField: loadField,
             fillSearchText: fillSearchText,
             changeTimeSpan: changeTimeSpan,
-            arrayUnique: arrayUnique
+            arrayUnique: arrayUnique,
+            aggFieldFilter: aggFieldFilter
         }
         return service;
         //#endregion
@@ -62,33 +58,7 @@
             if ($rootScope.logged) return;
             checkIdent();
         }
-        // get auto fill data
-        function autoFill(text) {
-            var info = {
-                SearchText: text,
-                Start: $rootScope.st,
-                End: $rootScope.ft
-            }
-            var remote = config.remoteApiUrl + "api/ElasticMapping/AutoFill";
-            var local = config.localApiUrl + "api/ElasticMapping/AutoFill";
-            var ii = angular.toJson(info);
 
-            var r = {
-                method: 'POST',
-                url: local,
-                data: ii,
-                params: {
-                    token: $rootScope.token
-                }
-            }
-
-            return $http(r)
-              .success(function (resp) {
-                  return resp;
-              }).error(function (e) {
-                  toastr.info("auto-fill " + e.Message);
-              });
-        }
 
         function checkIndexCookie() {
             if ($cookieStore.get('index') !== undefined && $rootScope.index !== undefined) {
@@ -141,114 +111,24 @@
         //#region Get Maping service
         //get logstash index from cluster
         function initIndex() {
-            var indicesName = [];
-
-            var remote = config.remoteApiUrl + "api/ElasticMapping/LogstashMap";
-            var local = config.localApiUrl + "api/ElasticMapping/LogstashMap";
-            var r = {
-                method: 'GET',
-                url: local,
-                params: {
-                    token: $rootScope.token
-                }
-            }
-            var ipromise = $http(r)
-              .success(function (resp) {
-                  indicesName = resp.Index;
-              }).error(function (e) {
-                  // toastr.info(e);
-              });
-            return ipromise.then(function () {
-                return indicesName;
+            return datasearch.getMap().then(function (resp) {
+                return resp.data.Index;
             });
-        }
-
-        //get index from cluster
-        function getIndexName() {
-            var indicesName = [];
-            client.cluster.state({
-                flatSettings: true
-            }).then(function (resp) {
-                var hit = resp.routing_table.indices;
-                var j = 0;
-                var temp = [];
-                var tempindices = [];
-                angular.forEach(hit, function (name) {
-
-                    temp[vm.j] = name.shards;
-                    angular.forEach(vm.temp[vm.j], function (shard) {
-                        vm.tempindices[vm.j] = shard[0].index;
-
-                    });
-                    vm.j++;
-                });
-                j = 0;
-                for (var i = 0; i < tempindices.length; i++) {
-                    if (tempindices[i].substring(0, 1) !== ".") {
-                        indicesName[j] = tempindices[i];
-                        j++;
-                    }
-
-                }
-            }, function (err) {
-                toastr.info("get Index Name" + err.message);
-            });
-            return indicesName;
-        }
-
-        //get type from cluster
-        function getTypeName(index, pagecount) {
-            if (index === "all" || index === "")
-                return "";
-            var typesName = [];
-            client.search({
-                index: index,
-                size: pagecount,
-                body: {
-                    query: {
-                        "match_all": {}
-                    }
-                }
-            }).then(function (resp) {
-                var map = resp.hits.hits;
-                angular.forEach(map, function (n) {
-                    if (typesName.indexOf(n._type) === -1) {
-                        typesName.push(n._type);
-                    }
-                });
-
-            }, function (err) {
-                toastr.info(err.message);
-            });
-            return typesName;
         }
 
         //get field from cluster
         function getFieldName() {
-            var fieldsName = [];
-            var remote = config.remoteApiUrl + "api/ElasticMapping/LogstashMap";
-            var local = config.localApiUrl + "api/ElasticMapping/LogstashMap";
-            var r = {
-                method: 'GET',
-                url: local,
-                params: {
-                    token: $rootScope.token
-                }
-            }
-            var ipromise = $http(r)
-              .success(function (resp) {
-                  fieldsName = resp.Field;
-                  angular.forEach(fieldsName, function (name) {
-                      if (name.substring(0, 1) === '_') {
-                          var index = fieldsName.indexOf(name);
-                          fieldsName.splice(index, 1);
-                      }
-                  });
-              }).error(function (e) {
-                  //toastr.info(e);
-              });
-            return ipromise.then(function () {
-                return fieldsName;
+            return datasearch.getMap().then(function (resp) {
+                var fieldsName = resp.data.Field;
+                var field = [];
+                angular.forEach(fieldsName, function (name) {
+                    if ((name.substring(0, 1) >= 'A' && name.substring(0, 1) <= 'Z') || (name.substring(0, 1) >= 'a' && name.substring(0, 1) <= 'z')) {
+                        field.push(name);
+                    }
+                });
+                return field;
+            }).then(function (data) {
+                return data;
             });
         }
         //#endregion
@@ -272,16 +152,7 @@
                 password = "1";
                 username = "1";
             }
-
-            var remote = config.remoteApiUrl + "api/ElasticMapping/Login/" + username + "/" + password;
-            var local = config.localApiUrl + "api/ElasticMapping/Login/" + username + "/" + password;
-
-            return $http.get(local)
-              .success(function (resp) {
-                  return resp;
-              }).error(function (e) {
-                  return e;
-              });
+            return datasearch.checkID(username, password);
         }
 
         function openLoginPage() {
@@ -307,31 +178,6 @@
             }, function (e) {
                 toastr.info(e.data.Message);
                 openLoginPage();
-            });
-        }
-        //#endregion
-
-
-        //#region Location service
-        function getLocation(val) {
-            return common.$http.get('http://maps.googleapis.com/maps/api/geocode/json', {
-                params: {
-                    address: val,
-                    sensor: false
-                }
-            }).then(function (response) {
-                return response.data.results.map(function (item) {
-                    return item.formatted_address;
-                });
-            });
-        }
-
-        function transferLocation(add) {
-            return common.$http.get('http://maps.googleapis.com/maps/api/geocode/json', {
-                params: {
-                    address: add,
-                    sensor: false
-                }
             });
         }
         //#endregion
@@ -483,6 +329,16 @@
             divd.setAttribute('id', tableName);
             cell2.appendChild(divd);
         }
+
+        function aggFieldFilter(fields) {
+            var filtered = [];
+            angular.forEach(fields, function (x) {
+                if (x.substring(x.length - 3, x.length) === "raw" && x !== "timestamp.raw" && x !== "tags.raw") {
+                    filtered.push(x);
+                }
+            });
+            return filtered;
+        }
         //#endregion
 
 
@@ -542,6 +398,7 @@
         }
         //#endregion
 
+
         //#region regular service
         function arrayUnique(array) {
             var a = array.concat();
@@ -555,4 +412,6 @@
         };
         //#endregion
     }
+
+
 })();

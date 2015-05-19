@@ -213,7 +213,7 @@
             function autoFill(force) {
                 vm.autocompleLoading = true;
                 if (force !== true && vm.searchText === "") return null;
-                return dataconfig.autoFill(vm.searchText).then(function (resp) {
+                return datasearch.autoFill(vm.searchText).then(function (resp) {
                     appre = apre; apre = anow;
                     anow = resp.data.AutoData;
                     if (vm.autoText.length < 1000 && vm.autoText.length !== 0) {
@@ -335,12 +335,12 @@
             vm.asyncSelected = "";
             //get address
             function getLocation(val) {
-                return dataconfig.getLocation(val);
+                return datasearch.getLocation(val);
             }
 
             //transfer address to cordinate
             function transferLocation() {
-                dataconfig.transferLocation(vm.asyncSelected).then(function (data) {
+                datasearch.transferLocation(vm.asyncSelected).then(function (data) {
                     try {
                         var cor = data.data.results[0].geometry.location;
                         toastr.info(cor.lat + "---" + cor.lng);

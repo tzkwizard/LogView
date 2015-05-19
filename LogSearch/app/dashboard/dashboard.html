@@ -13,21 +13,21 @@
                 <div id="dChart" flex="60" class="widget wgreen">
                     <div data-cc-widget-header title=" PieChart" allow-collapse="true"></div>
                     <div class="widget-content">
-                        <div layout="row">
-                            <div flex="33" id="pie_div1" style="height: 70%"></div>
-                            <div flex="33" id="pie_div2" style="height: 70%"></div>
-                            <div flex="33" id="pie_div3" style="height: 70%"></div>
+                        <div layout="row" style="height: 250px">
+                            <div flex="33" id="pie_div1"></div>
+                            <div flex="33" id="pie_div2"></div>
+                            <div flex="33" id="pie_div3"></div>
                         </div>
                     </div>
                 </div>
                 <div id="dChart2" flex="40" class="widget wviolet">
                     <div data-cc-widget-header title=" BarChart" allow-collapse="true"></div>
                     <div class="widget-content">
-                        <div id='DateHist_div' style="height: 70%"></div>
+                        <div id='DateHist_div' style="height: 250px"></div>
                     </div>
                 </div>
             </div>
-            <div id="2" layout="row" layout-align="center start" style="height: 60%; width: 100%">
+            <div id="2" layout="row" layout-align="center start">
                 <div id="gMap" flex="50" class="widget wlightblue">
                     <md-select class="pull-right" placeholder="Pick" ng-model="vm.geomap2selection" ng-change="vm.changeMap()" aria-label="s1">
                         <md-option value="USA">USA</md-option>
@@ -41,7 +41,7 @@
                     </md-select>
                     <div data-cc-widget-header title=" Region Map" allow-collapse="true"></div>
                     <div class="widget-content">
-                        <div id="gmap_div" style="height: 70%; width: 100%"></div>
+                        <div id="gmap_div" style="height: 400px"></div>
                     </div>
                 </div>
                 <div id="dMap" flex="50" class="widget waqua">
@@ -52,7 +52,7 @@
                     </md-select>
                     <div data-cc-widget-header title=" City Map" allow-collapse="true"></div>
                     <div class="widget-content">
-                        <div id="dmap_div" style="height: 70%; width: 100%"></div>
+                        <div id="dmap_div" style="height: 400px"></div>
                     </div>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                 <div id="dChart3" flex="100" class="widget wblue">
                     <div data-cc-widget-header title=" TimeLine" allow-collapse="true"></div>
                     <div class="widget-content">
-                        <div id='TimeLine_div' style="height: 70%"></div>
+                        <div id='TimeLine_div' style="height: 400px"></div>
                     </div>
                 </div>
             </div>

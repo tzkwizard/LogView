@@ -3,9 +3,9 @@
 
     var controllerId = 'topnav';
     angular.module('app').controller(controllerId,
-        ['$cookieStore', '$rootScope', '$route', '$scope', 'dataconfig', 'config', 'common', '$timeout', '$mdSidenav', '$mdUtil', topnav]);
+        ['$cookieStore', '$rootScope', '$scope', 'dataconfig', 'datasearch', 'config', 'common', '$timeout', '$mdSidenav', '$mdUtil', topnav]);
 
-    function topnav($cookieStore, $rootScope, $route, $scope, dataconfig, config, common, $timeout, $mdSidenav, $mdUtil) {
+    function topnav($cookieStore, $rootScope, $scope, dataconfig, datasearch, config, common, $timeout, $mdSidenav, $mdUtil) {
         var vm = this;
         // var keyCodes = config.keyCodes;
 
@@ -36,7 +36,6 @@
         function filterst(span) {
             $rootScope.ft = new Date();
             $rootScope.st = dataconfig.changeTimeSpan(span);
-            //$route.reload();
             common.$location.path(common.$location.path() + "/");
             // window.location.reload();
         }
@@ -51,8 +50,8 @@
                     .then(function () {
                         //document.getElementById("nav").style.height = "10%"; 
                         //document.getElementById("timeSidenav").style.height = vm.it.length * 60 + "%";
-                       // document.getElementById("nav").style.overflow = "visible";
-                       // toastr.info("toggle " + navID + " is done");
+                        // document.getElementById("nav").style.overflow = "visible";
+                        // toastr.info("toggle " + navID + " is done");
                     });
             }, 10);
             return debounceFn;
@@ -69,7 +68,7 @@
         function autoFill(force) {
             vm.autocompleLoading = true;
             if (force !== true && vm.searchText === "") return null;
-            return dataconfig.autoFill(vm.searchText).then(function (resp) {
+            return datasearch.autoFill(vm.searchText).then(function (resp) {
                 appre = apre; apre = anow;
                 anow = resp.data.AutoData;
                 if (vm.autoText.length < 1000 && vm.autoText.length !== 0) {
@@ -96,7 +95,7 @@
                 default: common.$location.path("/"); break;
             }
         }
-        
+
         activate();
         function activate() {
             vm.ft = $rootScope.ft;
