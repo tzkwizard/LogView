@@ -15,8 +15,6 @@
             initIndex: initIndex,
             getFieldName: getFieldName,
             createContainer: createContainer,
-            addFilter: addFilter,
-            removeFilter: removeFilter,
             prime: prime,
             login: login,
             openLoginPage: openLoginPage,
@@ -220,70 +218,7 @@
 
             }
             return searchText;
-        }
-
-        //add filter button
-        function addFilter(n, fieldsName) {
-            var para = document.createElement("p");
-            /*  var node = document.createTextNode("filter:" + n);
-              para.appendChild(node);*/
-
-            var element = document.getElementById("filter");
-            element.appendChild(para);
-
-            var contain = document.createElement('div');
-            var cname = 'contain' + n;
-            contain.setAttribute('id', cname);
-            element.appendChild(contain);
-
-            var input = document.createElement('input');
-            var iname = 'input' + n;
-            input.setAttribute("data-ng-model", "vm.fi" + n.toString());
-            input.setAttribute('id', iname);
-            contain.appendChild(input);
-
-            /*var xx = document.getElementById(iname);
-            var el = angular.element(xx);
-            $scope = el.scope();
-            $injector = el.injector();
-            $injector.invoke(function ($compile) {
-                $compile(el)($scope);
-            });*/
-
-
-            var fselect = document.createElement('select');
-            var sname = 'fselect' + n;
-            fselect.setAttribute('id', sname);
-            contain.appendChild(fselect);
-
-            angular.forEach(fieldsName, function (name) {
-                var opt = document.createElement('option');
-                opt.value = name;
-                opt.innerHTML = name;
-                fselect.appendChild(opt);
-            });
-
-            var jselect = document.createElement('select');
-            var jname = 'jselect' + n;
-            jselect.setAttribute('id', jname);
-            contain.appendChild(jselect);
-
-            var j = ['MUST', 'MUST_NOT', 'SHOULD'];
-            angular.forEach(j, function (name) {
-                var opt = document.createElement('option');
-                opt.value = name;
-                opt.innerHTML = name;
-                jselect.appendChild(opt);
-            });
-        }
-
-        //delete filter button
-        function removeFilter(n) {
-            var main = document.getElementById('filter');
-            var cname = 'contain' + n;
-            var contain = document.getElementById(cname);
-            main.removeChild(contain);
-        }
+        }        
         //#endregion
 
 

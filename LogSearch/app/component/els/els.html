@@ -134,13 +134,13 @@
 
                     </div>
                     <div layout="row" id="FilterButton">
-                        <md-button class="md-raised md-primary" data-ng-click="vm.addfilter()" aria-label="add filter">
+                        <md-button addfilter class="md-raised md-primary" aria-label="add filter">
                             <i class="fa fa-plus-square"></i>
                             <md-tooltip>
                                 Add Filter
                             </md-tooltip>
                         </md-button>
-                        <md-button class="md-raised md-primary" data-ng-click="vm.removefilter()" aria-label="remove filter">
+                        <md-button removefilter class="md-raised md-primary" aria-label="remove filter">
                             <i class="fa fa-minus-square"></i>
                             <md-tooltip>
                                 Remove Filter
@@ -173,7 +173,7 @@
                 <div id="elsPaging" layout="row" class="widget-foot">
                     <div class="clearfix"></div>
                     <pagination boundary-links="true"
-                                total-items="vm.tt"
+                                total-items="vm.pagetotal"
                                 items-per-page="vm.paging.pageSize"
                                 data-ng-model="vm.paging.currentPage"
                                 data-ng-change="vm.pageChanged()"
@@ -192,7 +192,7 @@
                                 <md-icon md-svg-icon="menu"></md-icon>
                             </md-button>
                             <h3 style="color: whitesmoke">
-                                <span>Google List</span> ({{vm.tt}} / {{vm.total}})
+                                <span>Google List</span> ({{vm.pagetotal}} / {{vm.total}})
                             </h3>
                             <span flex></span>
                             <span>Page {{vm.paging.currentPage}} of {{vm.paging.pageCount}}</span>
@@ -206,7 +206,6 @@
                                 <md-optgroup label="ResultSize">
                                     <md-option ng-value={{p}} ng-repeat="p in vm.pagecountArr"><h5>{{p}}</h5></md-option>
                                 </md-optgroup>
-                                <md-option value={{vm.total}}>{{vm.total}}</md-option>
                             </md-select>
                             <md-button class="md-icon-button" aria-label="r2" ng-click="vm.showlist()">
                                 <md-icon md-svg-icon="menu"></md-icon>

@@ -1,37 +1,51 @@
-﻿(function() {
+﻿(function () {
     'use strict';
 
     var app = angular.module('app');
 
-   
-
-    //Directive for adding buttons on click that show an alert on click
-    app.directive("addbuttons", function ($compile) {
+    //add filter
+    app.directive("addfilter", function ($compile) {
         return function (scope, element, attrs) {
             element.bind("click", function () {
-                scope.count++;
-                
-                angular.element(document.getElementById('space-for-buttons')).
-                   append($compile( "<input id='tt'"+"type='text'" +"size='8'"+
-                   "data-ng-model='vm.fi'"+
-                   "placeholder='  Filter '" + "/>")(scope));
-                angular.element(document.getElementById('space-for-buttons')).
-                    append($compile("<select id='test2''" +"ng-model='vm.filterAggName''"+ "class='input-medium'" +"style='width: 100px'"+">"+
-                "<option value={{doc}}"+"data-ng-repeat='doc in vm.fieldsName'"+">"+"{{doc}}"+"</option"+">"+
-            "</select"+">")(scope));
-                angular.element(document.getElementById('space-for-buttons')).
-                  append($compile( "<select ng-model=' vm.condition'"+">"+
-                "<option selected value='MUST'"+">"+"MUST"+"</option"+">"+
-                "<option vaule='MUST_NOT'"+">"+"MUST_NOT"+"</option"+">"+
-                "<option vaule='SHOULD'"+">"+"SHOULD"+"</option"+">"+
-                "</select"+">")(scope));
+                angular.element(document.getElementById('filter')).
+                  append($compile("<div id=contain" + scope.count + "></div>")(scope));
 
-                
+                angular.element(document.getElementById('contain' + scope.count)).
+                   append($compile("<input id=input" + scope.count + " placeholder='input'/>")(scope));
+
+                angular.element(document.getElementById('contain' + scope.count)).
+                    append($compile("<select id=fselect" + scope.count + ">" +
+                "<option value={{doc}}  data-ng-repeat='doc in vm.fieldsName'> {{doc}} </option>" +
+                "</select>")(scope));
+
+                angular.element(document.getElementById('contain' + scope.count)).
+                  append($compile("<select id=jselect" + scope.count + ">" +
+                "<option selected value='MUST'>MUST</option>" +
+                "<option vaule='MUST_NOT'>MUST_NOT</option>" +
+                "<option vaule='SHOULD'>SHOULD</option>" +
+                "</select>")(scope));
+                scope.count++;
+            });
+        };
+    });
+    //remove filter
+    app.directive("removefilter", function ($compile) {
+        return function (scope, element, attrs) {
+            element.bind("click", function () {
+                var x = scope.count - 1;
+                if (x >= 1) {
+                    angular.element(document.getElementById('contain' + x)).remove();
+                    scope.count--;
+                }
             });
         };
     });
 
-    
+
+
+
+
+
     var googleChart = googleChart || angular.module("google-chart", []);
 
     googleChart.directive("googleChart", function () {
@@ -74,7 +88,7 @@
         return directive;
 
         function link(scope, element, attrs) {
-            attrs.$observe('ccImgPerson', function(value) {
+            attrs.$observe('ccImgPerson', function (value) {
                 value = basePath + (value || unknownImage);
                 attrs.$set('src', value);
             });
@@ -209,7 +223,7 @@
                 });
 
                 function toggleIcon() {
-                    $win.scrollTop() > 300 ? element.slideDown(): element.slideUp();
+                    $win.scrollTop() > 300 ? element.slideDown() : element.slideUp();
                 }
             }
         }
@@ -238,7 +252,7 @@
         }
     }]);
 
-    app.directive('ccWidgetHeader', function() {
+    app.directive('ccWidgetHeader', function () {
         //Usage:
         //<div data-cc-widget-header title="vm.map.title"></div>
         var directive = {

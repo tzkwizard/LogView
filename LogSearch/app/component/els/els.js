@@ -12,24 +12,24 @@
             vm.title2 = "Function";
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
-            $scope.collapse = true;
 
 
+    
             //#region variable
+            $scope.collapse = true;
             $scope.count = 0;
             vm.distance = 0;
             vm.autocompleLoading = false;
             vm.searchText = $routeParams.search || '';
-            vm.processSearch = false;
+            vm.processSearch = false; //processbar switch
             vm.hitSearch = "";
-            vm.total = 0;
             vm.field = "";
             vm.index = $routeParams.index || "";
-            vm.type = "";
             vm.pagecount = 1000;
             vm.fieldsName = [];
             vm.indicesName = [];
-            vm.tt = 0;
+            vm.pagetotal = 0;//    real show result number
+            vm.total = 0;// possible max result number
             vm.ft = "";
             vm.st = "";
             vm.autoText = [];
@@ -41,9 +41,8 @@
             };
             vm.dunit = 'mi';
             vm.timeShow = false;
-            vm.im = 1;
+            $scope.count = 1; // filter number 
             vm.pagesizeArr = ["5", "10", "25", "50", "100"];
-            vm.pagecountArr = ["100", "500", "1000", "5000", "10000"];
             //#endregion
 
             //#region function
@@ -53,14 +52,11 @@
             vm.test = test;
             vm.init = init;
 
-            vm.today = today;
             vm.pageChanged = pageChanged;
             vm.getCurrentPageData = getCurrentPageData;
             vm.getFieldName = getFieldName;
             vm.getIndexName = getIndexName;
             vm.filltext = filltext;
-            vm.addfilter = addfilter;
-            vm.removefilter = removefilter;
             vm.filterst = filterst;
             vm.autoFill = autoFill;
             vm.addFilterdata = addFilterdata;
@@ -140,11 +136,12 @@
                               vm.hitSearch = resp.data.Data;
                           }
                           vm.total = resp.data.Total;
-                          vm.tt = resp.total < vm.pagecount ? resp.total : vm.pagecount;
+                          vm.pagecountArr = [Math.floor(vm.total / 20), Math.floor(vm.total / 10), Math.floor(vm.total / 5), Math.floor(vm.total / 2), vm.total];
+                          vm.pagetotal = resp.total < vm.pagecount ? resp.total : vm.pagecount;
                           vm.getCurrentPageData(vm.hitSearch);
                           random();
                           vm.processSearch = false;
-                          refreshPage();
+                          //refreshPage();
                       }, function (e) {
                           log("sampledata " + e.data.Message);
                       });
@@ -172,8 +169,8 @@
                 vm.processSearch = true;
                 vm.hitSearch = "";
                 vm.condition = [];
-                addFilterdata();
 
+                addFilterdata();
                 vm.distanceF = vm.distance + vm.dunit;
                 if (vm.distance === 0 || vm.distance === null) {
                     vm.distance = 0;
@@ -192,10 +189,11 @@
                             }
                             vm.processSearch = false;
                             vm.total = resp.data.Total;
-                            vm.tt = vm.total < vm.pagecount ? vm.total : vm.pagecount;
+                            vm.pagecountArr = [Math.floor(vm.total / 20), Math.floor(vm.total / 10), Math.floor(vm.total / 5), Math.floor(vm.total / 2), vm.total];
+                            vm.pagetotal = vm.total < vm.pagecount ? vm.total : vm.pagecount;
                             vm.getCurrentPageData(vm.hitSearch);
                             random();
-                            refreshPage();
+                            //refreshPage();
                         }, function (e) {
                             log("search data error " + e.data.Message);
                         });
@@ -225,7 +223,7 @@
             //fill condition with filter information
             function addFilterdata() {
                 if (!vm.filterfill) {
-                    for (var i = 1; i < vm.im; i++) {
+                    for (var i = 1; i < $scope.count; i++) {
                         var s1 = document.getElementById('jselect' + i.toString());
                         var s2 = document.getElementById('fselect' + i.toString());
                         var s3 = document.getElementById('input' + i.toString());
@@ -251,7 +249,7 @@
                             vm.searchText = "";
                             search();
                             vm.filterfill = false;
-                            while (vm.im > 1) {
+                            while ($scope.count > 1) {
                                 removefilter();
                             }
                             log("Refresh");
@@ -260,7 +258,7 @@
                 });
             }
             function showlist() {
-                $rootScope.searchresult =vm.hitSearch;
+                $rootScope.searchresult = vm.hitSearch;
                 common.$location.path("/elslist");
             }
             //#endregion
@@ -286,18 +284,10 @@
                 search();
             }
 
-            function today() {
-                vm.st = moment(new Date()).subtract(1, 'month').toDate();
-                vm.ft = new Date();
-                toggleMin();
-            }
-
             //disable after today
-            vm.toggleMin = toggleMin;
-
-            function toggleMin() {
+            vm.toggleMin = function() {
                 vm.tmind = new Date();
-                vm.minDate = vm.minDate ? null : vm.tmind;
+                //vm.minDate = vm.minDate ? null : vm.tmind;
             };
 
             vm.clear = function () {
@@ -352,25 +342,11 @@
                 });
             }
 
-            //add filter button
-            function addfilter() {
-                dataconfig.addFilter(vm.im, vm.fieldsName);
-                vm.im++;
-            }
-
-            //delete filter button
-            function removefilter() {
-                var x = vm.im - 1;
-                if (x >= 1) {
-                    dataconfig.removeFilter(x);
-                    vm.im--;
-                }
-            }
-
+            
             //fill searchText with filter information
             function filltext() {
-                if (vm.im > 1) {
-                    vm.searchText = dataconfig.fillSearchText(vm.im);
+                if ($scope.count > 1) {
+                    vm.searchText = dataconfig.fillSearchText($scope.count);
                     vm.filterfill = true;
                     vm.field = "all";
                     search();
@@ -388,7 +364,7 @@
 
             Object.defineProperty(vm.paging, 'pageCount', {
                 get: function () {
-                    return Math.floor(vm.tt / vm.paging.pageSize) + 1;
+                    return Math.floor(vm.pagetotal / vm.paging.pageSize) + 1;
                 }
             });
 
@@ -397,8 +373,8 @@
                 vm.res = [];
                 vm.j = 0;
                 vm.pagenumber = vm.paging.pageSize * vm.paging.currentPage;
-                if (vm.pagenumber > vm.tt)
-                    vm.pagenumber = vm.tt;
+                if (vm.pagenumber > vm.pagetotal)
+                    vm.pagenumber = vm.pagetotal; // handle overflow of lastpage
                 for (vm.i = (vm.paging.currentPage - 1) * vm.paging.pageSize; vm.i < vm.pagenumber; vm.i++) {
                     vm.res[vm.j] = res[vm.i];
                     vm.j++;
@@ -412,23 +388,20 @@
 
             //refresh page
             function refreshPage() {
-                vm.tt=(vm.tt>vm.pagecount)?vm.pagecount:Math.min(vm.total, vm.pagecount);
+                vm.pagetotal = (vm.pagetotal > vm.pagecount) ? vm.pagecount : Math.min(vm.total, vm.pagecount);
                 vm.getCurrentPageData(vm.hitSearch);
+                search();
                 random();
             }
             //#endregion
 
 
             //#region Processorbar
-            vm.showWarning = "";
-            vm.dynamic = "";
-            vm.ptype = "";
             vm.random = random;
             //fill process bar
             function random() {
-                var value = vm.tt / vm.total * 100;
+                var value = vm.pagetotal / vm.total * 100;
                 var ptype;
-                //log(value);
                 if (value < 20) {
                     ptype = 'idle';
                 } else if (value < 60) {

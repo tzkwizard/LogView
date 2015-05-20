@@ -16,7 +16,6 @@
             $scope.trend = ["true", "true", "true", "true", "true"];
             vm.hitSearch = $rootScope.searchresult;
             vm.pagesizeArr = ["5", "10", "25", "50", "100"];
-            vm.pagecountArr = ["100", "500", "1000", "5000", "10000"];
 
             vm.pagecount = 1000;
             vm.pageChanged = pageChanged;
@@ -42,8 +41,8 @@
                     vm.total = 0;
                 } else {
                     vm.total = vm.hitSearch.length;
-                    vm.tt = vm.total < vm.pagecount ? vm.total : vm.pagecount;
-                    vm.getCurrentPageData(vm.hitSearch);
+                    vm.pagecountArr = [Math.floor(vm.total / 20), Math.floor(vm.total / 10), Math.floor(vm.total / 5), Math.floor(vm.total / 2), vm.total];
+                    refreshPage();
                 }
             }
 
@@ -86,17 +85,19 @@
                 pageSize: 50
             };
 
-            Object.defineProperty(vm.paging, 'pageCount', {
+            Object.defineProperty(vm.paging, 'pageCount', {    //unwriteable
                 get: function () {
-                    return Math.floor(vm.total / vm.paging.pageSize) + 1;
+                    return Math.floor(vm.pagetotal / vm.paging.pageSize) + 1;
                 }
             });
 
             //get current page data
             function getCurrentPageData(res) {
                 vm.res = [];
-                vm.j = 0;
+                vm.j = 0;               
                 vm.pagenumber = vm.paging.pageSize * vm.paging.currentPage;
+                if (vm.pagenumber > vm.pagetotal)
+                    vm.pagenumber = vm.pagetotal; // handle overflow of lastpage
                 for (vm.i = (vm.paging.currentPage - 1) * vm.paging.pageSize; vm.i < vm.pagenumber; vm.i++) {
                     vm.res[vm.j] = res[vm.i];
                     vm.j++;
@@ -110,7 +111,7 @@
 
             //refresh page
             function refreshPage() {
-                vm.tt = (vm.tt > vm.pagecount) ? vm.pagecount : Math.min(vm.total, vm.pagecount);
+                vm.pagetotal = (vm.pagetotal > vm.pagecount) ? vm.pagecount : Math.min(vm.total, vm.pagecount);
                 vm.getCurrentPageData(vm.hitSearch);
             }
             //#endregion
