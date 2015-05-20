@@ -29,7 +29,7 @@
         };
     });
     //remove filter
-    app.directive("removefilter", function ($compile) {
+    app.directive("removefilter", function () {
         return function (scope, element, attrs) {
             element.bind("click", function () {
                 var x = scope.count - 1;

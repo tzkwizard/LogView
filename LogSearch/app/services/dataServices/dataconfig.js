@@ -24,7 +24,9 @@
             fillSearchText: fillSearchText,
             changeTimeSpan: changeTimeSpan,
             arrayUnique: arrayUnique,
-            aggFieldFilter: aggFieldFilter
+            aggFieldFilter: aggFieldFilter,
+            addPieContainer: addPieContainer,
+            removePieContainer: removePieContainer
 
         }
         return service;
@@ -218,52 +220,45 @@
 
             }
             return searchText;
-        }        
+        }
         //#endregion
 
 
         //#region agg service
+        function removePieContainer() {
+            try {
+                angular.element(document.getElementById('contain'))
+                    .remove();
+            } catch (e) {
+                toastr.info(e.message);
+            }
+
+        }
+
+        function addPieContainer(fields) {
+            angular.element(document.getElementById('div2')).
+                  append("<div id=contain></div>");
+            angular.forEach(fields, function (name) {
+                createContainer(name);
+            });     
+        }
+
         //create container for chart
         function createContainer(aggName) {
-            var main = document.getElementById('contain');
-            var contain = document.createElement('div');
-            var containName = 'contain' + aggName;
-            contain.setAttribute('id', containName);
-            main.appendChild(contain);
+            angular.element(document.getElementById('contain')).
+                  append("<div id=contain" + aggName + "></div>");
 
+            angular.element(document.getElementById('contain' + aggName)).
+                  append("<div id=dash" + aggName + "></div>");
 
-            var diva = document.createElement('div');
-            var dashName = 'dash' + aggName;
-            diva.setAttribute('id', dashName);
-            contain.appendChild(diva);
-
-            var dash = document.getElementById(dashName);
-            var tb = document.createElement('table');
-            var tbname = 'table1';
-            tb.setAttribute('id', tbname);
-            dash.appendChild(tb);
-
-            var table = document.getElementById(tbname);
-            var row = table.insertRow(0);
-            var cell1 = row.insertCell(0);
-            var cell2 = row.insertCell(1);
-
-            //var dash = document.getElementById(dashName);
-            var divb = document.createElement('div');
-            var rangeName = 'range' + aggName;
-            divb.setAttribute('id', rangeName);
-            cell1.appendChild(divb);
-
-            var divc = document.createElement('div');
-            var barName = 'bar' + aggName;
-            divc.setAttribute('id', barName);
-            cell1.appendChild(divc);
-
-
-            var divd = document.createElement('div');
-            var tableName = 'table' + aggName;
-            divd.setAttribute('id', tableName);
-            cell2.appendChild(divd);
+            angular.element(document.getElementById('dash' + aggName)).
+                  append(
+                  "<table id=table1" + aggName + "> <tbody> <tr>" +
+                  "<td> <div id=range" + aggName + "></div> " +
+                   "<div id=bar" + aggName + "></div></td>" +
+                  "<td> <div id=table" + aggName + "></div></td>" +
+                    "</tr> </tbody> </table>"
+                    );
         }
 
         function aggFieldFilter(fields) {
@@ -347,7 +342,7 @@
             return a;
         }
 
-       
+
         //#endregion
     }
 

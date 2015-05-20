@@ -14,7 +14,6 @@
 
             //#region variable
             vm.isBusy = true;
-            vm.busyMessage = "wait";
             vm.spinnerOptions = {
                 radius: 60,
                 lines: 24,
@@ -32,12 +31,9 @@
             vm.refinedsearch = [];
             vm.hitSearch = "";
             vm.total = 0;
-            vm.mystyle = { 'color': 'blue' };
             vm.aggName = "";
-            vm.filterAggName = "";
             vm.pagecount = 10;
             vm.fieldsName = [];
-            vm.typesName = [];
             vm.indicesName = [];
             vm.index = '';
             vm.type = '';
@@ -58,9 +54,6 @@
             vm.refresh = refresh;
             vm.go = go;
             vm.clear = clear;
-            vm.aggFieldFilter = aggFieldFilter;
-            vm.removePieContainer = removePieContainer;
-            vm.addPieContainer = addPieContainer;
             vm.init = init;
             vm.treesizeChange = treesizeChange;
             vm.show = show;
@@ -172,46 +165,15 @@
             //#endregion
 
 
-            //#region PieLayout
-            function removePieContainer() {
-                var main = document.getElementById('div2');
-                var contain = document.getElementById('contain');
-                if (contain !== null && main.childNodes.length !== 0) {
-                    main.removeChild(contain);
-                }
-            }
-
-            function addPieContainer(fields) {
-                var main = document.getElementById('div2');
-                var contain = document.createElement('div');
-                contain.setAttribute('id', 'contain');
-                main.appendChild(contain);
-                angular.forEach(fields, function (name) {
-                    dataconfig.createContainer(name);
-                });
-            }
-
-            function aggFieldFilter(aggField) {
-                var filtered = [];
-                angular.forEach(aggField, function (x) {
-                    if (x.substring(x.length - 3, x.length) === "raw" && x !== "timestamp.raw" && x !== "tags.raw") {
-                        filtered.push(x);
-                    }
-                });
-                return filtered;               
-            }
-            //#endregion
-
-
             //#region Draw chart
             //get dashboard data
             function aggShow(aggName) {
                 vm.process = true;
-                removePieContainer();
+                dataconfig.removePieContainer();
                 if (vm.aggName === "" || vm.aggName === "all") {
+                    vm.token = false;
                     var aggfield = dataconfig.aggFieldFilter(vm.fieldsName);
-                    vm.token = false; 
-                    addPieContainer(aggfield);
+                    dataconfig.addPieContainer(aggfield);
                     var flag = aggfield.length <= 2 ? true : false;
 
                     angular.forEach(aggfield, function (name) {
@@ -223,7 +185,6 @@
                         .then(function (resp) {
                             vm.total = resp.data.Total;
                             vm.hitSearch = resp.data.AggData;
-                            //drawDashboard(resp.data.AggData, aggName);
                             var data = chartservice.drawaggDashboard1(resp.data.AggData, aggName, 'dashboard', 'filter_div', 'chart_div');
                             drawTable(data, 'table_div', aggName);
                         }, function (e) {
@@ -243,12 +204,10 @@
                           var data;
                           if (!flag) {
                               if (resp.data.AggData.length > 1) {
-                                  //drawDashboard2(resp.data.AggData, aggName);
                                   data = chartservice.drawaggDashboard2(resp.data.AggData, aggName);
                                   drawTable(data, "table" + aggName, aggName);
                               }
                           } else {
-                              //drawDashboard2(resp.data.AggData, aggName);
                               data = chartservice.drawaggDashboard2(resp.data.AggData, aggName);
                               drawTable(data, "table" + aggName, aggName);
                           }
