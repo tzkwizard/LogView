@@ -27,6 +27,7 @@
             changeTimeSpan: changeTimeSpan,
             arrayUnique: arrayUnique,
             aggFieldFilter: aggFieldFilter
+
         }
         return service;
         //#endregion
@@ -409,7 +410,9 @@
                 }
             }
             return a;
-        };
+        }
+
+       
         //#endregion
     }
 

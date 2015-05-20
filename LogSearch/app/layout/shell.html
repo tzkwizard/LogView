@@ -8,12 +8,13 @@
     <section class="content" id="shell">
         <div data-ng-include="'app/layout/sidebar.html'"></div>
         <div data-ng-view class="fader-animation"></div>
-        <div data-ng-include="'app/layout/timesidebar/timeSideNav.html'"></div>
-        <div data-ng-include="'app/layout/menusidebar/menuSideNav.html'"></div>        
     </section>
+    <div id="sideNav">
+        <div data-ng-include="'app/layout/timesidebar/timeSideNav.html'"></div>
+        <div data-ng-include="'app/layout/menusidebar/menuSideNav.html'"></div>
+    </div>
     <div data-ng-show="vm.isBusy" class="page-splash dissolve-animation">
         <div data-cc-spinner="vm.spinnerOptions"></div>
     </div>
-   
 </div>
 

@@ -94,7 +94,9 @@
                     title: 'dashboard',
                     settings: {
                         nav: 1,
-                        content: '<i class="fa fa-dashboard"></i> Dashboard'
+                        content: '<i class="fa fa-dashboard"></i> Dashboard',
+                        icon: "dashboard",
+                        tooltip: "Main Dashboard Page"
                     }
                 }
             },
@@ -105,7 +107,9 @@
                      templateUrl: 'app/component/els/els.html',
                      settings: {
                          nav: 2,
-                         content: '<i class="fa fa-search"></i> ELS'
+                         content: '<i class="fa fa-search"></i> ELS',
+                         icon: "search",
+                         tooltip: "Main Search Page"
                      }
                  }
              }, {
@@ -115,7 +119,9 @@
                      templateUrl: 'app/component/agg/aggs.html',
                      settings: {
                          nav: 3,
-                         content: '<i class="fa fa-area-chart"></i> Aggs'
+                         content: '<i class="fa fa-area-chart"></i> Aggs',
+                         icon: "assessment",
+                         tooltip: "Data Analysis Page"
                      }
                  }
              },
@@ -126,7 +132,9 @@
                      templateUrl: 'app/component/load/TODO.html',
                      settings: {
                          nav: 4,
-                         content: '<i class="fa fa-cloud"></i> TODO'
+                         content: '<i class="fa fa-cloud"></i> TODO',
+                         icon: "setting",
+                         tooltip: "To be continue"
                      }
                  }
              },
@@ -136,6 +144,19 @@
                      title: 'search',
                      templateUrl: 'app/component/els/els.html',
                      settings: {
+                     }
+                 }
+             }
+             ,
+             {
+                 url: '/elslist',
+                 config: {
+                     title: 'elslist',
+                     templateUrl: 'app/component/show/show.html',
+                     settings: {
+                         nav: 5,
+                         icon: "windows",
+                         tooltip: "list"
                      }
                  }
              }

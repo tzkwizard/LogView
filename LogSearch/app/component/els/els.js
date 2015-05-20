@@ -16,10 +16,6 @@
 
 
             //#region variable
-            $scope.predicate = '_source.timestamp';
-            $scope.trend = 'true';
-            $scope.trend1 = 'true';
-            $scope.trend2 = 'true';
             $scope.count = 0;
             vm.distance = 0;
             vm.autocompleLoading = false;
@@ -27,7 +23,6 @@
             vm.processSearch = false;
             vm.hitSearch = "";
             vm.total = 0;
-            vm.mystyle = { 'color': 'blue' };
             vm.field = "";
             vm.index = $routeParams.index || "";
             vm.type = "";
@@ -74,6 +69,7 @@
             vm.refreshPage = refreshPage;
             vm.showListBottomSheet = showListBottomSheet;
             vm.timeChange = timeChange;
+            vm.showlist = showlist;
             //#endregion
 
 
@@ -206,7 +202,7 @@
                 }
             }
 
-            //update auto-fill data
+            //auto-fill
             var appre = "";
             var apre = "";
             var anow = "";
@@ -262,6 +258,10 @@
                         }
                     }
                 });
+            }
+            function showlist() {
+                $rootScope.searchresult =vm.hitSearch;
+                common.$location.path("/elslist");
             }
             //#endregion
 
@@ -412,11 +412,7 @@
 
             //refresh page
             function refreshPage() {
-                if (vm.tt > vm.pagecount) {
-                    vm.tt = vm.pagecount;
-                } else {
-                    vm.tt = Math.min(vm.total, vm.pagecount);
-                }
+                vm.tt=(vm.tt>vm.pagecount)?vm.pagecount:Math.min(vm.total, vm.pagecount);
                 vm.getCurrentPageData(vm.hitSearch);
                 random();
             }
@@ -450,29 +446,26 @@
 
 
             //#region ResultModal
-            vm.popdata = {
-                data: ""
-            };
-            vm.items = ['item1', 'item2', 'item3'];
-
+            vm.items = "";
             //open result page
             vm.open = function (doc) {
-                vm.popdata.data = doc;
+                var popdata = {
+                    data: doc
+                };
                 var modalInstance = $modal.open({
                     templateUrl: 'app/component/els/result/resultModal.html',
                     controller: 'resultModal',
                     //size: 'lg',
                     resolve: {
                         items: function () {
-                            return vm.popdata;
+                            return popdata;
                         }
                     }
                 });
-
                 modalInstance.result.then(function (selectedItem) {
                     vm.selected = selectedItem;
                 }, function () {
-                    log('Modal dismissed at: ' + new Date());
+                    //log('Modal dismissed at: ' + new Date());
                 });
             };
             //#endregion

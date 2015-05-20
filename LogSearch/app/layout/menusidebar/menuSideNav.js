@@ -4,18 +4,14 @@
     var controllerId = 'menuSideNav';
 
     angular.module('app')
-        .controller(controllerId, function ($rootScope, $scope, $timeout, $mdSidenav, common) {
-            $scope.menuNav = [{ name: "DashBoard", icon: "dashboard", tooltip: "Main Dashboard Page" },
-            { name: "ELS", icon: "search", tooltip: "Main Search Page" },
-            { name: "AGGS", icon: "assessment", tooltip: "Data Analysis Page" },
-            { name: "TODO", icon: "setting", tooltip: "To be continue" }
-            ];
-
-            $scope.nav = function (n) {
-                var route = "/" + n.toLowerCase();
-                common.$location.path(route);
-            }
-
+        .controller(controllerId, function (routes, $rootScope, $scope, $timeout, $mdSidenav) {          
+            $scope.getNav = function () {
+                return routes.filter(function (r) {
+                    return r.config.settings && r.config.settings.nav;
+                }).sort(function (r1, r2) {
+                    return r1.config.settings.nav - r2.config.settings.nav;
+                });
+            }           
             $scope.$on("$destroy", function () {
                 document.getElementById("nav").style.height = "10%";
             });

@@ -75,8 +75,7 @@
                 chart.draw(data, {
                     displayAnnotations: true, dateFormat: 'MM-dd-yyyy', displayAnnotationsFilter: true,
                     thickness: 3, wmode: 'transparent'
-                });
-
+                });             
             }
 
             function drawHist(agg, datahistag) {
@@ -125,7 +124,6 @@
 
                 /* var chart = new google.visualization.LineChart(document.getElementById('DateHist_div'));
                  chart.draw(data, options);*/
-
             }
 
             function drawWorldMap(r, maptag) {

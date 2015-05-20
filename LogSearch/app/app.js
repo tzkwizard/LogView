@@ -33,6 +33,7 @@
     angular.module('app')
         .config(function($mdIconProvider) {
             $mdIconProvider
+                .icon('backpage', 'content/images/icon/ic_backpage_24px.svg', 24)
                 .icon('refresh', 'content/images/icon/ic_refresh_24px.svg', 24)
                 .icon('logout', 'content/images/icon/ic_logout_24px.svg', 24)
                 .icon('envelope', 'content/images/icon/ic_envelope_24px.svg', 24)

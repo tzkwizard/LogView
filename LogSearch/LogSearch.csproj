@@ -70,6 +70,8 @@
     <Content Include="app\component\load\BottomListSheet.html" />
     <Content Include="app\component\login\loginModal.js" />
     <Content Include="app\component\login\loginModal.html" />
+    <Content Include="app\component\show\show.html" />
+    <Content Include="app\component\show\show.js" />
     <Content Include="app\config.exceptionHandler.js" />
     <Content Include="app\layout\menusidebar\menuSideNav.html" />
     <Content Include="app\layout\menusidebar\menuSideNav.js" />
@@ -97,6 +99,7 @@
     <Content Include="content\images\icon\ic_arrowdown_24px.svg" />
     <Content Include="content\images\icon\ic_arrowup_24px.svg" />
     <Content Include="content\images\icon\ic_assessment_24px.svg" />
+    <Content Include="content\images\icon\ic_backpage_24px.svg" />
     <Content Include="content\images\icon\ic_credit_24px.svg" />
     <Content Include="content\images\icon\ic_dashboard_24px.svg" />
     <Content Include="content\images\icon\ic_envelope_24px.svg" />

@@ -3,14 +3,14 @@
         <h2 class="md-toolbar-tools"> Menu </h2>
     </md-toolbar>
     <md-content data-ng-controller="menuSideNav" layout-padding>
-        <md-list-item layout-align="center center"  ng-repeat="t in menuNav">
-            <md-button class="md-grid-item-content" ng-click="nav(t.name)" style="min-width: 90%">
-                <md-icon md-svg-src={{t.icon}} class="pull-left"> 
-                </md-icon> {{ t.name }}
+        <md-list-item layout-align="center center" ng-repeat="t in getNav()">
+            <md-button class="md-grid-item-content" style="min-width: 90%" href="#{{t.url}}">
+                <md-icon md-svg-src={{t.config.settings.icon}} class="pull-left">
+                </md-icon> {{ t.config.title }}
                 <!--<div class="md-grid-text">  </div>-->
             </md-button>
             <md-tooltip>
-                {{t.tooltip}}
+                {{t.config.settings.tooltip}}
             </md-tooltip>
             <div class="label">Flat</div>
         </md-list-item>

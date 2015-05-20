@@ -162,7 +162,7 @@
                         <button data-ng-click="vm.filltext()" class="btn btn-info btn-notext " type="button">
                             <i class="fa fa-apple"> Fill </i>
                         </button>-->
-                    </div>                   
+                    </div>
                 </div>
             </div>
             <div id="processbar" layout="column" layout-align="space-around">
@@ -188,7 +188,7 @@
                 <div id="google list">
                     <md-toolbar md-scroll-shrink>
                         <div class=" md-toolbar-tools" style="font-size: 15px">
-                            <md-button class="md-icon-button" aria-label="Settings" ng-click="collapse=!collapse">
+                            <md-button class="md-icon-button" aria-label="r1" ng-click="collapse=!collapse">
                                 <md-icon md-svg-icon="menu"></md-icon>
                             </md-button>
                             <h3 style="color: whitesmoke">
@@ -208,6 +208,9 @@
                                 </md-optgroup>
                                 <md-option value={{vm.total}}>{{vm.total}}</md-option>
                             </md-select>
+                            <md-button class="md-icon-button" aria-label="r2" ng-click="vm.showlist()">
+                                <md-icon md-svg-icon="menu"></md-icon>
+                            </md-button>
                         </div>
                     </md-toolbar>
                     <md-content id="google" style="height: 600px;" ng-show="collapse" class="dissolve-animation">
@@ -222,46 +225,7 @@
                         </md-list>
                     </md-content>
                 </div>
-                <br><br>
-                <div id="resultShow" class="widget wgreen">
-                    <div data-cc-widget-header title="{{vm.title}}"
-                         allow-collapse="true"
-                         subtitle="{{vm.tt}} / {{vm.total}}"
-                         right-text="Page {{vm.paging.currentPage}} of {{vm.paging.pageCount}}"></div>
 
-                    <div class="widget-content">
-                        <table class="table table-striped table-condensed table-hover">
-                            <thead>
-                                <tr>
-                                    <th class="message" width="15%">Time&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend, 'glyphicon-chevron-up': !trend}" data-ng-click="predicate = '_source.timestamp'; reverse=!reverse;trend=!trend"></i></th>
-                                    <th class="message">Message&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend1, 'glyphicon-chevron-up': !trend1}" data-ng-click=" predicate='_source.message' ; reverse=!reverse;trend1=!trend1"></i></th>
-                                    <th class="message" width="5%">Score&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend2, 'glyphicon-chevron-up': !trend2}" data-ng-click=" predicate='_score' ; reverse=!reverse;trend2=!trend2"></i></th>
-                                    <!--<th class="message">Index&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend, 'glyphicon-chevron-up': !trend}" data-ng-click=" predicate='_index' ; reverse=!reverse;trend=!trend"></i></th>-->
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="fader-animation" data-ng-repeat="doc in vm.res| orderBy:predicate:reverse" data-ng-click="vm.open(doc)">
-                                    <td>{{doc._source['UTCtimestamp']| date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
-                                    <td>{{doc._source.message}}</td>
-                                    <td>
-                                        {{doc._score}}</
-                                        td>
-                                        <!-- <t
-                                        d></td>
-                                        </
-                                        <!-- <t
-                                        d>
-                                        {{doc
-                                        ._index}}</td>-->
-                                </tr>
-                                </tr>
-                                </tr>
-                                </tr>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
