@@ -13,7 +13,7 @@
 
             //#region variable and function
             $scope.predicate = '_source.timestamp';
-            $scope.trend = ["true", "true", "true", "true", "true"];
+            $scope.trend = ["true", "true", "true", "true", "true","true"];
             vm.hitSearch = $rootScope.searchresult;
             vm.pagesizeArr = ["5", "10", "25", "50", "100"];
 

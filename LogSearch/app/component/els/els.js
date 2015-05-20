@@ -13,7 +13,7 @@
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
 
-
+            vm.temp = "44";
     
             //#region variable
             $scope.collapse = true;
@@ -205,9 +205,9 @@
             var apre = "";
             var anow = "";
             function autoFill(force) {
-                vm.autocompleLoading = true;
                 if (force !== true && vm.searchText === "") return null;
-                return datasearch.autoFill(vm.searchText).then(function (resp) {
+                vm.autocompleLoading = true;
+                return datasearch.autoFill(vm.searchText).then(function (resp) {                   
                     appre = apre; apre = anow;
                     anow = resp.data.AutoData;
                     if (vm.autoText.length < 1000 && vm.autoText.length !== 0) {
@@ -358,8 +358,8 @@
             //#region Paging 
             vm.paging = {
                 currentPage: 1,
-                maxPagesToShow: 5,
-                pageSize: 5
+                maxPagesToShow: 8,
+                pageSize: 20
             };
 
             Object.defineProperty(vm.paging, 'pageCount', {

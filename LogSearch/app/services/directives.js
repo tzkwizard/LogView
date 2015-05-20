@@ -5,11 +5,17 @@
 
     //add filter
     app.directive("addfilter", function ($compile) {
-        return function (scope, element, attrs) {
+        var directive = {
+            link: link,
+            restrict: 'A'
+        };
+        return directive;
+
+        function link(scope, element, attrs) {
             element.bind("click", function () {
                 angular.element(document.getElementById('filter')).
-                  append($compile("<div id=contain" + scope.count + "></div>")(scope));
-
+                append($compile("<div id=contain" + scope.count + "></div>")(scope));
+              
                 angular.element(document.getElementById('contain' + scope.count)).
                    append($compile("<input id=input" + scope.count + " placeholder='input'/>")(scope));
 
@@ -26,11 +32,16 @@
                 "</select>")(scope));
                 scope.count++;
             });
-        };
+        }
     });
     //remove filter
     app.directive("removefilter", function () {
-        return function (scope, element, attrs) {
+        var directive = {
+            link: link,
+            restrict: 'A'
+        };
+        return directive;
+        function link(scope, element, attrs) {
             element.bind("click", function () {
                 var x = scope.count - 1;
                 if (x >= 1) {
@@ -38,7 +49,7 @@
                     scope.count--;
                 }
             });
-        };
+        }
     });
 
 

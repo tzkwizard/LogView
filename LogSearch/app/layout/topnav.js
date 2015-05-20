@@ -65,10 +65,11 @@
         var anow = "";
 
         //get auto-fill data
-        function autoFill(force) {
-            vm.autocompleLoading = true;
+        function autoFill(force) {           
             if (force !== true && vm.searchText === "") return null;
-            return datasearch.autoFill(vm.searchText).then(function (resp) {
+            vm.autocompleLoading = true;
+            return datasearch.autoFill(vm.searchText).then(function (resp) 
+            {
                 appre = apre; apre = anow;
                 anow = resp.data.AutoData;
                 if (vm.autoText.length < 1000 && vm.autoText.length !== 0) {

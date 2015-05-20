@@ -1,7 +1,7 @@
 ﻿<section class="mainbar" data-ng-controller="els as vm">
     <section class="matter">
         <div class="container-fluid">
-            <div id="Search" class="input-append row-fluid">
+            <div id="Search" layout="row" layout-align="center center" class=" input-append row-fluid">
                 <input type="text" class="form-control"
                        data-ng-change="vm.autoFill()" data-ng-keyup="vm.trySeach($event)"
                        data-ng-model=" vm.searchText" placeholder="  Search"
@@ -23,19 +23,14 @@
                     <md-option value="">Select</md-option>
                     <md-option value={{doc}} data-ng-repeat="doc in vm.fieldsName">{{doc}}</md-option>
                 </md-select>
-
-
+                <span flex></span>
                 <div class="btn-group pull-right" dropdown>
-                    <!-- <button type="button" class="btn btn-info dropdown-toggle " dropdown-toggle ng-disabled="disabled">
-                        History <span class="caret"></span>
-                    </button>-->
                     <md-button class="btn btn-info dropdown-toggle " dropdown-toggle aria-label="time">
                         History <span class="caret"></span>
                         <md-tooltip>
                             Choose Time Span
                         </md-tooltip>
                     </md-button>
-
                     <ul class="dropdown-menu" role="menu">
                         <md-list-item ng-repeat="choice in vm.it">
                             <md-button class="md-grid-item-content" ng-click="vm.filterst(choice)">
@@ -46,10 +41,6 @@
                         <md-button class="md-grid-item-content">
                             <div class="md-grid-text" data-ng-click="vm.showListBottomSheet()"> More Span ?</div>
                         </md-button>
-                        <!--<li ng-repeat="choice in vm.it" data-ng-click="vm.filterst(choice)">
-                        <a>{{choice}}</a>
-                        <li class="divider"></li>
-                        <li data-ng-click="vm.showListBottomSheet()"><a>More Span ?</a></li>-->
                     </ul>
                 </div>
             </div>
@@ -116,22 +107,10 @@
                         <md-slider flex="60" ng-model="vm.distance" min="0" max="9999" aria-label="blue" id="blue-slider" class="md-primary"></md-slider>
                         <input type="number" flex="10" ng-model="vm.distance" aria-label="blue" aria-controls="blue-slider">
                     </div>
-                    <div layout="column" id="filter" class="btn-group">
-                        <input type="text" size="8"
-                               data-ng-model="vm.fi"
-                               placeholder="  Filter " ng-show="false" />
-                        <select id="test" ng-model="vm.filterAggName" ng-show="false" class="input-medium" style="width: 100px">
-                            <option value={{doc}} data-ng-repeat="doc in vm.fieldsName">{{doc}} </option>
-                        </select>
-                        <select ng-model=" vm.condition" ng-show="false">
-                            <option selected value='MUST'>MUST</option>
-                            <option vaule='MUST_NOT'>MUST_NOT</option>
-                            <option vaule='SHOULD'>SHOULD</option>
-                        </select>
+                    <div layout="column" id="filter" class="btn-group">              
                         <button data-ng-click="vm.test()" class="btn btn-info btn-notext " type="button" ng-show="false">
                             <i class="fa fa-pie-chart">Test</i>
                         </button>
-
                     </div>
                     <div layout="row" id="FilterButton">
                         <md-button addfilter class="md-raised md-primary" aria-label="add filter">
@@ -152,16 +131,6 @@
                                 Fill SearchText
                             </md-tooltip>
                         </md-button>
-
-                        <!-- <button data-ng-click="vm.addfilter()" class="btn btn-info btn-notext " type="button">
-                            <i class="fa fa-plus-square"></i>
-                        </button>
-                        <button data-ng-click="vm.removefilter()" class="btn btn-info btn-notext " type="button">
-                            <i class="fa fa-minus-square"></i>
-                        </button>
-                        <button data-ng-click="vm.filltext()" class="btn btn-info btn-notext " type="button">
-                            <i class="fa fa-apple"> Fill </i>
-                        </button>-->
                     </div>
                 </div>
             </div>
@@ -197,7 +166,7 @@
                             <span flex></span>
                             <span>Page {{vm.paging.currentPage}} of {{vm.paging.pageCount}}</span>
                             <span flex="5"></span>
-                            <md-select placeholder="Pick" ng-model="vm.paging.pageSize" ng-change="vm.refreshPage()">
+                            <md-select placeholder="Pick" ng-model="vm.paging.pageSize" ng-change="vm.pageChanged()">
                                 <md-optgroup label="PageSize">
                                     <md-option ng-value={{p}} ng-repeat="p in vm.pagesizeArr">{{p}}</md-option>
                                 </md-optgroup>
@@ -209,6 +178,9 @@
                             </md-select>
                             <md-button class="md-icon-button" aria-label="r2" ng-click="vm.showlist()">
                                 <md-icon md-svg-icon="menu"></md-icon>
+                                <md-tooltip>
+                                    Better View
+                                </md-tooltip>
                             </md-button>
                         </div>
                     </md-toolbar>
