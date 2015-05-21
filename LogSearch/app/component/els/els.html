@@ -19,8 +19,7 @@
                         Refesh View
                     </md-tooltip>
                 </md-button>
-                <md-select placeholder="Pick" ng-model="vm.field">
-                    <md-option value="">Select</md-option>
+                <md-select placeholder="Pick" ng-model="vm.field">                   
                     <md-option value={{doc}} data-ng-repeat="doc in vm.fieldsName">{{doc}}</md-option>
                 </md-select>
                 <span flex></span>
@@ -48,12 +47,12 @@
                 <div data-cc-widget-header title="{{vm.title2}}"
                      allow-collapse="true"></div>
                 <div class="widget-content" style="display: none;">
-                    <div layout="row">
-                        <md-input-container flex="10">
+                    <div layout="row" layout-align="center center">
+                        <md-input-container>
                             <label> Location </label>
-                            <textarea ng-model="vm.asyncSelected"
+                            <input  ng-model="vm.asyncSelected"
                                       typeahead="address for address in vm.getLocation($viewValue)" typeahead-loading="loadingLocations"
-                                      class="form-control" style="width: 100%"></textarea>
+                                      class="form-control" style="width: 100%">
                             <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
                         </md-input-container>
                         {{vm.st}}
@@ -65,7 +64,7 @@
                                is-open="vm.timeopened" min-date="vm.minDate" datepicker-options="vm.dateOptions"
                                date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  start date" ng-show="vm.timeShow" ng-change="vm.timeChange()" />
                         <!--<button type="button" class="btn btn-large btn-info btn-notext"
-                                    ng-click="vm.timeopen($event)"><i class="fa fa-calendar"> Ini Day </i></button>-->
+                    ng-click="vm.timeopen($event)"><i class="fa fa-calendar"> Ini Day </i></button>-->
                         <md-button class="md-fab md-mini" data-ng-click="vm.timeopen($event)" aria-label="st">
                             <i class="fa fa-calendar"></i>
                             <md-tooltip>
@@ -76,7 +75,7 @@
                                is-open="vm.ftimeopened" min-date="vm.minDate" datepicker-options="vm.dateOptions"
                                date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  end date" ng-show="vm.timeShow" ng-change="vm.timeChange()" />
                         <!-- <button type="button" class="btn btn-large btn-info btn-notext"
-                                     ng-click="vm.ftimeopen($event)"><i class="fa fa-calendar"> End Day </i></button>-->
+                     ng-click="vm.ftimeopen($event)"><i class="fa fa-calendar"> End Day </i></button>-->
                         <md-button class="md-fab md-mini" data-ng-click="vm.ftimeopen($event)" aria-label="ft">
                             <i class="fa fa-calendar"></i>
                             <md-tooltip>
@@ -113,7 +112,7 @@
                         </button>
                     </div>
                     <div layout="row" id="FilterButton">
-                        <md-button addfilter class="md-raised md-primary" aria-label="add filter">
+                        <md-button addfilter class="md-raised md-primary" aria-label="add filter" ng-click="vm.addfilter()">
                             <i class="fa fa-plus-square"></i>
                             <md-tooltip>
                                 Add Filter

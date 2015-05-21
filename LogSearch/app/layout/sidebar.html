@@ -15,7 +15,7 @@
         <ul id="facet" class="navi" collapse="collapse">
 
             <ul class="md-menu-item" ng-repeat="f in vm.facet">
-                <md-button ng-click="vm.showFacet(f)" style="width: 100%;margin-left: 0px">
+                <md-button ng-click="vm.showFacet(f)" style="width: 100%;margin-left: 0" >
                     <md-icon md-svg-src={{f.icon}} class="pull-left" style="color: white"></md-icon> <span>  {{f.title}}  </span>
                 </md-button>
                 <ul collapse="f.collapse" class="nlightblue fade-selection-animation">

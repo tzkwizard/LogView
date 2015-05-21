@@ -3,22 +3,30 @@
 
     var app = angular.module('app');
 
+    app.config(function ($mdIconProvider) {
+           $mdIconProvider
+               .icon('backpage', 'content/images/icon/ic_backpage_24px.svg', 24)
+               .icon('refresh', 'content/images/icon/ic_refresh_24px.svg', 24)
+               .icon('logout', 'content/images/icon/ic_logout_24px.svg', 24)
+               .icon('envelope', 'content/images/icon/ic_envelope_24px.svg', 24)
+               .icon('timezone', 'content/images/icon/ic_timezone_24px.svg', 24)
+               .icon('assessment', 'content/images/icon/ic_assessment_24px.svg', 24)
+               .icon('search', 'content/images/icon/ic_search_24px.svg', 24)
+               .icon('menu', 'content/images/icon/ic_menu_24px.svg', 24)
+               .icon('setting', 'content/images/icon/ic_settings_24px.svg', 24)
+               .icon('dashboard', 'content/images/icon/ic_dashboard_24px.svg', 24)
+               .icon('user', 'content/images/icon/ic_user_24px.svg', 24)
+               .icon('map', 'content/images/icon/ic_map_24px.svg', 24)
+               .icon('windows', 'content/images/icon/ic_windows_24px.svg', 24)
+               .icon('android', 'content/images/icon/ic_android_24px.svg', 24)
+               .icon('arrow-up', 'content/images/icon/ic_arrowup_24px.svg', 24)
+               .icon('arrow-down', 'content/images/icon/ic_arrowdown_24px.svg', 24);
+       });
+
     // Configure Toastr
     toastr.options.timeOut = 1000;
     toastr.options.positionClass = 'toast-bottom-right';
-
-    var input = [];
-    function fillInput() {
-        input.push(32);
-        for (var x = 48; x < 58; x++) {
-            input.push(x);
-        }
-        for (x = 65; x < 91; x++) {
-            input.push(x);
-        }
-    }
-    fillInput();
-
+ 
     var facet = [
                 { title: "User", field: "ident.raw", collapse: false, data: "", icon: "user", analyze: "string" },
                 { title: "Location_City", field: "geoip.city_name.raw", collapse: false, data: "", icon: "map", analyze: "string" },
@@ -81,11 +89,10 @@
         events: events,
         imageSettings: imageSettings,
         remoteServiceName: remoteServiceName,
-        version: '2.1.0',
+        version: '2.2.0',
         keyCodes: keyCodes,
         remoteApiUrl: remoteApiUrl,
         localApiUrl: localApiUrl,
-        input: input,
         facet: facet
     };
     app.config([

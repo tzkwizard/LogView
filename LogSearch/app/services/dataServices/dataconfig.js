@@ -185,39 +185,40 @@
 
 
         //#region els service
-        function fillSearchText(n) {
+        function fillSearchText(n,condition) {
             var searchText = "";
-            for (var i = 1; i < n; i++) {
-                var s1 = document.getElementById('jselect' + i.toString());
-                var s2 = document.getElementById('fselect' + i.toString());
-                var s3 = document.getElementById('input' + i.toString());
-                if (s1.value === "MUST") {
-                    if (s3.value !== "") {
+            for (var i = 0; i < condition.length; i++) {
+                var s1 = condition[i].condition;
+                var s2 = condition[i].field;
+                var s3 = condition[i].text;
+                if (s1==="" ||s2==="")
+                    continue;
+                if (s1 === "MUST") {
+                    if (s3 !== "") {
                         if (i === 1) {
-                            searchText += s2.value + " : \"" + s3.value + "\"^2";
+                            searchText += s2 + " : \"" + s3 + "\"^2";
                         } else {
-                            searchText += " AND " + s2.value + " : \"" + s3.value + "\"^2";
+                            searchText += " AND " + s2 + " : \"" + s3 + "\"^2";
                         }
                     }
                 }
-                else if (s1.value === "MUST_NOT") {
-                    if (s3.value !== "") {
+                else if (s1 === "MUST_NOT") {
+                    if (s3 !== "") {
                         if (i === 1) {
-                            searchText += " NOT " + s2.value + " : \"" + s3.value + "\"";
+                            searchText += " NOT " + s2 + " : \"" + s3 + "\"";
                         } else {
-                            searchText += " NOT " + s2.value + " : \"" + s3.value + "\"";
+                            searchText += " NOT " + s2 + " : \"" + s3 + "\"";
                         }
                     }
                 } else {
-                    if (s3.value !== "") {
+                    if (s3 !== "") {
                         if (i === 1) {
-                            searchText += s2.value + " : \"" + s3.value + "\"";
+                            searchText += s2 + " : \"" + s3 + "\"";
                         } else {
-                            searchText += " AND " + s2.value + " : \"" + s3.value + "\"";
+                            searchText += " AND " + s2 + " : \"" + s3 + "\"";
                         }
                     }
                 }
-
             }
             return searchText;
         }

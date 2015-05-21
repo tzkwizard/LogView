@@ -13,25 +13,24 @@
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
 
-            vm.temp = "44";
+           
     
             //#region variable
-            $scope.collapse = true;
-            $scope.count = 0;
-            vm.distance = 0;
+            $scope.collapse = true;           
             vm.autocompleLoading = false;
             vm.searchText = $routeParams.search || '';
             vm.processSearch = false; //processbar switch
             vm.hitSearch = "";
             vm.field = "";
-            vm.index = $routeParams.index || "";
-            vm.pagecount = 1000;
+            vm.index = $routeParams.index || "";            
             vm.fieldsName = [];
             vm.indicesName = [];
+            vm.pagecount = 1000;
             vm.pagetotal = 0;//    real show result number
             vm.total = 0;// possible max result number
-            vm.ft = "";
-            vm.st = "";
+            vm.pagesizeArr = ["5", "10", "25", "50", "100"];
+            vm.ft = ""; //end time
+            vm.st = ""; //start time
             vm.autoText = [];
             vm.filterfill = false;
             vm.condition = [];
@@ -39,10 +38,10 @@
                 title: 'Search : ',
                 Description: " Field(verb?) : Text(GET?)"
             };
+            vm.distance = 0;
             vm.dunit = 'mi';
             vm.timeShow = false;
-            $scope.count = 1; // filter number 
-            vm.pagesizeArr = ["5", "10", "25", "50", "100"];
+            $scope.count = 0; // filter number            
             //#endregion
 
             //#region function
@@ -51,7 +50,7 @@
             vm.getSampleData = getSampleData;
             vm.test = test;
             vm.init = init;
-
+            vm.addfilter = addfilter;
             vm.pageChanged = pageChanged;
             vm.getCurrentPageData = getCurrentPageData;
             vm.getFieldName = getFieldName;
@@ -59,7 +58,6 @@
             vm.filltext = filltext;
             vm.filterst = filterst;
             vm.autoFill = autoFill;
-            vm.addFilterdata = addFilterdata;
             vm.transferLocation = transferLocation;
             vm.getLocation = getLocation;
             vm.refreshPage = refreshPage;
@@ -151,10 +149,6 @@
 
             //#region main search
             function trySeach($event) {
-                if ($event.keyCode === config.keyCodes.esc) {
-                    vm.searchText = '';
-                    return;
-                }
                 if ($event.keyCode === config.keyCodes.enter) {
                     search();
                 }
@@ -168,9 +162,10 @@
                 }
                 vm.processSearch = true;
                 vm.hitSearch = "";
-                vm.condition = [];
-
-                addFilterdata();
+                var condition = [];
+                if (!vm.filterfill) {
+                    condition = angular.copy(vm.condition);
+                }
                 vm.distanceF = vm.distance + vm.dunit;
                 if (vm.distance === 0 || vm.distance === null) {
                     vm.distance = 0;
@@ -182,7 +177,7 @@
                 if (vm.searchText == undefined || vm.searchText === "") {
                     getSampleData();
                 } else {
-                    datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, vm.condition, vm.st, vm.ft, vm.locationF, vm.distanceF)
+                    datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, condition, vm.st, vm.ft, vm.locationF, vm.distanceF)
                         .then(function (resp) {
                             if (resp.data.Total !== 0) {
                                 vm.hitSearch = resp.data.Data;
@@ -220,22 +215,7 @@
                 });
             }
 
-            //fill condition with filter information
-            function addFilterdata() {
-                if (!vm.filterfill) {
-                    for (var i = 1; i < $scope.count; i++) {
-                        var s1 = document.getElementById('jselect' + i.toString());
-                        var s2 = document.getElementById('fselect' + i.toString());
-                        var s3 = document.getElementById('input' + i.toString());
-                        var filterdata = {
-                            text: s3.value,
-                            field: s2.value,
-                            condition: s1.value
-                        }
-                        vm.condition.push(filterdata);
-                    }
-                }
-            }
+            
 
             //refreh page
             vm.refresh = function () {
@@ -341,15 +321,25 @@
                     }
                 });
             }
-
-            
+      
             //fill searchText with filter information
             function filltext() {
-                if ($scope.count > 1) {
-                    vm.searchText = dataconfig.fillSearchText($scope.count);
+                if ($scope.count > 0) {
+                    vm.searchText = dataconfig.fillSearchText($scope.count,vm.condition);
                     vm.filterfill = true;
                     vm.field = "all";
                     search();
+                }
+            }
+
+            function addfilter() {
+                if (vm.condition.length < $scope.count + 2) {
+                    var filterdata = {
+                        text: "",
+                        field: "",
+                        condition: ""
+                    }
+                    vm.condition.push(filterdata);
                 }
             }
             //#endregion
@@ -383,15 +373,14 @@
 
             //change page
             function pageChanged() {
-                vm.getCurrentPageData(vm.hitSearch);
+                getCurrentPageData(vm.hitSearch);
             }
 
             //refresh page
             function refreshPage() {
                 vm.pagetotal = (vm.pagetotal > vm.pagecount) ? vm.pagecount : Math.min(vm.total, vm.pagecount);
-                vm.getCurrentPageData(vm.hitSearch);
+                getCurrentPageData(vm.hitSearch);
                 search();
-                random();
             }
             //#endregion
 
@@ -403,15 +392,15 @@
                 var value = vm.pagetotal / vm.total * 100;
                 var ptype;
                 if (value < 20) {
-                    ptype = 'idle';
+                    ptype = '~';
                 } else if (value < 60) {
-                    ptype = 'regular';
+                    ptype = '~~';
                 } else if (value < 85) {
-                    ptype = 'warning';
+                    ptype = '!';
                 } else {
-                    ptype = 'danger';
+                    ptype = '!!';
                 }
-                vm.showWarning = (ptype === 'danger' || ptype === 'warning');
+                vm.showWarning = (ptype === '!' || ptype === '!!');
                 vm.dynamic = value;
                 vm.ptype = ptype;
             };

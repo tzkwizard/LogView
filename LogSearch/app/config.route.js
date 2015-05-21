@@ -79,6 +79,7 @@
         return [
             {
                 url: '/',
+                controller:'Loading as vm',
                 config: {
                     templateUrl: 'app/component/load/Loading.html',
                     title: 'load',

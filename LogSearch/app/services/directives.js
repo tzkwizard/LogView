@@ -14,22 +14,24 @@
         function link(scope, element, attrs) {
             element.bind("click", function () {
                 angular.element(document.getElementById('filter')).
-                append($compile("<div id=contain" + scope.count + "></div>")(scope));
-              
-                angular.element(document.getElementById('contain' + scope.count)).
-                   append($compile("<input id=input" + scope.count + " placeholder='input'/>")(scope));
+                append($compile("<div id=contain" + scope.count + " ></div>")(scope));
 
                 angular.element(document.getElementById('contain' + scope.count)).
-                    append($compile("<select id=fselect" + scope.count + ">" +
-                "<option value={{doc}}  data-ng-repeat='doc in vm.fieldsName'> {{doc}} </option>" +
-                "</select>")(scope));
+                   append($compile("<input id=input" + scope.count + " placeholder='input' ng-model=vm.condition[" + scope.count + "].text />")(scope));
+
 
                 angular.element(document.getElementById('contain' + scope.count)).
-                  append($compile("<select id=jselect" + scope.count + ">" +
-                "<option selected value='MUST'>MUST</option>" +
-                "<option vaule='MUST_NOT'>MUST_NOT</option>" +
-                "<option vaule='SHOULD'>SHOULD</option>" +
-                "</select>")(scope));
+                    append($compile("<md-select id=fselect" + scope.count + " placeholder='Pick'  ng-model=vm.condition[" + scope.count + "].field >" +
+                        "<md-option value={{doc}}  data-ng-repeat='doc in vm.fieldsName'> {{doc}} </md-option>" +
+                        "</md-select>")(scope));
+
+
+                angular.element(document.getElementById('contain' + scope.count)).
+                  append($compile("<md-select id=jselect" + scope.count + " placeholder='Pick' ng-model=vm.condition[" + scope.count + "].condition >" +
+                "<md-option value='MUST'>MUST</md-option>" +
+                "<md-option vaule='MUST_NOT'>MUST_NOT</md-option>" +
+                "<md-option vaule='SHOULD'>SHOULD</md-option>" +
+                "</md-select>")(scope));
                 scope.count++;
             });
         }
@@ -44,7 +46,7 @@
         function link(scope, element, attrs) {
             element.bind("click", function () {
                 var x = scope.count - 1;
-                if (x >= 1) {
+                if (x >= 0) {
                     angular.element(document.getElementById('contain' + x)).remove();
                     scope.count--;
                 }
