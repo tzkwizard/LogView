@@ -33,15 +33,8 @@
         vm.mapCount = 15;
         //#endregion
 
-        //#region function
-        vm.getIndexName = getIndexName;
-        vm.geoMap = geoMap;
-        vm.init = init;
-        vm.timeLineGram = timeLineGram;
-        vm.worldGeoMap = worldGeoMap;
-        vm.usGeoMap = usGeoMap;
+        //#region public function
         vm.changeMap = changeMap;
-        vm.usCityMap = usCityMap;
         vm.changeMap2 = changeMap2;
         //#endregion
 

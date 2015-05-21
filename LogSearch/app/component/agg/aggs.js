@@ -45,16 +45,10 @@
             //#endregion
 
 
-            //#region function
-            vm.aggShow = aggShow;
-            vm.aggShows = aggShows;
-            vm.drawTable = drawTable;
-            vm.getFieldName = getFieldName;
-            vm.getIndexName = getIndexName;
+            //#region public function
             vm.refresh = refresh;
             vm.go = go;
             vm.clear = clear;
-            vm.init = init;
             vm.treesizeChange = treesizeChange;
             vm.show = show;
             //#endregion

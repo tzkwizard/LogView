@@ -11,7 +11,7 @@
             var log = getLogFn(controllerId);
 
 
-            //#region variable and function
+            //#region variable and public function
             $scope.predicate = '_source.timestamp';
             $scope.trend = ["true", "true", "true", "true", "true","true"];
             vm.hitSearch = $rootScope.searchresult;
@@ -19,10 +19,8 @@
 
             vm.pagecount = 1000;
             vm.pageChanged = pageChanged;
-            vm.getCurrentPageData = getCurrentPageData;
             vm.refreshPage = refreshPage;
             vm.backPage = backPage;
-            vm.init = init;
             //#endregion
 
 
@@ -106,13 +104,13 @@
 
             //change page
             function pageChanged() {
-                vm.getCurrentPageData(vm.hitSearch);
+                getCurrentPageData(vm.hitSearch);
             }
 
             //refresh page
             function refreshPage() {
                 vm.pagetotal = (vm.pagetotal > vm.pagecount) ? vm.pagecount : Math.min(vm.total, vm.pagecount);
-                vm.getCurrentPageData(vm.hitSearch);
+                getCurrentPageData(vm.hitSearch);
             }
             //#endregion
 

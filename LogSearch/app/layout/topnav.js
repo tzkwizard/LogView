@@ -20,13 +20,12 @@
         vm.ft = "";
         //#endregion
 
-        //#region function
+        //#region public function
         vm.path = path;
         vm.search = search;
         vm.refresh = refresh;
         vm.logout = logout;
         vm.autoFill = autoFill;
-        // vm.suggest = suggest;
         //#endregion
 
 

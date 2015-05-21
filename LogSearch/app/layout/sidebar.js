@@ -29,7 +29,7 @@
         //#endregion
 
 
-        //#region function
+        //#region public function
         vm.isCurrent = isCurrent;
         vm.sidebarNav = sidebarNav;
         vm.showFacet = showFacet;

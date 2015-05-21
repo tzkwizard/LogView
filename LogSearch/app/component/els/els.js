@@ -13,16 +13,14 @@
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
 
-           
-    
             //#region variable
-            $scope.collapse = true;           
-            vm.autocompleLoading = false;
+            $scope.collapse = true;
+            vm.autocompleLoading = false; // spinner for autofill
+            vm.processSearch = false; //spinner for search
             vm.searchText = $routeParams.search || '';
-            vm.processSearch = false; //processbar switch
             vm.hitSearch = "";
             vm.field = "";
-            vm.index = $routeParams.index || "";            
+            vm.index = $routeParams.index || "";
             vm.fieldsName = [];
             vm.indicesName = [];
             vm.pagecount = 1000;
@@ -44,34 +42,20 @@
             $scope.count = 0; // filter number            
             //#endregion
 
-            //#region function
+            //#region public function
             vm.search = search;
             vm.trySeach = trySeach;
-            vm.getSampleData = getSampleData;
-            vm.test = test;
-            vm.init = init;
             vm.addfilter = addfilter;
             vm.pageChanged = pageChanged;
-            vm.getCurrentPageData = getCurrentPageData;
-            vm.getFieldName = getFieldName;
-            vm.getIndexName = getIndexName;
             vm.filltext = filltext;
-            vm.filterst = filterst;
+            vm.filterst = filterst; //change time span
+            vm.timeChange = timeChange;
             vm.autoFill = autoFill;
             vm.transferLocation = transferLocation;
             vm.getLocation = getLocation;
             vm.refreshPage = refreshPage;
-            vm.showListBottomSheet = showListBottomSheet;
-            vm.timeChange = timeChange;
+            vm.showListBottomSheet = showListBottomSheet;            
             vm.showlist = showlist;
-            //#endregion
-
-
-            //#region Test
-            function test() {
-                //  bsDialog.deleteDialog('Session');
-                //  bsDialog.confirmationDialog('Session');       
-            }
             //#endregion
 
 
@@ -136,10 +120,9 @@
                           vm.total = resp.data.Total;
                           vm.pagecountArr = [Math.floor(vm.total / 20), Math.floor(vm.total / 10), Math.floor(vm.total / 5), Math.floor(vm.total / 2), vm.total];
                           vm.pagetotal = resp.total < vm.pagecount ? resp.total : vm.pagecount;
-                          vm.getCurrentPageData(vm.hitSearch);
+                          getCurrentPageData(vm.hitSearch);
                           random();
                           vm.processSearch = false;
-                          //refreshPage();
                       }, function (e) {
                           log("sampledata " + e.data.Message);
                       });
@@ -186,9 +169,8 @@
                             vm.total = resp.data.Total;
                             vm.pagecountArr = [Math.floor(vm.total / 20), Math.floor(vm.total / 10), Math.floor(vm.total / 5), Math.floor(vm.total / 2), vm.total];
                             vm.pagetotal = vm.total < vm.pagecount ? vm.total : vm.pagecount;
-                            vm.getCurrentPageData(vm.hitSearch);
+                            getCurrentPageData(vm.hitSearch);
                             random();
-                            //refreshPage();
                         }, function (e) {
                             log("search data error " + e.data.Message);
                         });
@@ -202,7 +184,7 @@
             function autoFill(force) {
                 if (force !== true && vm.searchText === "") return null;
                 vm.autocompleLoading = true;
-                return datasearch.autoFill(vm.searchText).then(function (resp) {                   
+                return datasearch.autoFill(vm.searchText).then(function (resp) {
                     appre = apre; apre = anow;
                     anow = resp.data.AutoData;
                     if (vm.autoText.length < 1000 && vm.autoText.length !== 0) {
@@ -215,7 +197,7 @@
                 });
             }
 
-            
+
 
             //refreh page
             vm.refresh = function () {
@@ -265,7 +247,7 @@
             }
 
             //disable after today
-            vm.toggleMin = function() {
+            vm.toggleMin = function () {
                 vm.tmind = new Date();
                 //vm.minDate = vm.minDate ? null : vm.tmind;
             };
@@ -321,11 +303,11 @@
                     }
                 });
             }
-      
+
             //fill searchText with filter information
             function filltext() {
                 if ($scope.count > 0) {
-                    vm.searchText = dataconfig.fillSearchText($scope.count,vm.condition);
+                    vm.searchText = dataconfig.fillSearchText($scope.count, vm.condition);
                     vm.filterfill = true;
                     vm.field = "all";
                     search();
