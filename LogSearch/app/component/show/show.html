@@ -1,28 +1,22 @@
 ﻿<section class="mainbar" data-ng-controller="show as vm">
     <section class="matter">
         <div class="container-fluid">
-            <div id="elsPaging" layout="row" layout-align="center center" class="widget-foot">
+            <div id="Paging" layout="row" layout-align="center center" class="widget-foot">
                 <div class="clearfix"></div>
-                <pagination boundary-links="true"
-                            total-items="vm.pagetotal"
-                            items-per-page="vm.paging.pageSize"
-                            data-ng-model="vm.paging.currentPage"
-                            data-ng-change="vm.pageChanged()"
-                            max-size="vm.paging.maxPagesToShow"
-                            class="pagination-sm"
-                            previous-text="Prev"
-                            next-text="Next"
-                            first-text="First"
-                            last-text="Last"></pagination>
+                <pagination boundary-links="true" class="pagination-sm"
+                            total-items="vm.pagetotal" items-per-page="vm.paging.pageSize" data-ng-model="vm.paging.currentPage"
+                            data-ng-change="vm.pageChanged()" max-size="vm.paging.maxPagesToShow"
+                            previous-text="Prev" next-text="Next" first-text="First" last-text="Last">
+                </pagination>
                 <div class="clearfix"></div>
                 <span flex></span>
-                <md-button class="md-raised md-primary" data-ng-click="vm.backPage()">
+                <md-button class="md-raised md-primary" data-ng-click="vm.backPage()" aria-label="back">
                     <md-icon md-svg-src="backpage" style="color: white"></md-icon>
                 </md-button>
             </div>
-            <div id="resultShow" class="widget wgreen">
+            <div id="CotentTable" class="widget wgreen">
                 <div class="pull-right">
-                    <md-select placeholder="Pick" ng-model="vm.paging.pageSize" ng-change="vm.refreshPage()">
+                    <md-select placeholder="Pick" ng-model="vm.paging.pageSize" ng-change="vm.pageChanged()">
                         <md-optgroup label="PageSize">
                             <md-option ng-value={{p}} ng-repeat="p in vm.pagesizeArr">{{p}}</md-option>
                         </md-optgroup>
@@ -33,12 +27,10 @@
                         </md-optgroup>
                     </md-select>
                 </div>
-                <div data-cc-widget-header title="{{vm.title}}"
-                     subtitle="{{vm.pagenumber}} / {{vm.pagetotal}}"
+                <div data-cc-widget-header title="{{vm.title}}" subtitle="{{vm.pagenumber}} / {{vm.pagetotal}}"
                      right-text="Page {{vm.paging.currentPage}} of {{vm.paging.pageCount}}"
                      allow-collapse="true"></div>
                 <div class="widget-content">
-                    {{vm.tt}}
                     <table class="table table-striped table-condensed table-hover">
                         <thead>
                             <tr>

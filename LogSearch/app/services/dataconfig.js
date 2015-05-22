@@ -8,10 +8,6 @@
 
         //#region Service
         var service = {
-            checkIndexCookie: checkIndexCookie,
-            checkFieldCookie: checkFieldCookie,
-            initIndex: initIndex,
-            getFieldName: getFieldName,           
             prime: prime,
             login: login,
             openLoginPage: openLoginPage,
@@ -20,7 +16,8 @@
             loadField: loadField,
             changeTimeSpan: changeTimeSpan,
             arrayUnique: arrayUnique,
-            aggFieldFilter: aggFieldFilter
+            aggFieldFilter: aggFieldFilter,
+            getMapping: getMapping
         }
         return service;
         //#endregion
@@ -29,30 +26,12 @@
         //#region Startup service
         //Load index and field
         function prime() {
-            var index = initIndex();
-            //$rootScope.index = initIndex();
             $rootScope.logtype = "logs";
             $rootScope.ip = [];
-
-            var field;
-            index.then(function (indexData) {
-                $rootScope.index = indexData;
-                field = getFieldName();
-            }, function (e) {
-                field = getFieldName();
-                toastr.info("index " + e.Message);
-            })
-                .then(function () {
-                    field.then(function (fieldData) {
-                        $rootScope.logfield = fieldData;
-                    });
-                }, function (e) {
-                    toastr.info("field " + e.Message);
-                });
+            $rootScope.map = getMapping();
             if ($rootScope.logged) return;
             checkIdent();
         }
-
 
         function checkIndexCookie() {
             if ($cookieStore.get('index') !== undefined && $rootScope.index !== undefined) {
@@ -80,7 +59,7 @@
                     $cookieStore.put('index', $rootScope.index);
                     indicesName = $cookieStore.get('index');
                 } else {
-                    indicesName = initIndex();
+                    return $rootScope.map;
                 }
             }
             return indicesName;
@@ -94,7 +73,7 @@
                     $cookieStore.put('logfield', $rootScope.logfield);
                     fieldName = $cookieStore.get('logfield');
                 } else {
-                    fieldName = getFieldName();
+                    return $rootScope.map;
                 }
             }
             return fieldName;
@@ -104,15 +83,9 @@
 
         //#region Get Maping service
         //get logstash index from cluster
-        function initIndex() {
+        function getMapping() {
             return datasearch.getMap().then(function (resp) {
-                return resp.data.Index;
-            });
-        }
-
-        //get field from cluster
-        function getFieldName() {
-            return datasearch.getMap().then(function (resp) {
+                $rootScope.index = resp.data.Index;
                 var fieldsName = resp.data.Field;
                 var field = [];
                 angular.forEach(fieldsName, function (name) {
@@ -120,9 +93,7 @@
                         field.push(name);
                     }
                 });
-                return field;
-            }).then(function (data) {
-                return data;
+                $rootScope.logfield = field;
             });
         }
         //#endregion
@@ -158,7 +129,6 @@
                 backdrop: 'static',
                 resolve: {
                     items: function () {
-                        return "";
                     }
                 }
             });

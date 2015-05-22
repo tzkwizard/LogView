@@ -53,16 +53,6 @@
             //#endregion
 
 
-            //#region Test
-            vm.tes = "ab";
-            vm.test = function test() {
-                /* var route = '/';
-                 $location.path(route + temp);
-                 $location.search('logs', "logs");*/
-            }
-            //#endregion
-
-
             //#region View Load
             var ap = [];
             activate();
@@ -96,8 +86,8 @@
                 vm.treestatus = true;
                 var ip = aggService.config.loadIndex();
                 try {
-                    return ip.then(function (data) {
-                        vm.indicesName = data;
+                    return ip.then(function () {
+                        vm.indicesName = common.$rootScope.index;
                     });
                 } catch (e) {
                     vm.indicesName = ip;
@@ -110,8 +100,8 @@
                 vm.aggName = "";
                 var fp = aggService.config.loadField();
                 try {
-                    return fp.then(function (data) {
-                        vm.fieldsName = data;
+                    return fp.then(function () {
+                        vm.fieldsName = common.$rootScope.logfield;
                     });
                 } catch (e) {
                     vm.fieldsName = fp;

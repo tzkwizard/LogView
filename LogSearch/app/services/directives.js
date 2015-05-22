@@ -101,7 +101,6 @@
         }
     }]);
 
-
     app.directive('ccSidebar', function () {
         // Opens and clsoes the sidebar menu.
         // Usage:
@@ -139,7 +138,6 @@
             }
         }
     });
-
 
     app.directive('ccWidgetClose', function () {
         // Usage:
@@ -270,7 +268,7 @@
                 'allowCollapse': '@'
             },
             templateUrl: 'app/layout/widgetheader.html',
-            restrict: 'A',
+            restrict: 'A'
         };
         return directive;
 

@@ -81,6 +81,7 @@
     <Content Include="app\layout\timesidebar\timeSideNav.js" />
     <Content Include="app\common\logger.js" />
     <Content Include="app\layout\widgetheader.html" />
+    <Content Include="app\services\component\result-Service.js" />
     <Content Include="app\services\component\els-Service.js" />
     <Content Include="app\services\component\agg-Service.js" />
     <Content Include="app\services\component\chart-Service.js" />

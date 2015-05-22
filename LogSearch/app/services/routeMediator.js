@@ -43,7 +43,6 @@
                 function (event, current, previous) {
                     handleRouteChangeError = false;
                     var title = config.docTitle + (current.title || '');
-
                     $rootScope.title = title;
                 }
             );

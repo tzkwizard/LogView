@@ -61,7 +61,7 @@
 
 
             function openResult(doc) {
-                this.items = "";          
+                this.item = "";          
                 var popdata = {
                     data: doc
                 };
@@ -70,7 +70,7 @@
                     controller: 'resultModal',
                     //size: 'lg',
                     resolve: {
-                        items: function () {
+                        item: function () {
                             return popdata;
                         }
                     }

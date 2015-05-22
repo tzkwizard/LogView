@@ -62,8 +62,8 @@
             function getIndexName() {
                 var ip = elsService.config.loadIndex();
                 try {
-                    return ip.then(function (data) {
-                        vm.indicesName = data;
+                    return ip.then(function () {
+                        vm.indicesName = common.$rootScope.index;
                     });
                 } catch (e) {
                     vm.indicesName = ip;
@@ -74,8 +74,8 @@
             function getFieldName() {
                 var fp = elsService.config.loadField();
                 try {
-                    return fp.then(function (data) {
-                        vm.fieldsName = data;
+                    return fp.then(function () {
+                        vm.fieldsName = common.$rootScope.logfield;
                     });
                 } catch (e) {
                     vm.fieldsName = fp;
@@ -85,9 +85,10 @@
 
             activate();
             function activate() {
-                common.activateController([getIndexName(), getFieldName(), autoFill(true)], controllerId)
+                common.activateController([getIndexName(), getFieldName()], controllerId)
                     .then(function () {
                         init();
+                        autoFill(true);
                         log('Activated ELS search View');
                     });
             }

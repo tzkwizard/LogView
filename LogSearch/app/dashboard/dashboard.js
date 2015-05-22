@@ -37,14 +37,6 @@
         //#endregion
 
 
-        //#region test
-        vm.test = test;
-        function test() {
-
-        }
-        //#endregion
-
-
         //#region View Load
         activate();
         function activate() {
@@ -70,8 +62,8 @@
         function getIndexName() {
             var ip = chartservice.config.loadIndex();
             try {
-                return ip.then(function (data) {
-                    vm.indicesName = data;
+                return ip.then(function () {
+                    vm.indicesName = common.$rootScope.index;
                 });
             } catch (e) {
                 vm.indicesName = ip;

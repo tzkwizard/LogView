@@ -1,5 +1,4 @@
-﻿/// <reference path="component/load/Loading.html" />
-(function () {
+﻿(function () {
     'use strict';
 
     var app = angular.module('app');
@@ -18,43 +17,6 @@
              rewriteLinks:false
            });*/
 
-        //TODO get rid of me 
-        /*  $routeProvider.when('/invalid', {
-              templateUrl:'/app/els/els.html'   
-              }
-              );*/
-
-        //TODO get rid of me 
-        /* $routeProvider.when('/pass', {
-             templateUrl: 'app/session/sessions.html',
-             resolve: {fake:fakeAllow}
-             }
-             );
- 
-         fakeAllow.$inject = ['$q'];
-         function fakeAllow($q) {
-             var data = { x: 1 };
-             var defer = $q.defer();
-             var promise = defer.promise;
-             promise.then(function () { toastr.info("get --"); });
-             defer.resolve(data);
-             promise.then(function () { toastr.info("get it"); });
-             return defer.promise;
-         }
-         $routeProvider.when('/fail', {
-             templateUrl: 'app/session/sessions.html',
-             resolve: { fake: fakeReject }
-         }
-              );
- 
-         fakeReject.$inject = ['$q'];
-         function fakeReject($q) {
-             var data = { x: 1 };
-             var defer = $q.defer();
-             defer.reject({msg:'haha'});
-             return defer.promise;
-         }*/
-
         routes.forEach(function (r) {
             // $routeProvider.when(r.url, r.config);
             setRoute(r.url, r.config);
@@ -67,19 +29,19 @@
             $routeProvider.when(url, definition);
         }
     }
-
-
     prime.$inject = ['dataconfig'];
     function prime(d) {
         d.prime();
     }
+
+
 
     // Define the routes 
     function getRoutes() {
         return [
             {
                 url: '/',
-                controller:'Loading as vm',
+                controller: 'Loading as vm',
                 config: {
                     templateUrl: 'app/component/load/Loading.html',
                     title: 'load',
@@ -101,66 +63,66 @@
                     }
                 }
             },
-             {
-                 url: '/els',
-                 config: {
-                     title: 'els',
-                     templateUrl: 'app/component/els/els.html',
-                     settings: {
-                         nav: 2,
-                         content: '<i class="fa fa-search"></i> ELS',
-                         icon: "search",
-                         tooltip: "Main Search Page"
-                     }
-                 }
-             }, {
-                 url: '/aggs',
-                 config: {
-                     title: 'aggs',
-                     templateUrl: 'app/component/agg/aggs.html',
-                     settings: {
-                         nav: 3,
-                         content: '<i class="fa fa-area-chart"></i> Aggs',
-                         icon: "assessment",
-                         tooltip: "Data Analysis Page"
-                     }
-                 }
-             },
-             {
-                 url: '/todo',
-                 config: {
-                     title: 'TODO',
-                     templateUrl: 'app/component/load/TODO.html',
-                     settings: {
-                         nav: 4,
-                         content: '<i class="fa fa-cloud"></i> TODO',
-                         icon: "setting",
-                         tooltip: "To be continue"
-                     }
-                 }
-             },
-             {
-                 url: '/els/:search',
-                 config: {
-                     title: 'search',
-                     templateUrl: 'app/component/els/els.html',
-                     settings: {
-                     }
-                 }
-             }
-             ,
-             {
-                 url: '/elslist',
-                 config: {
-                     title: 'elslist',
-                     templateUrl: 'app/component/show/show.html',
-                     settings: {
-                         nav: 5,
-                         icon: "windows",
-                         tooltip: "list"
-                     }
-                 }
-             }
+            {
+                url: '/els',
+                config: {
+                    title: 'els',
+                    templateUrl: 'app/component/els/els.html',
+                    settings: {
+                        nav: 2,
+                        content: '<i class="fa fa-search"></i> ELS',
+                        icon: "search",
+                        tooltip: "Main Search Page"
+                    }
+                }
+            },
+            {
+                url: '/aggs',
+                config: {
+                    title: 'aggs',
+                    templateUrl: 'app/component/agg/aggs.html',
+                    settings: {
+                        nav: 3,
+                        content: '<i class="fa fa-area-chart"></i> Aggs',
+                        icon: "assessment",
+                        tooltip: "Data Analysis Page"
+                    }
+                }
+            },
+            {
+                url: '/todo',
+                config: {
+                    title: 'TODO',
+                    templateUrl: 'app/component/load/TODO.html',
+                    settings: {
+                        nav: 4,
+                        content: '<i class="fa fa-cloud"></i> TODO',
+                        icon: "setting",
+                        tooltip: "To be continue"
+                    }
+                }
+            },
+            {
+                url: '/els/:search',
+                config: {
+                    title: 'search',
+                    templateUrl: 'app/component/els/els.html',
+                    settings: {
+                    }
+                }
+            },
+            {
+                url: '/elslist',
+                config: {
+                    title: 'elslist',
+                    templateUrl: 'app/component/show/show.html',
+                    settings: {
+                        nav: 5,
+                        icon: "windows",
+                        tooltip: "list"
+                    }
+                }
+            }
         ];
     }
 
