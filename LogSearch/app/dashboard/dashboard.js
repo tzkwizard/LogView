@@ -1,14 +1,12 @@
 ﻿(function () {
     'use strict';
     var controllerId = 'dashboard';
-    angular.module('app').controller(controllerId, ['$scope', '$cookieStore', '$rootScope', 'common', 'dataconfig', 'datasearch', 'chartservice', dashboard]);
+    angular.module('app').controller(controllerId, ['$cookieStore', 'common', 'chartservice', dashboard]);
 
-    function dashboard($scope, $cookieStore, $rootScope, common, dataconfig, datasearch, chartservice) {
+    function dashboard($cookieStore, common, chartservice) {
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
         var vm = this;
-        $scope.gcollapse = false;
-        $scope.gcollapse2 = false;
 
         //#region variable
         vm.st = "";
@@ -59,9 +57,9 @@
         }
 
         function init() {
-            vm.type = $rootScope.logtype;
-            vm.ft = $rootScope.ft;
-            vm.st = $rootScope.st;
+            vm.type = common.$rootScope.logtype;
+            vm.ft = common.$rootScope.ft;
+            vm.st = common.$rootScope.st;
 
             // worldGeoMap();
             common.$q.all(usGeoMap(), geoMap(), pieChart(), timeLineGram()).then(function () {
@@ -70,7 +68,7 @@
         }
 
         function getIndexName() {
-            var ip = dataconfig.loadIndex();
+            var ip = chartservice.config.loadIndex();
             try {
                 return ip.then(function (data) {
                     vm.indicesName = data;
@@ -85,7 +83,7 @@
 
         //#region Draw Map1
         function worldGeoMap() {
-            datasearch.termAggragation(vm.indicesName, vm.type, "geoip.country_name.raw", vm.geoCount, vm.st, vm.ft).
+            chartservice.data.termAggragation(vm.indicesName, vm.type, "geoip.country_name.raw", vm.geoCount, vm.st, vm.ft).
                 then(function (resp) {
                     if (resp.data.Total !== 0) {
                         //drawMap2(resp.data.AggData);
@@ -97,7 +95,7 @@
         }
 
         function usGeoMap() {
-            return datasearch.termQueryAggragation(vm.indicesName, vm.type, "geoip.country_code3.raw", "USA", "geoip.real_region_name.raw", vm.geoCount, vm.st, vm.ft).
+            return chartservice.data.termQueryAggragation(vm.indicesName, vm.type, "geoip.country_code3.raw", "USA", "geoip.real_region_name.raw", vm.geoCount, vm.st, vm.ft).
                    then(function (resp) {
                        if (resp.data.Total !== 0) {
                            //drawUSmap(resp.data.AggData);
@@ -109,7 +107,7 @@
         }
 
         function usCityMap() {
-            datasearch.termQueryAggragation(vm.indicesName, vm.type, "geoip.country_code3.raw", "USA", "geoip.city_name.raw", vm.geoCount, vm.st, vm.ft).
+            chartservice.data.termQueryAggragation(vm.indicesName, vm.type, "geoip.country_code3.raw", "USA", "geoip.city_name.raw", vm.geoCount, vm.st, vm.ft).
                     then(function (resp) {
                         if (resp.data.Total !== 0) {
                             //drawoCitymap(resp.data.AggData);
@@ -124,7 +122,7 @@
 
         //#region Draw Map2
         function geoMap() {
-            return datasearch.termAggragation(vm.indicesName, vm.type, "geoip.city_name.raw", vm.mapCount, vm.st, vm.ft).
+            return chartservice.data.termAggragation(vm.indicesName, vm.type, "geoip.city_name.raw", vm.mapCount, vm.st, vm.ft).
                 then(function (resp) {
                     if (resp.data.Total !== 0) {
                         //drawMap(resp.data.AggData);
@@ -158,7 +156,7 @@
 
         //#region Draw Pie 
         function pieChart() {
-            return datasearch.dashboardPieAggregation("verb.raw", "geoip.city_name.raw", "action.raw", vm.st, vm.ft)
+            return chartservice.data.dashboardPieAggregation("verb.raw", "geoip.city_name.raw", "action.raw", vm.st, vm.ft)
            .then(function (resp) {
                //drawpie(resp.data);
                chartservice.drawDashPie(resp.data, 'pie_div');
@@ -172,7 +170,7 @@
 
         //#region Time Chart
         function timeLineGram() {
-            return datasearch.dateHistogramAggregation(vm.indicesName, vm.type, "@timestamp", "day", vm.st, vm.ft)
+            return chartservice.data.dateHistogramAggregation(vm.indicesName, vm.type, "@timestamp", "day", vm.st, vm.ft)
                 .then(function (resp) {
                     if (resp.data.Total !== 0) {
                         //drawTimwLine(resp.data.DateHistData);

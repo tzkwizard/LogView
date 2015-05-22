@@ -156,7 +156,7 @@
                 <div id="google list">
                     <md-toolbar md-scroll-shrink>
                         <div class=" md-toolbar-tools" style="font-size: 15px">
-                            <md-button class="md-icon-button" aria-label="r1" ng-click="collapse=!collapse">
+                            <md-button class="md-icon-button" aria-label="r1" ng-click="vm.googlelist=!vm.googlelist">
                                 <md-icon md-svg-icon="menu"></md-icon>
                             </md-button>
                             <h3 style="color: whitesmoke">
@@ -183,7 +183,7 @@
                             </md-button>
                         </div>
                     </md-toolbar>
-                    <md-content id="google" style="height: 600px;" ng-show="collapse" class="dissolve-animation">
+                    <md-content id="google" style="height: 600px;" ng-show="vm.googlelist" class="dissolve-animation">
                         <md-list>
                             <md-list-item class="md-3-line fader-animation" ng-repeat="doc in vm.res| orderBy:predicate:reverse">
                                 <div class="md-list-item-text" data-ng-dblclick="vm.open(doc)">

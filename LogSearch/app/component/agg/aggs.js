@@ -4,8 +4,7 @@
     var controllerId = 'aggs';
 
     angular.module('app')
-        .controller(controllerId, function ($cookieStore, $rootScope, $scope,
-            common, datasearch, dataconfig, chartservice) {
+        .controller(controllerId, function ($cookieStore, common, aggService) {
             var vm = this;
             vm.title = "Aggragations";
             vm.title2 = "PieChart";
@@ -76,15 +75,15 @@
             }
 
             function init() {
-                vm.ft = $rootScope.ft;
-                vm.st = $rootScope.st;
-                vm.type = $rootScope.logtype;
+                vm.ft = common.$rootScope.ft;
+                vm.st = common.$rootScope.st;
+                vm.type = common.$rootScope.logtype;
                 vm.refinedsearch = [
                     { key: 'Time', value: new Date() },
-                    { key: 'School', value: $rootScope.school }
+                    { key: 'School', value: common.$rootScope.school }
                 ];
                 if (vm.treestatus === true) {
-                    chartservice.drawTreeMap(vm.fieldsName, vm.treesize, vm.st, vm.ft).then(function () {
+                    aggService.drawTreeMap(vm.fieldsName, vm.treesize, vm.st, vm.ft).then(function () {
                         vm.isBusy = false;
                         vm.process = false;
                     });
@@ -95,7 +94,7 @@
             //Load index
             function getIndexName() {
                 vm.treestatus = true;
-                var ip = dataconfig.loadIndex();
+                var ip = aggService.config.loadIndex();
                 try {
                     return ip.then(function (data) {
                         vm.indicesName = data;
@@ -109,7 +108,7 @@
             //Load field
             function getFieldName() {
                 vm.aggName = "";
-                var fp = dataconfig.loadField();
+                var fp = aggService.config.loadField();
                 try {
                     return fp.then(function (data) {
                         vm.fieldsName = data;
@@ -150,7 +149,7 @@
             }
 
             function treesizeChange() {
-                chartservice.drawTreeMap(vm.fieldsName, vm.treesize, vm.st, vm.ft);
+                aggService.drawTreeMap(vm.fieldsName, vm.treesize, vm.st, vm.ft);
             }
 
             function show() {
@@ -163,11 +162,11 @@
             //get dashboard data
             function aggShow(aggName) {
                 vm.process = true;
-                dataconfig.removePieContainer();
+                aggService.removePieContainer();
                 if (vm.aggName === "" || vm.aggName === "all") {
                     vm.token = false;
-                    var aggfield = dataconfig.aggFieldFilter(vm.fieldsName);
-                    dataconfig.addPieContainer(aggfield);
+                    var aggfield = aggService.config.aggFieldFilter(vm.fieldsName);
+                    aggService.addPieContainer(aggfield);
                     var flag = aggfield.length <= 2 ? true : false;
 
                     angular.forEach(aggfield, function (name) {
@@ -175,11 +174,11 @@
                     });
                 } else {
                     vm.token = true;
-                    datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft)
+                    aggService.data.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft)
                         .then(function (resp) {
                             vm.total = resp.data.Total;
                             vm.hitSearch = resp.data.AggData;
-                            var data = chartservice.drawaggDashboard1(resp.data.AggData, aggName, 'dashboard', 'filter_div', 'chart_div');
+                            var data = aggService.drawaggDashboard1(resp.data.AggData, aggName, 'dashboard', 'filter_div', 'chart_div');
                             drawTable(data, 'table_div', aggName);
                         }, function (e) {
                             log(e.data.Message);
@@ -192,17 +191,17 @@
 
             //get multi-field dashboard2 data
             function aggShows(aggName, flag) {
-                return datasearch.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft)
+                return aggService.data.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft)
                       .then(function (resp) {
                           vm.total = resp.data.Total;
                           var data;
                           if (!flag) {
                               if (resp.data.AggData.length > 1) {
-                                  data = chartservice.drawaggDashboard2(resp.data.AggData, aggName);
+                                  data = aggService.drawaggDashboard2(resp.data.AggData, aggName);
                                   drawTable(data, "table" + aggName, aggName);
                               }
                           } else {
-                              data = chartservice.drawaggDashboard2(resp.data.AggData, aggName);
+                              data = aggService.drawaggDashboard2(resp.data.AggData, aggName);
                               drawTable(data, "table" + aggName, aggName);
                           }
                       }, function (e) {

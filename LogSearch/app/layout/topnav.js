@@ -3,9 +3,9 @@
 
     var controllerId = 'topnav';
     angular.module('app').controller(controllerId,
-        ['$cookieStore', '$rootScope', '$scope', 'dataconfig', 'datasearch', 'config', 'common', '$timeout', '$mdSidenav', '$mdUtil', topnav]);
+        ['$cookieStore', 'dataconfig', 'datasearch', 'config', 'common', '$mdSidenav', '$mdUtil', topnav]);
 
-    function topnav($cookieStore, $rootScope, $scope, dataconfig, datasearch, config, common, $timeout, $mdSidenav, $mdUtil) {
+    function topnav($cookieStore, dataconfig, datasearch, config, common, $mdSidenav, $mdUtil) {
         var vm = this;
         // var keyCodes = config.keyCodes;
 
@@ -33,14 +33,14 @@
         vm.filterst = filterst;
         //change time span global
         function filterst(span) {
-            $rootScope.ft = new Date();
-            $rootScope.st = dataconfig.changeTimeSpan(span);
+            common.$rootScope.ft = new Date();
+            common.$rootScope.st = dataconfig.changeTimeSpan(span);
             common.$location.path(common.$location.path() + "/");
             // window.location.reload();
         }
 
-        $scope.toggleRight = sideNav('right');
-        $scope.toggleLeft = sideNav('left');
+        vm.toggleRight = sideNav('right');
+        vm.toggleLeft = sideNav('left');
 
         function sideNav(navID) {
             var debounceFn = $mdUtil.debounce(function () {
@@ -64,11 +64,10 @@
         var anow = "";
 
         //get auto-fill data
-        function autoFill(force) {           
+        function autoFill(force) {
             if (force !== true && vm.searchText === "") return null;
             vm.autocompleLoading = true;
-            return datasearch.autoFill(vm.searchText).then(function (resp) 
-            {
+            return datasearch.autoFill(vm.searchText).then(function (resp) {
                 appre = apre; apre = anow;
                 anow = resp.data.AutoData;
                 if (vm.autoText.length < 1000 && vm.autoText.length !== 0) {
@@ -98,8 +97,8 @@
 
         activate();
         function activate() {
-            vm.ft = $rootScope.ft;
-            vm.st = $rootScope.st;
+            vm.ft = common.$rootScope.ft;
+            vm.st = common.$rootScope.st;
             autoFill(true);
             toastr.info("Auto Fill Load");
         }
@@ -132,7 +131,7 @@
 
         //log out
         function logout() {
-            $rootScope.logged = false;
+            common.$rootScope.logged = false;
             $cookieStore.remove("useranme");
             $cookieStore.remove("password");
             $cookieStore.remove("key");

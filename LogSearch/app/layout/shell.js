@@ -3,9 +3,9 @@
 
     var controllerId = 'shell';
     angular.module('app').controller(controllerId,
-        ['$scope', '$rootScope', '$modal', 'common', 'config', shell]);
+        ['common', 'config', shell]);
 
-    function shell($scope, $rootScope, $modal, common, config) {
+    function shell(common, config) {
         var vm = this;
         var events = config.events;
 
@@ -42,17 +42,17 @@
             vm.isBusy = on;
         }
 
-        $rootScope.$on('$routeChangeStart',
+        common.$rootScope.$on('$routeChangeStart',
             function (event, next, current) { toggleSpinner(true); }
         );
 
-        $rootScope.$on(events.controllerActivateSuccess,
+        common.$rootScope.$on(events.controllerActivateSuccess,
             function (data) {
                 toggleSpinner(false);
             }
         );
 
-        $rootScope.$on(events.spinnerToggle,
+        common.$rootScope.$on(events.spinnerToggle,
             function (data) { toggleSpinner(data.show); }
         );
         /*  $rootScope.$on('$viewContentLoaded', function readyToTrick() {

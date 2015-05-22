@@ -4,7 +4,7 @@
     var controllerId = 'menuSideNav';
 
     angular.module('app')
-        .controller(controllerId, function (routes, $rootScope, $scope, $timeout, $mdSidenav) {
+        .controller(controllerId, function (routes, $scope, $mdSidenav) {
             $scope.getNav = function () {
                 return routes.filter(function (r) {
                     return r.config.settings && r.config.settings.nav;

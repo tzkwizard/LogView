@@ -4,7 +4,7 @@
     var controllerId = 'show';
 
     angular.module('app')
-        .controller(controllerId, function ($rootScope, $scope, $modal, common) {
+        .controller(controllerId, function ($modal, common) {
             var vm = this;
             vm.title = "Elasticsearch";
             var getLogFn = common.logger.getLogFn;
@@ -12,9 +12,9 @@
 
 
             //#region variable and public function
-            $scope.predicate = '_source.timestamp';
-            $scope.trend = ["true", "true", "true", "true", "true","true"];
-            vm.hitSearch = $rootScope.searchresult;
+            vm.predicate = '_source.timestamp';
+            vm.trend = ["true", "true", "true", "true", "true", "true"];
+            vm.hitSearch = common.$rootScope.searchresult;
             vm.pagesizeArr = ["5", "10", "25", "50", "100"];
 
             vm.pagecount = 1000;
@@ -92,7 +92,7 @@
             //get current page data
             function getCurrentPageData(res) {
                 vm.res = [];
-                vm.j = 0;               
+                vm.j = 0;
                 vm.pagenumber = vm.paging.pageSize * vm.paging.currentPage;
                 if (vm.pagenumber > vm.pagetotal)
                     vm.pagenumber = vm.pagetotal; // handle overflow of lastpage

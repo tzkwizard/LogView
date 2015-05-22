@@ -4,8 +4,8 @@
     var controllerId = 'els';
 
     angular.module('app')
-        .controller(controllerId, function ($rootScope, $routeParams,
-           $scope, $modal, common, datasearch, dataconfig, $cookieStore, config, $timeout, $mdBottomSheet) {
+        .controller(controllerId, function ($routeParams,
+           $scope, $modal, common, elsService, $cookieStore, config, $mdBottomSheet) {
 
             var vm = this;
             vm.title = "Elasticsearch";
@@ -14,7 +14,7 @@
             var log = getLogFn(controllerId);
 
             //#region variable
-            $scope.collapse = true;
+            vm.googlelist = true;
             vm.autocompleLoading = false; // spinner for autofill
             vm.processSearch = false; //spinner for search
             vm.searchText = $routeParams.search || '';
@@ -54,7 +54,7 @@
             vm.transferLocation = transferLocation;
             vm.getLocation = getLocation;
             vm.refreshPage = refreshPage;
-            vm.showListBottomSheet = showListBottomSheet;            
+            vm.showListBottomSheet = showListBottomSheet;
             vm.showlist = showlist;
             //#endregion
 
@@ -62,7 +62,7 @@
             //#region View Load
             //Load Index
             function getIndexName() {
-                var ip = dataconfig.loadIndex();
+                var ip = elsService.config.loadIndex();
                 try {
                     return ip.then(function (data) {
                         vm.indicesName = data;
@@ -74,7 +74,7 @@
             }
             //Load Field
             function getFieldName() {
-                var fp = dataconfig.loadField();
+                var fp = elsService.config.loadField();
                 try {
                     return fp.then(function (data) {
                         vm.fieldsName = data;
@@ -95,8 +95,8 @@
             }
 
             function init() {
-                vm.ft = $rootScope.ft;
-                vm.st = $rootScope.st;
+                vm.ft = common.$rootScope.ft;
+                vm.st = common.$rootScope.st;
                 common.$location.search();
                 if (common.$location.search.field === "" || common.$location.search.field === undefined) {
                     if (common.$location.search.text !== "") {
@@ -112,7 +112,7 @@
 
             //get sample search result
             function getSampleData() {
-                return datasearch.getSampledata(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.st, vm.ft, vm.locationF, vm.distanceF)
+                return elsService.data.getSampledata(vm.indicesName, common.$rootScope.logtype, vm.pagecount, vm.st, vm.ft, vm.locationF, vm.distanceF)
                       .then(function (resp) {
                           if (resp.data.Total !== 0) {
                               vm.hitSearch = resp.data.Data;
@@ -160,7 +160,7 @@
                 if (vm.searchText == undefined || vm.searchText === "") {
                     getSampleData();
                 } else {
-                    datasearch.basicSearch(vm.indicesName, $rootScope.logtype, vm.pagecount, vm.field, vm.searchText, condition, vm.st, vm.ft, vm.locationF, vm.distanceF)
+                    elsService.data.basicSearch(vm.indicesName, common.$rootScope.logtype, vm.pagecount, vm.field, vm.searchText, condition, vm.st, vm.ft, vm.locationF, vm.distanceF)
                         .then(function (resp) {
                             if (resp.data.Total !== 0) {
                                 vm.hitSearch = resp.data.Data;
@@ -184,11 +184,11 @@
             function autoFill(force) {
                 if (force !== true && vm.searchText === "") return null;
                 vm.autocompleLoading = true;
-                return datasearch.autoFill(vm.searchText).then(function (resp) {
+                return elsService.data.autoFill(vm.searchText).then(function (resp) {
                     appre = apre; apre = anow;
                     anow = resp.data.AutoData;
                     if (vm.autoText.length < 1000 && vm.autoText.length !== 0) {
-                        vm.autoText = dataconfig.arrayUnique(anow.concat(dataconfig.arrayUnique(apre.concat(appre))));
+                        vm.autoText = elsService.config.arrayUnique(anow.concat(elsService.config.arrayUnique(apre.concat(appre))));
                     } else {
                         vm.autoText = anow.concat(apre.concat(appre));
                     }
@@ -220,7 +220,7 @@
                 });
             }
             function showlist() {
-                $rootScope.searchresult = vm.hitSearch;
+                common.$rootScope.searchresult = vm.hitSearch;
                 common.$location.path("/elslist");
             }
             //#endregion
@@ -236,13 +236,13 @@
             };
 
             function timeChange() {
-                $rootScope.ft = vm.ft;
-                $rootScope.st = vm.st;
+                common.$rootScope.ft = vm.ft;
+                common.$rootScope.st = vm.st;
             }
 
             //change time span on scope
             function filterst(span) {
-                vm.st = dataconfig.changeTimeSpan(span);
+                vm.st = elsService.config.changeTimeSpan(span);
                 search();
             }
 
@@ -287,12 +287,12 @@
             vm.asyncSelected = "";
             //get address
             function getLocation(val) {
-                return datasearch.getLocation(val);
+                return elsService.data.getLocation(val);
             }
 
             //transfer address to cordinate
             function transferLocation() {
-                datasearch.transferLocation(vm.asyncSelected).then(function (data) {
+                elsService.data.transferLocation(vm.asyncSelected).then(function (data) {
                     try {
                         var cor = data.data.results[0].geometry.location;
                         toastr.info(cor.lat + "---" + cor.lng);
@@ -307,7 +307,7 @@
             //fill searchText with filter information
             function filltext() {
                 if ($scope.count > 0) {
-                    vm.searchText = dataconfig.fillSearchText($scope.count, vm.condition);
+                    vm.searchText = elsService.config.fillSearchText($scope.count, vm.condition);
                     vm.filterfill = true;
                     vm.field = "all";
                     search();

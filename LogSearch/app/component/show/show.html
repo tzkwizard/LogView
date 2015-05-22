@@ -22,16 +22,16 @@
             </div>
             <div id="resultShow" class="widget wgreen">
                 <div class="pull-right">
-                <md-select placeholder="Pick" ng-model="vm.paging.pageSize" ng-change="vm.refreshPage()">
-                    <md-optgroup label="PageSize">
-                        <md-option ng-value={{p}} ng-repeat="p in vm.pagesizeArr">{{p}}</md-option>
-                    </md-optgroup>
-                </md-select>
-                <md-select placeholder="Pick" ng-model="vm.pagecount" ng-change="vm.refreshPage()">
-                    <md-optgroup label="ResultSize">
-                        <md-option ng-value={{p}} ng-repeat="p in vm.pagecountArr"><h5>{{p}}</h5></md-option>
-                    </md-optgroup>
-                </md-select>
+                    <md-select placeholder="Pick" ng-model="vm.paging.pageSize" ng-change="vm.refreshPage()">
+                        <md-optgroup label="PageSize">
+                            <md-option ng-value={{p}} ng-repeat="p in vm.pagesizeArr">{{p}}</md-option>
+                        </md-optgroup>
+                    </md-select>
+                    <md-select placeholder="Pick" ng-model="vm.pagecount" ng-change="vm.refreshPage()">
+                        <md-optgroup label="ResultSize">
+                            <md-option ng-value={{p}} ng-repeat="p in vm.pagecountArr"><h5>{{p}}</h5></md-option>
+                        </md-optgroup>
+                    </md-select>
                 </div>
                 <div data-cc-widget-header title="{{vm.title}}"
                      subtitle="{{vm.pagenumber}} / {{vm.pagetotal}}"
@@ -41,24 +41,24 @@
                     {{vm.tt}}
                     <table class="table table-striped table-condensed table-hover">
                         <thead>
-                        <tr>
-                            <th class="message">Time&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend[0], 'glyphicon-chevron-up': !trend[0]}" data-ng-click="predicate = '_source.timestamp'; reverse=!reverse;trend[0]=!trend[0]"></i></th>
-                            <th class="message">Nation&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend[1], 'glyphicon-chevron-up': !trend[1]}" data-ng-click=" predicate='_source.geoip.country_name' ; reverse=!reverse;trend[1]=!trend[1]"></i></th>
-                            <th class="message">City&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend[2], 'glyphicon-chevron-up': !trend[2]}" data-ng-click=" predicate='_source.geoip.city_name' ; reverse=!reverse;trend[2]=!trend[2]"></i></th>
-                            <th class="message">User&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend[3], 'glyphicon-chevron-up': !trend[3]}" data-ng-click=" predicate='_source.ident' ; reverse=!reverse;trend[3]=!trend[3]"></i></th>
-                            <th class="message">Action&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend[4], 'glyphicon-chevron-up': !trend[4]}" data-ng-click=" predicate='_source.action' ; reverse=!reverse;trend[4]=!trend[4]"></i></th>
-                            <th class="message">Score&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': trend[5], 'glyphicon-chevron-up': !trend[5]}" data-ng-click=" predicate='_score' ; reverse=!reverse;trend[5]=!trend[5]"></i></th>
-                        </tr>
+                            <tr>
+                                <th class="message">Time&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': vm.trend[0], 'glyphicon-chevron-up': !vm.trend[0]}" data-ng-click="vm.predicate = '_source.timestamp'; reverse=!reverse;vm.trend[0]=!vm.trend[0]"></i></th>
+                                <th class="message">Nation&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': vm.trend[1], 'glyphicon-chevron-up': !vm.trend[1]}" data-ng-click=" vm.predicate='_source.geoip.country_name' ; reverse=!reverse;vm.trend[1]=!vm.trend[1]"></i></th>
+                                <th class="message">City&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': vm.trend[2], 'glyphicon-chevron-up': !vm.trend[2]}" data-ng-click=" vm.predicate='_source.geoip.city_name' ; reverse=!reverse;vm.trend[2]=!vm.trend[2]"></i></th>
+                                <th class="message">User&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': vm.trend[3], 'glyphicon-chevron-up': !vm.trend[3]}" data-ng-click=" vm.predicate='_source.ident' ; reverse=!reverse;vm.trend[3]=!vm.trend[3]"></i></th>
+                                <th class="message">Action&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': vm.trend[4], 'glyphicon-chevron-up': !vm.trend[4]}" data-ng-click=" vm.predicate='_source.action' ; reverse=!reverse;vm.trend[4]=!vm.trend[4]"></i></th>
+                                <th class="message">Score&nbsp;<i class="glyphicon" ng-class="{'glyphicon-chevron-down': vm.trend[5], 'glyphicon-chevron-up': !vm.trend[5]}" data-ng-click=" vm.predicate='_score' ; reverse=!reverse;vm.trend[5]=!vm.trend[5]"></i></th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr class="fader-animation" data-ng-repeat="doc in vm.res| orderBy:predicate:reverse" data-ng-click="vm.open(doc)">
-                            <td>{{doc._source['UTCtimestamp']| date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
-                            <td>{{doc._source.geoip.country_name}}</td>
-                            <td>{{doc._source.geoip.city_name}}({{doc._source.geoip.real_region_name}})</td>
-                            <td>{{doc._source.ident}}</td>
-                            <td>{{doc._source.action}}</td>
-                            <td>{{doc._score}}</td>
-                        </tr>
+                            <tr class="fader-animation" data-ng-repeat="doc in vm.res| orderBy:vm.predicate:reverse" data-ng-click="vm.open(doc)">
+                                <td>{{doc._source['UTCtimestamp']| date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
+                                <td>{{doc._source.geoip.country_name}}</td>
+                                <td>{{doc._source.geoip.city_name}}({{doc._source.geoip.real_region_name}})</td>
+                                <td>{{doc._source.ident}}</td>
+                                <td>{{doc._source.action}}</td>
+                                <td>{{doc._score}}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

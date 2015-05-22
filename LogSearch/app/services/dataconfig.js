@@ -6,28 +6,21 @@
 
     function dataconfig($modal, $rootScope, $cookieStore, datasearch) {
 
-        var vm = this;
-
         //#region Service
         var service = {
             checkIndexCookie: checkIndexCookie,
             checkFieldCookie: checkFieldCookie,
             initIndex: initIndex,
-            getFieldName: getFieldName,
-            createContainer: createContainer,
+            getFieldName: getFieldName,           
             prime: prime,
             login: login,
             openLoginPage: openLoginPage,
             checkIdent: checkIdent,
             loadIndex: loadIndex,
             loadField: loadField,
-            fillSearchText: fillSearchText,
             changeTimeSpan: changeTimeSpan,
             arrayUnique: arrayUnique,
-            aggFieldFilter: aggFieldFilter,
-            addPieContainer: addPieContainer,
-            removePieContainer: removePieContainer
-
+            aggFieldFilter: aggFieldFilter
         }
         return service;
         //#endregion
@@ -184,96 +177,6 @@
         //#endregion
 
 
-        //#region els service
-        function fillSearchText(n,condition) {
-            var searchText = "";
-            for (var i = 0; i < condition.length; i++) {
-                var s1 = condition[i].condition;
-                var s2 = condition[i].field;
-                var s3 = condition[i].text;
-                if (s1==="" ||s2==="")
-                    continue;
-                if (s1 === "MUST") {
-                    if (s3 !== "") {
-                        if (i === 1) {
-                            searchText += s2 + " : \"" + s3 + "\"^2";
-                        } else {
-                            searchText += " AND " + s2 + " : \"" + s3 + "\"^2";
-                        }
-                    }
-                }
-                else if (s1 === "MUST_NOT") {
-                    if (s3 !== "") {
-                        if (i === 1) {
-                            searchText += " NOT " + s2 + " : \"" + s3 + "\"";
-                        } else {
-                            searchText += " NOT " + s2 + " : \"" + s3 + "\"";
-                        }
-                    }
-                } else {
-                    if (s3 !== "") {
-                        if (i === 1) {
-                            searchText += s2 + " : \"" + s3 + "\"";
-                        } else {
-                            searchText += " AND " + s2 + " : \"" + s3 + "\"";
-                        }
-                    }
-                }
-            }
-            return searchText;
-        }
-        //#endregion
-
-
-        //#region agg service
-        function removePieContainer() {
-            try {
-                angular.element(document.getElementById('contain'))
-                    .remove();
-            } catch (e) {
-                toastr.info(e.message);
-            }
-
-        }
-
-        function addPieContainer(fields) {
-            angular.element(document.getElementById('div2')).
-                  append("<div id=contain></div>");
-            angular.forEach(fields, function (name) {
-                createContainer(name);
-            });     
-        }
-
-        //create container for chart
-        function createContainer(aggName) {
-            angular.element(document.getElementById('contain')).
-                  append("<div id=contain" + aggName + "></div>");
-
-            angular.element(document.getElementById('contain' + aggName)).
-                  append("<div id=dash" + aggName + "></div>");
-
-            angular.element(document.getElementById('dash' + aggName)).
-                  append(
-                  "<table id=table1" + aggName + "> <tbody> <tr>" +
-                  "<td> <div id=range" + aggName + "></div> " +
-                   "<div id=bar" + aggName + "></div></td>" +
-                  "<td> <div id=table" + aggName + "></div></td>" +
-                    "</tr> </tbody> </table>"
-                    );
-        }
-
-        function aggFieldFilter(fields) {
-            var filtered = [];
-            angular.forEach(fields, function (x) {
-                if (x.substring(x.length - 3, x.length) === "raw" && x !== "timestamp.raw" && x !== "tags.raw") {
-                    filtered.push(x);
-                }
-            });
-            return filtered;
-        }
-        //#endregion
-
-
         //#region Time history service
         function changeTimeSpan(span) {
             var st;
@@ -343,7 +246,15 @@
             return a;
         }
 
-
+        function aggFieldFilter(fields) {
+            var filtered = [];
+            angular.forEach(fields, function (x) {
+                if (x.substring(x.length - 3, x.length) === "raw" && x !== "timestamp.raw" && x !== "tags.raw") {
+                    filtered.push(x);
+                }
+            });
+            return filtered;
+        }
         //#endregion
     }
 

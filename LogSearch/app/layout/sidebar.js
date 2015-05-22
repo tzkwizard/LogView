@@ -3,29 +3,19 @@
 
     var controllerId = 'sidebar';
     angular.module('app').controller(controllerId,
-        ['$rootScope', 'config', 'routes', 'dataconfig', 'datasearch', 'common', '$timeout', '$mdBottomSheet', sidebar]);
+        ['config', 'routes', 'dataconfig', 'datasearch', 'common', '$mdBottomSheet', sidebar]);
 
-    function sidebar($rootScope, config, routes, dataconfig, datasearch, common, $timeout, $mdBottomSheet) {
+    function sidebar(config, routes, dataconfig, datasearch, common, $mdBottomSheet) {
         var vm = this;
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
 
         //#region variable       
         vm.searchText = '';
-        vm.isCollapsed = false;
-        vm.isCollapsed2 = false;
-        vm.isCollapsed3 = false;
-        vm.isCollapsed4 = false;
-        vm.isCollapsed5 = false;
         vm.size = 6;
-        vm.location = "";
-        vm.httpmethod = "";
-        vm.apiaddress = "";
-        vm.user = "";
-        vm.useraction = "";
         vm.st = "";
         vm.ft = "";
-        vm.facet = $rootScope.facet;
+        vm.facet = common.$rootScope.facet;
         //#endregion
 
 
@@ -42,9 +32,9 @@
             //getFieldName();
             common.activateController([getNavRoutes()], controllerId)
                 .then(function () {
-                    if ($rootScope.ft !== undefined && $rootScope.st !== undefined) {
-                        vm.ft = $rootScope.ft;
-                        vm.st = $rootScope.st;
+                    if (common.$rootScope.ft !== undefined && common.$rootScope.st !== undefined) {
+                        vm.ft = common.$rootScope.ft;
+                        vm.st = common.$rootScope.st;
                     } else {
                         vm.st = moment(new Date()).subtract(2, 'month');
                         vm.ft = new Date();
@@ -77,7 +67,7 @@
         function showFacet(facet) {
             var x = vm.facet.indexOf(facet);
             if (vm.facet[x].data === "" || vm.facet[x].data === undefined || common.$location.search.refresh) {
-                datasearch.termAggragation($rootScope.index, $rootScope.logtype, vm.facet[x].field, vm.size, vm.st, vm.ft).then(function (resp) {
+                datasearch.termAggragation(common.$rootScope.index, common.$rootScope.logtype, vm.facet[x].field, vm.size, vm.st, vm.ft).then(function (resp) {
                     vm.facet[x].data = resp.data.AggData;
                     common.$location.search.refresh = false;
                 }, function (err) {
@@ -88,83 +78,6 @@
             }
         }
 
-
-
-        vm.showLocation = function () {
-            if (vm.location === "" || vm.location === undefined || common.$location.search.refresh) {
-                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "geoip.city_name.raw", vm.size, vm.st, vm.ft).then(function (resp) {
-                    //vm.location = resp.aggregations.ag.agg.buckets;
-                    vm.location = resp.data.AggData;
-                    common.$location.search.refresh = false;
-                    // log("re");
-                }, function (err) {
-                    log(err.data.Message);
-                });
-            } else {
-                vm.isCollapsed = !vm.isCollapsed;
-            }
-        }
-
-        //get and show api facet
-        vm.showRequestAPI = function () {
-            if (vm.apiaddress === "" || vm.apiaddress === undefined || common.$location.search.refresh) {
-                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "request.raw", vm.size, vm.st, vm.ft).then(function (resp) {
-                    //vm.apiaddress = resp.aggregations.ag.agg.buckets;
-                    vm.apiaddress = resp.data.AggData;
-                    common.$location.search.refresh = false;
-                    //log("re");
-                }, function (err) {
-                    log(err.data.Message);
-                });
-            } else {
-                vm.isCollapsed2 = !vm.isCollapsed2;
-            }
-        }
-
-        //get and show verb facet
-        vm.showRequestMethod = function () {
-            if (vm.httpmethod === "" || vm.httpmethod === undefined || common.$location.search.refresh) {
-                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "verb.raw", vm.size, vm.st, vm.ft).then(function (resp) {
-                    //vm.httpmethod = resp.aggregations.ag.agg.buckets;
-                    vm.httpmethod = resp.data.AggData;
-                    common.$location.search.refresh = false;
-                    //log("re");
-                }, function (err) {
-                    log(err.data.Message);
-                });
-            }
-            else { vm.isCollapsed3 = !vm.isCollapsed3; }
-        }
-
-        //get and show users facet
-        vm.showUser = function () {
-            if (vm.user === "" || vm.user === undefined || common.$location.search.refresh) {
-                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "ident.raw", vm.size, vm.st, vm.ft).then(function (resp) {
-                    //vm.user = resp.aggregations.ag.agg.buckets;
-                    vm.user = resp.data.AggData;
-                    common.$location.search.refresh = false;
-                    //  log("re");
-                }, function (err) {
-                    log(err.data.Message);
-                });
-            }
-            else { vm.isCollapsed4 = !vm.isCollapsed4; }
-        }
-
-        //get and show useraction facet
-        vm.showUserAction = function () {
-            if (vm.useraction === "" || vm.useraction === undefined || common.$location.search.refresh) {
-                datasearch.termAggragation($rootScope.index, $rootScope.logtype, "action.raw", vm.size, vm.st, vm.ft).then(function (resp) {
-                    //vm.useraction = resp.aggregations.ag.agg.buckets;
-                    vm.useraction = resp.data.AggData;
-                    common.$location.search.refresh = false;
-                    //  log("re");
-                }, function (err) {
-                    log(err.data.Message);
-                });
-            }
-            else { vm.isCollapsed5 = !vm.isCollapsed5; }
-        }
 
         //nav to els page
         function sidebarNav(text, f) {

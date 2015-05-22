@@ -14,7 +14,7 @@
         'ngSanitize',       // sanitizes html bindings (ex: sidebar.js)
         'ngCookies',
         'ngMaterial',
-        'ngAria',
+        'ngAria',     
 
         // Custom modules 
         'common',           // common functions, logger, spinner

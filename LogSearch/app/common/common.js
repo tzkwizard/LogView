@@ -32,6 +32,7 @@
 
         var service = {
             // common angular dependencies
+            $rootScope:$rootScope,
             $broadcast: $broadcast,
             $q: $q,
             $timeout: $timeout,
