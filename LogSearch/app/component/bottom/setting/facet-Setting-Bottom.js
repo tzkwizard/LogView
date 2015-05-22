@@ -1,7 +1,7 @@
 ﻿(function () {
     'use strict';
 
-    var controllerId = 'settingBottomSheet';
+    var controllerId = 'facetSettingBottom';
 
     angular.module('app')
       .controller(controllerId, function ($rootScope, $scope, $mdBottomSheet, config, $cookieStore) {

@@ -4,7 +4,7 @@
     var controllerId = 'show';
 
     angular.module('app')
-        .controller(controllerId, function ($modal, common) {
+        .controller(controllerId, function (common, elsService) {
             var vm = this;
             vm.title = "Elasticsearch";
             var getLogFn = common.logger.getLogFn;
@@ -21,6 +21,7 @@
             vm.pageChanged = pageChanged;
             vm.refreshPage = refreshPage;
             vm.backPage = backPage;
+            vm.showResult = showResult;
             //#endregion
 
 
@@ -52,27 +53,11 @@
 
 
             //#region ResultModal
-            vm.items = "";
-            vm.open = function (doc) {
-                var popdata = {
-                    data: doc
-                };
-                var modalInstance = $modal.open({
-                    templateUrl: 'app/component/els/result/resultModal.html',
-                    controller: 'resultModal',
-                    //size: 'lg',
-                    resolve: {
-                        items: function () {
-                            return popdata;
-                        }
-                    }
-                });
-                modalInstance.result.then(function (selectedItem) {
-                    vm.selected = selectedItem;
-                }, function () {
-                    //log('Modal dismissed at: ' + new Date());
-                });
-            };
+
+            function showResult(data) {
+                elsService.openResult(data);
+            }
+
             //#endregion
 
 

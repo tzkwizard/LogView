@@ -1,23 +1,27 @@
-﻿(function () {
+﻿/// <reference path="../../component/bottom/time/time-Bottom-Sheet.html" />
+/// <reference path="../../component/bottom/time/time-Bottom-Sheet.html" />
+(function () {
     'use strict';
     var serviceId = 'elsService';
 
 
     angular.module('app')
-        .factory(serviceId, function (dataconfig, datasearch) {
+        .factory(serviceId, function (dataconfig, datasearch, $modal, $mdBottomSheet) {
 
             //#region service
             var service = {
                 data: datasearch,
                 config: dataconfig,
-                fillSearchText: fillSearchText
+                fillSearchText: fillSearchText,
+                openResult: openResult,
+                showListBottomSheet: showListBottomSheet
             }
             return service;
             //#endregion
 
           
             //#region els service
-            function fillSearchText(n, condition) {
+            function fillSearchText(condition) {
                 var searchText = "";
                 for (var i = 0; i < condition.length; i++) {
                     var s1 = condition[i].condition;
@@ -53,6 +57,41 @@
                     }
                 }
                 return searchText;
+            }
+
+
+            function openResult(doc) {
+                this.items = "";          
+                var popdata = {
+                    data: doc
+                };
+                var modalInstance = $modal.open({
+                    templateUrl: 'app/component/els/result/resultModal.html',
+                    controller: 'resultModal',
+                    //size: 'lg',
+                    resolve: {
+                        items: function () {
+                            return popdata;
+                        }
+                    }
+                });
+                modalInstance.result.then(function (selectedItem) {
+                    var selected = selectedItem;
+                    return selected;
+                }, function () {
+                    //log('Modal dismissed at: ' + new Date());
+                });
+            }
+
+
+
+            function showListBottomSheet() {
+               return $mdBottomSheet.show({
+                    templateUrl: 'app/component/bottom/time/time-Bottom-Sheet.html',
+                    controller: 'timeBottomSheet'
+                }).then(function (clickedItem) {
+                    return clickedItem;
+                });
             }
             //#endregion
         

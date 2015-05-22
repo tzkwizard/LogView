@@ -51,7 +51,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="fader-animation" data-ng-repeat="doc in vm.res| orderBy:vm.predicate:reverse" data-ng-click="vm.open(doc)">
+                            <tr class="fader-animation" data-ng-repeat="doc in vm.res| orderBy:vm.predicate:reverse" data-ng-click="vm.showResult(doc)">
                                 <td>{{doc._source['UTCtimestamp']| date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
                                 <td>{{doc._source.geoip.country_name}}</td>
                                 <td>{{doc._source.geoip.city_name}}({{doc._source.geoip.real_region_name}})</td>

@@ -62,8 +62,8 @@
   <ItemGroup>
     <Content Include="app\component\agg\aggs.html" />
     <Content Include="app\component\agg\aggs.js" />
-    <Content Include="app\component\els\BottomListSheet.html" />
-    <Content Include="app\component\els\elsBottomList.js" />
+    <Content Include="app\component\bottom\time\time-Bottom-Sheet.html" />
+    <Content Include="app\component\bottom\time\time-Bottom-Sheet.js" />
     <Content Include="app\component\els\result\resultModal.html" />
     <Content Include="app\component\els\result\resultModal.js" />
     <Content Include="app\component\load\BottomGridSheet.html" />
@@ -75,15 +75,15 @@
     <Content Include="app\config.exceptionHandler.js" />
     <Content Include="app\layout\menusidebar\menuSideNav.html" />
     <Content Include="app\layout\menusidebar\menuSideNav.js" />
-    <Content Include="app\layout\settingbottomsheet\settingBottomSheet.js" />
-    <Content Include="app\layout\settingbottomsheet\settingBottomSheet.html" />
+    <Content Include="app\component\bottom\setting\facet-Setting-Bottom.js" />
+    <Content Include="app\component\bottom\setting\facet-Setting-Bottom.html" />
     <Content Include="app\layout\timesidebar\timeSideNav.html" />
     <Content Include="app\layout\timesidebar\timeSideNav.js" />
     <Content Include="app\common\logger.js" />
     <Content Include="app\layout\widgetheader.html" />
-    <Content Include="app\services\component\els.Service.js" />
-    <Content Include="app\services\component\agg.Service.js" />
-    <Content Include="app\services\component\chart.Service.js" />
+    <Content Include="app\services\component\els-Service.js" />
+    <Content Include="app\services\component\agg-Service.js" />
+    <Content Include="app\services\component\chart-Service.js" />
     <Content Include="app\services\dataconfig.js" />
     <Content Include="app\services\datasearch.js" />
     <Content Include="app\component\els\els.html" />

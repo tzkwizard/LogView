@@ -186,7 +186,7 @@
                     <md-content id="google" style="height: 600px;" ng-show="vm.googlelist" class="dissolve-animation">
                         <md-list>
                             <md-list-item class="md-3-line fader-animation" ng-repeat="doc in vm.res| orderBy:predicate:reverse">
-                                <div class="md-list-item-text" data-ng-dblclick="vm.open(doc)">
+                                <div class="md-list-item-text" data-ng-dblclick="vm.showResult(doc)">
                                     <h3> {{doc._source['timestamp']}} </h3>
                                     <h6> {{doc._source.message}} </h6>
                                 </div>

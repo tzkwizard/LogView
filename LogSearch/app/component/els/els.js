@@ -4,11 +4,8 @@
     var controllerId = 'els';
 
     angular.module('app')
-        .controller(controllerId, function ($routeParams,
-           $scope, $modal, common, elsService, $cookieStore, config, $mdBottomSheet) {
-
+        .controller(controllerId, function ($routeParams,$scope, common, elsService, $cookieStore, config) {
             var vm = this;
-            vm.title = "Elasticsearch";
             vm.title2 = "Function";
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
@@ -56,6 +53,7 @@
             vm.refreshPage = refreshPage;
             vm.showListBottomSheet = showListBottomSheet;
             vm.showlist = showlist;
+            vm.showResult = showResult;
             //#endregion
 
 
@@ -110,7 +108,6 @@
                 common.$location.search.text = "";
             }
 
-            //get sample search result
             function getSampleData() {
                 return elsService.data.getSampledata(vm.indicesName, common.$rootScope.logtype, vm.pagecount, vm.st, vm.ft, vm.locationF, vm.distanceF)
                       .then(function (resp) {
@@ -197,9 +194,10 @@
                 });
             }
 
+            function showResult(data) {
+                elsService.openResult(data);
+            }
 
-
-            //refreh page
             vm.refresh = function () {
                 BootstrapDialog.confirm({
                     message: 'Sure to Refresh?',
@@ -219,6 +217,7 @@
                     }
                 });
             }
+
             function showlist() {
                 common.$rootScope.searchresult = vm.hitSearch;
                 common.$location.path("/elslist");
@@ -227,9 +226,9 @@
 
 
             //#region Date-pick
-            vm.formats = ['yyyy.MM.dd', 'dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+            vm.formats = config.time.format;
             vm.format = vm.formats[0];
-            vm.it = ["Last 3 months", "Last Month", "Last 4 weeks", "Last 3 weeks", "Last 2 weeks", "Last week"];
+            vm.it = config.time.timeSpan.s;
             vm.dateOptions = {
                 formatYear: 'yy',
                 startingDay: 1
@@ -275,6 +274,12 @@
                 vm.ftimeopened = true;
             };
 
+            function showListBottomSheet() {
+                elsService.showListBottomSheet().then(function (span) {
+                    filterst(span);
+                    timeChange();
+                });
+            }
             //#endregion
 
 
@@ -307,7 +312,7 @@
             //fill searchText with filter information
             function filltext() {
                 if ($scope.count > 0) {
-                    vm.searchText = elsService.config.fillSearchText($scope.count, vm.condition);
+                    vm.searchText = elsService.config.fillSearchText(vm.condition);
                     vm.filterfill = true;
                     vm.field = "all";
                     search();
@@ -389,52 +394,6 @@
             //#endregion
 
 
-            //#region ResultModal
-            vm.items = "";
-            //open result page
-            vm.open = function (doc) {
-                var popdata = {
-                    data: doc
-                };
-                var modalInstance = $modal.open({
-                    templateUrl: 'app/component/els/result/resultModal.html',
-                    controller: 'resultModal',
-                    //size: 'lg',
-                    resolve: {
-                        items: function () {
-                            return popdata;
-                        }
-                    }
-                });
-                modalInstance.result.then(function (selectedItem) {
-                    vm.selected = selectedItem;
-                }, function () {
-                    //log('Modal dismissed at: ' + new Date());
-                });
-            };
-            //#endregion
-
-
-            //#region BottomSheet
-            function showListBottomSheet() {
-                $mdBottomSheet.show({
-                    templateUrl: 'app/component/els/BottomListSheet.html',
-                    controller: 'els'
-                }).then(function (clickedItem) {
-                    filterst(clickedItem);
-                    timeChange();
-                });
-            };
-
-            $scope.ts = ["Last year", "Last 6 months", "Last 3 months", "Last Month", "Last 4 weeks", "Last 3 weeks", "Last 2 weeks", "Last week",
-            "Last 5 days", "Last 3 days", "Last 2 days", "Last day", "Last 12 hours", "Last 6 hours", "Last hour"];
-            $scope.listItemClick = function ($index) {
-                var clickedItem = $scope.ts[$index];
-                $mdBottomSheet.hide(clickedItem);
-            };
         });
-    //#endregion
-
-
 })();
 

@@ -54,14 +54,7 @@
         }
     });
 
-
-
-
-
-
-    var googleChart = googleChart || angular.module("google-chart", []);
-
-    googleChart.directive("googleChart", function () {
+    app.directive("googleChart", function () {
         return {
             restrict: "A",
             link: function ($scope, $elem, $attr) {

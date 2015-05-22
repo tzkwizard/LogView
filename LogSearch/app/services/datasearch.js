@@ -30,6 +30,7 @@
 
         //#endregion
 
+
         //#region map
         function getMap() {
             var remote = config.remoteApiUrl + "api/ElasticMapping/LogstashMap";

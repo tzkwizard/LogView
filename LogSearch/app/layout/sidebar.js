@@ -97,8 +97,8 @@
         function showSettingBottomSheet($event) {
             vm.alert = '';
             $mdBottomSheet.show({
-                templateUrl: 'app/layout/settingbottomsheet/settingBottomSheet.html',
-                controller: 'settingBottomSheet',
+                templateUrl: 'app/component/bottom/setting/facet-Setting-Bottom.html',
+                controller: 'facetSettingBottom',
                 targetEvent: $event
             }).then(function (clickedItem) {
                 vm.alert = clickedItem.name + ' clicked!';

@@ -4,10 +4,8 @@
     var controllerId = 'timeSideNav';
 
     angular.module('app')
-        .controller(controllerId, function ($scope, $mdSidenav, common, dataconfig) {
-            $scope.time = ["Last 3 months", "Last Month", "Last 4 weeks", "Last 3 weeks", "Last 2 weeks", "Last week",
-            "Last 5 days", "Last 3 days", "Last 2 days", "Last day"];
-
+        .controller(controllerId, function ($scope, $mdSidenav, common, dataconfig, config) {
+            $scope.time = config.time.timeSpan.m;
             $scope.nav = function (span) {
                 common.$rootScope.ft = new Date();
                 common.$rootScope.st = dataconfig.changeTimeSpan(span);
