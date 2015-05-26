@@ -175,23 +175,23 @@
                 }
             }
 
-            //auto-fill
-            var appre = "";
-            var apre = "";
-            var anow = "";
+            var autocache = ["", "", "", ""];
+            //get auto-fill data
             function autoFill(force) {
                 if (force !== true && vm.searchText === "") return null;
                 vm.autocompleLoading = true;
                 return elsService.data.autoFill(vm.searchText).then(function (resp) {
-                    appre = apre; apre = anow;
-                    anow = resp.data.AutoData;
-                    if (vm.autoText.length < 1000 && vm.autoText.length !== 0) {
-                        vm.autoText = elsService.config.arrayUnique(anow.concat(elsService.config.arrayUnique(apre.concat(appre))));
+                    if (resp.data.AutoData.length < 1000 && vm.autoText.length < 1000) {
+                        var autotemp = vm.autoText;
+                        autocache = [autocache[1], autocache[2], autocache[3], resp.data.AutoData];
+                        angular.forEach(autocache, function (x) {
+                            autotemp = elsService.config.arrayUnique(autotemp.concat(x));
+                        });
+                        vm.autoText = autotemp;
                     } else {
-                        vm.autoText = anow.concat(apre.concat(appre));
+                        vm.autoText = resp.data.AutoData;
                     }
                     vm.autocompleLoading = false;
-                    return resp.data.AutoData;
                 });
             }
 
