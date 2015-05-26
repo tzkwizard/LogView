@@ -106,7 +106,7 @@
             //create container for chart
             function createContainer(aggName) {
                 angular.element(document.getElementById('contain')).
-                      append("<div id=contain" + aggName + "></div>");
+                      append("<md-card id=contain" + aggName + "></md-card>");
 
                 angular.element(document.getElementById('contain' + aggName)).
                       append("<div id=dash" + aggName + "></div>");

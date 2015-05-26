@@ -6,7 +6,7 @@
                     <div data-cc-spinner="vm.spinnerOptions"></div>
                 </div>
             </div>
-            <div id="header">
+            <md-card id="header">
                 <div layout="row" layout-align="center center" style="height: 45px">
                     <md-button class="md-raised md-primary" data-ng-click="vm.show()" ng-disabled="vm.process">
                         <i class="fa fa-pie-chart"> Show </i>
@@ -37,7 +37,7 @@
                 <div layout="column" layout-align="center start" class="fader-animation" data-ng-repeat="doc in vm.refinedsearch">
                     <a>{{doc.key}} : {{doc.value}}</a>
                 </div>
-            </div>
+            </md-card>
             <div id="treemap" class="widget wblue">
                 <md-select placeholder="Pick" class="pull-right" ng-model="vm.treesize" ng-change="vm.treesizeChange()">
                     <md-option value=10>10</md-option>
@@ -51,7 +51,7 @@
                     <div id="treemap_div" style="height: 600px;" ng-show="vm.treestatus"></div>
                 </div>
             </div>
-            <div id="piechart" class="widget wlightblue" >
+            <div id="piechart" class="widget wlightblue">
                 <div data-cc-widget-header title="{{vm.title2}}"
                      allow-collapse="true"></div>
                 <div class="widget-content" style="display: none;">

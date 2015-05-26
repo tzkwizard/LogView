@@ -1,25 +1,32 @@
 ﻿<div class="mainbar" data-ng-controller="TODO as vm">
     <section class="matter">
-        <!--<img src="battlefield.jpg" style="height: 100%; width: 100%"/>-->
-
-        <div class="bottom-sheet-demo inset" layout="row" layout-sm="column" layout-align="center">
-            <md-button class="md-primary" ng-click="showListBottomSheet($event)">
-                Show as List
+        <md-card>
+            <img ng-src="battlefield.jpg" class="md-card-image" alt="Washed Out">
+            <md-card-content>
+                <h2 class="md-title"> Sword </h2>
+                <p>
+                    ...
+                </p>
+            </md-card-content>
+        </md-card>
+            <div class="bottom-sheet-demo inset" layout="row" layout-sm="column" layout-align="center">
+                <md-button class="md-primary" ng-click="showListBottomSheet($event)">
+                    Show as List
+                </md-button>
+                <md-button class="md-primary" ng-click="showGridBottomSheet($event)">
+                    Show as Grid
+                </md-button>
+            </div>
+            <br />
+            <b layout="row" layout-align="center center" layout-margin>
+                {{alert}}
+            </b>
+            <md-button class="md-primary" ng-click="test()">
+                Test
             </md-button>
-            <md-button class="md-primary" ng-click="showGridBottomSheet($event)">
-                Show as Grid
-            </md-button>
-        </div>
-        <br />
-        <b layout="row" layout-align="center center" layout-margin>
-            {{alert}}
-        </b>
-        <md-button class="md-primary" ng-click="test()">
-            Test
-        </md-button>
 
-        <md-button addfilter>Click to add buttons</md-button>
-        <div id="filter" layout="column"></div>
-    
-    </section>
+            <md-button addfilter>Click to add buttons</md-button>
+            <div id="filter" layout="column"></div>
+
+</section>
 </div>

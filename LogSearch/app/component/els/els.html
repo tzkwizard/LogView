@@ -1,7 +1,7 @@
 ﻿<section class="mainbar" data-ng-controller="els as vm">
     <section class="matter">
         <div class="container-fluid">
-            <div id="Search" layout="row" layout-align="center center" class=" input-append row-fluid">
+            <md-card id="Search" layout="row" layout-align="center center" class=" input-append row-fluid">
                 <input type="text" class="form-control"
                        data-ng-change="vm.autoFill()" data-ng-keyup="vm.trySeach($event)"
                        data-ng-model=" vm.searchText" placeholder="  Search"
@@ -42,8 +42,8 @@
                         </md-button>
                     </ul>
                 </div>
-            </div>
-            <div id="function" class="widget wlightblue" collapse="false">
+            </md-card>
+            <md-card id="function" class="widget wlightblue" collapse="false">
                 <div data-cc-widget-header title="{{vm.title2}}"
                      allow-collapse="true"></div>
                 <div class="widget-content" style="display: none;">
@@ -64,7 +64,7 @@
                                is-open="vm.timeopened" min-date="vm.minDate" datepicker-options="vm.dateOptions"
                                date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  start date" ng-show="vm.timeShow" ng-change="vm.timeChange()" />
                         <!--<button type="button" class="btn btn-large btn-info btn-notext"
-                        ng-click="vm.timeopen($event)"><i class="fa fa-calendar"> Ini Day </i></button>-->
+                ng-click="vm.timeopen($event)"><i class="fa fa-calendar"> Ini Day </i></button>-->
                         <md-button class="md-fab md-mini" data-ng-click="vm.timeopen($event)" aria-label="st">
                             <i class="fa fa-calendar"></i>
                             <md-tooltip>
@@ -75,7 +75,7 @@
                                is-open="vm.ftimeopened" min-date="vm.minDate" datepicker-options="vm.dateOptions"
                                date-disabled="vm.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  end date" ng-show="vm.timeShow" ng-change="vm.timeChange()" />
                         <!-- <button type="button" class="btn btn-large btn-info btn-notext"
-                        ng-click="vm.ftimeopen($event)"><i class="fa fa-calendar"> End Day </i></button>-->
+                ng-click="vm.ftimeopen($event)"><i class="fa fa-calendar"> End Day </i></button>-->
                         <md-button class="md-fab md-mini" data-ng-click="vm.ftimeopen($event)" aria-label="ft">
                             <i class="fa fa-calendar"></i>
                             <md-tooltip>
@@ -132,11 +132,11 @@
                         </md-button>
                     </div>
                 </div>
-            </div>
-            <div id="processbar" layout="column" layout-align="space-around">
+            </md-card>
+            <md-card id="processbar" layout="column" layout-align="space-around">
                 <div ng-show="vm.processSearch" layout="row" layout-align="center center"><md-progress-circular md-mode="indeterminate"></md-progress-circular></div>
                 <progressbar layout="row" flex="80" class="progress-striped active" value="vm.dynamic" type="{{vm.ptype}}">{{vm.ptype}} <i ng-show="showWarning">!!! Watch out !!!</i></progressbar>
-            </div>
+            </md-card>
             <div id="result">
                 <div id="Paging" layout="row" class="widget-foot">
                     <div class="clearfix"></div>

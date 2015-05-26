@@ -20,7 +20,7 @@
             function getData1(source) {
                 var data = [];
                 angular.forEach(Object.keys(source), function (item) {
-                    if (item === "geoip") return;
+                    if (item === "geoip"||item==="message") return;
                     data.push({
                         Field: item, Value: source[item]
                     });
@@ -37,33 +37,32 @@
             }
 
             function getData2(source) {
-                var data = [
-                 { Field: "UserIP", Value: source['clientip'] }
-                ];
+                var data = [];
                 var x = source;
                 if (x.hasOwnProperty('geoip') && x.geoip !== null) {
-                    data.push({ Field: "Country_Name", Value: source.geoip['country_name'] });
-                    data.push({ Field: "City_Name", Value: source['geoip']['city_name'] });
-                    data.push({ Field: "Real_Region_Name", Value: source['geoip']['real_region_name'] });
-                    data.push({ Field: "Postal_code", Value: source['geoip']['postal_code'] });
-                    data.push({ Field: "Coordinates", Value: source['geoip']['coordinates'] });
-                    data.push({ Field: "Timezone", Value: source['geoip']['timezone'] });
+                    angular.forEach(Object.keys(source.geoip), function (item) {
+                        if (source.geoip[item]!==null&&source.geoip[item]!==0) {
+                            data.push({
+                                Field: item.charAt(0).toUpperCase() + item.substring(1),
+                                Value: source.geoip[item]
+                            });
+                        }
+                    });
                 }
                 return data;
             }
 
             function getData3(source) {
-                var data = [{ Field: "ClientIP", Value: source['clientip'] },
-                   { Field: "Verb", Value: source['verb'] },
-                   { Field: "Resquest", Value: source['request'] },
-                   { Field: "Response", Value: source['response'] },
-                   { Field: "APIresponse", Value: source['APIresponse'] },
-                   { Field: "Timestamp", Value: source['UTCtimestamp'] },
-                   { Field: "Referrer", Value: source['referrer'] },
-                   { Field: "Action", Value: source['action'] },
-                   { Field: "Agent", Value: source['agent'] }
-
-                ];
+                var data = [];
+                angular.forEach(Object.keys(source), function (item) {
+                    if (item === "geoip" || item === "message") return;
+                    if (source[item]!==null) {
+                        data.push({
+                            Field: item.charAt(0).toUpperCase() + item.substring(1),
+                            Value: source[item]
+                        });
+                    }
+                });
                 return data;
             }
 

@@ -10,7 +10,7 @@
 
 
             <div id="1" layout="row" layout-align="center start" style="height: 30%">
-                <div id="dChart" flex="60" class="widget wgreen">
+                <md-card id="dChart" flex="60" class="widget wgreen">
                     <div data-cc-widget-header title=" PieChart" allow-collapse="true"></div>
                     <div class="widget-content">
                         <div layout="row" style="height: 250px">
@@ -19,15 +19,15 @@
                             <div flex="33" id="pie_div3"></div>
                         </div>
                     </div>
-                </div>
-                <div id="dChart2" flex="40" class="widget wviolet">
+                </md-card>
+                <md-card id="dChart2" flex="40" class="widget wviolet">
                     <div data-cc-widget-header title=" BarChart" allow-collapse="true"></div>
                     <div class="widget-content">
                         <div id='DateHist_div' style="height: 250px"></div>
                     </div>
-                </div>
+                </md-card>
             </div>
-            <div id="2" layout="row" layout-align="center start">
+            <md-card id="2" layout="row" layout-align="center start">
                 <div id="gMap" flex="50" class="widget wlightblue">
                     <md-select class="pull-right" placeholder="Pick" ng-model="vm.geomap2selection" ng-change="vm.changeMap()" aria-label="s1">
                         <md-option value="USA">USA</md-option>
@@ -55,14 +55,14 @@
                         <div id="dmap_div" style="height: 400px"></div>
                     </div>
                 </div>
-            </div>
+            </md-card>
             <div id="3" layout="row" layout-align="center start" style="height: 30%">
-                <div id="dChart3" flex="100" class="widget wblue">
+                <md-card id="dChart3" flex="100" class="widget wblue">
                     <div data-cc-widget-header title=" TimeLine" allow-collapse="true"></div>
                     <div class="widget-content">
                         <div id='TimeLine_div' style="height: 400px"></div>
                     </div>
-                </div>
+                </md-card>
             </div>
             <div layout="row" id="dtable_div" ng-show="false">
             </div>

@@ -26,7 +26,7 @@
                 ],
                 data: 'myData',
                 selectedItems: $scope.mySelections,
-                //  multiSelect: false,
+                multiSelect: false,
                 jqueryUITheme: true,
                 enableColumnResize: true,
                 afterSelectionChange: function () {
@@ -53,7 +53,7 @@
                 enableColumnResize: true,
                 afterSelectionChange: function () {
                     angular.forEach($scope.mySelections, function (item) {
-                        $scope.selected.item = item["Field"].toLowerCase() + " : " + item["Value"];
+                        $scope.selected.item = "geoip."+item["Field"].toLowerCase() + " : " + item["Value"];
                     });
                 }
             };
@@ -70,7 +70,7 @@
                 ],
                 data: 'myData3',
                 selectedItems: $scope.mySelections,
-                multiSelect: false,
+                //multiSelect: false,
                 enableColumnResize: true,
                 jqueryUITheme: true,
                 afterSelectionChange: function () {

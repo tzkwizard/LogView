@@ -154,7 +154,6 @@
     <Content Include="Scripts\q\q.min.js" />
     <Content Include="Scripts\sjcl.js" />
     <Content Include="battlefield.jpg" />
-    <Content Include="ccfavicon.ico" />
     <Content Include="content\bootstrap-dialog.css" />
     <Content Include="content\bootstrap-theme.css" />
     <Content Include="content\bootstrap-theme.min.css" />
@@ -170,7 +169,6 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="load.jpg" />
     <Content Include="Scripts\angular-ui\ui-bootstrap-tpls.js" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
