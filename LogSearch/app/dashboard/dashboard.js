@@ -1,9 +1,9 @@
 ﻿(function () {
     'use strict';
     var controllerId = 'dashboard';
-    angular.module('app').controller(controllerId, ['$cookieStore', 'common', 'chartservice', dashboard]);
+    angular.module('app').controller(controllerId, ['common', 'chartservice', dashboard]);
 
-    function dashboard($cookieStore, common, chartservice) {
+    function dashboard(common, chartservice) {
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
         var vm = this;

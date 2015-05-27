@@ -4,7 +4,7 @@
     var controllerId = 'aggs';
 
     angular.module('app')
-        .controller(controllerId, function ($cookieStore, common, aggService) {
+        .controller(controllerId, function (common, aggService) {
             var vm = this;
             vm.title = "Aggragations";
             vm.title2 = "PieChart";

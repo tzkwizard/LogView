@@ -47,7 +47,7 @@
                 <div data-cc-widget-header title="{{search.title2}}"
                      allow-collapse="true"></div>
                 <div class="widget-content" style="display: none;">
-                    <div layout="row" layout-align="center center">
+                    <div id="1" layout="row" layout-align="center center">
                         <md-input-container>
                             <label> Location </label>
                             <input ng-model="search.asyncSelected"
@@ -55,16 +55,12 @@
                                    class="form-control" style="width: 100%">
                             <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
                         </md-input-container>
-                        {{search.st}}
-                        {{search.ft}}
                         <span flex></span>
                         <select flex="10" class="form-control dissolve-animation" ng-model="search.format" ng-options="f for f in search.formats" ng-show="search.timeShow"><option></option></select>
 
-                        <input flex="10" type="text" class="form-control dissolve-animation" datepicker-popup="{{search.format}}" ng-model="search.st"
+                        <input flex="10" type="text" class="form-control dissolve-animation" datepicker-popup="{{search.format}}" ng-model="search.st" 
                                is-open="search.timeopened" min-date="search.minDate" datepicker-options="search.dateOptions"
                                date-disabled="search.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  start date" ng-show="search.timeShow" ng-change="search.timeChange()" />
-                        <!--<button type="button" class="btn btn-large btn-info btn-notext"
-                ng-click="search.timeopen($event)"><i class="fa fa-calendar"> Ini Day </i></button>-->
                         <md-button class="md-fab md-mini" data-ng-click="search.timeopen($event)" aria-label="st">
                             <i class="fa fa-calendar"></i>
                             <md-tooltip>
@@ -74,8 +70,6 @@
                         <input flex="10" type="text" class="form-control dissolve-animation" datepicker-popup="{{search.format}}" ng-model="search.ft"
                                is-open="search.ftimeopened" min-date="search.minDate" datepicker-options="search.dateOptions"
                                date-disabled="search.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  end date" ng-show="search.timeShow" ng-change="search.timeChange()" />
-                        <!-- <button type="button" class="btn btn-large btn-info btn-notext"
-                ng-click="search.ftimeopen($event)"><i class="fa fa-calendar"> End Day </i></button>-->
                         <md-button class="md-fab md-mini" data-ng-click="search.ftimeopen($event)" aria-label="ft">
                             <i class="fa fa-calendar"></i>
                             <md-tooltip>
@@ -89,7 +83,7 @@
                             <md-radio-button value="km"> Kilometer </md-radio-button>
                         </md-radio-group>
                     </div>
-                    <div layout="row" layout-align="space-between center">
+                    <div id="2" layout="row" layout-align="start center">
                         <md-button class="md-raised md-primary" data-ng-click="search.transferLocation()" aria-label="location">
                             <i class="fa fa-globe"></i>
                             <md-tooltip>
@@ -103,14 +97,10 @@
                             </md-tooltip>
                         </md-button>
                         <md-button class="md-primary md-hue-1"> Distance </md-button>
-                        <md-slider flex="60" ng-model="search.distance" min="0" max="9999" aria-label="blue" id="blue-slider" class="md-primary"></md-slider>
-                        <input type="number" flex="10" ng-model="search.distance" aria-label="blue" aria-controls="blue-slider">
+                        <md-slider ng-model="search.distance" flex min="0" max="9999" aria-label="blue" id="blue-slider" class="md-primary"></md-slider>
+                        <input type="number" ng-model="search.distance" aria-label="blue" aria-controls="blue-slider">
                     </div>
-                    <div layout="column" id="filter" class="btn-group">
-                        <button data-ng-click="search.test()" class="btn btn-info btn-notext " type="button" ng-show="false">
-                            <i class="fa fa-pie-chart">Test</i>
-                        </button>
-                    </div>
+                    <div layout="column" id="filter" class="btn-group"></div>
                     <div layout="row" id="FilterButton">
                         <md-button addfilter count="search.count" selectfield="search.fieldsName" condition="search.condition" class="md-raised md-primary" aria-label="add filter">
                             <i class="fa fa-plus-square"></i>
@@ -133,11 +123,13 @@
                     </div>
                 </div>
             </md-card>
+            {{search.st}}
+            {{search.ft}}
             <md-card id="processbar" layout="column" layout-align="space-around">
                 <div ng-show="search.processSearch" layout="row" layout-align="center center"><md-progress-circular md-mode="indeterminate"></md-progress-circular></div>
                 <progressbar layout="row" flex="80" class="progress-striped active" value="search.dynamic" type="{{search.ptype}}">{{search.ptype}} <i ng-show="showWarning">!!! Watch out !!!</i></progressbar>
             </md-card>
-            <div id="result">
+            <md-card id="result">
                 <div id="Paging" layout="row" class="widget-foot">
                     <div class="clearfix"></div>
                     <pagination boundary-links="true" class="pagination-sm"
@@ -189,7 +181,7 @@
                         </md-list>
                     </md-content>
                 </div>
-            </div>
+            </md-card>
         </div>
     </section>
 </section>

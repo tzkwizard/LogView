@@ -2,12 +2,13 @@
     'use strict';
 
     var serviceId = 'dataconfig';
-    angular.module('app').factory(serviceId, ['$modal', '$rootScope', '$cookieStore', 'datasearch', dataconfig]);
+    angular.module('app').factory(serviceId, ['$modal', '$rootScope', '$cookieStore', 'config', 'datasearch', dataconfig]);
 
-    function dataconfig($modal, $rootScope, $cookieStore, datasearch) {
+    function dataconfig($modal, $rootScope, $cookieStore,config, datasearch) {
 
         //#region Service
         var service = {
+            appStart:appStart,
             prime: prime,
             login: login,
             openLoginPage: openLoginPage,
@@ -22,8 +23,25 @@
         return service;
         //#endregion
 
+        //#region Startup
+        function appStart() {
+            $rootScope.school = "TCU";
+            $rootScope.st = moment(new Date()).subtract(3, 'month').toDate();
+            $rootScope.ft = new Date();
+            $rootScope.token = $cookieStore.get('EsToken');
 
-        //#region Startup service
+            if ($cookieStore.get('SiderBarFacet') === undefined || $cookieStore.get('SiderBarFacet').length < 1) {
+                $rootScope.facet = [config.facet[0], config.facet[1], config.facet[2], config.facet[3]];
+            } else {
+                $rootScope.facet = $cookieStore.get('SiderBarFacet');
+            }
+        }
+
+//#endregion
+
+
+
+        //#region RouteChange service
         //Load index and field
         function prime() {
             $rootScope.logtype = "logs";

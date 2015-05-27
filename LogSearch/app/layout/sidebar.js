@@ -3,9 +3,9 @@
 
     var controllerId = 'sidebar';
     angular.module('app').controller(controllerId,
-        ['config', 'routes', 'dataconfig', 'datasearch', 'common', '$mdBottomSheet', sidebar]);
+        ['config', 'routes', 'dataconfig', 'datasearch', 'common', sidebar]);
 
-    function sidebar(config, routes, dataconfig, datasearch, common, $mdBottomSheet) {
+    function sidebar(config, routes, dataconfig, datasearch, common) {
         var vm = this;
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
@@ -96,7 +96,7 @@
         vm.alert = '';
         function showSettingBottomSheet($event) {
             vm.alert = '';
-            $mdBottomSheet.show({
+            common.$mdBottomSheet.show({
                 templateUrl: 'app/component/bottom/setting/facet-Setting-Bottom.html',
                 controller: 'facetSettingBottom as facetSettingBottom',
                 targetEvent: $event

@@ -3,9 +3,9 @@
 
     var controllerId = 'topnav';
     angular.module('app').controller(controllerId,
-        ['$cookieStore', 'dataconfig', 'datasearch', 'config', 'common', '$mdSidenav', '$mdUtil', topnav]);
+        ['dataconfig', 'datasearch', 'config', 'common', topnav]);
 
-    function topnav($cookieStore, dataconfig, datasearch, config, common, $mdSidenav, $mdUtil) {
+    function topnav(dataconfig, datasearch, config, common) {
         var vm = this;
         // var keyCodes = config.keyCodes;
 
@@ -43,8 +43,8 @@
         vm.toggleLeft = sideNav('left');
 
         function sideNav(navID) {
-            var debounceFn = $mdUtil.debounce(function () {
-                $mdSidenav(navID)
+            var debounceFn = common.$mdUtil.debounce(function () {
+                common.$mdSidenav(navID)
                     .toggle()
                     .then(function () {
                         //document.getElementById("nav").style.height = "10%"; 
@@ -64,17 +64,17 @@
         //get auto-fill data
         function autoFill(force) {
             if (force !== true && vm.searchText === "") return null;
-            vm.autocompleLoading = true;           
+            vm.autocompleLoading = true;
             return datasearch.autoFill(vm.searchText).then(function (resp) {
-                if (resp.data.AutoData.length < 1000 && vm.autoText.length<1000) {
+                if (resp.data.AutoData.length < 1000 && vm.autoText.length < 1000) {
                     var autotemp = vm.autoText;
                     autocache = [autocache[1], autocache[2], autocache[3], resp.data.AutoData];
-                    angular.forEach(autocache, function(x) {
+                    angular.forEach(autocache, function (x) {
                         autotemp = dataconfig.arrayUnique(autotemp.concat(x));
                     });
                     vm.autoText = autotemp;
                 } else {
-                        vm.autoText = resp.data.AutoData;
+                    vm.autoText = resp.data.AutoData;
                 }
                 vm.autocompleLoading = false;
             });
@@ -131,10 +131,10 @@
         //log out
         function logout() {
             common.$rootScope.logged = false;
-            $cookieStore.remove("useranme");
-            $cookieStore.remove("password");
-            $cookieStore.remove("key");
-            $cookieStore.remove("SiderBarFacet");
+            common.$cookieStore.remove("useranme");
+            common.$cookieStore.remove("password");
+            common.$cookieStore.remove("key");
+            common.$cookieStore.remove("SiderBarFacet");
             //common.$location.path("/");
             window.location.reload();
         }

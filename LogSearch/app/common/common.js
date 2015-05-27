@@ -25,14 +25,19 @@
     });
 
     commonModule.factory('common',
-        ['$http', '$location', '$route', '$q', '$rootScope', '$timeout', 'commonConfig', 'logger', common]);
+        ['$mdUtil', '$mdSidenav', '$mdBottomSheet', '$cookieStore', '$routeParams', '$http', '$location', '$route', '$q', '$rootScope', '$timeout', 'commonConfig', 'logger', common]);
 
-    function common($http, $location, $route, $q, $rootScope, $timeout, commonConfig, logger) {
+    function common($mdUtil,$mdSidenav, $mdBottomSheet, $cookieStore, $routeParams, $http, $location, $route, $q, $rootScope, $timeout, commonConfig, logger) {
         var throttles = {};
 
         var service = {
             // common angular dependencies
-            $rootScope:$rootScope,
+            $mdUtil: $mdUtil,
+            $mdSidenav: $mdSidenav,
+            $mdBottomSheet: $mdBottomSheet,
+            $cookieStore: $cookieStore,
+            $routeParams: $routeParams,
+            $rootScope: $rootScope,
             $broadcast: $broadcast,
             $q: $q,
             $timeout: $timeout,

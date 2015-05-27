@@ -4,7 +4,7 @@
     var controllerId = 'els';
 
     angular.module('app')
-        .controller(controllerId, function ($routeParams,$scope, common, elsService, $cookieStore, config) {
+        .controller(controllerId, function (common, elsService, config) {
             var vm = this;
             vm.title2 = "Function";
             var getLogFn = common.logger.getLogFn;
@@ -14,10 +14,10 @@
             vm.googlelist = true;
             vm.autocompleLoading = false; // spinner for autofill
             vm.processSearch = false; //spinner for search
-            vm.searchText = $routeParams.search || '';
+            vm.searchText = common.$routeParams.search || '';
             vm.hitSearch = "";
             vm.field = "";
-            vm.index = $routeParams.index || "";
+            vm.index = common.$routeParams.index || "";
             vm.fieldsName = [];
             vm.indicesName = [];
             vm.pagecount = 1000;
@@ -36,8 +36,7 @@
             vm.distance = 0;
             vm.dunit = 'mi';
             vm.timeShow = false;
-            $scope.count = 0; // filter number   
-            vm.count = 0;
+            vm.count = 0;// filter number  
             //#endregion
 
             //#region public function
@@ -318,7 +317,7 @@
                     vm.field = "all";
                     search();
                 }
-            }        
+            }
             //#endregion
 
 

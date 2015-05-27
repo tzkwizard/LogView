@@ -14,7 +14,7 @@
         'ngSanitize',       // sanitizes html bindings (ex: sidebar.js)
         'ngCookies',
         'ngMaterial',
-        'ngAria',     
+        'ngAria',
 
         // Custom modules 
         'common',           // common functions, logger, spinner
@@ -30,21 +30,12 @@
     ]);
 
 
-  
+
     // Handle routing errors and success events
-    app.run(['$cookieStore', '$rootScope', '$route', 'dataconfig', 'routeMediator','config',
-        function ($cookieStore,$rootScope, $route, dataconfig, routeMediator, config) {
+    app.run(['$route', 'dataconfig', 'routeMediator',
+        function ($route, dataconfig, routeMediator) {
             // Include $route to kick start the router.
             routeMediator.setRoutingHandlers();
-            $rootScope.school = "TCU";
-            $rootScope.st = moment(new Date()).subtract(3, 'month').toDate();
-            $rootScope.ft = new Date();
-            $rootScope.token = $cookieStore.get('EsToken');
-
-            if ($cookieStore.get('SiderBarFacet') === undefined || $cookieStore.get('SiderBarFacet').length < 1) {
-                $rootScope.facet = [config.facet[0], config.facet[1], config.facet[2], config.facet[3]];
-            } else {
-                $rootScope.facet = $cookieStore.get('SiderBarFacet');
-            }
+            dataconfig.appStart();
         }]);
 })();
