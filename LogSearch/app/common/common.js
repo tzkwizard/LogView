@@ -25,9 +25,9 @@
     });
 
     commonModule.factory('common',
-        ['$mdUtil', '$mdSidenav', '$mdBottomSheet', '$cookieStore', '$routeParams', '$http', '$location', '$route', '$q', '$rootScope', '$timeout', 'commonConfig', 'logger', common]);
+        ['$mdUtil', '$mdSidenav', '$mdBottomSheet', '$routeParams', '$http', '$location', '$route', '$q', '$rootScope', '$timeout', 'commonConfig', 'logger', common]);
 
-    function common($mdUtil,$mdSidenav, $mdBottomSheet, $cookieStore, $routeParams, $http, $location, $route, $q, $rootScope, $timeout, commonConfig, logger) {
+    function common($mdUtil, $mdSidenav, $mdBottomSheet, $routeParams, $http, $location, $route, $q, $rootScope, $timeout, commonConfig, logger) {
         var throttles = {};
 
         var service = {
@@ -35,7 +35,6 @@
             $mdUtil: $mdUtil,
             $mdSidenav: $mdSidenav,
             $mdBottomSheet: $mdBottomSheet,
-            $cookieStore: $cookieStore,
             $routeParams: $routeParams,
             $rootScope: $rootScope,
             $broadcast: $broadcast,

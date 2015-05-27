@@ -3,9 +3,9 @@
 
     var controllerId = 'Loading';
     angular.module('app').controller(controllerId,
-        ['$rootScope', 'common', Loading]);
+        ['$rootScope', 'common','localStorageService', Loading]);
 
-    function Loading($rootScope,common) {
+    function Loading($rootScope, common) {
         var vm = this;   
         
         activate();

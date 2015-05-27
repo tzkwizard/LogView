@@ -130,11 +130,7 @@
 
         //log out
         function logout() {
-            common.$rootScope.logged = false;
-            common.$cookieStore.remove("useranme");
-            common.$cookieStore.remove("password");
-            common.$cookieStore.remove("key");
-            common.$cookieStore.remove("SiderBarFacet");
+            dataconfig.logout();
             //common.$location.path("/");
             window.location.reload();
         }

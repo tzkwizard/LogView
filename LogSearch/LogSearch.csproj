@@ -117,6 +117,7 @@
     <Content Include="content\images\icon\ic_timezone_24px.svg" />
     <Content Include="content\images\icon\ic_user_24px.svg" />
     <Content Include="content\images\icon\ic_windows_24px.svg" />
+    <Content Include="Scripts\angular-localstorage\angular-local-storage.js" />
     <Content Include="Scripts\angular-ui\angular-aria.js" />
     <Content Include="Scripts\angular-ui\angular-material.js" />
     <Content Include="Scripts\angularjs\angular-animate.js" />

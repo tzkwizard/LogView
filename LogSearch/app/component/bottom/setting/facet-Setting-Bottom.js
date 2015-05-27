@@ -4,7 +4,7 @@
     var controllerId = 'facetSettingBottom';
 
     angular.module('app')
-      .controller(controllerId, function ($rootScope, $mdBottomSheet, config, $cookieStore) {
+      .controller(controllerId, function ($rootScope, $mdBottomSheet, config, localStorageService) {
 
           var vm = this;
           //#region variable and function
@@ -69,7 +69,8 @@
           }
 
           function refresh() {
-              $cookieStore.put('SiderBarFacet', vm.oldfacet);
+              //$cookieStore.put('SiderBarFacet', vm.oldfacet);
+              localStorageService.set('SiderBarFacet', vm.oldfacet);
               window.location.reload();
           }
           //#endregion

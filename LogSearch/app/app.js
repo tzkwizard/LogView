@@ -15,7 +15,7 @@
         'ngCookies',
         'ngMaterial',
         'ngAria',
-
+        'LocalStorageModule',
         // Custom modules 
         'common',           // common functions, logger, spinner
         'common.bootstrap', // bootstrap dialog wrapper functions

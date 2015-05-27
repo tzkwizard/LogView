@@ -65,9 +65,7 @@
                 "Last 5 days", "Last 3 days", "Last 2 days", "Last day", "Last 12 hours", "Last 6 hours", "Last hour"
             ]
         }
-    }
-
-
+    };
     var keyCodes = {
         backspace: 8,
         tab: 9,
@@ -121,6 +119,15 @@
         delete $httpProvider.defaults.headers.common['X-Requested-With'];
     }
     ]);
+
+
+    app.config(function (localStorageServiceProvider) {
+        localStorageServiceProvider
+            .setPrefix('Elasticsearch')
+            .setStorageType('sessionStorage')
+            .setNotify(true, true);
+    });
+
     app.value('config', config);
 
     app.config(['$logProvider', function ($logProvider) {

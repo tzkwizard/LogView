@@ -3,7 +3,7 @@
 
     var controllerId = 'loginModal';
     angular.module('app')
-        .controller(controllerId, function ($cookieStore, $modalInstance, config) {
+        .controller(controllerId, function ($modalInstance, config, localStorageService) {
             var vm = this;
             vm.title = "Elasticsarch Login";
             vm.username = "";
@@ -22,9 +22,13 @@
                 var x = sjcl.encrypt(z, vm.username);
                 var y = sjcl.encrypt(z, vm.password);
 
-                $cookieStore.put('username', x);
-                $cookieStore.put('password', y);
-                $cookieStore.put('key', z);
+                /* $cookieStore.put('username', x);
+                 $cookieStore.put('password', y);
+                 $cookieStore.put('key', z);*/
+
+                localStorageService.set('username', x);
+                localStorageService.set('password', y);
+                localStorageService.set('key', z);
                 window.location.reload();
                 //common.$location.path(common.$location.path() + "/");
                 $modalInstance.close();
