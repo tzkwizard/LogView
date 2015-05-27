@@ -4,36 +4,34 @@
     var controllerId = 'facetSettingBottom';
 
     angular.module('app')
-      .controller(controllerId, function ($rootScope, $scope, $mdBottomSheet, config, $cookieStore) {
+      .controller(controllerId, function ($rootScope, $mdBottomSheet, config, $cookieStore) {
 
-
-        
+          var vm = this;
           //#region variable and function
-          $scope.selectedFacet = [];
-          $scope.selectedItem = null;
-          $scope.searchText = null;
-          $scope.oldfacet = $rootScope.facet;
-         
+          vm.selectedFacet = [];
+          vm.selectedItem = null;
+          vm.searchText = null;
+          vm.oldfacet = $rootScope.facet;
 
 
-          $scope.copy = copy;
-          $scope.querySearch = querySearch;
-          $scope.loadFacet = loadFacet;
-          $scope.update = update;
-          $scope.refresh = refresh;
-          $scope.listItemClick = function ($index) {
-              var clickedItem = $scope.items[$index];
+
+          vm.copy = copy;
+          vm.querySearch = querySearch;
+          vm.update = update;
+          vm.refresh = refresh;
+          vm.listItemClick = function ($index) {
+              var clickedItem = vm.items[$index];
               $mdBottomSheet.hide(clickedItem);
           };
           //#endregion
-          
+
 
           //#region facet search
           function querySearch(query) {
               var results = query ? loadFacet().filter(createFilterFor(query)) : [];
               return results;
           }
-          
+
           function createFilterFor(query) {
               var lowercaseQuery = angular.lowercase(query);
               return function filterFn(f) {
@@ -59,19 +57,19 @@
           //#region button
           function update() {
               var x = [];
-              angular.forEach($scope.selectedFacet, function (t) {
+              angular.forEach(vm.selectedFacet, function (t) {
                   x.push(t);
               });
-              $scope.oldfacet = x;
-              //$scope.roFruitNames = angular.copy($scope.oldfacet);           
+              vm.oldfacet = x;
+              //vm.roFruitNames = angular.copy(vm.oldfacet);           
           }
 
           function copy() {
-              $scope.selectedFacet = angular.copy($scope.oldfacet);
+              vm.selectedFacet = angular.copy(vm.oldfacet);
           }
 
           function refresh() {
-              $cookieStore.put('SiderBarFacet', $scope.oldfacet);
+              $cookieStore.put('SiderBarFacet', vm.oldfacet);
               window.location.reload();
           }
           //#endregion

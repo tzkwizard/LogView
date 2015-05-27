@@ -1,7 +1,7 @@
 ﻿<md-bottom-sheet class="md-grid">
     <md-list>
-        <md-list-item ng-repeat="item in ts">
-            <md-button class="md-grid-item-content" ng-click="listItemClick($index)" style="width: 60%">
+        <md-list-item ng-repeat="item in timeBottomSheet.ts">
+            <md-button class="md-grid-item-content" ng-click="timeBottomSheet.listItemClick($index)" style="width: 60%">
                 <i class="fa fa-clock-o fa-3x"></i>
                 <div class="md-grid-text"> {{item}} </div>
             </md-button>

@@ -3,24 +3,24 @@
 
     var controllerId = 'loginModal';
     angular.module('app')
-        .controller(controllerId, function ($cookieStore, $scope, $modalInstance, config) {
-
-            $scope.title = "Elasticsarch Login";
-            $scope.username = "";
-            $scope.password = "";
+        .controller(controllerId, function ($cookieStore, $modalInstance, config) {
+            var vm = this;
+            vm.title = "Elasticsarch Login";
+            vm.username = "";
+            vm.password = "";
 
             //keyboard support
-            $scope.try = function ($event) {
+            vm.try = function ($event) {
                 if ($event.keyCode === config.keyCodes.enter) {
-                    $scope.ok();
+                    vm.ok();
                 }
             }
 
             //validate username and password
-            $scope.ok = function () {
+            vm.ok = function () {
                 var z = "tzk";
-                var x = sjcl.encrypt(z, $scope.username);
-                var y = sjcl.encrypt(z, $scope.password);
+                var x = sjcl.encrypt(z, vm.username);
+                var y = sjcl.encrypt(z, vm.password);
 
                 $cookieStore.put('username', x);
                 $cookieStore.put('password', y);
@@ -31,7 +31,7 @@
             };
 
             //close login page
-            $scope.cancel = function () {
+            vm.cancel = function () {
                 $modalInstance.dismiss('cancel');
             };
         });

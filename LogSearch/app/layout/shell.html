@@ -1,4 +1,4 @@
-﻿<div data-ng-controller="shell as vm">
+﻿<div data-ng-controller="shell as shell">
     <header class="clearfix">
         <div data-ng-include="'app/layout/topnav.html'"></div>
     </header>
@@ -13,8 +13,8 @@
         <div data-ng-include="'app/layout/timesidebar/timeSideNav.html'"></div>
         <div data-ng-include="'app/layout/menusidebar/menuSideNav.html'"></div>
     </div>
-    <div data-ng-show="vm.isBusy" class="page-splash dissolve-animation">
-        <div data-cc-spinner="vm.spinnerOptions"></div>
+    <div data-ng-show="shell.isBusy" class="page-splash dissolve-animation">
+        <div data-cc-spinner="shell.spinnerOptions"></div>
     </div>
 </div>
 

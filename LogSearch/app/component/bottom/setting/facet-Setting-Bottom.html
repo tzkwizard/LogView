@@ -1,17 +1,17 @@
 ﻿<md-bottom-sheet class="md-list md-has-header">
     <md-subheader> Select Facet </md-subheader>
     <a> Current Facet :</a>
-    <md-chips ng-model="oldfacet" readonly="true">
+    <md-chips ng-model="facetSettingBottom.oldfacet" readonly="true">
         <md-chip-template>
             <strong>{{$chip.title}}</strong>
             <em>({{$chip.analyze}})</em>
         </md-chip-template>
     </md-chips>
     <a> Selected Facet :</a>
-    <md-chips ng-model="selectedFacet" md-autocomplete-snap md-require-match>
-        <md-autocomplete md-selected-item="selectedItem"
-                         md-search-text="searchText"
-                         md-items="item in querySearch(searchText)"
+    <md-chips ng-model="facetSettingBottom.selectedFacet" md-autocomplete-snap md-require-match>
+        <md-autocomplete md-selected-item="facetSettingBottom.selectedItem"
+                         md-search-text="facetSettingBottom.searchText"
+                         md-items="item in facetSettingBottom.querySearch(facetSettingBottom.searchText)"
                          md-item-text="item.title"
                          placeholder="Search for a Facet">
             <span md-highlight-text="searchText">{{item.title}} :: {{item.analyze}}</span>
@@ -23,13 +23,13 @@
             </span>
         </md-chip-template>
     </md-chips>
-    <md-button class="md-raised md-primary" data-ng-click="update()" aria-label="refresh">
+    <md-button class="md-raised md-primary" data-ng-click="facetSettingBottom.update()" aria-label="refresh">
         <md-icon md-svg-src="arrow-up"></md-icon>
     </md-button>
-    <md-button class="md-raised md-primary" data-ng-click="copy()" aria-label="refresh">
+    <md-button class="md-raised md-primary" data-ng-click="facetSettingBottom.copy()" aria-label="refresh">
         <md-icon md-svg-src="arrow-down"></md-icon>
     </md-button>
-    <md-button class="md-raised md-primary" data-ng-click="refresh()" aria-label="refresh">
+    <md-button class="md-raised md-primary" data-ng-click="facetSettingBottom.refresh()" aria-label="refresh">
         <i class="fa fa-refresh"> Refresh </i>
     </md-button>
 </md-bottom-sheet>

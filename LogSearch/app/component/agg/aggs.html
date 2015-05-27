@@ -1,72 +1,72 @@
-﻿<section class="mainbar" data-ng-controller="aggs as vm">
+﻿<section class="mainbar" data-ng-controller="aggs as aggragation">
     <section class="matter">
         <div class="container-fluid">
             <div id="aggSpinner">
-                <div data-ng-show="vm.isBusy" class="page-splash dissolve-animation">
-                    <div data-cc-spinner="vm.spinnerOptions"></div>
+                <div data-ng-show="aggragation.isBusy" class="page-splash dissolve-animation">
+                    <div data-cc-spinner="aggragation.spinnerOptions"></div>
                 </div>
             </div>
             <md-card id="header">
                 <div layout="row" layout-align="center center" style="height: 45px">
-                    <md-button class="md-raised md-primary" data-ng-click="vm.show()" ng-disabled="vm.process">
+                    <md-button class="md-raised md-primary" data-ng-click="aggragation.show()" ng-disabled="aggragation.process">
                         <i class="fa fa-pie-chart"> Show </i>
                     </md-button>
-                    <md-select placeholder="Pick" ng-model="vm.index" style="width: 20%">
+                    <md-select placeholder="Pick" ng-model="aggragation.index" style="width: 20%">
                         <md-option value="all">all</md-option>
-                        <md-option value={{doc}} data-ng-repeat="doc in vm.indicesName">{{doc}}</md-option>
+                        <md-option value={{doc}} data-ng-repeat="doc in aggragation.indicesName">{{doc}}</md-option>
                     </md-select>
-                    <md-select placeholder="Pick" ng-model="vm.aggName">
+                    <md-select placeholder="Pick" ng-model="aggragation.aggName">
                         <md-option value="all">all</md-option>
-                        <md-option value={{doc}} data-ng-repeat="doc in vm.fieldsName">{{doc}}</md-option>
+                        <md-option value={{doc}} data-ng-repeat="doc in aggragation.fieldsName">{{doc}}</md-option>
                     </md-select>
                     <div id="aggprocesser" layout="row" layout-sm="column" layout-align="space-around">
-                        <md-progress-circular md-mode="indeterminate" ng-show="vm.process"></md-progress-circular>
+                        <md-progress-circular md-mode="indeterminate" ng-show="aggragation.process"></md-progress-circular>
                     </div>
                     <span flex></span>
 
-                    <md-button class="md-raised md-primary" data-ng-click="vm.go()" ng-disabled="vm.process">
+                    <md-button class="md-raised md-primary" data-ng-click="aggragation.go()" ng-disabled="aggragation.process">
                         <i class="fa fa-wifi"> Result </i>
                     </md-button>
-                    <md-button class="md-raised md-primary" data-ng-click="vm.refresh()" ng-disabled="vm.process">
+                    <md-button class="md-raised md-primary" data-ng-click="aggragation.refresh()" ng-disabled="aggragation.process">
                         <i class="fa fa-refresh"> Refresh </i>
                     </md-button>
-                    <md-button class="md-raised md-primary" data-ng-click="vm.clear()" ng-disabled="vm.process">
+                    <md-button class="md-raised md-primary" data-ng-click="aggragation.clear()" ng-disabled="aggragation.process">
                         <i class="fa fa-trash-o"> Clear </i>
                     </md-button>
                 </div>
-                <div layout="column" layout-align="center start" class="fader-animation" data-ng-repeat="doc in vm.refinedsearch">
+                <div layout="column" layout-align="center start" class="fader-animation" data-ng-repeat="doc in aggragation.refinedsearch">
                     <a>{{doc.key}} : {{doc.value}}</a>
                 </div>
             </md-card>
             <div id="treemap" class="widget wblue">
-                <md-select placeholder="Pick" class="pull-right" ng-model="vm.treesize" ng-change="vm.treesizeChange()">
+                <md-select placeholder="Pick" class="pull-right" ng-model="aggragation.treesize" ng-change="aggragation.treesizeChange()">
                     <md-option value=10>10</md-option>
                     <md-option value=20>20</md-option>
                     <md-option value=50>50</md-option>
                     <md-option value=100>100</md-option>
                 </md-select>
-                <div data-cc-widget-header title="{{vm.title}}" subtitle="{{vm.total}}"
+                <div data-cc-widget-header title="{{aggragation.title}}" subtitle="{{aggragation.total}}"
                      allow-collapse="true"></div>
                 <div class="widget-content">
-                    <div id="treemap_div" style="height: 600px;" ng-show="vm.treestatus"></div>
+                    <div id="treemap_div" style="height: 600px;" ng-show="aggragation.treestatus"></div>
                 </div>
             </div>
             <div id="piechart" class="widget wlightblue">
-                <div data-cc-widget-header title="{{vm.title2}}"
+                <div data-cc-widget-header title="{{aggragation.title2}}"
                      allow-collapse="true"></div>
                 <div class="widget-content" style="display: none;">
                     <div id="div2" layout="column"></div>
-                    <md-toolbar md-scroll-shrink ng-show="vm.token">
+                    <md-toolbar md-scroll-shrink ng-show="aggragation.token">
                         <div class="md-toolbar-tools">
                             <h3 style="color:whitesmoke">
                                 <span>Google List</span>
                             </h3>
                         </div>
                     </md-toolbar>
-                    <md-content style="height: 600px;" ng-show="vm.token">
+                    <md-content style="height: 600px;" ng-show="aggragation.token">
                         <md-list>
-                            <md-list-item class="md-3-line fader-animation" ng-repeat="doc in vm.hitSearch| orderBy:predicate:reverse">
-                                <div class="md-list-item-text" data-ng-dblclick="vm.test()">
+                            <md-list-item class="md-3-line fader-animation" ng-repeat="doc in aggragation.hitSearch| orderBy:predicate:reverse">
+                                <div class="md-list-item-text" data-ng-dblclick="aggragation.test()">
                                     <h3> {{doc.Key}} </h3>
                                     <h3> {{doc.DocCount}} </h3>
                                 </div>
@@ -79,7 +79,7 @@
                             <tr>
                                 <td>
                                     <div id="filter_div"></div>
-                                    <div id="chart_div" data-ng-click="vm.test()"></div>
+                                    <div id="chart_div" data-ng-click="aggragation.test()"></div>
                                 </td>
                                 <td>
                                     <div id="table_div"></div>

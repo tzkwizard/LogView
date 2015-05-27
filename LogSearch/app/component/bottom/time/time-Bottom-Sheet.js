@@ -3,11 +3,11 @@
 
     var controllerId = 'timeBottomSheet';
     angular.module('app')
-      .controller(controllerId, function ($scope, $mdBottomSheet, config) {
-
-          $scope.ts = config.time.timeSpan.l;
-          $scope.listItemClick = function ($index) {
-              var clickedItem = $scope.ts[$index];
+      .controller(controllerId, function ($mdBottomSheet, config) {
+          var vm = this;
+          vm.ts = config.time.timeSpan.l;
+          vm.listItemClick = function ($index) {
+              var clickedItem = vm.ts[$index];
               $mdBottomSheet.hide(clickedItem);
           };
 

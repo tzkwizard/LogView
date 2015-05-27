@@ -4,34 +4,36 @@
     var controllerId = 'resultModal';
 
     angular.module('app')
-        .controller(controllerId, function ($scope, $modalInstance, common, item, resultService) {
+        .controller(controllerId, function ($modalInstance, common, item, resultService) {
+
+            var vm = this;
 
             //#region variable
-            $scope.title = "Detailed search result";
+            vm.title = "Detailed search result";
             var viewData = item.data;
-            $scope.selected = {
+            vm.selected = {
                 item: ""
             };
-            $scope.mySelections = [];
+            vm.mySelections = [];
             //#endregion
 
 
             //#region Form1
-            $scope.myData = resultService.getData1(viewData._source);
+            vm.myData = resultService.getData1(viewData._source);
 
-            $scope.gridOptions = {
+            vm.gridOptions = {
                 columnDefs: [
                     { field: 'Field', displayName: 'Field', width: 120 },
                     { field: 'Value', displayName: 'Value', width: 120 }
                 ],
-                data: 'myData',
-                selectedItems: $scope.mySelections,
+                data: 'searchResult.myData',
+                selectedItems: vm.mySelections,
                 multiSelect: false,
                 jqueryUITheme: true,
                 enableColumnResize: true,
                 afterSelectionChange: function () {
-                    angular.forEach($scope.mySelections, function (item) {
-                        $scope.selected.item = item["Field"] + " : " + item["Value"];
+                    angular.forEach(vm.mySelections, function (item) {
+                        vm.selected.item = item["Field"] + " : " + item["Value"];
                     });
                 }
             };
@@ -39,21 +41,21 @@
 
 
             //#region Form2
-            $scope.myData2 = resultService.getData2(viewData._source);
+            vm.myData2 = resultService.getData2(viewData._source);
 
-            $scope.gridOptions2 = {
+            vm.gridOptions2 = {
                 columnDefs: [
                         { field: 'Field', displayName: 'Field', width: 120 },
                         { field: 'Value', displayName: 'Value', width: 300 }
                 ],
-                data: 'myData2',
-                selectedItems: $scope.mySelections,
+                data: 'searchResult.myData2',
+                selectedItems: vm.mySelections,
                 // multiSelect: false,
                 jqueryUITheme: true,
                 enableColumnResize: true,
                 afterSelectionChange: function () {
-                    angular.forEach($scope.mySelections, function (item) {
-                        $scope.selected.item = "geoip."+item["Field"].toLowerCase() + " : " + item["Value"];
+                    angular.forEach(vm.mySelections, function (item) {
+                        vm.selected.item = "geoip."+item["Field"].toLowerCase() + " : " + item["Value"];
                     });
                 }
             };
@@ -61,21 +63,21 @@
 
 
             //#region Form3
-            $scope.myData3 = resultService.getData3(viewData._source);
+            vm.myData3 = resultService.getData3(viewData._source);
 
-            $scope.gridOptions3 = {
+            vm.gridOptions3 = {
                 columnDefs: [
                      { field: 'Field', displayName: 'Field', width: 120 },
                      { field: 'Value', displayName: 'Value', width: 420 }
                 ],
-                data: 'myData3',
-                selectedItems: $scope.mySelections,
+                data: 'searchResult.myData3',
+                selectedItems: vm.mySelections,
                 //multiSelect: false,
                 enableColumnResize: true,
                 jqueryUITheme: true,
                 afterSelectionChange: function () {
-                    angular.forEach($scope.mySelections, function (item) {
-                        $scope.selected.item = item["Field"].toLowerCase() + " : " + item["Value"];
+                    angular.forEach(vm.mySelections, function (item) {
+                        vm.selected.item = item["Field"].toLowerCase() + " : " + item["Value"];
                     });
                 }
             };
@@ -83,15 +85,15 @@
 
 
             //#region Button
-            $scope.ok = function () {
+            vm.ok = function () {
                 var res = "";
-                res = resultService.getSearchText($scope.mySelections);
+                res = resultService.getSearchText(vm.mySelections);
                 common.$location.search.text = res;
                 common.$location.path('/els/');
-                $modalInstance.close($scope.selected.item);
+                $modalInstance.close(vm.selected.item);
             };
 
-            $scope.cancel = function () {
+            vm.cancel = function () {
                 $modalInstance.dismiss('cancel');
             };
             //#endregion

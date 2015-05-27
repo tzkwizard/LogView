@@ -1,10 +1,10 @@
-﻿<section id="dashboard-view" class="mainbar" data-ng-controller="dashboard as vm">
+﻿<section id="dashboard-view" class="mainbar" data-ng-controller="dashboard as dashboard">
     <section class="matter">
         <div class="container">
             <div id="dashSpinner">
-                <div data-ng-show="vm.isBusy" class="page-splash dissolve-animation">
-                    <div data-cc-spinner="vm.spinnerOptions"></div>
-                    <div class="page-splash-message page-splash-message-subtle">{{vm.busyMessage}}</div>
+                <div data-ng-show="dashboard.isBusy" class="page-splash dissolve-animation">
+                    <div data-cc-spinner="dashboard.spinnerOptions"></div>
+                    <div class="page-splash-message page-splash-message-subtle">{{dashboard.busyMessage}}</div>
                 </div>
             </div>
 
@@ -29,12 +29,12 @@
             </div>
             <md-card id="2" layout="row" layout-align="center start">
                 <div id="gMap" flex="50" class="widget wlightblue">
-                    <md-select class="pull-right" placeholder="Pick" ng-model="vm.geomap2selection" ng-change="vm.changeMap()" aria-label="s1">
+                    <md-select class="pull-right" placeholder="Pick" ng-model="dashboard.geomap2selection" ng-change="dashboard.changeMap()" aria-label="s1">
                         <md-option value="USA">USA</md-option>
                         <md-option value="World">World</md-option>
                         <md-option value="City">City</md-option>
                     </md-select>
-                    <md-select class="pull-right" placeholder="Pick" ng-model="vm.geoCount" ng-change="vm.changeMap()" aria-label="s2">
+                    <md-select class="pull-right" placeholder="Pick" ng-model="dashboard.geoCount" ng-change="dashboard.changeMap()" aria-label="s2">
                         <md-option value="50">50</md-option>
                         <md-option value="100">100</md-option>
                         <md-option value="200">200</md-option>
@@ -45,7 +45,7 @@
                     </div>
                 </div>
                 <div id="dMap" flex="50" class="widget waqua">
-                    <md-select class="pull-right" placeholder="Pick" ng-model="vm.mapCount" ng-change="vm.changeMap2()" aria-label="s3">
+                    <md-select class="pull-right" placeholder="Pick" ng-model="dashboard.mapCount" ng-change="dashboard.changeMap2()" aria-label="s3">
                         <md-option value="15">15</md-option>
                         <md-option value="30">30</md-option>
                         <md-option value="50">50</md-option>

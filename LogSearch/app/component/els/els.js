@@ -36,7 +36,8 @@
             vm.distance = 0;
             vm.dunit = 'mi';
             vm.timeShow = false;
-            $scope.count = 0; // filter number            
+            $scope.count = 0; // filter number   
+            //vm.count = 0;
             //#endregion
 
             //#region public function

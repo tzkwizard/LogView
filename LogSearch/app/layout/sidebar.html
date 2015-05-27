@@ -1,4 +1,4 @@
-﻿<div data-cc-sidebar data-ng-controller="sidebar as vm">
+﻿<div data-cc-sidebar data-ng-controller="sidebar as sidebar">
     <div class="sidebar-filler"></div>
 
     <div class="sidebar-dropdown">
@@ -14,12 +14,12 @@
         </div>
         <ul id="facet" class="navi" collapse="collapse">
 
-            <ul class="md-menu-item" ng-repeat="f in vm.facet">
-                <md-button ng-click="vm.showFacet(f)" style="width: 100%;margin-left: 0" >
+            <ul class="md-menu-item" ng-repeat="f in sidebar.facet">
+                <md-button ng-click="sidebar.showFacet(f)" style="width: 100%;margin-left: 0">
                     <md-icon md-svg-src={{f.icon}} class="pull-left" style="color: white"></md-icon> <span>  {{f.title}}  </span>
                 </md-button>
                 <ul collapse="f.collapse" class="nlightblue fade-selection-animation">
-                    <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,f.field)"
+                    <li class="nlightblue fade-selection-animation" data-ng-click="sidebar.sidebarNav(r,f.field)"
                         data-ng-repeat="r in f.data">
                         <!--<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>-->
                         <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
@@ -27,63 +27,63 @@
                 </ul>
             </ul>
 
-            <!--<li class="nlightblue fade-selection-animation" data-ng-class="vm.isCurrent(r)"
-                data-ng-repeat="r in vm.navRoutes">
+            <!--<li class="nlightblue fade-selection-animation" data-ng-class="sidebar.isCurrent(r)"
+                data-ng-repeat="r in sidebar.navRoutes">
                 <a href="#{{r.url}}" data-ng-bind-html="r.config.settings.content"></a>
             </li>
-            <li class="nlightblue fade-selection-animation" ng-click="vm.showUser()"> <a><i class="fa fa-user fa-2x"></i> User</a></li>
-            <ul collapse="vm.isCollapsed4" class="nlightblue fade-selection-animation">
-                <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.ident.raw')"
-                    data-ng-repeat="r in vm.user">
+            <li class="nlightblue fade-selection-animation" ng-click="sidebar.showUser()"> <a><i class="fa fa-user fa-2x"></i> User</a></li>
+            <ul collapse="sidebar.isCollapsed4" class="nlightblue fade-selection-animation">
+                <li class="nlightblue fade-selection-animation" data-ng-click="sidebar.sidebarNav(r,'logs.ident.raw')"
+                    data-ng-repeat="r in sidebar.user">
                     $1$<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>#1#
                     <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
                 </li>
             </ul>
 
 
-            <li class="nlightblue fade-selection-animation" ng-click="vm.showLocation()"> <a><i class="fa fa-map-marker fa-2x"></i> Location</a></li>
+            <li class="nlightblue fade-selection-animation" ng-click="sidebar.showLocation()"> <a><i class="fa fa-map-marker fa-2x"></i> Location</a></li>
 
-            <ul collapse="vm.isCollapsed" class="nlightblue fade-selection-animation">
-                <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.geoip.city_name.raw')"
-                    data-ng-repeat="r in vm.location">
+            <ul collapse="sidebar.isCollapsed" class="nlightblue fade-selection-animation">
+                <li class="nlightblue fade-selection-animation" data-ng-click="sidebar.sidebarNav(r,'logs.geoip.city_name.raw')"
+                    data-ng-repeat="r in sidebar.location">
                     $1$<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>#1#
                     <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
                 </li>
             </ul>
 
-            <li class="nlightblue fade-selection-animation" ng-click="vm.showRequestAPI()"> <a><i class="fa fa-windows fa-2x"></i> API</a></li>
+            <li class="nlightblue fade-selection-animation" ng-click="sidebar.showRequestAPI()"> <a><i class="fa fa-windows fa-2x"></i> API</a></li>
 
-            <ul collapse="vm.isCollapsed2" class="nlightblue fade-selection-animation">
-                <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.request.raw')"
-                    data-ng-repeat="r in vm.apiaddress">
-                    $1$<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>#1#
-                    <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
-                </li>
-            </ul>
-
-
-            <li class="nlightblue fade-selection-animation" ng-click="vm.showRequestMethod()"> <a><i class="fa fa-retweet fa-2x"></i> Method</a></li>
-
-            <ul collapse="vm.isCollapsed3" class="nlightblue fade-selection-animation">
-                <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.verb.raw')"
-                    data-ng-repeat="r in vm.httpmethod">
+            <ul collapse="sidebar.isCollapsed2" class="nlightblue fade-selection-animation">
+                <li class="nlightblue fade-selection-animation" data-ng-click="sidebar.sidebarNav(r,'logs.request.raw')"
+                    data-ng-repeat="r in sidebar.apiaddress">
                     $1$<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>#1#
                     <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
                 </li>
             </ul>
 
 
-            <li class="nlightblue fade-selection-animation" ng-click="vm.showUserAction()"> <a><i class="fa fa-android fa-2x"></i> Action</a></li>
+            <li class="nlightblue fade-selection-animation" ng-click="sidebar.showRequestMethod()"> <a><i class="fa fa-retweet fa-2x"></i> Method</a></li>
 
-            <ul collapse="vm.isCollapsed5" class="nlightblue fade-selection-animation">
-                <li class="nlightblue fade-selection-animation" data-ng-click="vm.sidebarNav(r,'logs.action.raw')"
-                    data-ng-repeat="r in vm.useraction">
+            <ul collapse="sidebar.isCollapsed3" class="nlightblue fade-selection-animation">
+                <li class="nlightblue fade-selection-animation" data-ng-click="sidebar.sidebarNav(r,'logs.verb.raw')"
+                    data-ng-repeat="r in sidebar.httpmethod">
+                    $1$<a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>#1#
+                    <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
+                </li>
+            </ul>
+
+
+            <li class="nlightblue fade-selection-animation" ng-click="sidebar.showUserAction()"> <a><i class="fa fa-android fa-2x"></i> Action</a></li>
+
+            <ul collapse="sidebar.isCollapsed5" class="nlightblue fade-selection-animation">
+                <li class="nlightblue fade-selection-animation" data-ng-click="sidebar.sidebarNav(r,'logs.action.raw')"
+                    data-ng-repeat="r in sidebar.useraction">
                     $1$ <a style="color: whitesmoke"> {{r.key.toString()}} ({{r.doc_count}}) </a>#1#
                     <a style="color: whitesmoke"> {{r.Key.toString()}} ({{r.DocCount}}) </a>
                 </li>
             </ul>-->
 
-            <li class="nlightblue fade-selection-animation" ng-click="vm.showSettingBottomSheet($event)"> <a><i class="fa fa-cog fa-2x"></i>  Settings </a></li>
+            <li class="nlightblue fade-selection-animation" ng-click="sidebar.showSettingBottomSheet($event)"> <a><i class="fa fa-cog fa-2x"></i>  Settings </a></li>
 
         </ul>
     </div>

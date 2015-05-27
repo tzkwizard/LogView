@@ -67,7 +67,7 @@
                 };
                 var modalInstance = $modal.open({
                     templateUrl: 'app/component/els/result/resultModal.html',
-                    controller: 'resultModal',
+                    controller: 'resultModal as searchResult',
                     //size: 'lg',
                     resolve: {
                         item: function () {
@@ -88,7 +88,7 @@
             function showListBottomSheet() {
                return $mdBottomSheet.show({
                     templateUrl: 'app/component/bottom/time/time-Bottom-Sheet.html',
-                    controller: 'timeBottomSheet'
+                    controller: 'timeBottomSheet as timeBottomSheet'
                 }).then(function (clickedItem) {
                     return clickedItem;
                 });

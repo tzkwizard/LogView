@@ -3,20 +3,20 @@
 </div>
     &nbsp;UserName:
 <input type="text" class="form-control"
-       data-ng-model="username"
-       data-ng-keyup=try($event)
+       data-ng-model="login.username"
+       data-ng-keyup=login.try($event)
        placeholder="   " />
 <br>
     &nbsp;Password:&nbsp;&nbsp;
 <input type="password" class="form-control"
-       data-ng-model="password"
-       data-ng-keyup=try($event)
+       data-ng-model="login.password"
+       data-ng-keyup=login.try($event)
        placeholder="  " />
 
 <div class="modal-body">
 </div>
 <div class="modal-footer">
-    <md-button class="md-raised md-primary" data-ng-click="ok()" aria-label="ok">
+    <md-button class="md-raised md-primary" data-ng-click="login.ok()" aria-label="ok">
         Sign In
     </md-button>
 </div>

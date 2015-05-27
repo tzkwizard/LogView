@@ -98,7 +98,7 @@
             vm.alert = '';
             $mdBottomSheet.show({
                 templateUrl: 'app/component/bottom/setting/facet-Setting-Bottom.html',
-                controller: 'facetSettingBottom',
+                controller: 'facetSettingBottom as facetSettingBottom',
                 targetEvent: $event
             }).then(function (clickedItem) {
                 vm.alert = clickedItem.name + ' clicked!';

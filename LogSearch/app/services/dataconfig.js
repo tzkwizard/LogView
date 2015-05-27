@@ -123,7 +123,7 @@
         function openLoginPage() {
             var modalInstance = $modal.open({
                 templateUrl: 'app/component/login/loginModal.html',
-                controller: 'loginModal',
+                controller: 'loginModal as login',
                 size: 'sm',
                 keyboard: false,
                 backdrop: 'static',

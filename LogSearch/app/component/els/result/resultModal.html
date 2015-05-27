@@ -10,7 +10,7 @@
                         </div>
                     </md-toolbar>
                     <md-content>
-                        <div class="gridStyle2" ng-grid="gridOptions"></div>
+                        <div class="gridStyle2" ng-grid="searchResult.gridOptions"></div>
                     </md-content>
                 </div>
                 <div layout="column" layout-align="space-between center">
@@ -20,7 +20,7 @@
                         </div>
                     </md-toolbar>
                     <md-content>
-                        <div class="gridStyle" ng-grid="gridOptions2"></div>
+                        <div class="gridStyle" ng-grid="searchResult.gridOptions2"></div>
                     </md-content>
 
                     <md-toolbar>
@@ -29,28 +29,28 @@
                         </div>
                     </md-toolbar>
                     <md-content>
-                        <div class="gridStyle" ng-grid="gridOptions3"></div>
+                        <div class="gridStyle" ng-grid="searchResult.gridOptions3"></div>
                     </md-content>
                 </div>
             </div>
             <md-list>
-                <md-list-item class="md-1-line fader-animation" ng-repeat="item in mySelections">
+                <md-list-item class="md-1-line fader-animation" ng-repeat="item in searchResult.mySelections">
                     <div class="md-list-item-text">
                         {{item.Field}} : {{item.Value}}
                     </div>
                     <md-divider inset></md-divider>
                 </md-list-item>
             </md-list>
-            Selected: <b>{{ selected.item |json }}</b>
+            Selected: <b>{{ searchResult.selected.item |json }}</b>
         </div>
     </div>
 </div>
 <div class="modal-footer">
-    <md-button class="md-raised md-primary" data-ng-click="ok()" aria-label="ok"
+    <md-button class="md-raised md-primary" data-ng-click="searchResult.ok()" aria-label="ok"
                tooltip="Search" tooltip-trigger="mouseenter" tooltip-placement="top">
         <i> OK </i>
     </md-button>
-    <md-button class="md-raised md-warn" data-ng-click="cancel()" aria-label="cancel">
+    <md-button class="md-raised md-warn" data-ng-click="searchResult.cancel()" aria-label="cancel">
         <i> Cancel </i>
     </md-button>
 </div>

@@ -2,8 +2,8 @@
     <md-toolbar class="md-theme-light">
         <h2 class="md-toolbar-tools"> Menu </h2>
     </md-toolbar>
-    <md-content data-ng-controller="menuSideNav" layout-padding>
-        <md-list-item layout-align="center center" ng-repeat="t in getNav()">
+    <md-content data-ng-controller="menuSideNav as menuSideNav" layout-padding>
+        <md-list-item layout-align="center center" ng-repeat="t in menuSideNav.getNav()">
             <md-button class="md-grid-item-content" style="min-width: 90%" href="#{{t.url}}">
                 <md-icon md-svg-src={{t.config.settings.icon}} class="pull-left">
                 </md-icon> {{ t.config.title }}
@@ -14,7 +14,7 @@
             </md-tooltip>
             <div class="label">Flat</div>
         </md-list-item>
-        <md-button ng-click="close()" class="md-primary" layout-align="center center">
+        <md-button ng-click="menuSideNav.close()" class="md-primary" layout-align="center center">
             Close
         </md-button>
     </md-content>
