@@ -1,6 +1,4 @@
-﻿/// <reference path="../../component/bottom/time/time-Bottom-Sheet.html" />
-/// <reference path="../../component/bottom/time/time-Bottom-Sheet.html" />
-(function () {
+﻿(function () {
     'use strict';
     var serviceId = 'elsService';
 
@@ -31,7 +29,7 @@
                         continue;
                     if (s1 === "MUST") {
                         if (s3 !== "") {
-                            if (i === 1) {
+                            if (i === 0) {
                                 searchText += s2 + " : \"" + s3 + "\"^2";
                             } else {
                                 searchText += " AND " + s2 + " : \"" + s3 + "\"^2";
@@ -40,7 +38,7 @@
                     }
                     else if (s1 === "MUST_NOT") {
                         if (s3 !== "") {
-                            if (i === 1) {
+                            if (i === 0) {
                                 searchText += " NOT " + s2 + " : \"" + s3 + "\"";
                             } else {
                                 searchText += " NOT " + s2 + " : \"" + s3 + "\"";
@@ -48,7 +46,7 @@
                         }
                     } else {
                         if (s3 !== "") {
-                            if (i === 1) {
+                            if (i === 0) {
                                 searchText += s2 + " : \"" + s3 + "\"";
                             } else {
                                 searchText += " AND " + s2 + " : \"" + s3 + "\"";

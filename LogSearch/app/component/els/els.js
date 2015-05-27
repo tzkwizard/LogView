@@ -37,13 +37,12 @@
             vm.dunit = 'mi';
             vm.timeShow = false;
             $scope.count = 0; // filter number   
-            //vm.count = 0;
+            vm.count = 0;
             //#endregion
 
             //#region public function
             vm.search = search;
             vm.trySeach = trySeach;
-            vm.addfilter = addfilter;
             vm.pageChanged = pageChanged;
             vm.filltext = filltext;
             vm.filterst = filterst; //change time span
@@ -211,7 +210,7 @@
                             vm.searchText = "";
                             search();
                             vm.filterfill = false;
-                            while ($scope.count > 1) {
+                            while (vm.count > 1) {
                                 removefilter();
                             }
                             log("Refresh");
@@ -313,24 +312,13 @@
 
             //fill searchText with filter information
             function filltext() {
-                if ($scope.count > 0) {
-                    vm.searchText = elsService.config.fillSearchText(vm.condition);
+                if (vm.count > 0) {
+                    vm.searchText = elsService.fillSearchText(vm.condition);
                     vm.filterfill = true;
                     vm.field = "all";
                     search();
                 }
-            }
-
-            function addfilter() {
-                if (vm.condition.length < $scope.count + 2) {
-                    var filterdata = {
-                        text: "",
-                        field: "",
-                        condition: ""
-                    }
-                    vm.condition.push(filterdata);
-                }
-            }
+            }        
             //#endregion
 
 

@@ -3,31 +3,44 @@
 
     var app = angular.module('app');
 
-    //add filter
+    //#region search page directive
     app.directive("addfilter", function ($compile) {
         var directive = {
             link: link,
-            restrict: 'A'
+            restrict: 'A',
+            scope: {
+                count: '=count',
+                selectfield: '=selectfield',
+                condition: '=condition',
+                search: '=search'
+            }
         };
         return directive;
 
         function link(scope, element, attrs) {
             element.bind("click", function () {
+                var filterdata = {
+                    text: "",
+                    field: "",
+                    condition: ""
+                }
+                scope.condition.push(filterdata);
+
                 angular.element(document.getElementById('filter')).
                 append($compile("<div id=contain" + scope.count + " ></div>")(scope));
 
                 angular.element(document.getElementById('contain' + scope.count)).
-                   append($compile("<input id=input" + scope.count + " placeholder='input' ng-model=vm.condition[" + scope.count + "].text />")(scope));
+                   append($compile("<input id=input" + scope.count + " placeholder='input' ng-model=condition[" + scope.count + "].text />")(scope));
 
 
                 angular.element(document.getElementById('contain' + scope.count)).
-                    append($compile("<md-select id=fselect" + scope.count + " placeholder='Pick'  ng-model=vm.condition[" + scope.count + "].field >" +
-                        "<md-option value={{doc}}  data-ng-repeat='doc in vm.fieldsName'> {{doc}} </md-option>" +
+                    append($compile("<md-select id=fselect" + scope.count + " placeholder='Pick'  ng-model=condition[" + scope.count + "].field >" +
+                        "<md-option value={{doc}}  data-ng-repeat='doc in selectfield'> {{doc}} </md-option>" +
                         "</md-select>")(scope));
 
 
                 angular.element(document.getElementById('contain' + scope.count)).
-                  append($compile("<md-select id=jselect" + scope.count + " placeholder='Pick' ng-model=vm.condition[" + scope.count + "].condition >" +
+                  append($compile("<md-select id=jselect" + scope.count + " placeholder='Pick' ng-model=condition[" + scope.count + "].condition >" +
                 "<md-option value='MUST'>MUST</md-option>" +
                 "<md-option vaule='MUST_NOT'>MUST_NOT</md-option>" +
                 "<md-option vaule='SHOULD'>SHOULD</md-option>" +
@@ -36,11 +49,15 @@
             });
         }
     });
-    //remove filter
+
     app.directive("removefilter", function () {
         var directive = {
             link: link,
-            restrict: 'A'
+            restrict: 'A',
+            scope: {
+                count: '=count',
+                condition: '=condition'
+            }
         };
         return directive;
         function link(scope, element, attrs) {
@@ -49,28 +66,14 @@
                 if (x >= 0) {
                     angular.element(document.getElementById('contain' + x)).remove();
                     scope.count--;
+                    scope.condition.pop();
                 }
             });
         }
     });
+    //#endregion
 
-    app.directive("googleChart", function () {
-        return {
-            restrict: "A",
-            link: function ($scope, $elem, $attr) {
-                var dt = $scope[$attr.ngModel].dataTable;
-
-                var options = {};
-                if ($scope[$attr.ngModel].title)
-                    options.title = $scope[$attr.ngModel].title;
-
-                var googleChart = new google.visualization[$attr.googleChart]($elem[0]);
-                googleChart.draw(dt, options)
-            }
-        }
-    });
-
-
+    //#region breeze directive
     app.directive('disableAnimation', function ($animate) {
         return {
             restrict: 'A',
@@ -276,4 +279,6 @@
             attrs.$set('class', 'widget-head');
         }
     });
+    //#endregion
+
 })();

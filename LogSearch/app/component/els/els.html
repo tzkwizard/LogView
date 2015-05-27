@@ -112,13 +112,13 @@
                         </button>
                     </div>
                     <div layout="row" id="FilterButton">
-                        <md-button addfilter class="md-raised md-primary" aria-label="add filter" ng-click="search.addfilter()">
+                        <md-button addfilter count="search.count" selectfield="search.fieldsName" condition="search.condition" class="md-raised md-primary" aria-label="add filter">
                             <i class="fa fa-plus-square"></i>
                             <md-tooltip>
                                 Add Filter
                             </md-tooltip>
                         </md-button>
-                        <md-button removefilter class="md-raised md-primary" aria-label="remove filter">
+                        <md-button removefilter count="search.count" condition="search.condition" class="md-raised md-primary" aria-label="remove filter">
                             <i class="fa fa-minus-square"></i>
                             <md-tooltip>
                                 Remove Filter
