@@ -124,7 +124,7 @@
     app.config(function (localStorageServiceProvider) {
         localStorageServiceProvider
             .setPrefix('Elasticsearch')
-            .setStorageType('sessionStorage')
+            .setStorageType('localStorage')
             .setNotify(true, true);
     });
 

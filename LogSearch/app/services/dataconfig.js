@@ -43,7 +43,6 @@
         //Load index and field
         function prime() {
             $rootScope.logtype = "logs";
-            $rootScope.ip = [];
             $rootScope.map = getMapping();
             if (localStorageService.get('EsToken')!==null) return;
             checkIdent();
@@ -150,6 +149,7 @@
                 localStorageService.set('key', z);
             }
             localStorageService.set('EsToken', token);
+            $rootScope.token = token;
         }
 
         function login(u, p) {
@@ -176,7 +176,7 @@
                     items: function () {
                     }
                 }
-            });
+            });         
         }
         //#endregion
 

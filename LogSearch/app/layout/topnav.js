@@ -100,6 +100,7 @@
             vm.ft = common.$rootScope.ft;
             vm.st = common.$rootScope.st;
             autoFill(true);
+            vm.autocompleLoading = false;
             toastr.info("Auto Fill Load");
         }
 
@@ -131,7 +132,7 @@
         //log out
         function logout() {
             dataconfig.logout();
-            //common.$location.path("/");
+            common.$location.path("/");
             window.location.reload();
         }
         //#endregion
