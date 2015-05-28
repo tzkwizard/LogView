@@ -10,8 +10,6 @@
         var service = {
             appStart: appStart,
             prime: prime,
-            login: login,
-            openLoginPage: openLoginPage,
             checkIdent: checkIdent,
             loadIndex: loadIndex,
             loadField: loadField,
@@ -29,21 +27,12 @@
             $rootScope.school = "TCU";
             $rootScope.st = moment(new Date()).subtract(3, 'month').toDate();
             $rootScope.ft = new Date();
-            //$rootScope.token = $cookieStore.get('EsToken');
-
             $rootScope.token = localStorageService.get('EsToken');
-            /* if ($cookieStore.get('SiderBarFacet') === undefined || $cookieStore.get('SiderBarFacet').length < 1) {
-                 $rootScope.facet = [config.facet[0], config.facet[1], config.facet[2], config.facet[3]];
-             } else {
-                 $rootScope.facet = $cookieStore.get('SiderBarFacet');
-             }*/
             if (localStorageService.get('SiderBarFacet') === undefined || localStorageService.get('SiderBarFacet') === null) {
                 $rootScope.facet = [config.facet[0], config.facet[1], config.facet[2], config.facet[3]];
             } else {
                 $rootScope.facet = localStorageService.get('SiderBarFacet');
             }
-
-
         }
 
         //#endregion
@@ -56,17 +45,11 @@
             $rootScope.logtype = "logs";
             $rootScope.ip = [];
             $rootScope.map = getMapping();
-            if ($rootScope.logged) return;
+            if (localStorageService.get('EsToken')!==null) return;
             checkIdent();
         }
 
         function checkIndexCookie() {
-            /* if ($cookieStore.get('index') !== undefined && $rootScope.index !== undefined) {
-                 if ($rootScope.index.length !== $cookieStore.get('index').length) {
-                     toastr.info("Index Changed");
-                     $cookieStore.remove('index');
-                 }
-             }*/
             if (localStorageService.get('index') !== null && $rootScope.index !== undefined) {
                 if ($rootScope.index.length !== localStorageService.get('index').length) {
                     toastr.info("Index Changed");
@@ -76,12 +59,6 @@
         }
 
         function checkFieldCookie() {
-            /* if ($cookieStore.get('logfield') !== undefined && $rootScope.logfield !== undefined) {
-                 if ($rootScope.logfield.length !== $cookieStore.get('logfield').length) {
-                     toastr.info("Field Changed");
-                     $cookieStore.remove('logfield');
-                 }
-             }*/
             if (localStorageService.get('logfield') !== null && $rootScope.logfield !== undefined) {
                 if ($rootScope.logfield.length !== localStorageService.get('logfield').length) {
                     toastr.info("Field Changed");
@@ -92,15 +69,6 @@
 
         function loadIndex() {
             checkIndexCookie();
-            /*var indicesName = $cookieStore.get('index');
-            if ($cookieStore.get('index') === undefined) {
-                if ($rootScope.index !== undefined) {
-                    $cookieStore.put('index', $rootScope.index);
-                    indicesName = $cookieStore.get('index');
-                } else {
-                    return $rootScope.map;
-                }
-            }*/
             var indicesName = localStorageService.get('index');
             if (localStorageService.get('index') === null) {
                 if ($rootScope.index !== undefined) {
@@ -115,15 +83,6 @@
 
         function loadField() {
             checkFieldCookie();
-            /*var fieldName = $cookieStore.get('logfield');
-            if ($cookieStore.get('logfield') === undefined) {
-                if ($rootScope.logfield !== undefined) {
-                    $cookieStore.put('logfield', $rootScope.logfield);
-                    fieldName = $cookieStore.get('logfield');
-                } else {
-                    return $rootScope.map;
-                }
-            }*/
             var fieldName = localStorageService.get('logfield');
             if (localStorageService.get('logfield') === null) {
                 if ($rootScope.logfield !== undefined) {
@@ -157,28 +116,53 @@
 
 
         //#region Login service
-        function login() {
-            /* var x = $cookieStore.get('username');
-             var y = $cookieStore.get('password');
-             var z = $cookieStore.get('key');*/
+        function checkIdent(username, password) {
+            if (username === "" || password === "") {
+                toastr.info("Username or Password is blank !!");
+                return openLoginPage();
+            } else {
+                return login(username, password).then(function (resp) {
+                    saveId(username, password, resp.data);
+                    toastr.info('elasticsearch cluster is connected');
+                }, function (e) {
+                    toastr.info(e.data.Message);
+                    openLoginPage();
+                });
+            }
+        }
 
+        function logout() {
+            localStorageService.remove("username");
+            localStorageService.remove("password");
+            localStorageService.remove("key");
+            localStorageService.remove("SiderBarFacet");
+            localStorageService.remove("EsToken");
+        }
+
+
+        function saveId(username, password, token) {
+            if (username !== undefined || password !== undefined) {
+                var z = "tzk";
+                var x = sjcl.encrypt(z, username);
+                var y = sjcl.encrypt(z, password);
+                localStorageService.set('username', x);
+                localStorageService.set('password', y);
+                localStorageService.set('key', z);
+            }
+            localStorageService.set('EsToken', token);
+        }
+
+        function login(u, p) {
             var x = localStorageService.get('username');
             var y = localStorageService.get('password');
             var z = localStorageService.get('key');
-            var username;
-            var password;
-            try {
-                username = sjcl.decrypt(z, x);
-                password = sjcl.decrypt(z, y);
-                if (username === "" || password === "") {
-                    password = "1";
-                    username = "1";
-                }
-            } catch (e) {
-                password = "1";
-                username = "1";
-            }
-            return datasearch.checkID(username, password);
+            if (x === null || y === null || z === null) {
+                return datasearch.checkID(u, p);
+            } else {
+                var username = sjcl.decrypt(z, x);
+                var password = sjcl.decrypt(z, y);
+                return datasearch.checkID(username, password);
+            }   
         }
 
         function openLoginPage() {
@@ -194,31 +178,6 @@
                 }
             });
         }
-
-        function checkIdent() {
-            return login().then(function (resp) {
-                //$cookieStore.put('EsToken', resp.data);
-                localStorageService.set('EsToken', resp.data);
-                $rootScope.logged = true;
-                toastr.info('elasticsearch cluster is connected');
-            }, function (e) {
-                toastr.info(e.data.Message);
-                openLoginPage();
-            });
-        }
-        function logout() {
-            $rootScope.logged = false;
-            /*$cookieStore.remove("useranme");
-            $cookieStore.remove("password");
-            $cookieStore.remove("key");
-            $cookieStore.remove("SiderBarFacet");*/
-            localStorageService.remove("useranme");
-            localStorageService.remove("password");
-            localStorageService.remove("key");
-            localStorageService.remove("SiderBarFacet");
-        }
-
-
         //#endregion
 
 
