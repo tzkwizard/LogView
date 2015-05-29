@@ -40,7 +40,9 @@
                     vm.total = 0;
                 } else {
                     vm.total = vm.hitSearch.length;
-                    vm.pagecountArr = [Math.floor(vm.total / 20), Math.floor(vm.total / 10), Math.floor(vm.total / 5), Math.floor(vm.total / 2), vm.total];
+                    if (vm.total !== 0) {
+                        vm.pagecountArr = [Math.floor(vm.total / 20), Math.floor(vm.total / 10), Math.floor(vm.total / 5), Math.floor(vm.total / 2), vm.total];
+                    }
                     refreshPage();
                 }
             }

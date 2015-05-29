@@ -37,6 +37,7 @@
             vm.dunit = 'mi';
             vm.timeShow = false;
             vm.count = 0;// filter number  
+            var autocache = ["", "", "", ""];
             //#endregion
 
             //#region public function
@@ -111,21 +112,14 @@
             function getSampleData() {
                 return elsService.data.getSampledata(vm.indicesName, common.$rootScope.logtype, vm.pagecount, vm.st, vm.ft, vm.locationF, vm.distanceF)
                       .then(function (resp) {
-                          if (resp.data.Total !== 0) {
-                              vm.hitSearch = resp.data.Data;
-                          }
-                          vm.total = resp.data.Total;
-                          vm.pagecountArr = [Math.floor(vm.total / 20), Math.floor(vm.total / 10), Math.floor(vm.total / 5), Math.floor(vm.total / 2), vm.total];
-                          vm.pagetotal = resp.total < vm.pagecount ? resp.total : vm.pagecount;
-                          getCurrentPageData(vm.hitSearch);
-                          random();
-                          vm.processSearch = false;
-                      }, function (e) {
+                       sanitizeData(resp);
+                }, function (e) {
                           log("sampledata " + e.data.Message);
                       });
             }
             //#endregion
 
+           
 
             //#region main search
             function trySeach($event) {
@@ -159,22 +153,25 @@
                 } else {
                     elsService.data.basicSearch(vm.indicesName, common.$rootScope.logtype, vm.pagecount, vm.field, vm.searchText, condition, vm.st, vm.ft, vm.locationF, vm.distanceF)
                         .then(function (resp) {
-                            if (resp.data.Total !== 0) {
-                                vm.hitSearch = resp.data.Data;
-                            }
-                            vm.processSearch = false;
-                            vm.total = resp.data.Total;
-                            vm.pagecountArr = [Math.floor(vm.total / 20), Math.floor(vm.total / 10), Math.floor(vm.total / 5), Math.floor(vm.total / 2), vm.total];
-                            vm.pagetotal = vm.total < vm.pagecount ? vm.total : vm.pagecount;
-                            getCurrentPageData(vm.hitSearch);
-                            random();
+                            sanitizeData(resp);
                         }, function (e) {
                             log("search data error " + e.data.Message);
                         });
                 }
             }
 
-            var autocache = ["", "", "", ""];
+            function sanitizeData(resp) {
+                vm.total = resp.data.Total;
+                if (resp.data.Total !== 0) {
+                    vm.hitSearch = resp.data.Data;
+                    vm.pagecountArr = [Math.floor(vm.total / 20), Math.floor(vm.total / 10), Math.floor(vm.total / 5), Math.floor(vm.total / 2), vm.total];
+                }
+                vm.pagetotal = vm.total < vm.pagecount ? vm.total : vm.pagecount;
+                getCurrentPageData(vm.hitSearch);
+                random();
+                vm.processSearch = false;
+            }
+            
             //get auto-fill data
             function autoFill(force) {
                 if (force !== true && vm.searchText === "") return null;
