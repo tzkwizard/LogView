@@ -15,6 +15,7 @@
         function activate() {
             common.activateController([], controllerId).then(function () {
                 vm.xx = $cookieStore.get('index');
+                common.$rootScope.spinner = false;
             });
             
         }

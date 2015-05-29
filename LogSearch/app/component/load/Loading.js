@@ -14,6 +14,7 @@
             common.activateController([], controllerId).then(function () {
                 vm.xx = $rootScope.index;
                 vm.yy = $rootScope.logfield;
+                common.$rootScope.spinner = false;
             });
         }
 

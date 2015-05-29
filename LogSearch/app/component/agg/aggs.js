@@ -103,7 +103,7 @@
             //refresh page
             function refresh() {
                 common.$rootScope.spinner = true;
-                common.$location.search.refresh = true;
+                vm.searchText = "*";
                 activate();
                 log("Refreshed");
             }
