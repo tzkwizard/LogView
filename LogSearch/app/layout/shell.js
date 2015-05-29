@@ -43,7 +43,10 @@
         }
 
         common.$rootScope.$on('$routeChangeStart',
-            function (event, next, current) { toggleSpinner(true); }
+            function(event, next, current) {
+                toggleSpinner(true); 
+                common.$rootScope.spinner = true;
+            }
         );
 
         common.$rootScope.$on(events.controllerActivateSuccess,

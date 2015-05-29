@@ -1,14 +1,6 @@
 ﻿<section id="dashboard-view" class="mainbar" data-ng-controller="dashboard as dashboard">
     <section class="matter">
         <div class="container">
-            <div id="dashSpinner">
-                <div data-ng-show="dashboard.isBusy" class="page-splash dissolve-animation">
-                    <div data-cc-spinner="dashboard.spinnerOptions"></div>
-                    <div class="page-splash-message page-splash-message-subtle">{{dashboard.busyMessage}}</div>
-                </div>
-            </div>
-
-
             <div id="1" layout="row" layout-align="center start" style="height: 30%">
                 <md-card id="dChart" flex="60" class="widget wgreen">
                     <div data-cc-widget-header title=" PieChart" allow-collapse="true"></div>

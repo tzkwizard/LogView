@@ -11,18 +11,6 @@
         //#region variable
         vm.st = "";
         vm.ft = "";
-        vm.isBusy = true;
-        vm.busyMessage = "wait";
-        vm.spinnerOptions = {
-            radius: 60,
-            lines: 24,
-            length: 0,
-            width: 30,
-            speed: 1.7,
-            corners: 1.0,
-            trail: 100,
-            color: 'Blue'
-        };
         vm.title = 'Dashboard';
         vm.indicesName = [];
         vm.type = "";
@@ -44,7 +32,6 @@
                 .then(function () {
                     init();
                     log('Activated Dashboard View');
-
                 });
         }
 
@@ -55,7 +42,7 @@
 
             // worldGeoMap();
             common.$q.all(usGeoMap(), geoMap(), pieChart(), timeLineGram()).then(function () {
-                vm.isBusy = false;
+                common.$rootScope.spinner = false;
             });
         }
 

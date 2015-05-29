@@ -24,6 +24,7 @@
 
         //#region Startup
         function appStart() {
+            $rootScope.spinner = true;
             $rootScope.school = "TCU";
             $rootScope.st = moment(new Date()).subtract(3, 'month').toDate();
             $rootScope.ft = new Date();

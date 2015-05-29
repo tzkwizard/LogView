@@ -89,8 +89,10 @@
                     .then(function () {
                         init();
                         autoFill(true);
+                        common.$rootScope.spinner = false;
                         log('Activated ELS search View');
                     });
+                
             }
 
             function init() {
@@ -118,8 +120,7 @@
                       });
             }
             //#endregion
-
-           
+          
 
             //#region main search
             function trySeach($event) {
@@ -301,7 +302,7 @@
                         vm.locationF.lat = cor.lat;
                         vm.locationF.lon = cor.lng;
                     } catch (e) {
-                        toastr.info("cor" + e);
+                        toastr.info("cor : " + e);
                     }
                 });
             }

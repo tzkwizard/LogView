@@ -12,18 +12,6 @@
             var log = getLogFn(controllerId);
 
             //#region variable
-            vm.isBusy = true;
-            vm.spinnerOptions = {
-                radius: 60,
-                lines: 24,
-                length: 0,
-                width: 30,
-                speed: 1.7,
-                corners: 1.0,
-                trail: 100,
-                color: 'Blue'
-            };
-
             vm.treesize = 100;
             vm.size = 20;
             vm.searchText = "*";
@@ -59,7 +47,7 @@
             function activate() {
                 common.activateController([getIndexName(), getFieldName()], controllerId)
                       .then(function () {
-                          init();
+                          init();                          
                           log('Activated Aggs search View');
                       });
             }
@@ -74,8 +62,8 @@
                 ];
                 if (vm.treestatus === true) {
                     aggService.drawTreeMap(vm.fieldsName, vm.treesize, vm.st, vm.ft).then(function () {
-                        vm.isBusy = false;
                         vm.process = false;
+                        common.$rootScope.spinner = false;
                     });
                 }
                 aggShow();
@@ -114,7 +102,7 @@
             //#region button and function
             //refresh page
             function refresh() {
-                vm.isBusy = true;
+                common.$rootScope.spinner = true;
                 common.$location.search.refresh = true;
                 activate();
                 log("Refreshed");

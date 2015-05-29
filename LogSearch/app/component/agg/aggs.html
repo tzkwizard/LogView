@@ -1,11 +1,6 @@
 ﻿<section class="mainbar" data-ng-controller="aggs as aggragation">
     <section class="matter">
         <div class="container-fluid">
-            <div id="aggSpinner">
-                <div data-ng-show="aggragation.isBusy" class="page-splash dissolve-animation">
-                    <div data-cc-spinner="aggragation.spinnerOptions"></div>
-                </div>
-            </div>
             <md-card id="header">
                 <div layout="row" layout-align="center center" style="height: 45px">
                     <md-button class="md-raised md-primary" data-ng-click="aggragation.show()" ng-disabled="aggragation.process">
