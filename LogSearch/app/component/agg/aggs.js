@@ -30,7 +30,6 @@
             vm.treestatus = true; // show tree chart
             //#endregion
 
-
             //#region public function
             vm.refresh = refresh;
             vm.go = go;
@@ -46,7 +45,7 @@
             function activate() {
                 common.activateController([getMap()], controllerId)
                       .then(function () {
-                          init();                          
+                          init();
                           log('Activated Aggs search View');
                       });
             }
@@ -107,9 +106,9 @@
                 vm.aggName = "";
                 vm.refinedsearch = [
                        { key: 'Time', value: new Date() },
-                       { key: 'School', value: 'TCU' }
+                       { key: 'School', value: common.$rootScope.school }
                 ];
-                aggShow(vm.aggName);
+                aggShow();
             }
 
             function treesizeChange() {
@@ -117,56 +116,54 @@
             }
 
             function show() {
-                aggShow(vm.aggName);
+                aggShow();
             }
             //#endregion
 
-
+            var flag = 0;
             //#region Draw chart
             //get dashboard data
-            function aggShow(aggName) {
+            function aggShow() {
                 vm.process = true;
                 aggService.removePieContainer();
                 if (vm.aggName === "" || vm.aggName === "all") {
                     vm.token = false;
                     var aggfield = aggService.config.aggFieldFilter(vm.fieldsName);
                     aggService.addPieContainer(aggfield);
-                    var flag = aggfield.length <= 2 ? true : false;
-
+                    flag = 0;
                     angular.forEach(aggfield, function (name) {
-                        ap.push(aggShows(name, flag));
+                        ap.push(aggShows(name));
                     });
                 } else {
                     vm.token = true;
-                    aggService.data.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft)
+                    aggService.data.termAggragationwithQuery(vm.indicesName, vm.type, vm.aggName, vm.size, vm.searchText, vm.st, vm.ft)
                         .then(function (resp) {
                             vm.total = resp.data.Total;
                             vm.hitSearch = resp.data.AggData;
-                            var data = aggService.drawaggDashboard1(resp.data.AggData, aggName, 'dashboard', 'filter_div', 'chart_div');
-                            drawTable(data, 'table_div', aggName);
+                            var data = aggService.drawaggDashboard1(resp.data.AggData, vm.aggName, 'dashboard', 'filter_div', 'chart_div');
+                            drawTable(data, 'table_div', vm.aggName);
                         }, function (e) {
                             log(e.data.Message);
                         });
                 }
                 common.$q.all(ap).then(function () {
+                    if (flag === 0) {
+                        log("No chart!");
+                    }
                     vm.process = false;
                 });
             }
 
             //get multi-field dashboard2 data
-            function aggShows(aggName, flag) {
+            function aggShows(aggName) {
                 return aggService.data.termAggragationwithQuery(vm.indicesName, vm.type, aggName, vm.size, vm.searchText, vm.st, vm.ft)
                       .then(function (resp) {
                           vm.total = resp.data.Total;
                           var data;
-                          if (!flag) {
-                              if (resp.data.AggData.length > 1) {
-                                  data = aggService.drawaggDashboard2(resp.data.AggData, aggName);
-                                  drawTable(data, "table" + aggName, aggName);
-                              }
-                          } else {
+                          if (resp.data.AggData.length > 1) {
                               data = aggService.drawaggDashboard2(resp.data.AggData, aggName);
                               drawTable(data, "table" + aggName, aggName);
+                              flag++;
                           }
                       }, function (e) {
                           log("aggshows err " + e.data.Message);
@@ -181,25 +178,19 @@
 
                 google.visualization.events.addListener(table, 'select', function () {
                     var row = table.getSelection()[0].row;
-                    if (vm.refinedsearch.length > 1) {
-                        vm.treestatus = false;
-                    }
+                    vm.treestatus = false;
                     if (field.substring(field.length - 3, field.length) === "raw") {
                         field = field.substring(0, field.length - 4);
                     }
-                    function pushrefinedata() {
-                        vm.refinedsearch.push({ key: field, value: data.getValue(row, 0) });
-                    }
-
                     if (vm.searchText === "*") {
                         vm.searchText = field + " : \"" + data.getValue(row, 0) + "\"";
-                        pushrefinedata();
+                        vm.refinedsearch.push({ key: field, value: data.getValue(row, 0) });
                     }
                     else {
                         vm.searchText += " AND " + field + " : \"" + data.getValue(row, 0) + "\"";
-                        pushrefinedata();
+                        vm.refinedsearch.push({ key: field, value: data.getValue(row, 0) });
                     }
-                    aggShow("");
+                    aggShow();
                 });
             }
             //#endregion

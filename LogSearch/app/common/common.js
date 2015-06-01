@@ -25,13 +25,14 @@
     });
 
     commonModule.factory('common',
-        ['$mdUtil', '$mdSidenav', '$mdBottomSheet', '$routeParams', '$http', '$location', '$route', '$q', '$rootScope', '$timeout', 'commonConfig', 'logger', common]);
+        ['$mdDialog', '$mdUtil', '$mdSidenav', '$mdBottomSheet', '$routeParams', '$http', '$location', '$route', '$q', '$rootScope', '$timeout', 'commonConfig', 'logger', common]);
 
-    function common($mdUtil, $mdSidenav, $mdBottomSheet, $routeParams, $http, $location, $route, $q, $rootScope, $timeout, commonConfig, logger) {
+    function common($mdDialog, $mdUtil, $mdSidenav, $mdBottomSheet, $routeParams, $http, $location, $route, $q, $rootScope, $timeout, commonConfig, logger) {
         var throttles = {};
 
         var service = {
             // common angular dependencies
+            $mdDialog: $mdDialog,
             $mdUtil: $mdUtil,
             $mdSidenav: $mdSidenav,
             $mdBottomSheet: $mdBottomSheet,

@@ -62,10 +62,9 @@
 
         //#region Draw Map1
         function worldGeoMap() {
-            chartservice.data.termAggragation(vm.indicesName, vm.type, "geoip.country_name.raw", vm.geoCount, vm.st, vm.ft).
+            return chartservice.data.termAggragation(vm.indicesName, vm.type, "geoip.country_name.raw", vm.geoCount, vm.st, vm.ft).
                 then(function (resp) {
                     if (resp.data.Total !== 0) {
-                        //drawMap2(resp.data.AggData);
                         chartservice.drawWorldMap(resp.data.AggData, 'gmap_div');
                     }
                 }, function (e) {
@@ -77,7 +76,6 @@
             return chartservice.data.termQueryAggragation(vm.indicesName, vm.type, "geoip.country_code3.raw", "USA", "geoip.real_region_name.raw", vm.geoCount, vm.st, vm.ft).
                    then(function (resp) {
                        if (resp.data.Total !== 0) {
-                           //drawUSmap(resp.data.AggData);
                            chartservice.drawUSmap(resp.data.AggData, 'gmap_div');
                        }
                    }, function (e) {
@@ -86,10 +84,9 @@
         }
 
         function usCityMap() {
-            chartservice.data.termQueryAggragation(vm.indicesName, vm.type, "geoip.country_code3.raw", "USA", "geoip.city_name.raw", vm.geoCount, vm.st, vm.ft).
+            return chartservice.data.termQueryAggragation(vm.indicesName, vm.type, "geoip.country_code3.raw", "USA", "geoip.city_name.raw", vm.geoCount, vm.st, vm.ft).
                     then(function (resp) {
                         if (resp.data.Total !== 0) {
-                            //drawoCitymap(resp.data.AggData);
                             chartservice.drawoUSCitymap(resp.data.AggData, 'gmap_div');
                         }
                     }, function (e) {
@@ -104,7 +101,6 @@
             return chartservice.data.termAggragation(vm.indicesName, vm.type, "geoip.city_name.raw", vm.mapCount, vm.st, vm.ft).
                 then(function (resp) {
                     if (resp.data.Total !== 0) {
-                        //drawMap(resp.data.AggData);
                         chartservice.drawCityMap(resp.data.AggData, 'dtable_div', 'dmap_div');
                     }
                 }, function (e) {
@@ -137,7 +133,6 @@
         function pieChart() {
             return chartservice.data.dashboardPieAggregation("verb.raw", "geoip.city_name.raw", "action.raw", vm.st, vm.ft)
            .then(function (resp) {
-               //drawpie(resp.data);
                chartservice.drawDashPie(resp.data, 'pie_div');
            }, function (e) {
                log("pieChart data error " + e.data.Message);
@@ -152,8 +147,6 @@
             return chartservice.data.dateHistogramAggregation(vm.indicesName, vm.type, "@timestamp", "day", vm.st, vm.ft)
                 .then(function (resp) {
                     if (resp.data.Total !== 0) {
-                        //drawTimwLine(resp.data.DateHistData);
-                        //drawHist(resp.data.DateHistData);                    
                         chartservice.drawHist(resp.data.DateHistData, 'DateHist_div');
                         chartservice.drawTimeLine(resp.data.DateHistData, 'TimeLine_div');
                     }

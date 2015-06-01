@@ -62,8 +62,8 @@
                         <md-list>
                             <md-list-item class="md-3-line fader-animation" ng-repeat="doc in aggragation.hitSearch| orderBy:predicate:reverse">
                                 <div class="md-list-item-text" data-ng-dblclick="aggragation.test()">
-                                    <h3> {{doc.Key}} </h3>
-                                    <h3> {{doc.DocCount}} </h3>
+                                    <h3> Key :  {{doc.Key}} </h3>
+                                    <h3> Number : {{doc.DocCount}} </h3>
                                 </div>
                                 <md-divider inset></md-divider>
                             </md-list-item>

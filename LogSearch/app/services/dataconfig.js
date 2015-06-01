@@ -38,7 +38,6 @@
         //#endregion
 
 
-
         //#region RouteChange service
         //Load index and field
         function prime() {

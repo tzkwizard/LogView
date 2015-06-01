@@ -58,7 +58,7 @@
                         <span flex></span>
                         <select flex="10" class="form-control dissolve-animation" ng-model="search.format" ng-options="f for f in search.formats" ng-show="search.timeShow"><option></option></select>
 
-                        <input flex="10" type="text" class="form-control dissolve-animation" datepicker-popup="{{search.format}}" ng-model="search.st" 
+                        <input flex="10" type="text" class="form-control dissolve-animation" datepicker-popup="{{search.format}}" ng-model="search.st"
                                is-open="search.timeopened" min-date="search.minDate" datepicker-options="search.dateOptions"
                                date-disabled="search.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  start date" ng-show="search.timeShow" ng-change="search.timeChange()" />
                         <md-button class="md-fab md-mini" data-ng-click="search.timeopen($event)" aria-label="st">
@@ -126,8 +126,10 @@
             {{search.st}}
             {{search.ft}}
             <md-card id="processbar" layout="column" layout-align="space-around">
-                <div ng-show="search.processSearch" layout="row" layout-align="center center"><md-progress-circular md-mode="indeterminate"></md-progress-circular></div>
-                <progressbar layout="row" flex="80" class="progress-striped active" value="search.dynamic" type="{{search.ptype}}">{{search.ptype}} <i ng-show="showWarning">!!! Watch out !!!</i></progressbar>
+                <div ng-show="search.processSearch" layout="column" layout-align="center center">
+                    <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+                    <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+                </div>
             </md-card>
             <md-card id="result">
                 <div id="Paging" layout="row" class="widget-foot">

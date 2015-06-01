@@ -43,11 +43,11 @@
             //#region public function
             vm.search = search;
             vm.trySeach = trySeach;
+            vm.refresh = refresh;
             vm.pageChanged = pageChanged;
             vm.filltext = filltext;
             vm.filterst = filterst; //change time span
             vm.timeChange = timeChange;
-            vm.autoFill = autoFill;
             vm.transferLocation = transferLocation;
             vm.getLocation = getLocation;
             vm.refreshPage = refreshPage;
@@ -154,11 +154,15 @@
                 vm.total = resp.data.Total;
                 if (resp.data.Total !== 0) {
                     vm.hitSearch = resp.data.Data;
-                    vm.pagecountArr = [Math.floor(vm.total / 20), Math.floor(vm.total / 10), Math.floor(vm.total / 5), Math.floor(vm.total / 2), vm.total];
+                    if (resp.data.Total >= 20) {
+                        vm.pagecountArr = [Math.floor(vm.total / 20), Math.floor(vm.total / 10), Math.floor(vm.total / 5), Math.floor(vm.total / 2), vm.total];
+
+                    } else {
+                        vm.pagecountArr = [resp.data.Total];
+                    }
                 }
                 vm.pagetotal = vm.total < vm.pagecount ? vm.total : vm.pagecount;
                 getCurrentPageData(vm.hitSearch);
-                random();
                 vm.processSearch = false;
             }
 
@@ -185,23 +189,22 @@
                 elsService.openResult(data);
             }
 
-            vm.refresh = function () {
-                BootstrapDialog.confirm({
-                    message: 'Sure to Refresh?',
-                    closable: true, // <-- Default value is false
-                    draggable: true, // <-- Default value is false
-                    btnOKClass: 'btn-warning', // <-- If you didn't specify it, dialog type will be used,
-                    callback: function (result) {
-                        if (result) {
-                            vm.searchText = "";
-                            search();
-                            vm.filterfill = false;
-                            while (vm.count > 1) {
-                                removefilter();
-                            }
-                            log("Refresh");
-                        }
+            function refresh(ev) {
+                var confirm = common.$mdDialog.confirm()
+                  .title('Would you like to Refresh Page?')
+                  .content('All of the setting will become default.')
+                  .ariaLabel('Lucky day')
+                  .ok('Yes, sure!')
+                  .cancel('No, wait a minute.')
+                  .targetEvent(ev);
+                common.$mdDialog.show(confirm).then(function () {
+                    vm.searchText = "";
+                    search();
+                    vm.filterfill = false;
+                    while (vm.count > 1) {
+                        removefilter();
                     }
+                    log("Refresh");
                 });
             }
 
@@ -346,29 +349,6 @@
                 search();
             }
             //#endregion
-
-
-            //#region Processorbar
-            vm.random = random;
-            //fill process bar
-            function random() {
-                var value = vm.pagetotal / vm.total * 100;
-                var ptype;
-                if (value < 20) {
-                    ptype = '~';
-                } else if (value < 60) {
-                    ptype = '~~';
-                } else if (value < 85) {
-                    ptype = '!';
-                } else {
-                    ptype = '!!';
-                }
-                vm.showWarning = (ptype === '!' || ptype === '!!');
-                vm.dynamic = value;
-                vm.ptype = ptype;
-            };
-            //#endregion
-
 
         });
 })();
