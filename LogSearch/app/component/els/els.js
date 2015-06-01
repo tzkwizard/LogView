@@ -235,21 +235,6 @@
                 search();
             }
 
-            //disable after today
-            vm.toggleMin = function () {
-                vm.tmind = new Date();
-                //vm.minDate = vm.minDate ? null : vm.tmind;
-            };
-
-            vm.clear = function () {
-                vm.st = null;
-            };
-
-            // Disable weekend selection
-            vm.disabled = function (date, mode) {
-                //return (mode === 'day' && (date.getDay() === 0 || date.getDay() === 6));
-            };
-
             //open start date calendar
             vm.timeopen = function ($event) {
                 $event.preventDefault();

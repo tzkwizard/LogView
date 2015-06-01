@@ -10,7 +10,6 @@
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
 
-
             //#region variable and public function
             vm.predicate = '_source.timestamp';
             vm.trend = ["true", "true", "true", "true", "true", "true"];
@@ -31,6 +30,7 @@
                 common.activateController([], controllerId)
                     .then(function () {
                         init();
+                        common.$rootScope.spinner = false;
                         log('Activated Show search View');
                     });
             }
@@ -41,13 +41,16 @@
                 } else {
                     vm.total = vm.hitSearch.length;
                     if (vm.total !== 0) {
-                        vm.pagecountArr = [Math.floor(vm.total / 20), Math.floor(vm.total / 10), Math.floor(vm.total / 5), Math.floor(vm.total / 2), vm.total];
+                        if (vm.total >= 20) {
+                            vm.pagecountArr = [Math.floor(vm.total / 20), Math.floor(vm.total / 10), Math.floor(vm.total / 5), Math.floor(vm.total / 2), vm.total];
+                        } else {
+                            vm.pagecountArr = [vm.total];
+                        }
                     }
                     refreshPage();
                 }
             }
-
-
+            
             function backPage() {
                 common.$location.path("/els");
             }
@@ -55,11 +58,9 @@
 
 
             //#region ResultModal
-
             function showResult(data) {
                 elsService.openResult(data);
             }
-
             //#endregion
 
 

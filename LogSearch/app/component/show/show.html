@@ -18,12 +18,12 @@
                 <div class="pull-right">
                     <md-select placeholder="Pick" ng-model="vm.paging.pageSize" ng-change="vm.pageChanged()">
                         <md-optgroup label="PageSize">
-                            <md-option ng-value={{p}} ng-repeat="p in vm.pagesizeArr">{{p}}</md-option>
+                            <md-option ng-value="{{p}}" ng-repeat="p in vm.pagesizeArr">{{p}}</md-option>
                         </md-optgroup>
                     </md-select>
                     <md-select placeholder="Pick" ng-model="vm.pagecount" ng-change="vm.refreshPage()">
                         <md-optgroup label="ResultSize">
-                            <md-option ng-value={{p}} ng-repeat="p in vm.pagecountArr"><h5>{{p}}</h5></md-option>
+                            <md-option ng-value="{{p}}" ng-repeat="p in vm.pagecountArr"><h5>{{p}}</h5></md-option>
                         </md-optgroup>
                     </md-select>
                 </div>

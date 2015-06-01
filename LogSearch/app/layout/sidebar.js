@@ -32,13 +32,8 @@
             //getFieldName();
             common.activateController([getNavRoutes()], controllerId)
                 .then(function () {
-                    if (common.$rootScope.ft !== undefined && common.$rootScope.st !== undefined) {
-                        vm.ft = common.$rootScope.ft;
-                        vm.st = common.$rootScope.st;
-                    } else {
-                        vm.st = moment(new Date()).subtract(2, 'month');
-                        vm.ft = new Date();
-                    }
+                    vm.ft = common.$rootScope.ft;
+                    vm.st = common.$rootScope.st;
                 });
         }
 

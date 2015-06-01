@@ -20,7 +20,7 @@
                     </md-tooltip>
                 </md-button>
                 <md-select placeholder="Pick" ng-model="search.field">
-                    <md-option value={{doc}} data-ng-repeat="doc in search.fieldsName">{{doc}}</md-option>
+                    <md-option value="{{doc}}" data-ng-repeat="doc in search.fieldsName">{{doc}}</md-option>
                 </md-select>
                 <span flex></span>
                 <div class="btn-group pull-right" dropdown>
@@ -59,7 +59,7 @@
                         <select flex="10" class="form-control dissolve-animation" ng-model="search.format" ng-options="f for f in search.formats" ng-show="search.timeShow"><option></option></select>
 
                         <input flex="10" type="text" class="form-control dissolve-animation" datepicker-popup="{{search.format}}" ng-model="search.st"
-                               is-open="search.timeopened" min-date="search.minDate" datepicker-options="search.dateOptions"
+                               is-open="search.timeopened" datepicker-options="search.dateOptions"
                                date-disabled="search.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  start date" ng-show="search.timeShow" ng-change="search.timeChange()" />
                         <md-button class="md-fab md-mini" data-ng-click="search.timeopen($event)" aria-label="st">
                             <i class="fa fa-calendar"></i>
@@ -68,7 +68,7 @@
                             </md-tooltip>
                         </md-button>
                         <input flex="10" type="text" class="form-control dissolve-animation" datepicker-popup="{{search.format}}" ng-model="search.ft"
-                               is-open="search.ftimeopened" min-date="search.minDate" datepicker-options="search.dateOptions"
+                               is-open="search.ftimeopened" datepicker-options="search.dateOptions"
                                date-disabled="search.disabled(date, mode)" ng-required="true" close-text="Close" placeholder="  end date" ng-show="search.timeShow" ng-change="search.timeChange()" />
                         <md-button class="md-fab md-mini" data-ng-click="search.ftimeopen($event)" aria-label="ft">
                             <i class="fa fa-calendar"></i>
@@ -155,12 +155,12 @@
                             <span flex="5"></span>
                             <md-select placeholder="Pick" ng-model="search.paging.pageSize" ng-change="search.pageChanged()">
                                 <md-optgroup label="PageSize">
-                                    <md-option ng-value={{p}} ng-repeat="p in search.pagesizeArr">{{p}}</md-option>
+                                    <md-option ng-value="{{p}}" ng-repeat="p in search.pagesizeArr">{{p}}</md-option>
                                 </md-optgroup>
                             </md-select>
                             <md-select placeholder="Pick" ng-model="search.pagecount" ng-change="search.refreshPage()">
                                 <md-optgroup label="ResultSize">
-                                    <md-option ng-value={{p}} ng-repeat="p in search.pagecountArr"><h5>{{p}}</h5></md-option>
+                                    <md-option ng-value="{{p}}" ng-repeat="p in search.pagecountArr"><h5>{{p}}</h5></md-option>
                                 </md-optgroup>
                             </md-select>
                             <md-button class="md-icon-button" aria-label="r2" ng-click="search.showlist()">

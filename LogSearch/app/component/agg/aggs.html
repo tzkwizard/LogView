@@ -8,11 +8,11 @@
                     </md-button>
                     <md-select placeholder="Pick" ng-model="aggragation.index" style="width: 20%">
                         <md-option value="all">all</md-option>
-                        <md-option value={{doc}} data-ng-repeat="doc in aggragation.indicesName">{{doc}}</md-option>
+                        <md-option value="{{doc}}" data-ng-repeat="doc in aggragation.indicesName">{{doc}}</md-option>
                     </md-select>
                     <md-select placeholder="Pick" ng-model="aggragation.aggName">
                         <md-option value="all">all</md-option>
-                        <md-option value={{doc}} data-ng-repeat="doc in aggragation.fieldsName">{{doc}}</md-option>
+                        <md-option value="{{doc}}" data-ng-repeat="doc in aggragation.fieldsName">{{doc}}</md-option>
                     </md-select>
                     <div id="aggprocesser" layout="row" layout-sm="column" layout-align="space-around">
                         <md-progress-circular md-mode="indeterminate" ng-show="aggragation.process"></md-progress-circular>

@@ -10,7 +10,6 @@
         var events = config.events;
 
         //#region variable
-        vm.isBusy = true;
         vm.spinnerOptions = {
             radius: 60,
             lines: 24,
@@ -21,59 +20,42 @@
             trail: 100,
             color: 'Blue'
         };
-        vm.showSplash = true;
-
         //#endregion
 
         //#region Shell Load
         activate();
-
         function activate() {
             // logSuccess('Breezezz Angular loaded!', null, true);
             common.activateController([], controllerId).then(function () {
-                vm.showSplash = false;
             });
         }
 
-        //#endregion
-
-        //#region spinner
-        function toggleSpinner(on) {
-            vm.isBusy = on;
-        }
-
         common.$rootScope.$on('$routeChangeStart',
-            function(event, next, current) {
-                toggleSpinner(true); 
+            function (event, next, current) {
                 common.$rootScope.spinner = true;
             }
         );
-
-        common.$rootScope.$on(events.controllerActivateSuccess,
-            function (data) {
-                toggleSpinner(false);
-            }
-        );
-
-        common.$rootScope.$on(events.spinnerToggle,
-            function (data) { toggleSpinner(data.show); }
-        );
-        /*  $rootScope.$on('$viewContentLoaded', function readyToTrick() {
-            //activate();
-            toastr.info("1");
-        });*/
-
-        /* $rootScope.$on('$locationChangeStart',
-            function (event, current, previous) {
-                var answer = $window.confirm('Leave?');
-
-                if (!answer) {
-                    event.preventDefault();
-                    return;
-                }
-            });*/
-        //#endregion
+        //#endregion 
 
     }
 })();
 
+/*common.$rootScope.$on(events.controllerActivateSuccess,
+   function (data) {
+   }
+);
+common.$rootScope.$on(events.spinnerToggle,
+   function (data) { toggleSpinner(data.show); }
+);
+$rootScope.$on('$viewContentLoaded', function readyToTrick() {
+   //activate();
+   toastr.info("1");
+});
+$rootScope.$on('$locationChangeStart',
+  function (event, current, previous) {
+      var answer = $window.confirm('Leave?');
+      if (!answer) {
+          event.preventDefault();
+          return;
+      }
+  });*/

@@ -111,7 +111,6 @@
                 return;
             }
             if ($event.type === 'click' || $event.keyCode === config.keyCodes.enter) {
-                var route = '/els/';
                 common.$location.search.text = vm.searchText;
                 common.$location.path('/els/');
                 // $location.path(route + vm.searchText);
