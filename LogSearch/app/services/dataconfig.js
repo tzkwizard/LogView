@@ -11,8 +11,7 @@
             appStart: appStart,
             prime: prime,
             checkIdent: checkIdent,
-            loadIndex: loadIndex,
-            loadField: loadField,
+            loadMap: loadMap,
             logout: logout,
             changeTimeSpan: changeTimeSpan,
             arrayUnique: arrayUnique,
@@ -45,7 +44,7 @@
         function prime() {
             $rootScope.logtype = "logs";
             $rootScope.map = getMapping();
-            if (localStorageService.get('EsToken')!==null) return;
+            if (localStorageService.get('EsToken') !== null) return;
             checkIdent();
         }
 
@@ -67,8 +66,10 @@
             }
         }
 
-        function loadIndex() {
+
+        function loadMap() {
             checkIndexCookie();
+            checkFieldCookie();
             var indicesName = localStorageService.get('index');
             if (localStorageService.get('index') === null) {
                 if ($rootScope.index !== undefined) {
@@ -78,11 +79,6 @@
                     return $rootScope.map;
                 }
             }
-            return indicesName;
-        }
-
-        function loadField() {
-            checkFieldCookie();
             var fieldName = localStorageService.get('logfield');
             if (localStorageService.get('logfield') === null) {
                 if ($rootScope.logfield !== undefined) {
@@ -92,7 +88,13 @@
                     return $rootScope.map;
                 }
             }
-            return fieldName;
+            var map = {
+                indicesName: [],
+                fieldsName: []
+            }
+            map.indicesName = indicesName;
+            map.fieldsName = fieldName;
+            return map;
         }
         //#endregion
 
@@ -163,7 +165,7 @@
                 var username = sjcl.decrypt(z, x);
                 var password = sjcl.decrypt(z, y);
                 return datasearch.checkID(username, password);
-            }   
+            }
         }
 
         function openLoginPage() {
@@ -177,7 +179,7 @@
                     items: function () {
                     }
                 }
-            });         
+            });
         }
         //#endregion
 

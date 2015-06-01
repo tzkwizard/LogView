@@ -58,41 +58,30 @@
 
 
             //#region View Load
-            //Load Index
-            function getIndexName() {
-                var ip = elsService.config.loadIndex();
+            function getMap() {
+                var promise = elsService.config.loadMap();
                 try {
-                    return ip.then(function () {
+                    return promise.then(function () {
                         vm.indicesName = common.$rootScope.index;
-                    });
-                } catch (e) {
-                    vm.indicesName = ip;
-                    return null;
-                }
-            }
-            //Load Field
-            function getFieldName() {
-                var fp = elsService.config.loadField();
-                try {
-                    return fp.then(function () {
                         vm.fieldsName = common.$rootScope.logfield;
                     });
                 } catch (e) {
-                    vm.fieldsName = fp;
+                    vm.indicesName = promise.indicesName;
+                    vm.fieldsName = promise.fieldsName;
                     return null;
                 }
             }
 
             activate();
             function activate() {
-                common.activateController([getIndexName(), getFieldName()], controllerId)
+                common.activateController([getMap()], controllerId)
                     .then(function () {
                         init();
                         autoFill(true);
                         common.$rootScope.spinner = false;
                         log('Activated ELS search View');
                     });
-                
+
             }
 
             function init() {
@@ -114,13 +103,13 @@
             function getSampleData() {
                 return elsService.data.getSampledata(vm.indicesName, common.$rootScope.logtype, vm.pagecount, vm.st, vm.ft, vm.locationF, vm.distanceF)
                       .then(function (resp) {
-                       sanitizeData(resp);
-                }, function (e) {
+                          sanitizeData(resp);
+                      }, function (e) {
                           log("sampledata " + e.data.Message);
                       });
             }
             //#endregion
-          
+
 
             //#region main search
             function trySeach($event) {
@@ -172,7 +161,7 @@
                 random();
                 vm.processSearch = false;
             }
-            
+
             //get auto-fill data
             function autoFill(force) {
                 if (force !== true && vm.searchText === "") return null;

@@ -22,13 +22,12 @@
             vm.pagecount = 10;
             vm.fieldsName = [];
             vm.indicesName = [];
-            vm.index = '';
             vm.type = '';
-            vm.ft = "";
-            vm.st = "";
-            vm.token = false;
-            vm.process = true;
-            vm.treestatus = true;
+            vm.ft = "";  //end time
+            vm.st = ""; //start time
+            vm.token = false; //show table
+            vm.process = true; //spinner when running
+            vm.treestatus = true; // show tree chart
             //#endregion
 
 
@@ -45,7 +44,7 @@
             var ap = [];
             activate();
             function activate() {
-                common.activateController([getIndexName(), getFieldName()], controllerId)
+                common.activateController([getMap()], controllerId)
                       .then(function () {
                           init();                          
                           log('Activated Aggs search View');
@@ -69,30 +68,16 @@
                 aggShow();
             }
 
-            //Load index
-            function getIndexName() {
-                vm.treestatus = true;
-                var ip = aggService.config.loadIndex();
+            function getMap() {
+                var promise = aggService.config.loadMap();
                 try {
-                    return ip.then(function () {
+                    return promise.then(function () {
                         vm.indicesName = common.$rootScope.index;
-                    });
-                } catch (e) {
-                    vm.indicesName = ip;
-                    return null;
-                }
-            }
-
-            //Load field
-            function getFieldName() {
-                vm.aggName = "";
-                var fp = aggService.config.loadField();
-                try {
-                    return fp.then(function () {
                         vm.fieldsName = common.$rootScope.logfield;
                     });
                 } catch (e) {
-                    vm.fieldsName = fp;
+                    vm.indicesName = promise.indicesName;
+                    vm.fieldsName = promise.fieldsName;
                     return null;
                 }
             }
@@ -102,6 +87,7 @@
             //#region button and function
             //refresh page
             function refresh() {
+                vm.treestatus = true;
                 common.$rootScope.spinner = true;
                 vm.searchText = "*";
                 activate();

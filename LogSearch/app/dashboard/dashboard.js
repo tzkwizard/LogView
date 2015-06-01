@@ -28,7 +28,7 @@
         //#region View Load
         activate();
         function activate() {
-            common.activateController([getIndexName()], controllerId)
+            common.activateController([getMap()], controllerId)
                 .then(function () {
                     init();
                     log('Activated Dashboard View');
@@ -46,14 +46,14 @@
             });
         }
 
-        function getIndexName() {
-            var ip = chartservice.config.loadIndex();
+        function getMap() {
+            var promise = chartservice.config.loadMap();
             try {
-                return ip.then(function () {
+                return promise.then(function () {
                     vm.indicesName = common.$rootScope.index;
                 });
             } catch (e) {
-                vm.indicesName = ip;
+                vm.indicesName = promise.indicesName;
                 return null;
             }
         }
