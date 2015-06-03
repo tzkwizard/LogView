@@ -60,7 +60,8 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\test.js" />
+    <Content Include="app\services\component\component.service.module.js" />
+    <Content Include="app\test.spec.js" />
     <Content Include="app\component\agg\aggs.html" />
     <Content Include="app\component\agg\aggs.js" />
     <Content Include="app\component\bottom\time\time-Bottom-Sheet.html" />
@@ -73,7 +74,7 @@
     <Content Include="app\component\login\loginModal.html" />
     <Content Include="app\component\show\show.html" />
     <Content Include="app\component\show\show.js" />
-    <Content Include="app\config.exceptionHandler.js" />
+    <Content Include="app\config\config.exceptionHandler.js" />
     <Content Include="app\layout\menusidebar\menuSideNav.html" />
     <Content Include="app\layout\menusidebar\menuSideNav.js" />
     <Content Include="app\component\bottom\setting\facet-Setting-Bottom.js" />
@@ -87,7 +88,7 @@
     <Content Include="app\services\component\agg-Service.js" />
     <Content Include="app\services\component\chart-Service.js" />
     <Content Include="app\services\dataconfig.js" />
-    <Content Include="app\services\datasearch.js" />
+    <Content Include="app\datacontext\datasearch.js" />
     <Content Include="app\component\els\els.html" />
     <Content Include="app\component\els\els.js" />
     <Content Include="app\component\els\client.js" />
@@ -134,6 +135,7 @@
     <Content Include="Scripts\angularjs\angular-sanitize.min.js" />
     <Content Include="Scripts\angularjs\angular.js" />
     <Content Include="Scripts\angularjs\angular.min.js" />
+    <Content Include="Scripts\bard.js" />
     <Content Include="Scripts\base64\angular-base64.min.js" />
     <Content Include="Scripts\bootstrap\bootstrap-dialog.js" />
     <Content Include="Scripts\bootstrap\bootstrap.js" />
@@ -156,6 +158,7 @@
     <Content Include="Scripts\moment\moment-with-locales.min.js" />
     <Content Include="Scripts\moment\moment.js" />
     <Content Include="Scripts\moment\moment.min.js" />
+    <Content Include="Scripts\sinon.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Scripts\npm.js" />
     <Content Include="Scripts\q\q.js" />
@@ -206,10 +209,10 @@
     <Content Include="app\app.js" />
     <Content Include="app\common\bootstrap\bootstrap.dialog.js" />
     <Content Include="app\common\common.js" />
-    <Content Include="app\config.js" />
-    <Content Include="app\config.route.js" />
-    <Content Include="app\dashboard\dashboard.html" />
-    <Content Include="app\dashboard\dashboard.js" />
+    <Content Include="app\config\config.js" />
+    <Content Include="app\config\config.route.js" />
+    <Content Include="app\component\dashboard\dashboard.html" />
+    <Content Include="app\component\dashboard\dashboard.js" />
     <Content Include="app\layout\shell.html" />
     <Content Include="app\layout\shell.js" />
     <Content Include="app\layout\sidebar.html" />

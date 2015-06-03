@@ -4,14 +4,14 @@
     var controllerId = 'facetSettingBottom';
 
     angular.module('app')
-      .controller(controllerId, function ($rootScope, $mdBottomSheet, config, localStorageService) {
+      .controller(controllerId, function (common, config, localStorageService) {
 
           var vm = this;
           //#region variable and function
           vm.selectedFacet = [];
           vm.selectedItem = null;
           vm.searchText = null;
-          vm.oldfacet = $rootScope.facet;
+          vm.oldfacet = common.$rootScope.facet;
 
 
 
@@ -21,7 +21,7 @@
           vm.refresh = refresh;
           vm.listItemClick = function ($index) {
               var clickedItem = vm.items[$index];
-              $mdBottomSheet.hide(clickedItem);
+              common.$mdBottomSheet.hide(clickedItem);
           };
           //#endregion
 

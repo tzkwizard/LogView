@@ -63,6 +63,7 @@
         <script src="Scripts/jasmine/boot.js"></script>
         <script src="Scripts/jasmine/jasmine-html.js"></script>
         <script src="Scripts/jasmine/jasmine.js"></script>
+        <script src="Scripts/bard.js"></script>
 
         <!-- ui -->
         <script src="Scripts/bootstrap/bootstrap.js"></script>
@@ -75,19 +76,20 @@
 
         <!-- Bootstrapping -->
         <script src="app/app.js"></script>
-        <script src="app/config.js"></script>
-        <script src="app/config.exceptionHandler.js"></script>
-        <script src="app/config.route.js"></script>
+        <script src="app/config/config.js"></script>
+        <script src="app/config/config.exceptionHandler.js"></script>
+        <script src="app/config/config.route.js"></script>
 
         <!-- common Modules -->
         <script src="app/common/common.js"></script>
         <script src="app/common/logger.js"></script>
         <script src="app/common/spinner.js"></script>
         <script src="app/common/bootstrap/bootstrap.dialog.js"></script>
+       
 
 
         <!-- app -->
-        <script src="app/dashboard/dashboard.js"></script>
+        <script src="app/component/dashboard/dashboard.js"></script>
         <script src="app/layout/shell.js"></script>
         <script src="app/layout/sidebar.js"></script>
         <script src="app/layout/topnav.js"></script>
@@ -108,8 +110,9 @@
 
 
         <!-- app Services -->
+        <script src="app/services/component/component.service.module.js"></script>
         <script src="app/services/dataconfig.js"></script>
-        <script src="app/services/datasearch.js"></script>
+        <script src="app/datacontext/datasearch.js"></script>
         <script src="app/services/component/agg-Service.js"></script>
         <script src="app/services/component/chart-Service.js"></script>
         <script src="app/services/component/els-Service.js"></script>

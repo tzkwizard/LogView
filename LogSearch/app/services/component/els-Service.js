@@ -3,13 +3,12 @@
     var serviceId = 'elsService';
 
 
-    angular.module('app')
-        .factory(serviceId, function (dataconfig, datasearch, $modal, $mdBottomSheet) {
+    angular.module('component.service')
+        .factory(serviceId, function (datasearch, $modal, $mdBottomSheet) {
 
             //#region service
             var service = {
                 data: datasearch,
-                config: dataconfig,
                 fillSearchText: fillSearchText,
                 openResult: openResult,
                 showListBottomSheet: showListBottomSheet

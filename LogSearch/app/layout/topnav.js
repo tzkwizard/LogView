@@ -2,10 +2,10 @@
     'use strict';
 
     var controllerId = 'topnav';
-    angular.module('app').controller(controllerId,
-        ['dataconfig', 'datasearch', 'config', 'common', '$scope', topnav]);
+    angular.module('app.layout').controller(controllerId,
+        ['dataconfig', 'datasearch', 'config', 'common', topnav]);
 
-    function topnav(dataconfig, datasearch, config, common, $scope) {
+    function topnav(dataconfig, datasearch, config, common) {
         var vm = this;
         // var keyCodes = config.keyCodes;
 
@@ -27,6 +27,7 @@
         vm.logout = logout;
         vm.autoFill = autoFill;
         //#endregion
+
 
         //#region Time
         vm.filterst = filterst;
@@ -54,19 +55,7 @@
             }, 10);
             return debounceFn;
         }
-        //#endregion
-
-        $scope.password = '';
-        $scope.grade = function () {
-            var size = $scope.password.length;
-            if (size > 8) {
-                $scope.strength = 'strong';
-            } else if (size > 3) {
-                $scope.strength = 'medium';
-            } else {
-                $scope.strength = 'weak';
-            }
-        };
+        //#endregion   
 
         //#region Auto-Fill
 

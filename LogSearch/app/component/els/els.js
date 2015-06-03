@@ -4,7 +4,7 @@
     var controllerId = 'els';
 
     angular.module('app')
-        .controller(controllerId, function (common, elsService, config) {
+        .controller(controllerId, function (common, elsService, config, dataconfig) {
             var vm = this;
             vm.title2 = "Function";
             var getLogFn = common.logger.getLogFn;
@@ -59,7 +59,7 @@
 
             //#region View Load
             function getMap() {
-                var promise = elsService.config.loadMap();
+                var promise = dataconfig.loadMap();
                 try {
                     return promise.then(function () {
                         vm.indicesName = common.$rootScope.index;
@@ -175,7 +175,7 @@
                         var autotemp = vm.autoText;
                         autocache = [autocache[1], autocache[2], autocache[3], resp.data.AutoData];
                         angular.forEach(autocache, function (x) {
-                            autotemp = elsService.config.arrayUnique(autotemp.concat(x));
+                            autotemp = dataconfig.arrayUnique(autotemp.concat(x));
                         });
                         vm.autoText = autotemp;
                     } else {
@@ -231,7 +231,7 @@
 
             //change time span on scope
             function filterst(span) {
-                vm.st = elsService.config.changeTimeSpan(span);
+                vm.st = dataconfig.changeTimeSpan(span);
                 search();
             }
 

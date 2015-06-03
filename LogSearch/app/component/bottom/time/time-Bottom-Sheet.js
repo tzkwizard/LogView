@@ -3,12 +3,12 @@
 
     var controllerId = 'timeBottomSheet';
     angular.module('app')
-      .controller(controllerId, function ($mdBottomSheet, config) {
+      .controller(controllerId, function (common, config) {
           var vm = this;
           vm.ts = config.time.timeSpan.l;
           vm.listItemClick = function ($index) {
               var clickedItem = vm.ts[$index];
-              $mdBottomSheet.hide(clickedItem);
+              common.$mdBottomSheet.hide(clickedItem);
           };
 
       });

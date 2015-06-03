@@ -4,7 +4,7 @@
     var controllerId = 'resultModal';
 
     angular.module('app')
-        .controller(controllerId, function ($modalInstance, common, item, resultService) {
+        .controller(controllerId, function ($modalInstance,common, item, resultService) {
 
             var vm = this;
 
@@ -55,7 +55,7 @@
                 enableColumnResize: true,
                 afterSelectionChange: function () {
                     angular.forEach(vm.mySelections, function (item) {
-                        vm.selected.item = "geoip."+item["Field"].toLowerCase() + " : " + item["Value"];
+                        vm.selected.item = "geoip." + item["Field"].toLowerCase() + " : " + item["Value"];
                     });
                 }
             };

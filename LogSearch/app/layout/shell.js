@@ -1,13 +1,13 @@
 ﻿(function () {
     'use strict';
-
+    angular.module('app.layout',[]);
     var controllerId = 'shell';
-    angular.module('app').controller(controllerId,
-        ['common', 'config', shell]);
+    angular.module('app.layout').controller(controllerId,
+        ['common', shell]);
 
-    function shell(common, config) {
+    function shell(common) {
         var vm = this;
-        var events = config.events;
+        //var events = config.events;
 
         //#region variable
         vm.spinnerOptions = {
@@ -21,6 +21,20 @@
             color: 'Blue'
         };
         //#endregion
+
+        vm.strength = "";
+        vm.password = '';
+        vm.grade = function () {
+            var size = vm.password.length;
+            if (size > 8) {
+                vm.strength = 'strong';
+            } else if (size > 3) {
+                vm.strength = 'medium';
+            } else {
+                vm.strength = 'weak';
+            }
+        };
+
 
         //#region Shell Load
         activate();
@@ -39,6 +53,31 @@
 
     }
 })();
+(function () {
+    'use strict';
+    angular.module('app.layout').controller('test',
+        [test]);
+
+    function test() {
+        var vm = this;
+        vm.strength = "";
+        vm.password = '123';
+        vm.grade = function () {
+            var size = vm.password.length;
+            if (size > 8) {
+                vm.strength = 'strong';
+            } else if (size > 3) {
+                vm.strength = 'medium';
+            } else {
+                vm.strength = 'weak';
+            }
+        };
+
+
+    }
+})();
+
+
 
 /*common.$rootScope.$on(events.controllerActivateSuccess,
    function (data) {

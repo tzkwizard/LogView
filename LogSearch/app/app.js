@@ -13,13 +13,13 @@
         'ngRoute',          // routing
         'ngSanitize',       // sanitizes html bindings (ex: sidebar.js)
         'ngCookies',
-        'ngMaterial',
-        'ngAria',
-        //'ngMock',
+        'app.layout',
+        'component.service',
+        'EsData',
 
         'LocalStorageModule',
         // Custom modules 
-        'common',           // common functions, logger, spinner
+        'common',           // common functions, logger, spinner ,ngMaterial
         'common.bootstrap', // bootstrap dialog wrapper functions
 
 
@@ -30,7 +30,7 @@
 
         //'ui.grid', 'ui.grid.edit', 'ui.grid.selection'
     ]);
-
+    
 
 
     // Handle routing errors and success events

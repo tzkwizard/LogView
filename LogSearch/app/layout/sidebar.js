@@ -2,7 +2,7 @@
     'use strict';
 
     var controllerId = 'sidebar';
-    angular.module('app').controller(controllerId,
+    angular.module('app.layout').controller(controllerId,
         ['config', 'routes', 'dataconfig', 'datasearch', 'common', sidebar]);
 
     function sidebar(config, routes, dataconfig, datasearch, common) {

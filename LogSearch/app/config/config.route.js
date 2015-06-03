@@ -53,7 +53,7 @@
             {
                 url: '/dashboard',
                 config: {
-                    templateUrl: 'app/dashboard/dashboard.html',
+                    templateUrl: 'app/component/dashboard/dashboard.html',
                     title: 'dashboard',
                     settings: {
                         nav: 1,

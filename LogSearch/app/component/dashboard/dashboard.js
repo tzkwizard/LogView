@@ -1,9 +1,9 @@
 ﻿(function () {
     'use strict';
     var controllerId = 'dashboard';
-    angular.module('app').controller(controllerId, ['common', 'chartservice', dashboard]);
+    angular.module('com', ['component.service']).controller(controllerId, ['common', 'chartservice', 'dataconfig', dashboard]);
 
-    function dashboard(common, chartservice) {
+    function dashboard(common, chartservice, dataconfig) {
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
         var vm = this;
@@ -47,7 +47,7 @@
         }
 
         function getMap() {
-            var promise = chartservice.config.loadMap();
+            var promise = dataconfig.loadMap();
             try {
                 return promise.then(function () {
                     vm.indicesName = common.$rootScope.index;
@@ -155,6 +155,21 @@
                 });
         }
         //#endregion
+
+
+        vm.strength = "";
+        vm.password = '123';
+        vm.grade = function () {
+            var size = vm.password.length;
+            if (size > 8) {
+                vm.strength = 'strong';
+            } else if (size > 3) {
+                vm.strength = 'medium';
+            } else {
+                vm.strength = 'weak';
+            }
+        };
+
 
     }
 })();

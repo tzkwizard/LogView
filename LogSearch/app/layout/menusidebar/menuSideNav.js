@@ -3,8 +3,8 @@
 
     var controllerId = 'menuSideNav';
 
-    angular.module('app')
-        .controller(controllerId, function (routes, $mdSidenav) {
+    angular.module('app.layout')
+        .controller(controllerId, function (routes) {
             var vm = this;
             vm.getNav = function () {
                 return routes.filter(function (r) {
@@ -17,7 +17,7 @@
                  document.getElementById("nav").style.height = "10%";
              });*/
             vm.close = function () {
-                $mdSidenav('left').close()
+                common.$mdSidenav('left').close()
                   .then(function () {
                       //toastr.info("close left is done");
                   });

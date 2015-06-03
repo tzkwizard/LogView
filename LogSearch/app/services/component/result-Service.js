@@ -3,7 +3,7 @@
     var serviceId = 'resultService';
 
 
-    angular.module('app')
+    angular.module('component.service')
         .factory(serviceId, function () {
 
             //#region service

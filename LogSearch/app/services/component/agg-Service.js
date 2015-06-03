@@ -3,13 +3,12 @@
     var serviceId = 'aggService';
 
 
-    angular.module('app')
-        .factory(serviceId, function ($q, dataconfig, datasearch) {
+    angular.module('component.service')
+        .factory(serviceId, function ($q, datasearch, dataconfig) {
 
             //#region service
             var service = {
                 data: datasearch,
-                config:dataconfig,
                 drawTreeMap: drawTreeMap,
                 addPieContainer: addPieContainer,
                 removePieContainer: removePieContainer,

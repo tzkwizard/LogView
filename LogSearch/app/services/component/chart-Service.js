@@ -2,12 +2,11 @@
     'use strict';
     var serviceId = 'chartservice';
 
-    angular.module('app')
-        .factory(serviceId, function (dataconfig, datasearch) {
+    angular.module('component.service')
+        .factory(serviceId, function (datasearch) {
 
             //#region service
             var service = {
-                config: dataconfig,
                 data:datasearch,
                 drawCityMap: drawCityMap,
                 drawTimeLine: drawTimeLine,

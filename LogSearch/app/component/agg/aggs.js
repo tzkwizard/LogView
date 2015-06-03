@@ -4,7 +4,7 @@
     var controllerId = 'aggs';
 
     angular.module('app')
-        .controller(controllerId, function (common, aggService) {
+        .controller(controllerId, function (common, aggService, dataconfig) {
             var vm = this;
             vm.title = "Aggragations";
             vm.title2 = "PieChart";
@@ -68,7 +68,7 @@
             }
 
             function getMap() {
-                var promise = aggService.config.loadMap();
+                var promise = dataconfig.loadMap();
                 try {
                     return promise.then(function () {
                         vm.indicesName = common.$rootScope.index;
@@ -128,7 +128,7 @@
                 aggService.removePieContainer();
                 if (vm.aggName === "" || vm.aggName === "all") {
                     vm.token = false;
-                    var aggfield = aggService.config.aggFieldFilter(vm.fieldsName);
+                    var aggfield = dataconfig.aggFieldFilter(vm.fieldsName);
                     aggService.addPieContainer(aggfield);
                     flag = 0;
                     angular.forEach(aggfield, function (name) {
