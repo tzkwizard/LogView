@@ -15,6 +15,8 @@
         'ngCookies',
         'ngMaterial',
         'ngAria',
+        //'ngMock',
+
         'LocalStorageModule',
         // Custom modules 
         'common',           // common functions, logger, spinner

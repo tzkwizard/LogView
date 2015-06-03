@@ -3,9 +3,9 @@
 
     var controllerId = 'topnav';
     angular.module('app').controller(controllerId,
-        ['dataconfig', 'datasearch', 'config', 'common', topnav]);
+        ['dataconfig', 'datasearch', 'config', 'common', '$scope', topnav]);
 
-    function topnav(dataconfig, datasearch, config, common) {
+    function topnav(dataconfig, datasearch, config, common, $scope) {
         var vm = this;
         // var keyCodes = config.keyCodes;
 
@@ -27,7 +27,6 @@
         vm.logout = logout;
         vm.autoFill = autoFill;
         //#endregion
-
 
         //#region Time
         vm.filterst = filterst;
@@ -57,6 +56,17 @@
         }
         //#endregion
 
+        $scope.password = '';
+        $scope.grade = function () {
+            var size = $scope.password.length;
+            if (size > 8) {
+                $scope.strength = 'strong';
+            } else if (size > 3) {
+                $scope.strength = 'medium';
+            } else {
+                $scope.strength = 'weak';
+            }
+        };
 
         //#region Auto-Fill
 
