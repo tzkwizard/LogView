@@ -1,8 +1,8 @@
 ﻿(function () {
     'use strict';
-    var serviceId = 'chartservice';
+    var serviceId = 'chartService';
 
-    angular.module('component.service')
+    angular.module('cc',[])
         .factory(serviceId, function (datasearch) {
 
             //#region service

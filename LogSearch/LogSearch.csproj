@@ -158,6 +158,7 @@
     <Content Include="Scripts\moment\moment-with-locales.min.js" />
     <Content Include="Scripts\moment\moment.js" />
     <Content Include="Scripts\moment\moment.min.js" />
+    <Content Include="Scripts\sinon-chai.js" />
     <Content Include="Scripts\sinon.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Scripts\npm.js" />

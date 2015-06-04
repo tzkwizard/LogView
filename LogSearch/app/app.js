@@ -31,8 +31,7 @@
         //'ui.grid', 'ui.grid.edit', 'ui.grid.selection'
     ]);
     
-
-
+ 
     // Handle routing errors and success events
     app.run(['$route', 'dataconfig', 'routeMediator',
         function ($route, dataconfig, routeMediator) {

@@ -2,7 +2,7 @@
     'use strict';
 
     var serviceId = 'dataconfig';
-    angular.module('app').factory(serviceId, ['$modal', '$rootScope', 'config', 'datasearch', 'localStorageService', dataconfig]);
+    angular.module('EsData').factory(serviceId, ['$modal', '$rootScope', 'config', 'datasearch', 'localStorageService', dataconfig]);
 
     function dataconfig($modal, $rootScope, config, datasearch, localStorageService) {
 

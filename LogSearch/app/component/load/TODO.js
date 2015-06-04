@@ -21,13 +21,24 @@
         }
 
         $scope.test=function() {
-            var s1 = document.getElementById('jselect1');
+          /*  var s1 = document.getElementById('jselect1');
             var s2 = document.getElementById('fselect1');
             var s3 = document.getElementById('input1');
 
-            toastr.info(s1.value+" "+s2.value+" "+s3.value);
-        }
+            toastr.info(s1.value + " " + s2.value + " " + s3.value);*/
 
+            var z = tt();
+
+            z.then(function(d) {
+                var z = d;
+            });
+            toastr.info(z);
+        }
+          function tt() {
+              return common.$q.when("44").then(function() {
+                  return "442";
+              });
+          }
 
         $scope.alert = '';
         $scope.showListBottomSheet = function ($event) {
