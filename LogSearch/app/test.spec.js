@@ -45,27 +45,37 @@ describe('dash.elscontroller', function () {
 
 
     beforeEach(function () {
-        bard.appModule('com');
+        
         bard.appModule('common');
         bard.appModule('ngRoute');
-        bard.appModule('component.service');
+       // bard.appModule('componentService');
         bard.appModule('EsData');
-        bard.appModule('cc');
+        bard.appModule('ss');
         bard.appModule('appp');
-        bard.inject(this, '$controller', 'common', '$q', 'chartService');
+        bard.appModule('LocalStorageModule');
+        bard.appModule('ui.bootstrap');
+       // bard.appModule('app.component');
+        
+        bard.inject(this, '$controller', 'common', '$q', 'elsService', '$modal', '$rootScope', 'dataconfig');
        /* bard.mockService(chartservice, {
             _default: $q.when([])
 
         });*/
+        bard.mockService(dataconfig, {
+            _default: $q.when([])
+
+        });
    
       /*  bard.mockService(common, {
            _default: $q.when([])
 
        });*/
-        controller = $controller('dashboard');
+        var $scope = $rootScope.$new();
+        controller = $controller('els', { $scope: $scope });
     });
     it('shell', function () {
-        expect(controller.password).toEqual('');
+        
+        expect(controller.password).toEqual('123');
     });
     it('shell2', function () {
         controller.grade();

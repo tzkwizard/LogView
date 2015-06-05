@@ -3,7 +3,7 @@
 
     var controllerId = 'aggs';
 
-    angular.module('app')
+    angular.module('app.component')
         .controller(controllerId, function (common, aggService, dataconfig) {
             var vm = this;
             vm.title = "Aggragations";

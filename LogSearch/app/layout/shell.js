@@ -1,6 +1,7 @@
 ﻿(function () {
     'use strict';
-    angular.module('app.layout',[]);
+    angular.module('app.layout', []);
+    
     var controllerId = 'shell';
     angular.module('app.layout').controller(controllerId,
         ['common', shell]);

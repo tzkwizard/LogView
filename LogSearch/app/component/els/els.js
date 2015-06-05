@@ -3,12 +3,27 @@
 
     var controllerId = 'els';
 
-    angular.module('app')
+    angular.module('ss',[])
         .controller(controllerId, function (common, elsService, config, dataconfig) {
             var vm = this;
             vm.title2 = "Function";
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
+
+
+            vm.strength = "";
+            vm.password = '123';
+            vm.grade = function () {
+                var size = vm.password.length;
+                if (size > 8) {
+                    vm.strength = 'strong';
+                } else if (size > 3) {
+                    vm.strength = 'medium';
+                } else {
+                    vm.strength = 'weak';
+                }
+            };
+
 
             //#region variable
             vm.googlelist = true;

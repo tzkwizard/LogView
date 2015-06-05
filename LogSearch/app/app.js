@@ -6,15 +6,17 @@
         packages: ['geomap', 'geochart', 'bar', 'corechart', 'controls',
             'table', 'map', 'annotatedtimeline', 'treemap']
     });
-
+    angular.module('app.component', []);
+    angular.module('componentService', []);
     var app = angular.module('app', [
         // Angular modules 
         'ngAnimate',        // animations
         'ngRoute',          // routing
         'ngSanitize',       // sanitizes html bindings (ex: sidebar.js)
         'ngCookies',
-        'app.layout',
-        'component.service',
+        'app.layout',       
+        'componentService',
+        'app.component',
         'EsData',
 
         'LocalStorageModule',

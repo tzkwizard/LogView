@@ -3,7 +3,7 @@
     var serviceId = 'aggService';
 
 
-    angular.module('component.service')
+    angular.module('componentService')
         .factory(serviceId, function ($q, datasearch, dataconfig) {
 
             //#region service
