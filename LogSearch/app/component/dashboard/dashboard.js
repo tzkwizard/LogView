@@ -1,12 +1,28 @@
 ﻿(function () {
     'use strict';
     var controllerId = 'dashboard';
-    angular.module('app.component').controller(controllerId, ['common', 'chartService', 'dataconfig', dashboard]);
+    angular.module('app').controller(controllerId, ['common', 'chartService', 'dataconfig', dashboard]);
 
     function dashboard(common, chartService, dataconfig) {
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
         var vm = this;
+
+        //#region test
+        vm.strength = "";
+        vm.password = '123';
+        vm.grade = function () {
+            var size = vm.password.length;
+            if (size > 8) {
+                vm.strength = 'strong';
+            } else if (size > 3) {
+                vm.strength = 'medium';
+            } else {
+                vm.strength = 'weak';
+            }
+        };
+        //#endregion
+
 
         //#region variable
         vm.st = "";

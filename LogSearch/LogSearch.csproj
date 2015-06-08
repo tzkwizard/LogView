@@ -60,7 +60,6 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\services\component\component.service.module.js" />
     <Content Include="app\test.spec.js" />
     <Content Include="app\component\agg\aggs.html" />
     <Content Include="app\component\agg\aggs.js" />

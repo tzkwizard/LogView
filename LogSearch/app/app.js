@@ -1,13 +1,6 @@
 ﻿(function () {
     'use strict';
 
-    //Load google Api
-    google.load('visualization', '1', {
-        packages: ['geomap', 'geochart', 'bar', 'corechart', 'controls',
-            'table', 'map', 'annotatedtimeline', 'treemap']
-    });
-    angular.module('app.component', []);
-    angular.module('componentService', []);
     var app = angular.module('app', [
         // Angular modules 
         'ngAnimate',        // animations
@@ -16,7 +9,6 @@
         'ngCookies',
         'app.layout',       
         'componentService',
-        'app.component',
         'EsData',
 
         'LocalStorageModule',
@@ -28,11 +20,18 @@
         // 3rd Party Modules    
         'ui.bootstrap',   // ui-bootstrap (ex: carousel, pagination, dialog)    
         'elasticsearch',
-        'ngGrid'
+        //'ngGrid'
 
         //'ui.grid', 'ui.grid.edit', 'ui.grid.selection'
     ]);
-    
+    angular.module('componentService', []);
+    angular.module('EsData', []);
+
+    //Load google Api
+    google.load('visualization', '1', {
+        packages: ['geomap', 'geochart', 'bar', 'corechart', 'controls',
+            'table', 'map', 'annotatedtimeline', 'treemap']
+    });
  
     // Handle routing errors and success events
     app.run(['$route', 'dataconfig', 'routeMediator',

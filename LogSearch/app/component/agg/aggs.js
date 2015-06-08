@@ -3,13 +3,29 @@
 
     var controllerId = 'aggs';
 
-    angular.module('app.component')
+    angular.module('app')
         .controller(controllerId, function (common, aggService, dataconfig) {
             var vm = this;
             vm.title = "Aggragations";
             vm.title2 = "PieChart";
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
+
+
+            //#region test
+            vm.strength = "";
+            vm.password = '123';
+            vm.grade = function () {
+                var size = vm.password.length;
+                if (size > 8) {
+                    vm.strength = 'strong';
+                } else if (size > 3) {
+                    vm.strength = 'medium';
+                } else {
+                    vm.strength = 'weak';
+                }
+            };
+            //#endregion
 
             //#region variable
             vm.treesize = 100;

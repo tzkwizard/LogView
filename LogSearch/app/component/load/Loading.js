@@ -1,6 +1,6 @@
 ﻿(function () {
     'use strict';
-
+ 
     var controllerId = 'Loading';
     angular.module('app').controller(controllerId,
         ['$rootScope', 'common','localStorageService', Loading]);

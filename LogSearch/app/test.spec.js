@@ -17,6 +17,7 @@ describe('layout.testcontroller', function () {
         expect(controller.strength).toEqual('weak');
     });
 });
+
 describe('layout.shellcontroller', function () {
     var controller;
     var redditService;
@@ -39,24 +40,14 @@ describe('layout.shellcontroller', function () {
     });
 });
 
-
-describe('dash.elscontroller', function () {
+describe('els.elscontroller', function () {
     var controller;
 
 
     beforeEach(function () {
-        
-        bard.appModule('common');
-        bard.appModule('ngRoute');
-       // bard.appModule('componentService');
-        bard.appModule('EsData');
-        bard.appModule('ss');
-        bard.appModule('appp');
-        bard.appModule('LocalStorageModule');
-        bard.appModule('ui.bootstrap');
-       // bard.appModule('app.component');
-        
-        bard.inject(this, '$controller', 'common', '$q', 'elsService', '$modal', '$rootScope', 'dataconfig');
+       
+        bard.appModule('app');      
+        bard.inject(this, '$controller', 'common', '$q', 'elsService', '$rootScope', 'dataconfig');
        /* bard.mockService(chartservice, {
             _default: $q.when([])
 
@@ -75,6 +66,74 @@ describe('dash.elscontroller', function () {
     });
     it('shell', function () {
         
+        expect(controller.password).toEqual('123');
+    });
+    it('shell2', function () {
+        controller.grade();
+        expect(controller.strength).toEqual('weak');
+    });
+});
+
+describe('dash.elscontroller', function () {
+    var controller;
+
+
+    beforeEach(function () {
+
+        bard.appModule('app');
+        bard.inject(this, '$controller', 'common', '$q', 'chartService', '$rootScope', 'dataconfig');
+        /* bard.mockService(chartservice, {
+             _default: $q.when([])
+ 
+         });*/
+        bard.mockService(dataconfig, {
+            _default: $q.when([])
+
+        });
+
+        /*  bard.mockService(common, {
+             _default: $q.when([])
+  
+         });*/
+        var $scope = $rootScope.$new();
+        controller = $controller('dashboard', { $scope: $scope });
+    });
+    it('shell', function () {
+
+        expect(controller.password).toEqual('123');
+    });
+    it('shell2', function () {
+        controller.grade();
+        expect(controller.strength).toEqual('weak');
+    });
+});
+
+describe('agg.elscontroller', function () {
+    var controller;
+
+
+    beforeEach(function () {
+
+        bard.appModule('app');
+        bard.inject(this, '$controller', 'common', '$q', 'aggService', '$rootScope', 'dataconfig');
+        /* bard.mockService(chartservice, {
+             _default: $q.when([])
+ 
+         });*/
+        bard.mockService(dataconfig, {
+            _default: $q.when([])
+
+        });
+
+        /*  bard.mockService(common, {
+             _default: $q.when([])
+  
+         });*/
+        var $scope = $rootScope.$new();
+        controller = $controller('aggs', { $scope: $scope });
+    });
+    it('shell', function () {
+
         expect(controller.password).toEqual('123');
     });
     it('shell2', function () {
@@ -168,3 +227,17 @@ describe('Service: myService', function () {
     }));
     
 });
+
+
+
+
+/* bard.appModule('ngSanitize');
+    bard.appModule('ngCookies');
+    bard.appModule('common.bootstrap');
+    bard.appModule('common');
+    bard.appModule('ngRoute');
+    bard.appModule('componentService');
+    bard.appModule('EsData');
+    bard.appModule('appComponent');
+    bard.appModule('LocalStorageModule');
+    bard.appModule('ui.bootstrap');*/
