@@ -1,6 +1,5 @@
-﻿
-/// <reference path="~/Scripts/_references.js" />
-describe('layout.testcontroller', function () {
+﻿/// <reference path="~/Scripts/_references.js" />
+describe('layout.test', function () {
     var controller;
 
     beforeEach(function () {
@@ -9,7 +8,7 @@ describe('layout.testcontroller', function () {
         controller = $controller('test');
     });
     it('test1', function () {
-        expect(controller.password).toEqual('123');    
+        expect(controller.password).toEqual('123');
     });
 
     it('test2', function () {
@@ -18,17 +17,17 @@ describe('layout.testcontroller', function () {
     });
 });
 
-describe('layout.shellcontroller', function () {
+describe('layout.shell', function () {
     var controller;
     var redditService;
-   
+
     beforeEach(function () {
         var x = bard.appModule('common');
         var y = bard.appModule('ngRoute');
-        
+
         bard.appModule('app.layout');
-        bard.inject(this, '$controller',x);
-      
+        bard.inject(this, '$controller', x);
+
         controller = $controller('shell');
     });
     it('test', function () {
@@ -40,46 +39,38 @@ describe('layout.shellcontroller', function () {
     });
 });
 
-describe('els.elscontroller', function () {
+describe('els.controller', function () {
     var controller;
 
-
     beforeEach(function () {
-       
-        bard.appModule('app');      
+        bard.appModule('app');
         bard.inject(this, '$controller', 'common', '$q', 'elsService', '$rootScope', 'dataconfig');
-       /* bard.mockService(chartservice, {
-            _default: $q.when([])
-
-        });*/
         bard.mockService(dataconfig, {
             _default: $q.when([])
 
         });
-   
-      /*  bard.mockService(common, {
-           _default: $q.when([])
 
-       });*/
+        /*  bard.mockService(common, {
+             _default: $q.when([])
+  
+         });*/
         var $scope = $rootScope.$new();
         controller = $controller('els', { $scope: $scope });
     });
-    it('shell', function () {
-        
+    it('test', function () {
+
         expect(controller.password).toEqual('123');
     });
-    it('shell2', function () {
+    it('test2', function () {
         controller.grade();
         expect(controller.strength).toEqual('weak');
     });
 });
 
-describe('dash.elscontroller', function () {
+describe('dash.controller', function () {
     var controller;
 
-
     beforeEach(function () {
-
         bard.appModule('app');
         bard.inject(this, '$controller', 'common', '$q', 'chartService', '$rootScope', 'dataconfig');
         /* bard.mockService(chartservice, {
@@ -98,31 +89,24 @@ describe('dash.elscontroller', function () {
         var $scope = $rootScope.$new();
         controller = $controller('dashboard', { $scope: $scope });
     });
-    it('shell', function () {
+    it('test', function () {
 
         expect(controller.password).toEqual('123');
     });
-    it('shell2', function () {
+    it('test2', function () {
         controller.grade();
         expect(controller.strength).toEqual('weak');
     });
 });
 
-describe('agg.elscontroller', function () {
+describe('agg.controller', function () {
     var controller;
 
-
     beforeEach(function () {
-
         bard.appModule('app');
         bard.inject(this, '$controller', 'common', '$q', 'aggService', '$rootScope', 'dataconfig');
-        /* bard.mockService(chartservice, {
-             _default: $q.when([])
- 
-         });*/
         bard.mockService(dataconfig, {
             _default: $q.when([])
-
         });
 
         /*  bard.mockService(common, {
@@ -132,11 +116,11 @@ describe('agg.elscontroller', function () {
         var $scope = $rootScope.$new();
         controller = $controller('aggs', { $scope: $scope });
     });
-    it('shell', function () {
+    it('test', function () {
 
         expect(controller.password).toEqual('123');
     });
-    it('shell2', function () {
+    it('test2', function () {
         controller.grade();
         expect(controller.strength).toEqual('weak');
     });
@@ -144,27 +128,27 @@ describe('agg.elscontroller', function () {
 
 
 angular.module('myModule', [])
-    .factory('myService', function(myDependency) {
+    .factory('myService', function (myDependency) {
         return {
-            useDependency: function() {
+            useDependency: function () {
                 return myDependency.getSomething();
 
             },
-            test: function() {
+            test: function () {
                 return "haha";
             }
         };
     })
-    .controller("dash", function(myDependency, myService) {
+    .controller("dash", function (myDependency, myService) {
         var vm = this;
         vm.test = myDependency.getSomething();
 
-        vm.activate = function() {
+        vm.activate = function () {
             vm.avengers = myService.getAvengers();
             vm.test2 = myService.useDependency(123);
             myService.test(123);
         }
-        vm.try = function() {
+        vm.try = function () {
             return myService.useDependency();
         }
     });
@@ -180,7 +164,7 @@ describe('Service: myService', function () {
         module(function ($provide) {
             $provide.value('myDependency', mockDependency);
         });
-       
+
     });
     var controller;
     var mockUser = [{}];
@@ -188,18 +172,18 @@ describe('Service: myService', function () {
 
         //module('myModule');
         bard.appModule('myModule');
-        bard.inject(this, '$controller','$q', 'myService');
-            bard.mockService(myService, {
-                getAvengers: function() {
-                    return "m22";
-                },
+        bard.inject(this, '$controller', '$q', 'myService');
+        bard.mockService(myService, {
+            getAvengers: function () {
+                return "m22";
+            },
 
-                useDependency: $q.when("haha"),
-                _default: $q.when([])
-                
+            useDependency: $q.when("haha"),
+            _default: $q.when([])
+
         });
-            spyOn(myService, 'test');
-            //spyOn(myService, '_default');
+        spyOn(myService, 'test');
+        //spyOn(myService, '_default');
         controller = $controller('dash');
     }
   );
@@ -225,7 +209,7 @@ describe('Service: myService', function () {
         expect(myService.test).toHaveBeenCalled();
         expect(myService.test).toHaveBeenCalledWith(123);
     }));
-    
+
 });
 
 
