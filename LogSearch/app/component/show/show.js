@@ -50,7 +50,7 @@
                     refreshPage();
                 }
             }
-            
+
             function backPage() {
                 common.$location.path("/els");
             }

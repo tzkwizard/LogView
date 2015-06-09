@@ -11,22 +11,6 @@
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
 
-
-            //#region test
-            vm.strength = "";
-            vm.password = '123';
-            vm.grade = function () {
-                var size = vm.password.length;
-                if (size > 8) {
-                    vm.strength = 'strong';
-                } else if (size > 3) {
-                    vm.strength = 'medium';
-                } else {
-                    vm.strength = 'weak';
-                }
-            };
-            //#endregion
-
             //#region variable
             vm.treesize = 100;
             vm.size = 20;
@@ -41,9 +25,8 @@
             vm.type = '';
             vm.ft = "";  //end time
             vm.st = ""; //start time
-            vm.token = false; //show table
+            vm.token = true; //show table
             vm.process = true; //spinner when running
-            vm.treestatus = true; // show tree chart
             //#endregion
 
             //#region public function
@@ -74,7 +57,7 @@
                     { key: 'Time', value: new Date() },
                     { key: 'School', value: common.$rootScope.school }
                 ];
-                if (vm.treestatus === true) {
+                if (vm.refinedsearch.length === 2) {
                     aggService.drawTreeMap(vm.fieldsName, vm.treesize, vm.st, vm.ft).then(function () {
                         vm.process = false;
                         common.$rootScope.spinner = false;
@@ -102,7 +85,6 @@
             //#region button and function
             //refresh page
             function refresh() {
-                vm.treestatus = true;
                 common.$rootScope.spinner = true;
                 vm.searchText = "*";
                 activate();
@@ -194,7 +176,6 @@
 
                 google.visualization.events.addListener(table, 'select', function () {
                     var row = table.getSelection()[0].row;
-                    vm.treestatus = false;
                     if (field.substring(field.length - 3, field.length) === "raw") {
                         field = field.substring(0, field.length - 4);
                     }
@@ -209,6 +190,22 @@
                     aggShow();
                 });
             }
+            //#endregion
+
+
+            //#region test
+            vm.strength = "";
+            vm.password = '123';
+            vm.grade = function () {
+                var size = vm.password.length;
+                if (size > 8) {
+                    vm.strength = 'strong';
+                } else if (size > 3) {
+                    vm.strength = 'medium';
+                } else {
+                    vm.strength = 'weak';
+                }
+            };
             //#endregion
 
         });

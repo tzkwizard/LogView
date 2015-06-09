@@ -4,7 +4,7 @@
     var controllerId = 'resultModal';
 
     angular.module('app')
-        .controller(controllerId, function ($modalInstance,common, item, resultService) {
+        .controller(controllerId, function ($modalInstance, common, item, resultService) {
 
             var vm = this;
 

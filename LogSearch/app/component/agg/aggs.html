@@ -33,7 +33,7 @@
                     <a>{{doc.key}} : {{doc.value}}</a>
                 </div>
             </md-card>
-            <div id="treemap" class="widget wblue">
+            <div id="treemap" class="widget wblue" ng-show="aggragation.refinedsearch.length<=2">
                 <md-select placeholder="Pick" class="pull-right" ng-model="aggragation.treesize" ng-change="aggragation.treesizeChange()">
                     <md-option value=10>10</md-option>
                     <md-option value=20>20</md-option>
@@ -43,7 +43,7 @@
                 <div data-cc-widget-header title="{{aggragation.title}}" subtitle="{{aggragation.total}}"
                      allow-collapse="true"></div>
                 <div class="widget-content">
-                    <div id="treemap_div" style="height: 600px;" ng-show="aggragation.treestatus"></div>
+                    <div id="treemap_div" style="height: 600px;"></div>
                 </div>
             </div>
             <div id="piechart" class="widget wlightblue">

@@ -23,7 +23,7 @@
                     vm.strength = 'weak';
                 }
             };
-           //#endregion
+            //#endregion
 
             //#region variable
             vm.googlelist = true;
@@ -42,7 +42,6 @@
             vm.ft = ""; //end time
             vm.st = ""; //start time
             vm.autoText = [];
-            vm.filterfill = false;
             vm.condition = [];
             vm.Syntax = {
                 title: 'Search : ',
@@ -51,6 +50,7 @@
             vm.distance = 0;
             vm.dunit = 'mi';
             vm.timeShow = false;
+            var filterfill = false; // flag to fill searchtext
             vm.count = 0;// filter number  
             var autocache = ["", "", "", ""];
             //#endregion
@@ -142,7 +142,7 @@
                 vm.processSearch = true;
                 vm.hitSearch = "";
                 var condition = [];
-                if (!vm.filterfill) {
+                if (!filterfill) {
                     condition = angular.copy(vm.condition);
                 }
                 vm.distanceF = vm.distance + vm.dunit;
@@ -215,7 +215,7 @@
                 common.$mdDialog.show(confirm).then(function () {
                     vm.searchText = "";
                     search();
-                    vm.filterfill = false;
+                    filterfill = false;
                     while (vm.count > 1) {
                         removefilter();
                     }
@@ -303,7 +303,7 @@
             function filltext() {
                 if (vm.count > 0) {
                     vm.searchText = elsService.fillSearchText(vm.condition);
-                    vm.filterfill = true;
+                    filterfill = true;
                     vm.field = "all";
                     search();
                 }
