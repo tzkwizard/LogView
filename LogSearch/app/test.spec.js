@@ -44,8 +44,8 @@ describe('els.controller', function () {
 
     beforeEach(function () {
         bard.appModule('app');
-        bard.inject(this, '$controller', 'common', '$q', 'elsService', '$rootScope', 'dataconfig');
-        bard.mockService(dataconfig, {
+        bard.inject(this, '$controller', 'common', '$q', 'elsService', '$rootScope', 'commonService');
+        bard.mockService(commonService, {
             _default: $q.when([])
 
         });
@@ -72,12 +72,12 @@ describe('dash.controller', function () {
 
     beforeEach(function () {
         bard.appModule('app');
-        bard.inject(this, '$controller', 'common', '$q', 'chartService', '$rootScope', 'dataconfig');
+        bard.inject(this, '$controller', 'common', '$q', 'chartService', '$rootScope', 'commonService');
         /* bard.mockService(chartservice, {
              _default: $q.when([])
  
          });*/
-        bard.mockService(dataconfig, {
+        bard.mockService(commonService, {
             _default: $q.when([])
 
         });
@@ -104,8 +104,8 @@ describe('agg.controller', function () {
 
     beforeEach(function () {
         bard.appModule('app');
-        bard.inject(this, '$controller', 'common', '$q', 'aggService', '$rootScope', 'dataconfig');
-        bard.mockService(dataconfig, {
+        bard.inject(this, '$controller', 'common', '$q', 'aggService', '$rootScope', 'commonService');
+        bard.mockService(commonService, {
             _default: $q.when([])
         });
 

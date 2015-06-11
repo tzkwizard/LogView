@@ -86,7 +86,7 @@
     <Content Include="app\services\component\els-Service.js" />
     <Content Include="app\services\component\agg-Service.js" />
     <Content Include="app\services\component\chart-Service.js" />
-    <Content Include="app\services\dataconfig.js" />
+    <Content Include="app\services\common-Service.js" />
     <Content Include="app\datacontext\datasearch.js" />
     <Content Include="app\component\els\els.html" />
     <Content Include="app\component\els\els.js" />

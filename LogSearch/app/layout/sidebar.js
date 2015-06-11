@@ -3,9 +3,9 @@
 
     var controllerId = 'sidebar';
     angular.module('app.layout').controller(controllerId,
-        ['config', 'routes', 'dataconfig', 'datasearch', 'common', sidebar]);
+        ['config', 'routes', 'commonService', 'datasearch', 'common', sidebar]);
 
-    function sidebar(config, routes, dataconfig, datasearch, common) {
+    function sidebar(config, routes, commonService, datasearch, common) {
         var vm = this;
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);

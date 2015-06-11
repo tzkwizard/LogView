@@ -35,7 +35,7 @@
 /// <reference path="~/app/layout/shell.js" />
 
 
-/// <reference path="~/app/services/dataconfig.js" />
+/// <reference path="~/app/services/common-Service.js" />
 /// <reference path="~/app/services/component/chart-Service.js" />
 /// <reference path="~/app/services/component/els-Service.js" />
 /// <reference path="~/app/services/component/agg-Service.js" />

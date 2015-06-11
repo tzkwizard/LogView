@@ -29,7 +29,7 @@
             $routeProvider.when(url, definition);
         }
     }
-    prime.$inject = ['dataconfig'];
+    prime.$inject = ['commonService'];
     function prime(d) {
         d.prime();
     }

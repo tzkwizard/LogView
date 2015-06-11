@@ -1,10 +1,10 @@
 ﻿(function () {
     'use strict';
 
-    var serviceId = 'dataconfig';
-    angular.module('EsData').factory(serviceId, ['$modal', '$rootScope', 'config', 'datasearch', 'localStorageService', dataconfig]);
+    var serviceId = 'commonService';
+    angular.module('commonService', []).factory(serviceId, ['$modal', '$rootScope', 'config', 'datasearch', 'localStorageService', commonService]);
 
-    function dataconfig($modal, $rootScope, config, datasearch, localStorageService) {
+    function commonService($modal, $rootScope, config, datasearch, localStorageService) {
 
         //#region Service
         var service = {

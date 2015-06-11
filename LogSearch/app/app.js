@@ -7,12 +7,16 @@
         'ngRoute',          // routing
         'ngSanitize',       // sanitizes html bindings (ex: sidebar.js)
         'ngCookies',
-        'app.layout',       
+        
+
+        'app.layout',
         'componentService',
-        'EsData',
+        'commonService',
+        'datacontext',
 
         'LocalStorageModule',
         // Custom modules 
+       
         'common',           // common functions, logger, spinner ,ngMaterial
         'common.bootstrap', // bootstrap dialog wrapper functions
 
@@ -25,7 +29,6 @@
         //'ui.grid', 'ui.grid.edit', 'ui.grid.selection'
     ]);
     angular.module('componentService', []);
-    angular.module('EsData', []);
 
     //Load google Api
     google.load('visualization', '1', {
@@ -34,10 +37,10 @@
     });
  
     // Handle routing errors and success events
-    app.run(['$route', 'dataconfig', 'routeMediator',
-        function ($route, dataconfig, routeMediator) {
+    app.run(['$route', 'commonService', 'routeMediator',
+        function ($route, commonService, routeMediator) {
             // Include $route to kick start the router.
             routeMediator.setRoutingHandlers();
-            dataconfig.appStart();
+            commonService.appStart();
         }]);
 })();

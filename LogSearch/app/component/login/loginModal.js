@@ -3,7 +3,7 @@
 
     var controllerId = 'loginModal';
     angular.module('app')
-        .controller(controllerId, function ($modalInstance, config, dataconfig) {
+        .controller(controllerId, function ($modalInstance, config, commonService) {
             var vm = this;
             vm.title = "Elasticsarch Login";
             vm.username = "";
@@ -18,7 +18,7 @@
 
             //validate username and password
             vm.ok = function () {
-                dataconfig.checkIdent(vm.username, vm.password);
+                commonService.checkIdent(vm.username, vm.password);
                 //window.location.reload();
                 $modalInstance.close();
             };

@@ -3,9 +3,9 @@
 
     var controllerId = 'topnav';
     angular.module('app.layout').controller(controllerId,
-        ['dataconfig', 'datasearch', 'config', 'common', topnav]);
+        ['commonService', 'datasearch', 'config', 'common', topnav]);
 
-    function topnav(dataconfig, datasearch, config, common) {
+    function topnav(commonService, datasearch, config, common) {
         var vm = this;
         // var keyCodes = config.keyCodes;
 
@@ -34,7 +34,7 @@
         //change time span global
         function filterst(span) {
             common.$rootScope.ft = new Date();
-            common.$rootScope.st = dataconfig.changeTimeSpan(span);
+            common.$rootScope.st = commonService.changeTimeSpan(span);
             common.$location.path(common.$location.path() + "/");
             // window.location.reload();
         }
@@ -69,7 +69,7 @@
                     var autotemp = vm.autoText;
                     autocache = [autocache[1], autocache[2], autocache[3], resp.data.AutoData];
                     angular.forEach(autocache, function (x) {
-                        autotemp = dataconfig.arrayUnique(autotemp.concat(x));
+                        autotemp = commonService.arrayUnique(autotemp.concat(x));
                     });
                     vm.autoText = autotemp;
                 } else {
@@ -129,7 +129,7 @@
 
         //log out
         function logout() {
-            dataconfig.logout();
+            commonService.logout();
             common.$location.path("/");
             window.location.reload();
         }

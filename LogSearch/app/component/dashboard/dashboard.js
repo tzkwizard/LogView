@@ -1,9 +1,9 @@
 ﻿(function () {
     'use strict';
     var controllerId = 'dashboard';
-    angular.module('app').controller(controllerId, ['common', 'chartService', 'dataconfig', dashboard]);
+    angular.module('app').controller(controllerId, ['common', 'chartService', 'commonService', dashboard]);
 
-    function dashboard(common, chartService, dataconfig) {
+    function dashboard(common, chartService, commonService) {
         var getLogFn = common.logger.getLogFn;
         var log = getLogFn(controllerId);
         var vm = this;
@@ -63,7 +63,7 @@
         }
 
         function getMap() {
-            var promise = dataconfig.loadMap();
+            var promise = commonService.loadMap();
             try {
                 return promise.then(function () {
                     vm.indicesName = common.$rootScope.index;

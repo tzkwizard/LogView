@@ -4,7 +4,7 @@
 
 
     angular.module('componentService')
-        .factory(serviceId, function ($q, datasearch, dataconfig) {
+        .factory(serviceId, function ($q, datasearch, commonService) {
 
             //#region service
             var service = {
@@ -23,7 +23,7 @@
                 google.setOnLoadCallback(drawTreeMap);
                 var datatree = new google.visualization.DataTable();
 
-                var fieldstree = dataconfig.aggFieldFilter(fieldsName);
+                var fieldstree = commonService.aggFieldFilter(fieldsName);
                 datatree.addColumn('string', 'Name');
                 datatree.addColumn('string', 'Parent');
                 datatree.addColumn('number', 'count');
