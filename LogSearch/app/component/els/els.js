@@ -6,7 +6,7 @@
     angular.module('app')
         .controller(controllerId, function (common, elsService, config, commonService) {
             var vm = this;
-            vm.title2 = "Function";
+            vm.title = "Function";
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
 
@@ -26,13 +26,11 @@
             //#endregion
 
             //#region variable
-            vm.googlelist = true;
             vm.autocompleLoading = false; // spinner for autofill
             vm.processSearch = false; //spinner for search
             vm.searchText = common.$routeParams.search || '';
             vm.hitSearch = "";
             vm.field = "";
-            vm.index = common.$routeParams.index || "";
             vm.fieldsName = [];
             vm.indicesName = [];
             vm.pagecount = 1000;
@@ -53,6 +51,10 @@
             var filterfill = false; // flag to fill searchtext
             vm.count = 0;// filter number  
             var autocache = ["", "", "", ""];
+            var locationF = {
+                lat: "",
+                lon: ""
+            };
             //#endregion
 
             //#region public function
@@ -60,7 +62,7 @@
             vm.trySeach = trySeach;
             vm.refresh = refresh;
             vm.pageChanged = pageChanged;
-            vm.filltext = filltext;
+            vm.fillText = fillText;
             vm.filterst = filterst; //change time span
             vm.timeChange = timeChange;
             vm.transferLocation = transferLocation;
@@ -69,6 +71,7 @@
             vm.showListBottomSheet = showListBottomSheet;
             vm.showlist = showlist;
             vm.showResult = showResult;
+            vm.autoFill = autoFill;
             //#endregion
 
 
@@ -116,7 +119,7 @@
             }
 
             function getSampleData() {
-                return elsService.data.getSampledata(vm.indicesName, common.$rootScope.logtype, vm.pagecount, vm.st, vm.ft, vm.locationF, vm.distanceF)
+                return elsService.data.getSampledata(vm.indicesName, common.$rootScope.logtype, vm.pagecount, vm.st, vm.ft, locationF, vm.distanceF)
                       .then(function (resp) {
                           sanitizeData(resp);
                       }, function (e) {
@@ -133,30 +136,31 @@
                 }
             }
 
+            function searchPre() {
+                vm.hitSearch = "";
+                vm.distanceF = vm.distance + vm.dunit;
+                if (vm.distance === 0 || vm.distance === null) {
+                    vm.distance = 0;
+                    vm.asyncSelected = "";
+                    locationF.lat = "";
+                    locationF.lon = "";
+                    //log("No distance");
+                }
+                return !filterfill ? angular.copy(vm.condition) : [];
+            }
             //core search function
             function search() {
                 if (vm.st > vm.ft) {
                     log("Date error");
                     return;
                 }
-                vm.processSearch = true;
-                vm.hitSearch = "";
-                var condition = [];
-                if (!filterfill) {
-                    condition = angular.copy(vm.condition);
-                }
-                vm.distanceF = vm.distance + vm.dunit;
-                if (vm.distance === 0 || vm.distance === null) {
-                    vm.distance = 0;
-                    vm.asyncSelected = "";
-                    vm.locationF.lat = "";
-                    vm.locationF.lon = "";
-                    //log("No distance");
-                }
+                vm.processSearch = true;                
+                var condition = searchPre();
+
                 if (vm.searchText == undefined || vm.searchText === "") {
                     getSampleData();
                 } else {
-                    elsService.data.basicSearch(vm.indicesName, common.$rootScope.logtype, vm.pagecount, vm.field, vm.searchText, condition, vm.st, vm.ft, vm.locationF, vm.distanceF)
+                    elsService.data.basicSearch(vm.indicesName, common.$rootScope.logtype, vm.pagecount, vm.field, vm.searchText, condition, vm.st, vm.ft, locationF, vm.distanceF)
                         .then(function (resp) {
                             sanitizeData(resp);
                         }, function (e) {
@@ -171,7 +175,6 @@
                     vm.hitSearch = resp.data.Data;
                     if (resp.data.Total >= 20) {
                         vm.pagecountArr = [Math.floor(vm.total / 20), Math.floor(vm.total / 10), Math.floor(vm.total / 5), Math.floor(vm.total / 2), vm.total];
-
                     } else {
                         vm.pagecountArr = [resp.data.Total];
                     }
@@ -273,12 +276,7 @@
             //#endregion
 
 
-            //#region function block
-            vm.locationF = {
-                lat: "",
-                lon: ""
-            };
-            vm.distance = 0;
+            //#region function block                     
             vm.asyncSelected = "";
             //get address
             function getLocation(val) {
@@ -291,8 +289,8 @@
                     try {
                         var cor = data.data.results[0].geometry.location;
                         toastr.info(cor.lat + "---" + cor.lng);
-                        vm.locationF.lat = cor.lat;
-                        vm.locationF.lon = cor.lng;
+                        locationF.lat = cor.lat;
+                        locationF.lon = cor.lng;
                     } catch (e) {
                         toastr.info("cor : " + e);
                     }
@@ -300,7 +298,7 @@
             }
 
             //fill searchText with filter information
-            function filltext() {
+            function fillText() {
                 if (vm.count > 0) {
                     vm.searchText = elsService.fillSearchText(vm.condition);
                     filterfill = true;

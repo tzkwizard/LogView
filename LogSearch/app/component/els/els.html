@@ -44,7 +44,7 @@
                 </div>
             </md-card>
             <md-card id="function" class="widget wlightblue" collapse="false">
-                <div data-cc-widget-header title="{{search.title2}}"
+                <div data-cc-widget-header title="{{search.title}}"
                      allow-collapse="true"></div>
                 <div class="widget-content" style="display: none;">
                     <div id="1" layout="row" layout-align="center center">
@@ -114,7 +114,7 @@
                                 Remove Filter
                             </md-tooltip>
                         </md-button>
-                        <md-button class="md-raised md-primary" data-ng-click="search.filltext()" aria-label="fill">
+                        <md-button class="md-raised md-primary" data-ng-click="search.fillText()" aria-label="fill">
                             <i class="fa fa-apple"> Fill </i>
                             <md-tooltip>
                                 Fill SearchText
@@ -144,7 +144,7 @@
                 <div id="google list">
                     <md-toolbar md-scroll-shrink>
                         <div class=" md-toolbar-tools" style="font-size: 15px">
-                            <md-button class="md-icon-button" aria-label="r1" ng-click="search.googlelist=!search.googlelist">
+                            <md-button class="md-icon-button" aria-label="r1">
                                 <md-icon md-svg-icon="menu"></md-icon>
                             </md-button>
                             <h3 style="color: whitesmoke">
@@ -171,7 +171,7 @@
                             </md-button>
                         </div>
                     </md-toolbar>
-                    <md-content id="google" style="height: 600px;" ng-show="search.googlelist" class="dissolve-animation">
+                    <md-content id="google" style="height: 600px;" ng-if="search.hitSearch.length>0" class="dissolve-animation">
                         <md-list>
                             <md-list-item class="md-3-line fader-animation" ng-repeat="doc in search.res| orderBy:predicate:reverse">
                                 <div class="md-list-item-text" data-ng-dblclick="search.showResult(doc)">
