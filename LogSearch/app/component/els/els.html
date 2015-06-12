@@ -1,9 +1,9 @@
 ﻿<section class="mainbar" data-ng-controller="els as search">
     <section class="matter">
         <div class="container-fluid">
-            <md-card id="Search" layout="row" layout-align="center center" class=" input-append row-fluid">
-                <input type="text" class="form-control"
-                       data-ng-change="search.autoFill()" data-ng-keyup="search.trySeach($event)"
+            <div id="Search" layout="row" layout-align="center center" class=" input-append row-fluid">
+                <input type="text" class="form-control md-whiteframe-z5"
+                       data-ng-change="search.autoFill()" data-ng-keyup="search.trySearch($event)"
                        data-ng-model=" search.searchText" placeholder="  Search"
                        typeahead=" auto for auto in search.autoText| filter:$viewValue | limitTo:4" typeahead-loading="loading" />
                 <i ng-show="search.autocompleLoading" class="glyphicon glyphicon-refresh"></i>
@@ -33,16 +33,16 @@
                     <ul class="dropdown-menu" role="menu">
                         <md-list-item ng-repeat="choice in search.it">
                             <md-button class="md-grid-item-content" ng-click="search.filterst(choice)">
-                                <div class="md-grid-text"> {{ choice }} </div>
+                                <li class="md-grid-text"> {{ choice }} </li>
                             </md-button>
                         </md-list-item>
                         <md-divider></md-divider>
                         <md-button class="md-grid-item-content">
-                            <div class="md-grid-text" data-ng-click="search.showListBottomSheet()"> More Span ?</div>
+                            <li class="md-grid-text" data-ng-click="search.showListBottomSheet()"> More Span ?</li>
                         </md-button>
                     </ul>
                 </div>
-            </md-card>
+            </div>
             <md-card id="function" class="widget wlightblue" collapse="false">
                 <div data-cc-widget-header title="{{search.title}}"
                      allow-collapse="true"></div>
@@ -131,17 +131,17 @@
                     <md-progress-linear md-mode="indeterminate"></md-progress-linear>
                 </div>
             </md-card>
-            <md-card id="result">
+            <div id="result">
                 <div id="Paging" layout="row" class="widget-foot">
                     <div class="clearfix"></div>
-                    <pagination boundary-links="true" class="pagination-sm"
+                    <pagination boundary-links="true" class="pagination-sm md-whiteframe-z5"
                                 total-items="search.pagetotal" items-per-page="search.paging.pageSize" data-ng-model="search.paging.currentPage"
                                 data-ng-change="search.pageChanged()" max-size="search.paging.maxPagesToShow"
                                 previous-text="Prev" next-text="Next" first-text="First" last-text="Last">
                     </pagination>
                     <div class="clearfix"></div>
                 </div>
-                <div id="google list">
+                <md-card id="google list">
                     <md-toolbar md-scroll-shrink>
                         <div class=" md-toolbar-tools" style="font-size: 15px">
                             <md-button class="md-icon-button" aria-label="r1">
@@ -174,7 +174,7 @@
                     <md-content id="google" style="height: 600px;" ng-if="search.hitSearch.length>0" class="dissolve-animation">
                         <md-list>
                             <md-list-item class="md-3-line fader-animation" ng-repeat="doc in search.res| orderBy:predicate:reverse">
-                                <div class="md-list-item-text" data-ng-dblclick="search.showResult(doc)">
+                                <div class="md-list-item-text " data-ng-dblclick="search.showResult(doc)">
                                     <h3> {{doc._source['timestamp']}} </h3>
                                     <h6> {{doc._source.message}} </h6>
                                 </div>
@@ -182,8 +182,8 @@
                             </md-list-item>
                         </md-list>
                     </md-content>
-                </div>
-            </md-card>
+                </md-card>
+            </div>
         </div>
     </section>
 </section>

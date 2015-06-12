@@ -38,7 +38,7 @@
         //#endregion
 
 
-        //#region RouteChange service
+        //#region RouteChange 
         //Load index and field
         function prime() {
             $rootScope.logtype = "logs";
@@ -65,7 +65,6 @@
             }
         }
 
-
         function loadMap() {
             checkIndexCookie();
             checkFieldCookie();
@@ -88,17 +87,15 @@
                 }
             }
             var map = {
-                indicesName: [],
-                fieldsName: []
+                indicesName: indicesName,
+                fieldsName: fieldName
             }
-            map.indicesName = indicesName;
-            map.fieldsName = fieldName;
             return map;
         }
         //#endregion
 
 
-        //#region Get Maping service
+        //#region Get Maping 
         //get logstash index from cluster
         function getMapping() {
             return datasearch.getMap().then(function (resp) {
@@ -183,7 +180,7 @@
         //#endregion
 
 
-        //#region regular service
+        //#region Common service
         function arrayUnique(array) {
             var a = array.concat();
             for (var i = 0; i < a.length; ++i) {

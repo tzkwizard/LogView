@@ -1,7 +1,7 @@
 ﻿<section class="mainbar" data-ng-controller="aggs as aggragation">
     <section class="matter">
         <div class="container-fluid">
-            <md-card id="header">
+            <div id="header">
                 <div layout="row" layout-align="center center" style="height: 45px">
                     <md-button class="md-raised md-primary" data-ng-click="aggragation.show()" ng-disabled="aggragation.process">
                         <i class="fa fa-pie-chart"> Show </i>
@@ -30,9 +30,9 @@
                     </md-button>
                 </div>
                 <div layout="column" layout-align="center start" class="fader-animation" data-ng-repeat="doc in aggragation.refinedsearch">
-                    <a>{{doc.key}} : {{doc.value}}</a>
+                    <h5 class="md-whiteframe-z4" flex>{{doc.key}} : {{doc.value}}</h5>
                 </div>
-            </md-card>
+            </div>
             <div id="treemap" class="widget wblue" ng-show="aggragation.refinedsearch.length<=2">
                 <md-select placeholder="Pick" class="pull-right" ng-model="aggragation.treesize" ng-change="aggragation.treesizeChange()">
                     <md-option value=10>10</md-option>
@@ -40,20 +40,21 @@
                     <md-option value=50>50</md-option>
                     <md-option value=100>100</md-option>
                 </md-select>
-                <div data-cc-widget-header title="{{aggragation.title}}" subtitle="{{aggragation.total}}"
+                <div data-cc-widget-header title="{{aggragation.title}}"
                      allow-collapse="true"></div>
                 <div class="widget-content">
                     <div id="treemap_div" style="height: 600px;"></div>
                 </div>
             </div>
             <div id="piechart" class="widget wlightblue">
-                <div data-cc-widget-header title="{{aggragation.title2}}"
+                <div data-cc-widget-header title="{{aggragation.title2}}" subtitle="{{aggragation.total}}"
                      allow-collapse="true"></div>
                 <div class="widget-content" style="display: none;">
-                    <div id="div2" layout="column"></div>
+                    <md-progress-linear md-mode="indeterminate" ng-show="aggragation.process"></md-progress-linear>
+                    <div id="div2" layout="column" ng-show="!aggragation.process"></div>
                     <md-toolbar md-scroll-shrink ng-show="aggragation.token">
                         <div class="md-toolbar-tools">
-                            <h3 style="color:whitesmoke">
+                            <h3 style="color: whitesmoke">
                                 <span>Google List</span>
                             </h3>
                         </div>
@@ -62,7 +63,7 @@
                         <md-list>
                             <md-list-item class="md-3-line fader-animation" ng-repeat="doc in aggragation.hitSearch| orderBy:predicate:reverse">
                                 <div class="md-list-item-text" data-ng-dblclick="aggragation.test()">
-                                    <h3> Key :  {{doc.Key}} </h3>
+                                    <h3> Key : {{doc.Key}} </h3>
                                     <h3> Number : {{doc.DocCount}} </h3>
                                 </div>
                                 <md-divider inset></md-divider>

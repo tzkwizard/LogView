@@ -28,8 +28,8 @@
         vm.st = "";
         vm.ft = "";
         vm.title = 'Dashboard';
-        vm.indicesName = [];
-        vm.type = "";
+        var indicesName = [];
+        var type = "";
         vm.geomap2selection = "USA";
         vm.geoCount = 50;
         vm.mapCount = 15;
@@ -52,11 +52,9 @@
         }
 
         function init() {
-            vm.type = common.$rootScope.logtype;
+            type = common.$rootScope.logtype;
             vm.ft = common.$rootScope.ft;
             vm.st = common.$rootScope.st;
-
-            // worldGeoMap();
             common.$q.all(usGeoMap(), geoMap(), pieChart(), timeLineGram()).then(function () {
                 common.$rootScope.spinner = false;
             });
@@ -66,10 +64,10 @@
             var promise = commonService.loadMap();
             try {
                 return promise.then(function () {
-                    vm.indicesName = common.$rootScope.index;
+                    indicesName = common.$rootScope.index;
                 });
             } catch (e) {
-                vm.indicesName = promise.indicesName;
+                indicesName = promise.indicesName;
                 return null;
             }
         }
@@ -78,7 +76,7 @@
 
         //#region Draw Map1
         function worldGeoMap() {
-            return chartService.data.termAggragation(vm.indicesName, vm.type, "geoip.country_name.raw", vm.geoCount, vm.st, vm.ft).
+            return chartService.data.termAggragation(indicesName, type, "geoip.country_name.raw", vm.geoCount, vm.st, vm.ft).
                 then(function (resp) {
                     if (resp.data.Total !== 0) {
                         chartService.drawWorldMap(resp.data.AggData, 'gmap_div');
@@ -89,7 +87,7 @@
         }
 
         function usGeoMap() {
-            return chartService.data.termQueryAggragation(vm.indicesName, vm.type, "geoip.country_code3.raw", "USA", "geoip.real_region_name.raw", vm.geoCount, vm.st, vm.ft).
+            return chartService.data.termQueryAggragation(indicesName, type, "geoip.country_code3.raw", "USA", "geoip.real_region_name.raw", vm.geoCount, vm.st, vm.ft).
                    then(function (resp) {
                        if (resp.data.Total !== 0) {
                            chartService.drawUSmap(resp.data.AggData, 'gmap_div');
@@ -100,7 +98,7 @@
         }
 
         function usCityMap() {
-            return chartService.data.termQueryAggragation(vm.indicesName, vm.type, "geoip.country_code3.raw", "USA", "geoip.city_name.raw", vm.geoCount, vm.st, vm.ft).
+            return chartService.data.termQueryAggragation(indicesName, type, "geoip.country_code3.raw", "USA", "geoip.city_name.raw", vm.geoCount, vm.st, vm.ft).
                     then(function (resp) {
                         if (resp.data.Total !== 0) {
                             chartService.drawoUSCitymap(resp.data.AggData, 'gmap_div');
@@ -114,7 +112,7 @@
 
         //#region Draw Map2
         function geoMap() {
-            return chartService.data.termAggragation(vm.indicesName, vm.type, "geoip.city_name.raw", vm.mapCount, vm.st, vm.ft).
+            return chartService.data.termAggragation(indicesName, type, "geoip.city_name.raw", vm.mapCount, vm.st, vm.ft).
                 then(function (resp) {
                     if (resp.data.Total !== 0) {
                         chartService.drawCityMap(resp.data.AggData, 'dtable_div', 'dmap_div');
@@ -160,7 +158,7 @@
 
         //#region Time Chart
         function timeLineGram() {
-            return chartService.data.dateHistogramAggregation(vm.indicesName, vm.type, "@timestamp", "day", vm.st, vm.ft)
+            return chartService.data.dateHistogramAggregation(indicesName, type, "@timestamp", "day", vm.st, vm.ft)
                 .then(function (resp) {
                     if (resp.data.Total !== 0) {
                         chartService.drawHist(resp.data.DateHistData, 'DateHist_div');

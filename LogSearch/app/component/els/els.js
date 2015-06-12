@@ -59,7 +59,7 @@
 
             //#region public function
             vm.search = search;
-            vm.trySeach = trySeach;
+            vm.trySearch = trySearch;
             vm.refresh = refresh;
             vm.pageChanged = pageChanged;
             vm.fillText = fillText;
@@ -130,7 +130,7 @@
 
 
             //#region main search
-            function trySeach($event) {
+            function trySearch($event) {
                 if ($event.keyCode === config.keyCodes.enter) {
                     search();
                 }

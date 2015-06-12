@@ -40,6 +40,7 @@
 
             //#region View Load
             var ap = [];
+            var aggfield = [];
             activate();
             function activate() {
                 common.activateController([getMap()], controllerId)
@@ -63,6 +64,7 @@
                         common.$rootScope.spinner = false;
                     });
                 }
+                aggfield = commonService.aggFieldFilter(vm.fieldsName);
                 aggShow();
             }
 
@@ -126,7 +128,6 @@
                 aggService.removePieContainer();
                 if (vm.aggName === "" || vm.aggName === "all") {
                     vm.token = false;
-                    var aggfield = commonService.aggFieldFilter(vm.fieldsName);
                     aggService.addPieContainer(aggfield);
                     flag = 0;
                     angular.forEach(aggfield, function (name) {
@@ -144,9 +145,22 @@
                             log(e.data.Message);
                         });
                 }
+                run(ap);
+            }
+            function run(ap) {
                 common.$q.all(ap).then(function () {
                     if (flag === 0) {
-                        log("No chart!");
+                        var confirm = common.$mdDialog.confirm()
+                            .title('Would you like to Search Page?')
+                            .ariaLabel('Lucky day')
+                            .ok('Just do it!')
+                            .cancel('Stay on here');
+                        // .targetEvent(ev);
+                        common.$mdDialog.show(confirm).then(function () {
+                            go();
+                        }, function () {
+                            log("No chart!");
+                        });
                     }
                     vm.process = false;
                 });
