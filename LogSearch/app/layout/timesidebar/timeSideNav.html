@@ -3,12 +3,17 @@
         <h2 class="md-toolbar-tools">History</h2>
     </md-toolbar>
     <md-content data-ng-controller="timeSideNav as timeSideNav" layout-padding>
-        <section layout="row" layout-sm="column" layout-align="center center" ng-repeat="t in timeSideNav.time" ng-click="timeSideNav.nav(t)" style="min-width: 90%">
-            <md-button style="min-width: 85%">{{t}}</md-button>
-            <div class="label">Flat</div>
-        </section>
-        <md-button ng-click="timeSideNav.close()" class="md-primary" layout-align="center center">
-            Close
+        <div layout="row" layout-sm="column" layout-align="center center" ng-repeat="t in timeSideNav.time" ng-click="timeSideNav.nav(t)" style="min-width: 90%">
+            <md-button style="width: 100%">
+                <div layout="row">
+                    {{t}}<span flex></span>
+                </div>
+            </md-button>
+        </div>
+        <md-button ng-click="timeSideNav.close()" class="md-primary" style="width: 90%">
+            <div layout="row">
+                Close<span flex></span>
+            </div>
         </md-button>
     </md-content>
 </md-sidenav>

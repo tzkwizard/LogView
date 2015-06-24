@@ -70,7 +70,8 @@
                 });
                 var chart = new google.visualization.AnnotatedTimeLine(document.getElementById(timelinetag));
                 chart.draw(data, {
-                    displayAnnotations: true, dateFormat: 'MM-dd-yyyy', displayAnnotationsFilter: true,
+                     dateFormat: 'MM-dd-yyyy',
+                    //displayAnnotationsFilter: true,displayAnnotations: true,
                     thickness: 3, wmode: 'transparent'
                 });
             }

@@ -1,13 +1,13 @@
-﻿<md-sidenav id="menuSidenav" class="md-sidenav-left md-whiteframe-z2" md-component-id="left">
+﻿<md-sidenav id="menuSidenav" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" style="width: 200px">
     <md-toolbar class="md-theme-light">
         <h2 class="md-toolbar-tools"> Menu </h2>
     </md-toolbar>
     <md-content data-ng-controller="menuSideNav as menuSideNav" layout-padding>
-        <md-list-item layout-align="center center" ng-repeat="t in menuSideNav.getNav()">
-            <md-button class="md-grid-item-content" style="min-width: 90%" href="#{{t.url}}">
+        <md-list-item layout-align="center center" ng-repeat="t in menuSideNav.getNav()" style="padding: 0;overflow: hidden">
+            <md-button class="md-grid-item-content" style="min-width: 100%;" href="#{{t.url}}">
                 <md-icon md-svg-src={{t.config.settings.icon}} class="pull-left">
                 </md-icon> {{ t.config.title }}
-                <!--<div class="md-grid-text">  </div>-->
+                <span flex></span>
             </md-button>
             <md-tooltip>
                 {{t.config.settings.tooltip}}

@@ -31,14 +31,18 @@
                         </md-tooltip>
                     </md-button>
                     <ul class="dropdown-menu" role="menu">
-                        <md-list-item ng-repeat="choice in search.it">
-                            <md-button class="md-grid-item-content" ng-click="search.filterst(choice)">
-                                <li class="md-grid-text"> {{ choice }} </li>
+                        <div ng-repeat="choice in search.it" >
+                            <md-button class="md-grid-item-content" ng-click="search.filterst(choice)" style="width: 90%">
+                                <div layout="row">
+                                    <li class="md-grid-text"> {{ choice }} </li> <span flex></span>
+                                </div>
                             </md-button>
-                        </md-list-item>
+                        </div>
                         <md-divider></md-divider>
-                        <md-button class="md-grid-item-content">
-                            <li class="md-grid-text" data-ng-click="search.showListBottomSheet()"> More Span ?</li>
+                        <md-button class="md-grid-item-content" data-ng-click="search.showListBottomSheet()" style="width: 90%">
+                            <div layout="row">
+                                <li class="md-grid-text"> More Span ?</li><span flex></span>
+                            </div>
                         </md-button>
                     </ul>
                 </div>

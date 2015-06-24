@@ -395,9 +395,9 @@ form {
 .totop {
     position: fixed;
     bottom: 0;
-    left: 0;
+    right: 0;
     z-index: 104400;
-    background: #fa3031;
+    background: skyblue;
     display: none;
 }
 
