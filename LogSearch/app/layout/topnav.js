@@ -26,6 +26,7 @@
         vm.refresh = refresh;
         vm.logout = logout;
         vm.autoFill = autoFill;
+        vm.openNav = openNav;
         //#endregion
 
 
@@ -39,21 +40,15 @@
             // window.location.reload();
         }
 
-        vm.toggleRight = sideNav('right');
-        vm.toggleLeft = sideNav('left');
-
-        function sideNav(navID) {
-            var debounceFn = common.$mdUtil.debounce(function () {
+        
+        function openNav(navID) {
                 common.$mdSidenav(navID)
                     .toggle()
                     .then(function () {
-                        //document.getElementById("nav").style.height = "10%"; 
                         //document.getElementById("timeSidenav").style.height = vm.it.length * 60 + "%";
                         // document.getElementById("nav").style.overflow = "visible";
                         // toastr.info("toggle " + navID + " is done");
                     });
-            }, 10);
-            return debounceFn;
         }
         //#endregion   
 
