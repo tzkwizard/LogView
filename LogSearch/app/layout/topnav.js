@@ -13,7 +13,7 @@
         vm.searchText = '';
         vm.autoText = [];
         vm.loading = true;
-        vm.tabs = ["Dashboard", "ELS", "Agg", "TODO"];
+        vm.tabs = ["Dashboard", "ELS", "Aggs", "TODO"];
         vm.selectedIndex = "";
         vm.autocompleLoading = true;
         vm.st = "";
@@ -47,7 +47,6 @@
                     .then(function () {
                         //document.getElementById("timeSidenav").style.height = vm.it.length * 60 + "%";
                         // document.getElementById("nav").style.overflow = "visible";
-                        // toastr.info("toggle " + navID + " is done");
                     });
         }
         //#endregion   
@@ -80,13 +79,7 @@
         //#region View and Button
         //navi to other page
         function path() {
-            switch (vm.selectedIndex) {
-                case 0: common.$location.path("/dashboard"); break;
-                case 1: common.$location.path("/els"); break;
-                case 2: common.$location.path("/aggs"); break;
-                case 3: common.$location.path("/todo"); break;
-                default: common.$location.path("/"); break;
-            }
+            common.$location.path("/" + vm.tabs[vm.selectedIndex].toLowerCase());
         }
 
         activate();
@@ -107,19 +100,14 @@
             if ($event.type === 'click' || $event.keyCode === config.keyCodes.enter) {
                 common.$location.search.text = vm.searchText;
                 common.$location.path('/els/');
-                // $location.path(route + vm.searchText);
             }
         }
 
         //refresh page
         function refresh($event) {
-            if ($event.keyCode === config.keyCodes.esc) {
-                vm.searchText = '';
-                return;
-            }
             common.$location.search.refresh = true;
-            window.location.reload();
             toastr.info("Refresh" + common.$location.path());
+            window.location.reload();            
         }
 
         //log out
