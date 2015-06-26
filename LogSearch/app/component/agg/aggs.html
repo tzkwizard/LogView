@@ -1,4 +1,4 @@
-﻿<section class="mainbar" data-ng-controller="aggs as aggragation">
+﻿<section id="agg-view" class="mainbar" data-ng-controller="aggs as aggragation">
     <section class="matter">
         <div class="container-fluid">
             <div id="header">
@@ -10,6 +10,24 @@
                         <md-option value="all">all</md-option>
                         <md-option value="{{doc}}" data-ng-repeat="doc in aggragation.indicesName">{{doc}}</md-option>
                     </md-select>
+                    <div dropdown layout="row" layout-align="start center" style="position: relative;margin-bottom: 20px; min-width: 200px;">
+                        <div dropdown-toggle style="cursor: pointer;border-bottom: 1px solid #c3c3c3;height: 35px;" layout="row" layout-align="space-between center" flex>
+                            <span>{{aggragation.index}}</span>
+                            <span flex></span>
+                            <md-icon md-svg-src="content/images/icon/ic_arrowdown_24px.svg" style="height: 30%"></md-icon>
+                        </div>
+                        <div class="dropdown-menu rw-slim-scroll" style="min-width: 200px; max-height: 200px; padding: 0; overflow-y: auto; overflow-x: hidden">
+                            <div ng-repeat="doc in aggragation.indicesName">
+                                <div class="default-theme-hover" layout="row" layout-align="start center" ng-click="aggragation.index=doc"
+                                     style="width: 100%; height: 48px; padding: 8px; cursor: pointer">
+                                    <span>{{doc}}</span>
+                                    <i ng-if="doc == aggragation.index" class="fa fa-check" style="margin-left: 10px"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <label style="position: absolute; top: 100%; left: 0;">Index</label>
+                    </div>
+
                     <md-select placeholder="Pick" ng-model="aggragation.aggName">
                         <md-option value="all">all</md-option>
                         <md-option value="{{doc}}" data-ng-repeat="doc in aggragation.fieldsName">{{doc}}</md-option>

@@ -1,4 +1,4 @@
-﻿<section class="mainbar" data-ng-controller="els as search">
+﻿<section id="els-view" class="mainbar" data-ng-controller="els as search">
     <section class="matter">
         <div class="container-fluid">
             <div id="Search" layout="row" layout-align="center center" class=" input-append row-fluid">
@@ -31,7 +31,7 @@
                         </md-tooltip>
                     </md-button>
                     <ul class="dropdown-menu" role="menu">
-                        <div ng-repeat="choice in search.it" >
+                        <div ng-repeat="choice in search.it">
                             <md-button class="md-grid-item-content" ng-click="search.filterst(choice)" style="width: 90%">
                                 <div layout="row">
                                     <li class="md-grid-text"> {{ choice }} </li> <span flex></span>
