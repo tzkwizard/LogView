@@ -6,8 +6,6 @@
     angular.module('app')
         .controller(controllerId, function (common, aggService, commonService) {
             var vm = this;
-            vm.title = "Aggragations";
-            vm.title2 = "PieChart";
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
 
@@ -27,6 +25,7 @@
             vm.st = ""; //start time
             vm.token = true; //show table
             vm.process = true; //spinner when running
+            var flag = 0;
             //#endregion
 
             //#region public function
@@ -120,7 +119,7 @@
             }
             //#endregion
 
-            var flag = 0;
+            
             //#region Draw chart
             //get dashboard data
             function aggShow() {

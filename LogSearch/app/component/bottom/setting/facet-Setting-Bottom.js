@@ -69,7 +69,7 @@
           }
 
           function refresh() {
-              //$cookieStore.put('SiderBarFacet', vm.oldfacet);
+              update();
               localStorageService.set('SiderBarFacet', vm.oldfacet);
               window.location.reload();
           }

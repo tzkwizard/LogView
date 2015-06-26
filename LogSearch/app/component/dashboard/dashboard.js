@@ -23,7 +23,6 @@
         };
         //#endregion
 
-
         //#region variable
         vm.st = "";
         vm.ft = "";
@@ -107,6 +106,18 @@
                         log("geoMap2 data error" + e.data.Message);
                     });
         }
+
+        function changeMap() {
+            if (vm.geomap2selection === "World") {
+                worldGeoMap();
+            }
+            if (vm.geomap2selection === "USA") {
+                usGeoMap();
+            }
+            if (vm.geomap2selection === "City") {
+                usCityMap();
+            }
+        }
         //#endregion
 
 
@@ -120,21 +131,6 @@
                 }, function (e) {
                     log("geoMap data error " + e.data.Message);
                 });
-        }
-        //#endregion
-
-
-        //#region map selector
-        function changeMap() {
-            if (vm.geomap2selection === "World") {
-                worldGeoMap();
-            }
-            if (vm.geomap2selection === "USA") {
-                usGeoMap();
-            }
-            if (vm.geomap2selection === "City") {
-                usCityMap();
-            }
         }
 
         function changeMap2() {

@@ -6,7 +6,6 @@
     angular.module('app')
         .controller(controllerId, function (common, elsService, config, commonService) {
             var vm = this;
-            vm.title = "Function";
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
 
