@@ -3,7 +3,7 @@
 
     var controllerId = 'resultModal';
 
-    angular.module('app')
+    angular.module('els')
         .controller(controllerId, function ($modalInstance, common, item, resultService) {
 
             var vm = this;

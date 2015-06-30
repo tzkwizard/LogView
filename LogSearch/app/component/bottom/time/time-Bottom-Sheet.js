@@ -2,7 +2,7 @@
     'use strict';
 
     var controllerId = 'timeBottomSheet';
-    angular.module('app')
+    angular.module('bottomsetting')
       .controller(controllerId, function (common, config) {
           var vm = this;
           vm.ts = config.time.timeSpan.l;

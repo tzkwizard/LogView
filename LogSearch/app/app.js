@@ -9,17 +9,13 @@
         'ngCookies',
         
 
-        'app.layout',
-        'componentService',
-        'commonService',
-        'datacontext',
-
-        'LocalStorageModule',
-        // Custom modules 
-       
+        //app
+        'layout',
+        'component',
+        
+        // Custom modules        
         'common',           // common functions, logger, spinner ,ngMaterial
-        'common.bootstrap', // bootstrap dialog wrapper functions
-
+ 
 
         // 3rd Party Modules    
         'ui.bootstrap',   // ui-bootstrap (ex: carousel, pagination, dialog)    
@@ -28,7 +24,6 @@
 
         //'ui.grid', 'ui.grid.edit', 'ui.grid.selection'
     ]);
-    angular.module('componentService', []);
 
     //Load google Api
     google.load('visualization', '1', {

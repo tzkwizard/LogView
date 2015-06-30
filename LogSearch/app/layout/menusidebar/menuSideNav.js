@@ -3,7 +3,7 @@
 
     var controllerId = 'menuSideNav';
 
-    angular.module('app.layout')
+    angular.module('layout')
         .controller(controllerId, function (routes) {
             var vm = this;
             vm.getNav = function () {

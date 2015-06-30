@@ -1,7 +1,7 @@
 ﻿(function () {
     'use strict';
     var controllerId = 'dashboard';
-    angular.module('app').controller(controllerId, ['common', 'chartService', 'commonService', dashboard]);
+    angular.module('dashboard',[]).controller(controllerId, ['common', 'chartService', 'commonService', dashboard]);
 
     function dashboard(common, chartService, commonService) {
         var getLogFn = common.logger.getLogFn;

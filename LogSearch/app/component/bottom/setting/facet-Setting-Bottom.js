@@ -3,7 +3,7 @@
 
     var controllerId = 'facetSettingBottom';
 
-    angular.module('app')
+    angular.module('bottomsetting')
       .controller(controllerId, function (common, config, localStorageService) {
 
           var vm = this;

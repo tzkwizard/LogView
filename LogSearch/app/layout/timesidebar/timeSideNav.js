@@ -3,7 +3,7 @@
 
     var controllerId = 'timeSideNav';
 
-    angular.module('app.layout')
+    angular.module('layout')
         .controller(controllerId, function (common, commonService, config) {
             var vm = this;
             vm.time = config.time.timeSpan.m;

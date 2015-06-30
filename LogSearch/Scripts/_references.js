@@ -26,7 +26,7 @@
 
 
 
-/// <reference path="~/app/common/common.js" />
+/// <reference path="~/app/common/common.module.js" />
 /// <reference path="~/app/common/logger.js" />
 /// <reference path="~/app/common/spinner.js" />
 /// <reference path="~/app/common/bootstrap/bootstrap.dialog.js" />
@@ -35,11 +35,11 @@
 /// <reference path="~/app/layout/shell.js" />
 
 
-/// <reference path="~/app/services/common-Service.js" />
-/// <reference path="~/app/services/component/chart-Service.js" />
-/// <reference path="~/app/services/component/els-Service.js" />
-/// <reference path="~/app/services/component/agg-Service.js" />
-/// <reference path="~/app/datacontext/datasearch.js" />
+/// <reference path="~/app/common/common-Service.js" />
+/// <reference path="~/app/component/agg/agg-Service.js" />
+/// <reference path="~/app/component/els/els-Service.js" />
+/// <reference path="~/app/component/dashboard/chart-Service.js" />
+/// <reference path="~/app/common/datasearch.js" />
 
 
 /// <reference path="~/app/component/dashboard/dashboard.js" />

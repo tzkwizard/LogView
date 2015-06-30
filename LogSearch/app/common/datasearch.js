@@ -2,7 +2,7 @@
     'use strict';
 
     var serviceId = 'datasearch';
-    angular.module('datacontext', []).factory(serviceId, ['$rootScope', '$http', 'config', datasearch]);
+    angular.module('common').factory(serviceId, ['$rootScope', '$http', 'config', datasearch]);
 
     function datasearch($rootScope, $http, config) {
 

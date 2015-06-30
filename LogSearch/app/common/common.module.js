@@ -6,7 +6,7 @@
     //  - common
     //  - logger
     //  - spinner
-    var commonModule = angular.module('common', ['ngMaterial', 'ngAria']);
+    var commonModule = angular.module('common', ['ngMaterial', 'ngAria', 'common.bootstrap', 'LocalStorageModule']);
 
     // Must configure the common service and set its 
     // events via the commonConfigProvider

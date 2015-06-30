@@ -3,7 +3,7 @@
 
     var controllerId = 'els';
 
-    angular.module('app')
+    angular.module('els',[])
         .controller(controllerId, function (common, elsService, config, commonService) {
             var vm = this;
             var getLogFn = common.logger.getLogFn;

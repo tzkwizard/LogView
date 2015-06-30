@@ -3,7 +3,7 @@
     angular.module('app.layout', []);
     
     var controllerId = 'shell';
-    angular.module('app.layout').controller(controllerId,
+    angular.module('layout').controller(controllerId,
         ['common', shell]);
 
     function shell(common) {
@@ -56,7 +56,7 @@
 })();
 (function () {
     'use strict';
-    angular.module('app.layout').controller('test',
+    angular.module('layout').controller('test',
         [test]);
 
     function test() {

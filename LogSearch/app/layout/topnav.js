@@ -2,7 +2,7 @@
     'use strict';
 
     var controllerId = 'topnav';
-    angular.module('app.layout').controller(controllerId,
+    angular.module('layout').controller(controllerId,
         ['commonService', 'datasearch', 'config', 'common', topnav]);
 
     function topnav(commonService, datasearch, config, common) {

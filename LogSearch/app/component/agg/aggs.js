@@ -3,7 +3,7 @@
 
     var controllerId = 'aggs';
 
-    angular.module('app')
+    angular.module('aggs',[])
         .controller(controllerId, function (common, aggService, commonService) {
             var vm = this;
             var getLogFn = common.logger.getLogFn;

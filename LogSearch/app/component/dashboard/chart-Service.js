@@ -2,7 +2,7 @@
     'use strict';
     var serviceId = 'chartService';
 
-    angular.module('componentService')
+    angular.module('dashboard')
         .factory(serviceId, function (datasearch) {
 
             //#region service

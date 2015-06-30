@@ -2,7 +2,7 @@
     'use strict';
 
     var serviceId = 'commonService';
-    angular.module('commonService', []).factory(serviceId, ['$modal', '$rootScope', 'config', 'datasearch', 'localStorageService', commonService]);
+    angular.module('common').factory(serviceId, ['$modal', '$rootScope', 'config', 'datasearch', 'localStorageService', commonService]);
 
     function commonService($modal, $rootScope, config, datasearch, localStorageService) {
 
