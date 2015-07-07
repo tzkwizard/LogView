@@ -1,5 +1,7 @@
 ﻿(function () {
     'use strict';
-    angular.module('layout', []);
+    angular.module('layout', [
+    //'ngGrid'
+    ]);
     
 })();

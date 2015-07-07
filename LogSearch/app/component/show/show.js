@@ -3,7 +3,7 @@
 
     var controllerId = 'show';
 
-    angular.module('app')
+    angular.module('show',[])
         .controller(controllerId, function (common, elsService) {
             var vm = this;
             vm.title = "Elasticsearch";

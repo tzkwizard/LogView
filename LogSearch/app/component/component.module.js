@@ -5,7 +5,9 @@
         'els',
         'aggs',
         'dashboard',
-        'bottomsetting'
+        'bottomsetting',
+        'show',
+        'login'
     ]);
 
 })();

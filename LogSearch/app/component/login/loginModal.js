@@ -2,7 +2,7 @@
     'use strict';
 
     var controllerId = 'loginModal';
-    angular.module('app')
+    angular.module('login',[])
         .controller(controllerId, function ($modalInstance, config, commonService) {
             var vm = this;
             vm.title = "Elasticsarch Login";

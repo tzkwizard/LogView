@@ -3,7 +3,7 @@ describe('layout.test', function () {
     var controller;
 
     beforeEach(function () {
-        bard.appModule('app.layout');
+        bard.appModule('layout');
         bard.inject(this, '$controller');
         controller = $controller('test');
     });
@@ -25,7 +25,7 @@ describe('layout.shell', function () {
         var x = bard.appModule('common');
         var y = bard.appModule('ngRoute');
 
-        bard.appModule('app.layout');
+        bard.appModule('layout');
         bard.inject(this, '$controller', x);
 
         controller = $controller('shell');
