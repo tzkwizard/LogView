@@ -85,11 +85,11 @@
     <Content Include="app\layout\timesidebar\timeSideNav.js" />
     <Content Include="app\common\logger.js" />
     <Content Include="app\layout\widgetheader.html" />
-    <Content Include="app\component\els\result\result-Service.js" />
-    <Content Include="app\component\els\els-Service.js" />
-    <Content Include="app\component\agg\agg-Service.js" />
-    <Content Include="app\component\dashboard\chart-Service.js" />
-    <Content Include="app\common\common-Service.js" />
+    <Content Include="app\component\els\result\result.service.js" />
+    <Content Include="app\component\els\els.service.js" />
+    <Content Include="app\component\agg\agg.service.js" />
+    <Content Include="app\component\dashboard\chart.service.js" />
+    <Content Include="app\common\common.service.js" />
     <Content Include="app\common\datasearch.js" />
     <Content Include="app\component\els\els.html" />
     <Content Include="app\component\els\els.js" />

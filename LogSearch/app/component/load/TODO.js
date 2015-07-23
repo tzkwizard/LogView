@@ -4,7 +4,7 @@
     var controllerId = 'TODO';
 
     angular.module('app')
-      .controller(controllerId, function (common,$scope, $timeout, $mdBottomSheet, $cookieStore) {
+      .controller(controllerId, function (common,$scope, $timeout, $mdBottomSheet) {
 
         $scope.count = 0;
 
@@ -14,19 +14,12 @@
         $scope.fieldsName = ["1","2","3","4"];
         function activate() {
             common.activateController([], controllerId).then(function () {
-                vm.xx = $cookieStore.get('index');
                 common.$rootScope.spinner = false;
             });
             
         }
 
         $scope.test=function() {
-          /*  var s1 = document.getElementById('jselect1');
-            var s2 = document.getElementById('fselect1');
-            var s3 = document.getElementById('input1');
-
-            toastr.info(s1.value + " " + s2.value + " " + s3.value);*/
-
             var z = tt();
 
             z.then(function(d) {

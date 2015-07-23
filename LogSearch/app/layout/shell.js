@@ -23,6 +23,7 @@
         };
         //#endregion
 
+        //#region test
         vm.strength = "";
         vm.password = '';
         vm.grade = function () {
@@ -35,7 +36,7 @@
                 vm.strength = 'weak';
             }
         };
-
+        //#endregion
 
         //#region Shell Load
         activate();
