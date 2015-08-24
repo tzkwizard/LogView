@@ -101,11 +101,8 @@
             return datasearch.getMap().then(function (resp) {
                 $rootScope.index = resp.data.Index;
                 var fieldsName = resp.data.Field;
-                var field = [];
-                angular.forEach(fieldsName, function (name) {
-                    if ((name.substring(0, 1) >= 'A' && name.substring(0, 1) <= 'Z') || (name.substring(0, 1) >= 'a' && name.substring(0, 1) <= 'z')) {
-                        field.push(name);
-                    }
+                var field = fieldsName.filter(function (name) {
+                    return (name.substring(0, 1) >= 'A' && name.substring(0, 1) <= 'Z') || (name.substring(0, 1) >= 'a' && name.substring(0, 1) <= 'z');
                 });
                 $rootScope.logfield = field;
             });
@@ -193,11 +190,8 @@
         }
 
         function aggFieldFilter(fields) {
-            var filtered = [];
-            angular.forEach(fields, function (x) {
-                if (x.substring(x.length - 3, x.length) === "raw" && x !== "timestamp.raw" && x !== "tags.raw") {
-                    filtered.push(x);
-                }
+            var filtered = fields.filter(function (x) {
+                return x.substring(x.length - 3, x.length) === "raw" && x !== "timestamp.raw" && x !== "tags.raw";
             });
             return filtered;
         }
