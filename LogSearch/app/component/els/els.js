@@ -9,7 +9,7 @@
             vm.title2 = "Function";
             var getLogFn = common.logger.getLogFn;
             var log = getLogFn(controllerId);
-
+            
             //#region variable
             vm.googlelist = true;
             vm.autocompleLoading = false; // spinner for autofill

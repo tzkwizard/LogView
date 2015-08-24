@@ -31,6 +31,7 @@
                 common.activateController([], controllerId)
                     .then(function () {
                         init();
+                        common.$rootScope.spinner = false;
                         log('Activated Show search View');
                     });
             }
